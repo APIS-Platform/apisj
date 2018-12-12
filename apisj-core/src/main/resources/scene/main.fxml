@@ -84,7 +84,7 @@
                   <Insets right="10.0" />
                </GridPane.margin>
                <children>
-                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #f2f2fb;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #f2f2f2;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></ComboBox>
