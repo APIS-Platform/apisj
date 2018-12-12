@@ -4,11 +4,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
-import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransaction;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.db.ByteArrayWrapper;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
@@ -16,11 +16,6 @@ import org.apis.keystore.*;
 import org.apis.listener.BlockReplay;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.eth.message.StatusMessage;
-import org.apis.net.message.Message;
-import org.apis.net.p2p.HelloMessage;
-import org.apis.net.rlpx.Node;
-import org.apis.net.server.Channel;
 import org.apis.rpc.listener.LastLogListener;
 import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
@@ -34,9 +29,7 @@ import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.Future;
 
-import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.rpc.RPCJsonUtil.createJson;
 
 public class RPCCommand {
@@ -646,8 +639,8 @@ public class RPCCommand {
 
             case COMMAND_APIS_CALL: {
                 try {
-                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
-                    byte[] result = estimate.getReceipt().getExecutionResult();
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (EthereumImpl) ethereum);
+                    byte[] result = estimateResult.getReceipt().getExecutionResult();
                     command = createJson(id, method, ByteUtil.toHexString0x(result));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
@@ -658,8 +651,8 @@ public class RPCCommand {
 
             case COMMAND_APIS_ESTIMATE_GAS: {
                 try {
-                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
-                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimate.getGasUsed())));
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (EthereumImpl) ethereum);
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimateResult.getGasUsed())));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
@@ -1024,11 +1017,13 @@ public class RPCCommand {
                             }
 
                             if(txData.isEmptyGas()) {
-                                txData.setGas(new BigInteger("50000000"));
+                                EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)ethereum);
+
+                                txData.setGas(BigInteger.valueOf(50_000_000L));
                                 Transaction tempTx = txData.getTransaction(ethereum.getChainIdForNextBlock());
-                                tempTx.setTempSender(ByteUtil.hexStringToBytes(txData.getFrom()));
-                                ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, tempTx, ethereum.getBlockchain().getBestBlock(), true);
-                                txData.setGas(BigInteger.valueOf(estimate.getGasUsed()));
+
+                                EstimateTransactionResult estimateResult = estimator.estimate(tempTx);
+                                txData.setGas(BigInteger.valueOf(estimateResult.getGasUsed()));
                             }
 
                             Transaction tx = txData.getTransaction(ethereum.getChainIdForNextBlock());
@@ -1304,7 +1299,7 @@ public class RPCCommand {
         return createJson(id, method, new TransactionData(tx, block));
     }
 
-    private static ContractLoader.ContractRunEstimate getContractRunEstimate(Object[] params, EthereumImpl ethereum) throws Exception {
+    private static EstimateTransactionResult estimateTransaction(Object[] params, EthereumImpl ethereum) throws Exception {
         if (params.length == 0) {
             throw new Exception(ERROR_MESSAGE_UNKNOWN);
         }
@@ -1314,7 +1309,8 @@ public class RPCCommand {
         }
         Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
 
-        return ContractLoader.preRunContract(ethereum, inputTx.getFrom(), inputTx.getTo(), inputTx.getData());
+        EstimateTransaction estimateTransaction = EstimateTransaction.getInstance(ethereum);
+        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), BigInteger.ZERO, inputTx.getData());
     }
 
 
@@ -1395,14 +1391,15 @@ public class RPCCommand {
     }
 
     private static String contractRun(long id, String method, Ethereum ethereum, Transaction transaction) {
-        ContractLoader.ContractRunEstimate contractRunEstimate = ContractLoader.preRunTransaction(ethereum, transaction, false);
+        EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)ethereum);
+        EstimateTransactionResult estimateResult = estimator.estimate(transaction);
 
-        boolean isPreRunSuccess = contractRunEstimate.isSuccess();
-        String preRunError = contractRunEstimate.getReceipt().getError();
+        boolean isSuccessful = estimateResult.isSuccess();
+        String preRunError = estimateResult.getReceipt().getError();
         String returnCommand = "";
 
         // run
-        if(isPreRunSuccess) {
+        if(isSuccessful) {
             ConsoleUtil.printlnRed("[contractRun] success send transaction");
 
             ethereum.submitTransaction(transaction); // send

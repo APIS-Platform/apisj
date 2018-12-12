@@ -9,7 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.ApisTextFieldController;
@@ -185,8 +185,8 @@ public class PopupContractWarningController extends BasePopupController {
 
     private void sendTx(){
         if(tx != null){
-            ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
-            if(runEstimate.isSuccess() || runEstimate.getReceipt().getError().toLowerCase().indexOf("invalid nonce") >= 0){
+            EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);
+            if(runEstimate.isSuccess() || runEstimate.getReceipt().getError().toLowerCase().contains("invalid nonce")){
                 AppManager.getInstance().ethereumSendTransactions(tx);
                 PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",this.zIndex);
                 controller.requestFocusYesButton();

@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
@@ -26,7 +27,6 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
-import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -372,7 +372,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
                     Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, functionCallBytes, password, knowledgeKey);
 
                     // 트랜잭션 먼저 전송해보기
-                    ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
+                    EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);
                     if(runEstimate.isSuccess()){
 
                         // 트랜잭션 전송

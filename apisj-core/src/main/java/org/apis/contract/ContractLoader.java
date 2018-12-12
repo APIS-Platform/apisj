@@ -3,19 +3,12 @@ package org.apis.contract;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
-import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
 import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumImpl;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
-import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.blockchain.SolidityFunction;
 import org.apis.vm.LogInfo;
-import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -221,18 +214,12 @@ public class ContractLoader {
         CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
         CallTransaction.Function func = freezer.getByName("isFrozen");
 
-        TransactionExecutor executor = getContractExecutor(
-                repo,
-                blockStore,
-                callBlock,
-                blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER(),
-                null,
-                BigInteger.ZERO,
-                func,
-                args);
+        EstimateTransaction estimator = EstimateTransaction.getInstance();
+
+        byte[] to = blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER();
+        TransactionExecutor executor = estimator.getExecutor(repo, blockStore, callBlock, null, to, func, args);
 
         return (boolean) func.decodeResult(executor.getResult().getHReturn())[0];
-
     }
 
 
@@ -365,258 +352,5 @@ public class ContractLoader {
         );
         tx.sign(config.getCoinbaseKey());
         return tx;
-    }
-
-
-
-    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, CallTransaction.Function func, Object ... args) {
-        return getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, 50_000_000L, func, args);
-    }
-
-    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, long gasLimit, CallTransaction.Function func, Object ... args) {
-        if(sender == null) sender = ECKey.DUMMY.getAddress();
-        long nonce = repo.getNonce(sender).longValue();
-        Transaction tx = CallTransaction.createRawTransaction(nonce,
-                0,
-                gasLimit,
-                ByteUtil.toHexString(contractAddress),
-                value,
-                func.encode(args));
-
-
-        tx.setTempSender(sender);
-
-        return getContractExecutor(tx, repo, blockStore, callBlock, true);
-    }
-
-
-    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
-        if(sender == null) sender = ECKey.DUMMY.getAddress();
-
-        Transaction tx = CallTransaction.createRawTransaction(repo.getNonce(sender).longValue(),
-                0,
-                50_000_000L,
-                ByteUtil.toHexString(contractAddress),
-                0,
-                data);
-
-
-        tx.setTempSender(sender);
-
-        return getContractExecutor(tx, repo, blockStore, callBlock, true);
-    }
-
-    private static TransactionExecutor getContractExecutor(Ethereum ethereum, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
-        return getContractExecutor((Repository)ethereum.getRepository(), ethereum.getBlockchain().getBlockStore(), callBlock, contractAddress, sender, data);
-    }
-
-    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, boolean isLocalCall) {
-        Repository track = repo.startTracking();
-
-        if(isLocalCall && tx.getSender() == null) {
-            tx.sign(ECKey.DUMMY);
-        }
-
-        TransactionExecutor executor = new TransactionExecutor
-                (tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
-                .setLocalCall(isLocalCall);
-
-        executor.init();
-        executor.execute();
-        executor.go();
-        executor.finalization();
-
-        track.rollback();
-
-        return executor;
-    }
-
-
-    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, BigInteger value, String abi, String functionName, Object ... args) {
-        if(abi == null || abi.isEmpty()) {
-            return null;
-        }
-
-        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
-
-        CallTransaction.Function func;
-        if(contractAddress == null) {
-            func = contract.getConstructor();
-        } else {
-            func = contract.getByName(functionName);
-        }
-
-
-        TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, 50_000_000L, func, args);
-        TransactionReceipt receipt = executor.getReceipt();
-
-        long newGasLimit = BIUtil.toBI(receipt.getGasUsed()).longValue();
-        boolean isSuccess = receipt.isSuccessful();
-
-        long offset = (long) (newGasLimit*0.4);
-        boolean lastSuccess = isSuccess;
-
-        long minSuccessGas = 0;
-        TransactionExecutor lastSuccessExecutor = executor;
-        TransactionReceipt lastSuccessReceipt = receipt;
-
-        for(int i = 0; i < 50 && isSuccess; i++) {
-
-            executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, newGasLimit, func, args);
-            receipt = executor.getReceipt();
-
-            if(receipt.isSuccessful()) {
-                minSuccessGas = newGasLimit;
-                lastSuccessExecutor = executor;
-                lastSuccessReceipt = receipt;
-
-                if(i == 0 || offset < 1_00) {
-                    break;
-                } else {
-                    newGasLimit -= offset;
-                }
-            } else {
-                newGasLimit += offset;
-            }
-
-
-            if (receipt.isSuccessful() != lastSuccess) {
-                offset = (long) (offset*0.4);
-            }
-
-            lastSuccess = receipt.isSuccessful();
-        }
-
-        long gasUsed = minSuccessGas;
-
-        return new ContractRunEstimate(lastSuccessExecutor.getReceipt().isSuccessful(), gasUsed, lastSuccessReceipt);
-    }
-
-    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
-        TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
-        TransactionReceipt receipt = executor.getReceipt();
-        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
-    }
-
-    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
-        Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
-        BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
-        Block block = ethereum.getBlockchain().getBestBlock();
-
-        return preRunContract(repo, blockStore, block, sender, contractAddress, value, abi, functionName, args);
-    }
-
-    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, byte[] sender, byte[] contractAddress, byte[] data) {
-        Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
-        BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
-        Block block = ethereum.getBlockchain().getBestBlock();
-
-        return preRunContract(repo, blockStore, block, sender, contractAddress, data);
-    }
-
-    private static TransactionExecutor getCreateContractExecutor(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
-        try {
-            if(contractSource == null) {
-                return null;
-            }
-            SolidityCompiler.Result result = SolidityCompiler.compileOpt(contractSource.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
-
-            if(result.isFailed()) {
-                logger.error("Contract compilation failed : \n" + result.errors);
-                return null;
-            }
-
-            CompilationResult res = CompilationResult.parse(result.output);
-
-            CompilationResult.ContractMetadata metadata = res.getContract(contractName);
-
-            if(metadata == null) {
-                return null;
-            }
-
-            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
-
-            byte[] initParams = new byte[0];
-            if(cont.getConstructor() != null){
-                cont.getConstructor().encodeArguments(args);
-            }
-            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
-
-            if(metadata.bin == null || metadata.bin.isEmpty()) {
-                logger.error("Compilation failed, no binary returned:\n" + result.errors);
-                return null;
-            }
-
-            return getContractExecutor(ethereum, callBlock, null, sender, data);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public static ContractRunEstimate preCreateContract(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
-
-        TransactionExecutor executor = getCreateContractExecutor(ethereum, callBlock, sender, contractSource, contractName, args);
-        if(executor == null) {
-            return null;
-        }
-        TransactionReceipt receipt = executor.getReceipt();
-        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-        return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
-    }
-
-    public static byte[] getContractCreationCode(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
-        TransactionExecutor executor = getCreateContractExecutor(ethereum, callBlock, sender, contractSource, contractName, args);
-        if(executor == null) {
-            return null;
-        }
-
-        return executor.getResult().getHReturn();
-    }
-
-
-    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, Block block, boolean isLocalCall) {
-        Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
-        BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
-
-        TransactionExecutor executor = getContractExecutor(tx, repo, blockStore, block, isLocalCall);
-        TransactionReceipt receipt = executor.getReceipt();
-        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
-    }
-
-    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, boolean isLocalCall) {
-        return preRunTransaction(ethereum, tx, ethereum.getBlockchain().getBestBlock(), isLocalCall);
-    }
-
-    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, Block block) {
-        return preRunTransaction(ethereum, tx, block, false);
-    }
-
-    public static class ContractRunEstimate {
-        private boolean isSuccess;
-        private long gasUsed;
-        private TransactionReceipt receipt;
-
-        ContractRunEstimate(boolean isSuccess, long gasUsed, TransactionReceipt receipt) {
-            this.isSuccess = isSuccess;
-            this.gasUsed = gasUsed;
-            this.receipt = receipt;
-        }
-
-        public boolean isSuccess() {
-            return isSuccess;
-        }
-
-        public long getGasUsed() {
-            return gasUsed;
-        }
-
-        public TransactionReceipt getReceipt() {
-            return receipt;
-        }
     }
 }

@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransaction;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
@@ -790,13 +792,17 @@ public class AppManager {
 
     public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
         if(this.mEthereum != null) {
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
-            if (contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                    return -1;
-                }
+            BigInteger value = BigInteger.ZERO;
+
+            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, value, data);
+
+            if(estimateResult == null) {
+                return -1;
+            }
+
+            if(estimateResult.isSuccess()) {
+                return estimateResult.getGasUsed();
             } else {
                 return -1;
             }
@@ -808,13 +814,15 @@ public class AppManager {
 
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
         if(this.mEthereum != null) {
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
-            if (contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                    return -1;
-                }
+            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransactionResult estimateResult = estimator.estimate(abi, sender, contractAddress, value, functionName, args);
+
+            if(estimateResult == null) {
+                return -1;
+            }
+
+            if(estimateResult.isSuccess()) {
+                return estimateResult.getGasUsed();
             } else {
                 return -1;
             }
@@ -824,15 +832,16 @@ public class AppManager {
     }
     public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
         if(this.mEthereum != null) {
-            Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl) this.mEthereum, callBlock, sender, contractSource, contractName, args);
-            if(contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                    return -1;
-                }
-            }else{
+            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransactionResult estimateResult = estimator.estimateDeploy(sender, contractSource, contractName, args);
+
+            if(estimateResult == null) {
+                return -1;
+            }
+
+            if(estimateResult.isSuccess()) {
+                return estimateResult.getGasUsed();
+            } else {
                 return -1;
             }
         }else{
@@ -854,7 +863,10 @@ public class AppManager {
     }
 
     public byte[] getContractCreationCode(String sender, String contractSource, String contractName) {
-        return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
+        EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+        EstimateTransactionResult estimateResult = estimator.estimateDeploy(ByteUtil.hexStringToBytes(sender), contractSource, contractName);
+
+        return estimateResult.getDeployBytes();
     }
 
     public ArrayList<Object[]> getTokenTransfer(String txHash) {
@@ -916,8 +928,8 @@ public class AppManager {
         return internalTransactions;
     }
 
-    public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
-        return ContractLoader.preRunTransaction(this.mEthereum, tx, true);
+    public EstimateTransactionResult estimateTransaction(Transaction tx){
+        return EstimateTransaction.getInstance((EthereumImpl)mEthereum).estimate(tx);
     }
     public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, char[] passwd, char[] knowledgeKey){
         String json = "";

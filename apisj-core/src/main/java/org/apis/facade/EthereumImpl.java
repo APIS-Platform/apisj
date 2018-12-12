@@ -21,6 +21,7 @@ import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransaction;
 import org.apis.core.*;
 import org.apis.core.PendingState;
 import org.apis.core.Repository;
@@ -117,6 +118,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
         ContractLoader.makeABI();
         DBManager.getInstance();
+        EstimateTransaction.getInstance(this);
     }
 
     @Override
