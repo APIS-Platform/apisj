@@ -25,7 +25,7 @@ public class EstimateTransaction {
 
     private Logger logger = LoggerFactory.getLogger("estimate");
 
-    private EthereumImpl apis = null;
+    private EthereumImpl apis;
 
 
     public static EstimateTransaction getInstance(EthereumImpl apis) {
@@ -98,6 +98,7 @@ public class EstimateTransaction {
         boolean lastSuccess = isSuccess;
 
         TransactionExecutor lastSuccessExecutor = executor;
+        long lastSuccessGasUsed = 0;
 
         for(int i = 0; i < 50 && isSuccess; i++) {
 
@@ -106,6 +107,7 @@ public class EstimateTransaction {
 
             if(receipt.isSuccessful()) {
                 lastSuccessExecutor = executor;
+                lastSuccessGasUsed = newGasLimit;
 
                 if(i == 0 || offset < 1_00) {
                     break;
@@ -124,7 +126,7 @@ public class EstimateTransaction {
             lastSuccess = receipt.isSuccessful();
         }
 
-        return new EstimateTransactionResult(lastSuccessExecutor);
+        return new EstimateTransactionResult(lastSuccessExecutor, lastSuccessGasUsed);
     }
 
     public EstimateTransactionResult estimate(String abi, byte[] from, byte[] to, BigInteger value, String functionName, Object ... args) {

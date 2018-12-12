@@ -17,6 +17,11 @@ public class EstimateTransactionResult {
         this.executor = executor;
     }
 
+    EstimateTransactionResult(TransactionExecutor executor, long gasUsed) {
+        this(executor);
+        this.gasUsed = gasUsed;
+    }
+
     EstimateTransactionResult(String error) {
         this.error = error;
     }
