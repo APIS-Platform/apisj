@@ -13,6 +13,8 @@ import javafx.scene.shape.Ellipse;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.ByteUtil;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ public class PopupTokenListItemController implements Initializable {
 
     private PopupTokenListImpl handler;
 
-    @FXML private ImageView addrCircleImg;
+    @FXML private ImageView addrCircleImg, frozenImg;
     @FXML private GridPane listGrid;
     @FXML private Label tokenName, tokenAddress;
 
@@ -45,6 +47,7 @@ public class PopupTokenListItemController implements Initializable {
         ellipse.setCenterY(12);
 
         addrCircleImg.setClip(ellipse);
+        frozenImg.setVisible(false);
 
     }
 
@@ -91,6 +94,16 @@ public class PopupTokenListItemController implements Initializable {
         this.tokenName.setText(record.getTokenName()+" ("+record.getTokenSymbol()+")");
         this.tokenAddress.setText(ByteUtil.toHexString(record.getTokenAddress()));
         this.addrCircleImg.setImage(IdenticonGenerator.createIcon(ByteUtil.toHexString(record.getTokenAddress())));
+
+        if(tokenAddress != null && !tokenAddress.getText().equals("")) {
+            if (AppManager.getInstance().isFrozen(tokenAddress.getText())) {
+                frozenImg.setVisible(true);
+                StyleManager.fontColorStyle(tokenAddress, StyleManager.AColor.C4871ff);
+            } else {
+                frozenImg.setVisible(false);
+                StyleManager.fontColorStyle(tokenAddress, StyleManager.AColor.C999999);
+            }
+        }
     }
 
     public interface PopupTokenListImpl {

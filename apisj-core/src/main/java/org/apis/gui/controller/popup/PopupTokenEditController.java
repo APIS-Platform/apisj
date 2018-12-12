@@ -60,6 +60,10 @@ public class PopupTokenEditController extends BasePopupController {
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
                     nameTextField.requestFocus();
+                    event.consume();
+                } else if(event.getCode() == KeyCode.ENTER) {
+                    editBtnClicked();
+                    event.consume();
                 }
             }
         });

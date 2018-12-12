@@ -15,6 +15,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -34,7 +35,7 @@ public class TokenListHeadController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private Pane leftLine;
-    @FXML private ImageView walletIcon, foldIcon1;
+    @FXML private ImageView walletIcon, foldIcon1, frozenImg;
     @FXML private Label name, valueNatural1, valueUnit1;
 
     private Image imageFold = new Image("image/btn_fold@2x.png");
@@ -49,6 +50,8 @@ public class TokenListHeadController extends BaseViewController {
         walletIcon.setClip(clip2);
 
         setState(HEADER_STATE_CLOSE);
+
+        frozenImg.setVisible(false);
     }
 
     @Override
@@ -117,6 +120,14 @@ public class TokenListHeadController extends BaseViewController {
                 for(int i=0; i<AppManager.getInstance().getTokens().size(); i++){
                     if(AppManager.getInstance().getTokens().get(i).getTokenAddress().equals(this.tokenAddress)){
                         tokenName = AppManager.getInstance().getTokens().get(i).getTokenName();
+
+                        if(AppManager.getInstance().isFrozen(AppManager.getInstance().getTokens().get(i).getTokenAddress())) {
+                            frozenImg.setVisible(true);
+                            StyleManager.fontColorStyle(name, StyleManager.AColor.C4871ff);
+                        } else {
+                            frozenImg.setVisible(false);
+                            StyleManager.fontColorStyle(name, StyleManager.AColor.C353535);
+                        }
                         break;
                     }
                 }

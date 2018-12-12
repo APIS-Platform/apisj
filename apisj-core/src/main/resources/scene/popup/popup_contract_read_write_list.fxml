@@ -5,73 +5,85 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="listGrid" onMouseClicked="#onMouseClicked" style="-fx-border-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractReadWriteListController">
-   <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints prefWidth="79.0" />
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints hgrow="SOMETIMES" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints fillHeight="false" />
-   </rowConstraints>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="428.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractReadWriteListController">
    <children>
-      <ImageView fx:id="addrCircleImg" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../image/address_Indenticon_ex2.png" />
-         </image>
-         <GridPane.margin>
-            <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
-         </GridPane.margin>
-      </ImageView>
-      <GridPane GridPane.columnIndex="1">
+      <GridPane fx:id="listGrid" onMouseClicked="#onMouseClicked" style="-fx-border-color: f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
             <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
+            <RowConstraints fillHeight="false" />
          </rowConstraints>
          <children>
-            <Label fx:id="name" styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
-            <Label fx:id="address" prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+            <ImageView fx:id="addrCircleImg" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../image/address_Indenticon_ex2.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
+               </GridPane.margin>
+            </ImageView>
+            <GridPane GridPane.columnIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="name" styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
+                  <Label fx:id="address" prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+                  <ImageView fx:id="frozenImg" fitHeight="14.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <image>
+                        <Image url="@../../image/ic_freeze@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </GridPane>
+            <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedEdit" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+               <image>
+                  <Image url="@../../image/ic_contract_edit@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="26.0" />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedDelete" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+               <image>
+                  <Image url="@../../image/ic_contract_delete@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="30.0" />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="selectBtn" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
+               <image>
+                  <Image url="@../../image/btn_circle_none@2x.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
          </children>
       </GridPane>
-      <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedEdit" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-         <image>
-            <Image url="@../../image/ic_contract_edit@2x.png" />
-         </image>
-         <GridPane.margin>
-            <Insets right="26.0" />
-         </GridPane.margin>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </ImageView>
-      <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedDelete" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
-         <image>
-            <Image url="@../../image/ic_contract_delete@2x.png" />
-         </image>
-         <GridPane.margin>
-            <Insets right="30.0" />
-         </GridPane.margin>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </ImageView>
-      <ImageView fx:id="selectBtn" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
-         <image>
-            <Image url="@../../image/btn_circle_none@2x.png" />
-         </image>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </ImageView>
    </children>
-</GridPane>
+</AnchorPane>

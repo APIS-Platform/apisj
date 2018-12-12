@@ -93,7 +93,7 @@
                                     <Image url="@../../image/ic_circle_grey@2x.png" />
                                  </image>
                               </ImageView>
-                              <TextField fx:id="contractAddressTextField" promptText="Contract Address" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.columnIndex="3">
+                              <TextField fx:id="contractAddressTextField" editable="false" promptText="Contract Address" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.columnIndex="3">
                                  <padding>
                                     <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
                                  </padding>

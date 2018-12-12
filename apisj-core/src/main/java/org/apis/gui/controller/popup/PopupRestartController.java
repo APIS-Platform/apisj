@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -42,6 +44,12 @@ public class PopupRestartController extends BasePopupController {
         miningIcon.setClip(clip2);
 
         languageSetting();
+
+        rootPane.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                miningRestart();
+            }
+        });
     }
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().restart.title);
@@ -73,25 +81,33 @@ public class PopupRestartController extends BasePopupController {
 
             list.getChildren().remove(masterNodePane);
         }else if("miningRestartBtn".equals(id)){
-            for(int i = 0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
-                KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
-
-                if(miningAddress.getText().equals(dataExp.address)){
-                    WalletItemModel walletItemModel = new WalletItemModel();
-                    walletItemModel.setAlias(dataExp.alias);
-                    walletItemModel.setAddress(dataExp.address);
-                    walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(rootPane, "popup_mining_wallet_confirm.fxml", zIndex+1);
-                    controller.setModel(walletItemModel);
-                    controller.getPasswordFieldController().requestFocus();
-                    break;
-                }
-            }
-
-            list.getChildren().remove(miningPane);
+            miningRestart();
         }
 
         if(list.getChildren().size() == 0){
+            exit();
+        }
+    }
+
+    private void miningRestart() {
+        for(int i = 0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
+            KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+
+            if(miningAddress.getText().equals(dataExp.address)){
+                WalletItemModel walletItemModel = new WalletItemModel();
+                walletItemModel.setAlias(dataExp.alias);
+                walletItemModel.setAddress(dataExp.address);
+                walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
+                PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(rootPane, "popup_mining_wallet_confirm.fxml", zIndex+1);
+                controller.setModel(walletItemModel);
+                controller.getPasswordFieldController().requestFocus();
+                break;
+            }
+        }
+
+        list.getChildren().remove(miningPane);
+
+        if(list.getChildren().size() == 0) {
             exit();
         }
     }

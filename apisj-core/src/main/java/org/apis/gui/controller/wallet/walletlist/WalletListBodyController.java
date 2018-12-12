@@ -13,6 +13,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -30,7 +31,7 @@ public class WalletListBodyController extends BaseViewController{
     @FXML private AnchorPane rootPane;
 
     // 토큰 타입
-    @FXML private ImageView tokenIcon;
+    @FXML private ImageView tokenIcon, frozenImg;
     @FXML private Label tokenName, tokenValue, tokenSymbol, noTransaction;
 
     @Override
@@ -41,6 +42,8 @@ public class WalletListBodyController extends BaseViewController{
         tokenIconClip.setArcWidth(30);
         tokenIconClip.setArcHeight(30);
         tokenIcon.setClip(tokenIconClip);
+
+        frozenImg.setVisible(false);
     }
 
     public BigInteger getValue(){
@@ -91,6 +94,14 @@ public class WalletListBodyController extends BaseViewController{
                 for(TokenModel token : AppManager.getInstance().getTokens()){
                     if(token.getTokenAddress().equals(itemModel.getTokenAddress())){
                         this.tokenName.setText(token.getTokenName());
+
+                        if(AppManager.getInstance().isFrozen(itemModel.getTokenAddress())) {
+                            frozenImg.setVisible(true);
+                            StyleManager.fontColorStyle(tokenName, StyleManager.AColor.C4871ff);
+                        } else {
+                            frozenImg.setVisible(false);
+                            StyleManager.fontColorStyle(tokenName, StyleManager.AColor.C353535);
+                        }
                         break;
                     }
                 }

@@ -29,6 +29,7 @@
             <GridPane GridPane.columnIndex="2">
                <columnConstraints>
                   <ColumnConstraints />
+                  <ColumnConstraints />
                   <ColumnConstraints hgrow="SOMETIMES" />
                </columnConstraints>
                <rowConstraints>
@@ -45,6 +46,14 @@
                      </image>
                      <GridPane.margin>
                         <Insets right="8.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <ImageView fx:id="frozenImg" fitHeight="14.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                     <image>
+                        <Image url="@../../../image/ic_freeze@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="4.0" />
                      </GridPane.margin>
                   </ImageView>
                </children>
