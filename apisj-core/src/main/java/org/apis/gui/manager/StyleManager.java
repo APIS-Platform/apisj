@@ -31,17 +31,14 @@ public class StyleManager {
         public static String Ca61c1c = "#a61c1c";
         public static String Cb01e1e = "#b01e1e";
         public static String C999999 = "#999999";
-        public static String C888888 = "#888888";
         public static String C2b8a3e = "#2b8a3e";
         public static String C4871ff = "#4871ff";
         public static String Cd8d8d8 = "#d8d8d8";
         public static String Cffffff = "#ffffff";
         public static String Cf8f8fb = "#f8f8fb";
-        public static String Cfafafa = "#fafafa";
         public static String C2b2b2b = "#2b2b2b";
         public static String C000000 = "#000000";
         public static String C202020 = "#202020";
-        public static String Cf8f8f8 = "#f8f8f8";
         public static String Cc8c8c8 = "#c8c8c8";
         public static String C36b25b = "#36b25b";
         public static String Ce2e2e2 = "#e2e2e2";

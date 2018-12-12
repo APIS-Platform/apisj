@@ -2146,7 +2146,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="copyPk" maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@css/common.css" visible="false" GridPane.columnIndex="1">
+            <AnchorPane fx:id="copyPk" maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@css/common.css" visible="false" GridPane.columnIndex="1">
                <children>
                   <GridPane layoutX="14.0" layoutY="41.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
                      <columnConstraints>

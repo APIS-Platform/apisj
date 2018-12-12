@@ -68,7 +68,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10">
                <children>
                   <GridPane layoutX="136.0" layoutY="220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
@@ -460,7 +460,7 @@
                                              <children>
                                                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="4.0" GridPane.rowIndex="1">
                                                    <children>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
@@ -468,202 +468,202 @@
                                                             <Insets left="2.0" />
                                                          </HBox.margin>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
                                                       </Pane>
-                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: fafafa;" styleClass="border_radius_4444">
+                                                      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                                                          <opaqueInsets>
                                                             <Insets />
                                                          </opaqueInsets>
@@ -1011,7 +1011,7 @@
                                                          </rowConstraints>
                                                          <children>
                                                             <Label fx:id="emailAddrLabel" styleClass="font_semibold_12" text="E-mail Address" textFill="#2b2b2b" />
-                                                            <TextField fx:id="emailTextField" promptText="Please enter your e-mail" style="-fx-prompt-text-fill: #999999; -fx-border-width: 0 0 1 0; -fx-border-color: #2b2b2b; -fx-background-color: #fafafa;" styleClass="font_semibold_12" GridPane.rowIndex="1">
+                                                            <TextField fx:id="emailTextField" promptText="Please enter your e-mail" style="-fx-prompt-text-fill: #999999; -fx-border-width: 0 0 1 0; -fx-border-color: #2b2b2b; -fx-background-color: #ffffff;" styleClass="font_semibold_12" GridPane.rowIndex="1">
                                                                <padding>
                                                                   <Insets bottom="10.0" top="10.0" />
                                                                </padding>

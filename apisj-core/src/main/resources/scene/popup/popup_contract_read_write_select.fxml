@@ -16,7 +16,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractReadWriteSelectController">
    <children>
-      <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          </columnConstraints>
@@ -169,7 +169,7 @@
                               <Label styleClass="font_regular_14" text="click &quot;+&quot; button on top to add contract." textFill="#999999" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
-                        <ScrollPane fx:id="listPane" fitToWidth="true" prefHeight="224.0" style="-fx-border-width: 0 0 0 0; -fx-background-color: #fafafa;" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                        <ScrollPane fx:id="listPane" fitToWidth="true" prefHeight="224.0" style="-fx-border-width: 0 0 0 0; -fx-background-color: #ffffff;" GridPane.rowIndex="3" GridPane.valignment="TOP">
                            <content>
                               <VBox fx:id="list" style="-fx-background-color: transparent;" />
                            </content>

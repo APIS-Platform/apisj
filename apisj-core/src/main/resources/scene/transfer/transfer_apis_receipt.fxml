@@ -110,7 +110,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
+            <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -337,7 +337,7 @@
                   <Label layoutX="50.0" layoutY="24.0" styleClass="font_semibold_12" text="Transfer Amount" textFill="#292929" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="24.0" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
                   <GridPane layoutX="64.0" layoutY="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
                      <columnConstraints>

@@ -45,7 +45,7 @@
                 <RowConstraints fillHeight="false" prefHeight="340.0" valignment="TOP" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <AnchorPane style="-fx-background-color: fafafa; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                  <AnchorPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                      <children>
                         <GridPane AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                           <columnConstraints>
