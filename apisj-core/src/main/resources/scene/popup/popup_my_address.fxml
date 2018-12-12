@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -201,7 +201,7 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <AnchorPane fx:id="btnAddMyAddress" onMouseClicked="#onMouseClicked" AnchorPane.bottomAnchor="423.0" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="80.0">
+      <AnchorPane fx:id="btnAddMyAddress" onMouseClicked="#onMouseClicked" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="88.0">
          <children>
             <GridPane>
               <columnConstraints>
@@ -212,7 +212,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
               </rowConstraints>
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../image/btn_plus_circle_red@2x.png" />
                      </image>
@@ -220,11 +220,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label fx:id="topAddBtnLabel" styleClass="font_semibold_12" text="My Address" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets top="-8.0" />
-                     </padding>
-                  </Label>
+                  <Label fx:id="topAddBtnLabel" styleClass="font_semibold_12" text="My Address" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </children>
