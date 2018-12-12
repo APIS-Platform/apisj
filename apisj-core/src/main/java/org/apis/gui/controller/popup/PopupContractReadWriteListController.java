@@ -28,7 +28,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
 
     private boolean listSelectedFlag = NOT_SELECTED;
 
-    @FXML private ImageView selectBtn, addrCircleImg;
+    @FXML private ImageView selectBtn, addrCircleImg, frozenImg;
     @FXML private GridPane listGrid;
     @FXML private Label name, address;
 
@@ -58,6 +58,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         addrCircleImg.setClip(clip);
+        frozenImg.setVisible(false);
     }
 
     @FXML
@@ -96,7 +97,11 @@ public class PopupContractReadWriteListController extends BaseViewController{
         addrCircleImg.setImage(this.model.getIdenticon());
 
         if(AppManager.getInstance().isFrozen(address.getText())) {
+            frozenImg.setVisible(true);
             StyleManager.fontColorStyle(address, StyleManager.AColor.C4871ff);
+        } else {
+            frozenImg.setVisible(false);
+            StyleManager.fontColorStyle(address, StyleManager.AColor.C999999);
         }
     }
 

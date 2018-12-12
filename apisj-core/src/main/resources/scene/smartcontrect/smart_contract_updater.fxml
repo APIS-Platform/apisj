@@ -97,8 +97,27 @@
                         </ImageView>
                         <AnchorPane GridPane.columnIndex="1">
                            <children>
-                              <Label fx:id="contractAliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                              <Label fx:id="contractAddressLabel" styleClass="font_regular_12" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
+                              <Label fx:id="contractAliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <GridPane layoutY="27.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="contractAddressLabel" styleClass="font_regular_12" textFill="#999999" />
+                                    <ImageView fx:id="frozenImg" fitHeight="14.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                       <image>
+                                          <Image url="@../../image/ic_freeze@2x.png" />
+                                       </image>
+                                       <GridPane.margin>
+                                          <Insets left="4.0" />
+                                       </GridPane.margin>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
                               <Label fx:id="placeholderLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_14" text="select contract address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
