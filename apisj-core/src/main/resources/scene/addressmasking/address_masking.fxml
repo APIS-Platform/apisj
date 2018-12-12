@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="586.0" prefWidth="1280.0" style="-fx-background-color: f8f8fb;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
+<AnchorPane prefHeight="586.0" prefWidth="1280.0" style="-fx-background-color: f8f8fb;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
    <children>
       <GridPane fx:id="bodyPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -471,7 +471,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="titleRegisterMask" styleClass="font_semibold_24" text="Register Mask" textFill="#d8d8d8">
+                              <Label fx:id="titleRegisterMask" styleClass="font_semibold_24" text="Register Mask" textFill="#c1c1c1">
                                  <GridPane.margin>
                                     <Insets bottom="38.0" />
                                  </GridPane.margin>
@@ -481,22 +481,22 @@
                                     <Image url="@../../image/bg_registermask-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleRegisterMask" styleClass="font_semibold_16" text="Easy mask registration" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleRegisterMask" styleClass="font_semibold_16" text="Easy mask registration" textFill="#c1c1c1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="260.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="260.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#c1c1c1" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="enterRegisterMask" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
+                              <Label fx:id="enterRegisterMask" styleClass="font_semibold_14" text="Enter" textFill="#c1c1c1" GridPane.rowIndex="4">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>
@@ -536,7 +536,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="titleHandOverMask" styleClass="font_semibold_24" text="Hand over Mask" textFill="#d8d8d8">
+                              <Label fx:id="titleHandOverMask" styleClass="font_semibold_24" text="Hand over Mask" textFill="#c1c1c1">
                                  <GridPane.margin>
                                     <Insets bottom="38.0" />
                                  </GridPane.margin>
@@ -546,22 +546,22 @@
                                     <Image url="@../../image/bg_handovermask-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleHandOverMask" styleClass="font_semibold_16" text="Applying mask to different address" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleHandOverMask" styleClass="font_semibold_16" text="Applying mask to different address" textFill="#c1c1c1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleHandOverMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="You can change linked address of mask to another one.After changing it, transactions sent to the mask will be redirectd to updated address." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleHandOverMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="You can change linked address of mask to another one.After changing it, transactions sent to the mask will be redirectd to updated address." textAlignment="CENTER" textFill="#c1c1c1" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="enterHandOverMask" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
+                              <Label fx:id="enterHandOverMask" styleClass="font_semibold_14" text="Enter" textFill="#c1c1c1" GridPane.rowIndex="4">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
@@ -601,7 +601,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="titleRegisterDomain" styleClass="font_semibold_24" text="Register Domain" textFill="#d8d8d8">
+                              <Label fx:id="titleRegisterDomain" styleClass="font_semibold_24" text="Register Domain" textFill="#c1c1c1">
                                  <GridPane.margin>
                                     <Insets bottom="38.0" />
                                  </GridPane.margin>
@@ -611,22 +611,22 @@
                                     <Image url="@../../image/bg_registerdomain-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleRegisterDomain" styleClass="font_semibold_16" text="Public / Commercial domain requst" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleRegisterDomain" styleClass="font_semibold_16" text="Public / Commercial domain requst" textFill="#c1c1c1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterDomain2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterDomain2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#c1c1c1" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="enterRegisterDomain" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
+                              <Label fx:id="enterRegisterDomain" styleClass="font_semibold_14" text="Enter" textFill="#c1c1c1" GridPane.rowIndex="4">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>

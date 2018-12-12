@@ -151,7 +151,7 @@ public class WalletController extends BaseViewController {
 
         StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(totalAssetLabel, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.Regular14);
 
         StyleManager.fontStyle(rewardEng1, StyleManager.Standard.Regular12);
         StyleManager.fontStyle(rewardEng2, StyleManager.Standard.SemiBold13);

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupProofOfKnowledgeEditController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupProofOfKnowledgeEditController">
    <children>
       <GridPane layoutX="134.0" layoutY="179.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -638,9 +638,9 @@
                                           </AnchorPane>
                                        </children>
                                     </GridPane>
-                                    <ImageView fx:id="deleteButton" fitHeight="58.0" fitWidth="58.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                                    <ImageView fx:id="deleteButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
                                        <GridPane.margin>
-                                          <Insets bottom="-29.0" right="56.0" />
+                                          <Insets bottom="-19.0" right="65.0" />
                                        </GridPane.margin>
                                        <image>
                                           <Image url="@../../image/btn_keydelete_none@2x.png" />

@@ -274,7 +274,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="totalAssetLabel" styleClass="font_semibold_12" text="Total Asset" textFill="#353535">
+                                <Label fx:id="totalAssetLabel" styleClass="font_semibold_14" text="Total Asset" textFill="#353535">
                                     <font>
                                         <Font name="Noto Sans KR Regular" size="12.0" />
                                     </font>
@@ -469,7 +469,7 @@
                                 <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="myRewardsLabel" styleClass="font_semibold_12" text="My rewards" />
+                                <Label fx:id="myRewardsLabel" styleClass="font_regular_14" text="My rewards" />
                         <AnchorPane fx:id="stakingPane" GridPane.columnIndex="1">
                            <children>
                               <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

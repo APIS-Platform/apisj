@@ -365,7 +365,7 @@ public class AddressMaskingController extends BaseViewController {
         }
 
         else if(id.equals("cardRegisterMask")){
-            StyleManager.backgroundColorStyle(cardRegisterMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(cardRegisterMask, StyleManager.AColor.Ce2e2e2);
             StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.C999999);
@@ -376,7 +376,7 @@ public class AddressMaskingController extends BaseViewController {
             startAnimation(aniLine1);
 
         }else if(id.equals("cardHandOverMask")){
-            StyleManager.backgroundColorStyle(cardHandOverMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(cardHandOverMask, StyleManager.AColor.Ce2e2e2);
             StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.C999999);
@@ -387,7 +387,7 @@ public class AddressMaskingController extends BaseViewController {
             startAnimation(aniLine2);
 
         }else if(id.equals("cardRegisterDomain")){
-            StyleManager.backgroundColorStyle(cardRegisterDomain, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(cardRegisterDomain, StyleManager.AColor.Ce2e2e2);
             StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.C2b2b2b);
             StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.C999999);
@@ -412,30 +412,30 @@ public class AddressMaskingController extends BaseViewController {
 
         else if(id.equals("cardRegisterMask")){
             StyleManager.backgroundColorStyle(cardRegisterMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cc1c1c1);
             imgRegisterMask.setImage(ImageManager.bgRegisterMask);
 
             aniLine1.setVisible(false);
 
         }else if(id.equals("cardHandOverMask")){
             StyleManager.backgroundColorStyle(cardHandOverMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cc1c1c1);
             imgHandOverMask.setImage(ImageManager.bgHandOverMask);
 
             aniLine2.setVisible(false);
 
         }else if(id.equals("cardRegisterDomain")){
             StyleManager.backgroundColorStyle(cardRegisterDomain, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cc1c1c1);
+            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cc1c1c1);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomain);
 
             aniLine3.setVisible(false);
