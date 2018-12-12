@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apis.config.Constants;
@@ -104,7 +105,23 @@ public class AppManager {
 
         if(selectFile == null) {
         } else {
-            result = org.apis.keystore.KeyStoreManager.checkKeystoreFile(selectFile);
+            result = KeyStoreManager.checkKeystoreFile(selectFile);
+        }
+
+        return result;
+    }
+
+    // Directory Read
+    public String openDirectoryReader(){
+        String result = null;
+        File selectFile = null;
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        selectFile = directoryChooser.showDialog(AppManager.getInstance().guiFx.getPrimaryStage());
+
+        if(selectFile != null){
+            result = selectFile.getPath();
         }
 
         return result;

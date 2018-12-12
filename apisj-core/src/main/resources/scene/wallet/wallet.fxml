@@ -274,7 +274,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="totalAssetLabel" styleClass="font_semibold_14" text="Total Asset" textFill="#353535">
+                                <Label fx:id="totalAssetLabel" styleClass="barlow_font_semibold_14" text="Total Asset" textFill="#353535">
                                     <font>
                                         <Font name="Noto Sans KR Regular" size="12.0" />
                                     </font>
@@ -310,7 +310,7 @@
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalTitle" styleClass="font_semibold_12" text="Amount" textFill="WHITE" />
+                                        <Label fx:id="totalTitle" styleClass="barlow_font_regular_14" text="Amount" textFill="WHITE" />
                               <AnchorPane fx:id="topTransferPane" onMouseClicked="#onMouseClickedMoveTransfer" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
@@ -330,7 +330,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalMainUnitLabel" styleClass="font_regular_12" text="APIS" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                                        <Label fx:id="totalMainUnitLabel" styleClass="barlow_font_semibold_12" text="APIS" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="12.0" />
                                             </font>
@@ -341,7 +341,7 @@
                                     <Insets />
                                  </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="totalMainNatureLabel" styleClass="font_regular_32" text="123,456,231" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                                        <Label fx:id="totalMainNatureLabel" styleClass="barlow_font_regular_32" text="123,456,231" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="35.0" />
                                             </font>
@@ -388,12 +388,12 @@
                                         <RowConstraints vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalSubTitle" styleClass="font_regular_12" text="Mineral (APIS transfer fee)" textFill="WHITE">
+                                        <Label fx:id="totalSubTitle" styleClass="barlow_font_regular_12" text="Mineral (APIS transfer fee)" textFill="WHITE">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="totalSubUnitLabel" styleClass="font_regular_12" text="MNR" textFill="WHITE" GridPane.columnIndex="3">
+                                        <Label fx:id="totalSubUnitLabel" styleClass="barlow_font_regular_12" text="MNR" textFill="WHITE" GridPane.columnIndex="3">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
@@ -401,7 +401,7 @@
                                                 <Insets left="6.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="totalSubNatureLabel" styleClass="font_regular_12" text="123,654" textFill="WHITE" GridPane.columnIndex="2">
+                                        <Label fx:id="totalSubNatureLabel" styleClass="barlow_font_regular_12" text="123,654" textFill="WHITE" GridPane.columnIndex="2">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
@@ -472,7 +472,7 @@
                                 <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="myRewardsLabel" styleClass="font_regular_14" text="My rewards" />
+                                <Label fx:id="myRewardsLabel" styleClass="barlow_font_regular_14" text="My rewards" />
                         <AnchorPane fx:id="stakingPane" GridPane.columnIndex="1">
                            <children>
                               <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -515,8 +515,8 @@
                                           <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                          <Label fx:id="rewarded" styleClass="font_regular_32" text="0" textFill="#b01e1e" />
-                                                          <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
+                                                          <Label fx:id="rewarded" styleClass="barlow_font_regular_32" text="0" textFill="#b01e1e" />
+                                                          <Label fx:id="rewardedLabel" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="8.0" left="4.0" />
                                              </GridPane.margin>

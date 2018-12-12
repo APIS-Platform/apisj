@@ -208,7 +208,7 @@
                 <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label fx:id="valueUnit" styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
+                  <Label fx:id="valueUnit" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                     <columnConstraints>
                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -217,7 +217,7 @@
                       <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="value" styleClass="font_regular_14" text="123,456,231">
+                        <Label fx:id="value" styleClass="barlow_font_regular_14" text="123,456,231">
                            <GridPane.margin>
                               <Insets right="8.0" />
                            </GridPane.margin></Label>

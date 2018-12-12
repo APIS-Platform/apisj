@@ -158,7 +158,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="tokenSymbol" styleClass="font_regular_11" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
+                  <Label fx:id="tokenSymbol" styleClass="barlow_font_regular_14" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -167,7 +167,7 @@
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="walletValue" styleClass="font_regular_12" text="123,456,231">
+                        <Label fx:id="walletValue" styleClass="barlow_font_regular_14" text="123,456,231">
                            <padding>
                               <Insets right="8.0" />
                            </padding></Label>
