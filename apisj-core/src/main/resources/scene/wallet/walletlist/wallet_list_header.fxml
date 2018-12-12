@@ -67,7 +67,6 @@
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
                       <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
@@ -98,7 +97,7 @@
                               </Label>
                            </children>
                         </GridPane>
-                        <GridPane GridPane.rowIndex="2">
+                        <GridPane GridPane.rowIndex="1">
                            <columnConstraints>
                               <ColumnConstraints maxWidth="140.0" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
