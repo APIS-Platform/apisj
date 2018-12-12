@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="580.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMaskingController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="580.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMaskingController">
    <children>
       <GridPane layoutX="134.0" layoutY="179.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -92,8 +92,8 @@
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" valignment="TOP" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints />
                                                 <RowConstraints vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
@@ -171,8 +171,8 @@
                                              <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" valignment="TOP" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints />
                                                 <RowConstraints vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
@@ -257,7 +257,7 @@
                                                    <rowConstraints>
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
@@ -429,7 +429,7 @@
                                                       <AnchorPane GridPane.rowIndex="8">
                                                          <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       </AnchorPane>
-                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="6">
+                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" GridPane.rowIndex="6">
                                                          <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       </AnchorPane>
                                                       <AnchorPane GridPane.rowIndex="10">
