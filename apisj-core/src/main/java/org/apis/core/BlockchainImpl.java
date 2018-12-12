@@ -26,6 +26,7 @@ import org.apis.config.CommonConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransaction;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.db.*;
@@ -57,7 +58,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
-import static java.lang.Math.max;
 import static java.lang.Runtime.getRuntime;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
@@ -511,44 +511,33 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
         long now = TimeUtils.getRealTimestamp();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getConstants();
 
         // 직전 블록 생성 시간에서 블록타임만큼 지나지 않았다면 새로운 블록을 생성할 시간에 도달하지 않았으므로 스킵
-        if (now - parent.getTimestamp()*1000L < config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getConstants().getBLOCK_TIME_MS())
+        if (now - parent.getTimestamp()*1000L < constants.getBLOCK_TIME_MS()) {
             return null;
+        }
 
         //Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
-        BigInteger totalGasUsed = BigInteger.ZERO;
+        final long blockGasLimit = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getBlockGasLimit().longValue();
+        EstimateTransaction estimator = EstimateTransaction.getInstance();
+        long totalGasUsed = 0;
         List<Transaction> addingTxs = new ArrayList<>();
         for(Transaction tx : txs) {
-            /*TransactionExecutor executor = new TransactionExecutor(
-                    tx,
-                    config.getMinerCoinbase(),
-                    track,
-                    blockStore,
-                    programInvokeFactory,
-                    parent)
-                    .setLocalCall(true);
+            totalGasUsed += estimator.estimate(tx, 0, 10_000L).getGasUsed();
 
-            executor.init();
-            executor.execute();
-            executor.go();
-            executor.finalization();*/
-
-            if(totalGasUsed.add(BIUtil.toBI(tx.getGasLimit())).compareTo(BIUtil.toBI(parent.getGasLimit())) < 0) {
+            if(totalGasUsed < blockGasLimit) {
                 addingTxs.add(tx);
             } else {
                 break;
             }
-            totalGasUsed = totalGasUsed.add(ByteUtil.bytesToBigInteger(tx.getGasLimit()));
-
         }
-
 
         long timestamp = now/1000L;
 
-        //return createNewBlock(parent, addingTxs, timestamp);
-        return createNewBlock(parent, txs, timestamp);
+        return createNewBlock(parent, addingTxs, timestamp);
+        //return createNewBlock(parent, txs, timestamp);
     }
 
 

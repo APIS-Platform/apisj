@@ -20,8 +20,10 @@ public class EstimateTransaction {
 
     private static EstimateTransaction instance = null;
 
-    private static final long DEFAULT_GAS_LIMIT = 5_000_000L;
+    private static final long DEFAULT_GAS_LIMIT = 50_000_000L;
     private static final BigInteger DEFAULT_VALUE = BigInteger.ZERO;
+    private static final int DEFAULT_MAX_REPEAT = 50;
+    private static final long DEFAULT_MIN_OFFSET = 1_000L;
 
     private Logger logger = LoggerFactory.getLogger("estimate");
 
@@ -77,7 +79,7 @@ public class EstimateTransaction {
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, CallTransaction.Function func, Object ... args) {
         return getExecutor(repo, blockStore, callBlock, from, to, value, DEFAULT_GAS_LIMIT, func.encode(args));
     }
-    public TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, CallTransaction.Function func, Object ... args) {
+    TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, CallTransaction.Function func, Object... args) {
         return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, func.encode(args));
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, long gasLimit, byte[] data) {
@@ -96,6 +98,17 @@ public class EstimateTransaction {
 
 
     public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx) {
+        return estimate(repo, blockStore, callBlock, tx, DEFAULT_MAX_REPEAT, DEFAULT_MIN_OFFSET);
+    }
+
+    public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx, int maxRepeat, long minOffset) {
+        if(maxRepeat < 0) {
+            maxRepeat = DEFAULT_MAX_REPEAT;
+        }
+        if(minOffset < 0) {
+            minOffset = DEFAULT_MIN_OFFSET;
+        }
+
         TransactionExecutor executor = getExecutor(repo, blockStore, callBlock, tx);
         TransactionReceipt receipt = executor.getReceipt();
 
@@ -106,9 +119,9 @@ public class EstimateTransaction {
         boolean lastSuccess = isSuccess;
 
         TransactionExecutor lastSuccessExecutor = executor;
-        long lastSuccessGasUsed = 0;
+        long lastSuccessGasUsed = executor.getGasUsed();
 
-        for(int i = 0; i < 50 && isSuccess; i++) {
+        for(int i = 0; i < maxRepeat && isSuccess; i++) {
 
             executor = getExecutor(repo, blockStore, callBlock, tx.getSender(), tx.getReceiveAddress(), ByteUtil.bytesToBigInteger(tx.getValue()), newGasLimit, tx.getData());
             receipt = executor.getReceipt();
@@ -117,7 +130,7 @@ public class EstimateTransaction {
                 lastSuccessExecutor = executor;
                 lastSuccessGasUsed = newGasLimit;
 
-                if(i == 0 || offset < 1_00) {
+                if(i == 0 || offset < minOffset) {
                     break;
                 } else {
                     newGasLimit -= offset;
@@ -156,11 +169,15 @@ public class EstimateTransaction {
     }
 
     public EstimateTransactionResult estimate(Transaction tx) {
+        return estimate(tx, -1, -1);
+    }
+
+    public EstimateTransactionResult estimate(Transaction tx, int maxRepeat, long maxOffset) {
         Block callBlock = apis.getBlockchain().getBestBlock();
         Repository repo = ((Repository)apis.getRepository()).getSnapshotTo(callBlock.getStateRoot());
         BlockStore blockStore = apis.getBlockchain().getBlockStore();
 
-        return estimate(repo, blockStore, callBlock, tx);
+        return estimate(repo, blockStore, callBlock, tx, maxRepeat, maxOffset);
     }
 
 
