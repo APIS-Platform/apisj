@@ -56,7 +56,7 @@ public class TransactionNativeController extends BaseViewController {
     @FXML private TextField searchTextField;
     @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
     @FXML private GridPane bgBannerPane;
-    @FXML private ImageView bgBanner, iconDownDown;
+    @FXML private ImageView iconDownDown;
     @FXML private VBox bannerDetailList;
     @FXML private ScrollPane bannerDetailScroll;
 
@@ -123,9 +123,6 @@ public class TransactionNativeController extends BaseViewController {
                 e.printStackTrace();
             }
         }
-
-        bgBanner.fitWidthProperty().bind(bgBannerPane.widthProperty());
-        bgBanner.fitHeightProperty().bind(bgBannerPane.heightProperty());
 
         drawBannerDetailNode();
 

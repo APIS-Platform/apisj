@@ -58,7 +58,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
-    @FXML private ImageView selectContractIcon, inputContractIcon;
+    @FXML private ImageView selectContractIcon, inputContractIcon, frozenImg;
     @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
@@ -86,6 +86,7 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         ImageManager.imageViewRectangle30(selectContractIcon);
         ImageManager.imageViewRectangle30(inputContractIcon);
+        frozenImg.setVisible(false);
 
         AppManager.getInstance().settingTextFieldStyle(nonceTextField);
         AppManager.getInstance().settingTextFieldStyle(contractAddressTextField);
@@ -620,6 +621,14 @@ public class SmartContractUpdaterController extends BaseViewController {
                 contractAliasLabel.setText(model.getName());
                 contractAddressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                if(AppManager.getInstance().isFrozen(contractAddressLabel.getText())) {
+                    frozenImg.setVisible(true);
+                    StyleManager.fontColorStyle(contractAddressLabel, StyleManager.AColor.C4871ff);
+                } else {
+                    frozenImg.setVisible(false);
+                    StyleManager.fontColorStyle(contractAddressLabel, StyleManager.AColor.C999999);
+                }
 
                 Image image = ImageManager.getIdenticons(contractAddressLabel.textProperty().get());
                 if (image != null) {

@@ -16,7 +16,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractReadWriteModifyController">
    <children>
-      <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          </columnConstraints>
@@ -93,7 +93,7 @@
                                     <Image url="@../../image/ic_circle_grey@2x.png" />
                                  </image>
                               </ImageView>
-                              <TextField fx:id="contractAddressTextField" promptText="Contract Address" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.columnIndex="3">
+                              <TextField fx:id="contractAddressTextField" editable="false" promptText="Contract Address" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.columnIndex="3">
                                  <padding>
                                     <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
                                  </padding>

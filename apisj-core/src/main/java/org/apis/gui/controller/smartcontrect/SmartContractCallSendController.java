@@ -52,7 +52,7 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
     @FXML private Label pleaseClick1, pleaseClick2, pleaseClick3;
-    @FXML private ImageView icon, cSelectHeadImg;
+    @FXML private ImageView icon, cSelectHeadImg, frozenImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
@@ -92,6 +92,7 @@ public class SmartContractCallSendController extends BaseViewController {
         });
 
         warningLabel.setVisible(false);
+        frozenImg.setVisible(false);
     }
 
     public void languageSetting() {
@@ -261,10 +262,12 @@ public class SmartContractCallSendController extends BaseViewController {
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
 
-                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%" + AppManager.getInstance().isFrozen("ca8c56fdf8364143aeed047e56a87810f2ccda33"));
-
                 if(AppManager.getInstance().isFrozen(addressLabel.getText())) {
+                    frozenImg.setVisible(true);
                     StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
+                } else {
+                    frozenImg.setVisible(false);
+                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
                 }
 
                 Image image = IdenticonGenerator.createIcon(addressLabel.textProperty().get());

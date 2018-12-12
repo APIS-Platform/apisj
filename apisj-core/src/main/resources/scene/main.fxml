@@ -263,7 +263,7 @@
                               </GridPane>
                               <AnchorPane fx:id="layerPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane fx:id="layerPopupAnchor2" AnchorPane.rightAnchor="-52.0" AnchorPane.topAnchor="0.0">
+                                    <AnchorPane fx:id="layerPopupAnchor2" AnchorPane.rightAnchor="-58.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <AnchorPane layoutY="12.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0">
                                              <children>

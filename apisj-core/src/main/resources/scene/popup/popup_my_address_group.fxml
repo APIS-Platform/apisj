@@ -17,7 +17,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressGroupController">
    <children>
-      <GridPane layoutX="20.0" layoutY="20.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane layoutX="20.0" layoutY="20.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          </columnConstraints>
@@ -74,7 +74,7 @@
                         <Label fx:id="addGroupLabel" styleClass="font_semibold_12" text="Add Group" textFill="#2b2b2b" />
                         <AnchorPane GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #fafafa;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #ffffff;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="-1.0" />
                                  </padding></TextField>

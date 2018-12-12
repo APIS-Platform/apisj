@@ -3,7 +3,6 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -46,7 +45,7 @@
                 <RowConstraints fillHeight="false" prefHeight="340.0" valignment="TOP" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <AnchorPane style="-fx-background-color: fafafa; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                  <AnchorPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                      <children>
                         <GridPane AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                           <columnConstraints>
@@ -308,19 +307,7 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="163.0" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane>
-                           <children>
-                              <ImageView fx:id="bgBanner" fitHeight="163.0" fitWidth="750.0" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <image>
-                                    <Image url="@../../image/bg_750x140.png" />
-                                 </image>
-                                 <viewport>
-                                    <Rectangle2D />
-                                 </viewport>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                        <GridPane fx:id="bgBannerPane">
+                        <GridPane fx:id="bgBannerPane" style="-fx-background-color: #a61c1c;" styleClass="border_radius_4444">
                           <columnConstraints>
                               <ColumnConstraints fillWidth="false" halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />

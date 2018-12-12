@@ -104,7 +104,7 @@ public class PopupTokenAddController extends BasePopupController {
                     tokenAddressTextField.requestFocus();
                     event.consume();
                 }else if(event.getCode() == KeyCode.ENTER){
-                    tokenAddressTextField.requestFocus();
+                    addBtnClicked();
                     event.consume();
                 }
             }
