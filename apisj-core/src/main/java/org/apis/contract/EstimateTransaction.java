@@ -36,6 +36,14 @@ public class EstimateTransaction {
         return instance;
     }
 
+    /**
+     * getInstance(apis) 메서드를 먼저 호출하지 않았다면 Null이 반환될 수 있다.
+     * @return null or EstimateTransaction object
+     */
+    public static EstimateTransaction getInstance() {
+        return instance;
+    }
+
     private EstimateTransaction(EthereumImpl apis) {
         this.apis = apis;
     }
@@ -69,7 +77,7 @@ public class EstimateTransaction {
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, CallTransaction.Function func, Object ... args) {
         return getExecutor(repo, blockStore, callBlock, from, to, value, DEFAULT_GAS_LIMIT, func.encode(args));
     }
-    private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, CallTransaction.Function func, Object ... args) {
+    public TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, CallTransaction.Function func, Object ... args) {
         return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, func.encode(args));
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, long gasLimit, byte[] data) {
