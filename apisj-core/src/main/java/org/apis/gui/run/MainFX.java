@@ -48,6 +48,9 @@ public class MainFX extends Application  {
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14 );
 
+        Font.loadFont(getClass().getClassLoader().getResource("font/Barlow-Regular.ttf").toString(), 14);
+        Font.loadFont(getClass().getClassLoader().getResource("font/Barlow-SemiBold.ttf").toString(), 14);
+
         // TODO : 사용가능한 폰트 출력
 //        for(String fontName : javafx.scene.text.Font.getFamilies()){
 //            System.out.println("fontName : "+fontName);
