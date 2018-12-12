@@ -51,6 +51,7 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
+    @FXML private Label noSelectAFunctionTitle, noSelectAFunctionSubTitle;
     @FXML private ImageView icon, cSelectHeadImg, frozenImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -101,6 +102,9 @@ public class SmartContractCallSendController extends BaseViewController {
 
         cSelectHeadText.textProperty().bind(StringManager.getInstance().common.selectFunction);
         warningLabel.textProperty().bind(StringManager.getInstance().common.contractWarning);
+
+        noSelectAFunctionTitle.textProperty().bind(StringManager.getInstance().smartContract.noSelectAFunctionTitle);
+        noSelectAFunctionSubTitle.textProperty().bind(StringManager.getInstance().smartContract.noSelectAFunctionSubTitle);
     }
 
 

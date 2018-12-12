@@ -232,12 +232,12 @@ public class WalletListHeadController extends BaseViewController {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("MINING");
                 this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else if (itemModel.isMasterNode()) {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("MASTERNODE");
                 this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("");

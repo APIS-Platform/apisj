@@ -200,7 +200,7 @@
                   </Label>
                </children>
             </GridPane>
-            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-border-color: #d8d8d8; -fx-background-color: #efefef;" styleClass="border_radius_4444" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
+            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-border-color: #d8d8d8; -fx-background-color: #efefef;" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
                <graphic>
                   <ImageView fx:id="icAddressMasking" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -217,8 +217,12 @@
                <padding>
                   <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="border_radius_4444" />
+                  <String fx:value="font_semibold_12" />
+               </styleClass>
             </Label>
-            <Label fx:id="btnTransfer" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" text="Transfer" textFill="#999999" GridPane.columnIndex="5">
+            <Label fx:id="btnTransfer" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" text="Transfer" textFill="#999999" GridPane.columnIndex="5">
                <padding>
                   <Insets bottom="8.0" left="20.0" right="16.0" top="8.0" />
                </padding>
@@ -232,6 +236,10 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <styleClass>
+                  <String fx:value="border_radius_4444" />
+                  <String fx:value="font_semibold_12" />
+               </styleClass>
             </Label>
          </children>
       </GridPane>

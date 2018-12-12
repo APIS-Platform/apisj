@@ -223,12 +223,12 @@
                               <Insets top="33.0" />
                            </GridPane.margin>
                         </ImageView>
-                        <Label styleClass="font_regular_14" text="'No Select a funtion'" textFill="#c1c1c1" GridPane.rowIndex="1">
+                        <Label fx:id="noSelectAFunctionTitle" styleClass="font_regular_14" text="'No Select a function'" textFill="#c1c1c1" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label text="Please click a 'Select a function' button" textFill="#d8d8d8" GridPane.rowIndex="2">
+                        <Label fx:id="noSelectAFunctionSubTitle" text="Please click a 'Select a function' button" textFill="#d8d8d8" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets top="8.0" />
                            </GridPane.margin>
