@@ -17,16 +17,6 @@
  */
 package org.apis.core;
 
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
-import static org.apis.util.ByteUtil.ZERO_BYTE_ARRAY;
-import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
-
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.security.SignatureException;
-import java.util.Arrays;
-
 import org.apis.config.BlockchainNetConfig;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
@@ -35,10 +25,21 @@ import org.apis.crypto.ECKey.MissingPrivateKeyException;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.MemSizeEstimator;
 import org.apis.util.*;
+import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.BigIntegers;
 import org.spongycastle.util.encoders.Hex;
+
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.security.SignatureException;
+import java.util.Arrays;
+
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
+import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
+import static org.apis.util.ByteUtil.ZERO_BYTE_ARRAY;
 
 /**
  * A transaction (formally, T) is a single cryptographically
@@ -494,13 +495,13 @@ public class Transaction {
                     "... (" + data.length + " bytes)";
         }
         return "TransactionData [" + "hash=" + ByteUtil.toHexString(hash) +
-                "  nonce=" + ByteUtil.toHexString(nonce) +
-                ", gasPrice=" + ByteUtil.toHexString(gasPrice) +
-                ", gas=" + ByteUtil.toHexString(gasLimit) +
+                "  nonce=" + ByteUtil.bytesToBigInteger(nonce) +
+                ", gasPrice=" + ApisUtil.readableApis(ByteUtil.bytesToBigInteger(gasPrice), ApisUtil.Unit.nAPIS, ',', true) + " nAPIS" +
+                ", gas=" + ByteUtil.bytesToBigInteger(gasLimit) +
                 ", receiveAddress=" + ByteUtil.toHexString(receiveAddress) +
                 ", receiveAddressMask=" + new String(receiveMask, Charset.forName("UTF-8")) +
                 ", sendAddress=" + ByteUtil.toHexString(getSender())  +
-                ", value=" + ByteUtil.toHexString(value) +
+                ", value=" + ApisUtil.readableApis(ByteUtil.bytesToBigInteger(value), ',', true) + " APIS" +
                 ", data=" + dataS +
                 ", signatureV=" + (signature == null ? "" : signature.v) +
                 ", signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) +
