@@ -20,6 +20,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 
@@ -95,15 +96,7 @@ public class TransferController extends BaseViewController {
 
                 String fromAddress = transferApisController.getAddress();
                 String toAddress = transferApisController.getReceiveAddress();
-
-                if(!AddressUtil.isAddress(toAddress)){
-                    String address = AppManager.getInstance().getAddressWithMask(toAddress);
-                    if(address != null && toAddress.length() > 0){
-                        toAddress = address;
-                    }else{
-                        toAddress = null;
-                    }
-                }
+                byte[] toMask = new byte[0];
 
                 if(fromAddress == null || fromAddress.length() == 0
                         || toAddress == null || toAddress.length() == 0
@@ -111,15 +104,24 @@ public class TransferController extends BaseViewController {
                     return;
                 }
 
+                if(!AddressUtil.isAddress(toAddress)){
+                    String address = AppManager.getInstance().getAddressWithMask(toAddress);
+                    if(address != null && toAddress.length() > 0){
+                        toMask = toAddress.getBytes(Charset.forName("UTF-8"));
+                        toAddress = address;
+                    }
+                }
+
                 BigInteger gasPrice = transferApisController.getGasPrice();
                 BigInteger gasLimit = transferApisController.getGasLimit();
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
-                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), null);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), toMask, null);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
+                        System.out.println("transferApisController.getReceiveAddress() : "+transferApisController.getReceiveAddress());
                         DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferApisController.getReceiveAddress()) , AppManager.getInstance().getAliasWithAddress(transferApisController.getReceiveAddress() ));
                     }
                     @Override
@@ -169,7 +171,7 @@ public class TransferController extends BaseViewController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
-                controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(tokenAddress), functionCallBytes);
+                controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(tokenAddress), new byte[0], functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
@@ -228,7 +230,7 @@ public class TransferController extends BaseViewController {
 
         // 전송버튼 색상 변경
         String recevingAddress = transferApisController.getReceiveAddress();
-        if(!AddressUtil.isAddress(recevingAddress)){
+        if(recevingAddress != null && recevingAddress.length() > 0 && !AddressUtil.isAddress(recevingAddress)){
             String address = AppManager.getInstance().getAddressWithMask(recevingAddress);
             if(address != null && address.length() > 0){
                 recevingAddress = address;
@@ -337,6 +339,7 @@ public class TransferController extends BaseViewController {
         BigInteger value = transferApisController.getAmount();
         String sAddr = transferApisController.getAddress();
         String sToAddress = transferApisController.getReceiveAddress();
+        byte[] toMask = new byte[0];
 
         BigInteger gas = new BigInteger(sGasPrice);
         Transaction tx = null;
@@ -346,10 +349,9 @@ public class TransferController extends BaseViewController {
                 && value.compareTo(BigInteger.ZERO) >= 0){
 
             if (sToAddress.indexOf("@") >= 0) {
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), sGasLimit, sToAddress, new byte[0], password, knowledgeKey);
-            } else {
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), new byte[0], password, knowledgeKey);
+                toMask = AppManager.getInstance().getMaskWithAddress(sToAddress).getBytes(Charset.forName("UTF-8"));
             }
+            tx = AppManager.getInstance().generateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), toMask, new byte[0], password, knowledgeKey);
 
             if(tx != null) {
                 byte[] txHash = tx.getHash();
@@ -389,9 +391,9 @@ public class TransferController extends BaseViewController {
         args[0] = transferTokenController.getReceveAddress(); // to address
         args[1] = transferTokenController.getAmount(); // token amount
 
-        byte[] toAddress = org.spongycastle.util.encoders.Hex.decode(tokenAddress);
+        byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
+        Transaction tx = AppManager.getInstance().generateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, new byte[0], functionCallBytes,  password, knowledgeKey);
 
         // 미리 트랜잭션 발생시켜 보기
         EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);

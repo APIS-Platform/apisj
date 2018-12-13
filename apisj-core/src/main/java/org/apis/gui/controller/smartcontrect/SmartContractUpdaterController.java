@@ -50,11 +50,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     private final int CONTRACT_ADDRESS_TYPE_INPUT = 1;
     private int contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
 
-    private final int TAB_SOLIDITY_CONTRACT = 0;
-    private final int TAB_CONTRACT_BYTE_CODE = 1;
-    private int selectTabIndex = TAB_SOLIDITY_CONTRACT;
-
-    @FXML private GridPane solidityTextGrid, solidityCodeTabPane, byteCodeTabPane;
+    @FXML private GridPane solidityTextGrid, solidityCodeTabPane;
     @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
@@ -67,7 +63,6 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private TabMenuController tabMenuController;
     @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
 
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
@@ -96,13 +91,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         // Contract Constructor Address Listener
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
         contractAddressTextField.textProperty().addListener(ctrtKeyListener);
-        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
-            @Override
-            public void onMouseClicked(String text, int index) {
-                setSelectedTab(index);
-            }
-        });
-        tabMenuController.selectedMenu(contractAddressType);
+
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -197,7 +186,6 @@ public class SmartContractUpdaterController extends BaseViewController {
     }
 
     public void languageSetting() {
-        tabMenuController.addItem(StringManager.getInstance().smartContract.solidityCode, TAB_SOLIDITY_CONTRACT);
         btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
         selectContractToggleButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
         selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
@@ -218,19 +206,11 @@ public class SmartContractUpdaterController extends BaseViewController {
         long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
         nonceTextField.setText(Long.toString(nonce));
 
+//        if(nonce ){
+////
+////        }
     }
 
-    public void setSelectedTab(int index) {
-        this.selectTabIndex = index;
-        if(index == TAB_SOLIDITY_CONTRACT) {
-            solidityCodeTabPane.setVisible(true);
-            byteCodeTabPane.setVisible(false);
-
-        } else if(index == TAB_CONTRACT_BYTE_CODE) {
-            solidityCodeTabPane.setVisible(false);
-            byteCodeTabPane.setVisible(true);
-        }
-    }
     public void sendTransfer() {
         if(isReadyTransfer()) {
             String from = selectWalletController.getAddress();
@@ -242,7 +222,7 @@ public class SmartContractUpdaterController extends BaseViewController {
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
-            controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
+            controller.setData(from, value, gasPrice, gasLimit, to, new byte[0], functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success(Transaction tx) {
@@ -645,8 +625,15 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] contractAddress = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
         byte[] data = getContractByteCode();
         long preGasUsed = 0;
-        if(data.length > 0) {
-            preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+        if(data.length > 0 && address.length > 0 && contractAddress.length > 0) {
+            try {
+                preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+                if(preGasUsed < 0){
+                    preGasUsed = 0;
+                }
+            }catch (Exception e){
+                preGasUsed = 0;
+            }
         }
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
@@ -708,33 +695,29 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
 
-        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
-        }else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE){
-            byteCode = Hex.decode(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","").trim());
-        }
+        System.out.println("from : " +from);
+        System.out.println("contractAddr : " +ByteUtil.toHexString(contractAddr));
+        System.out.println("contractSource : " +contractSource);
+        System.out.println("nonce : " +ByteUtil.bytesToBigInteger(nonce).toString());
+        byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
+
+        System.out.println("contractAddr : "+contractAddr.length);
+        System.out.println("nonce : "+nonce.length);
+        System.out.println("byteCode : "+byteCode.length);
 
         return ByteUtil.merge(contractAddr, nonce, byteCode);
     }
 
     public String getAbi(){
-        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            return metadata.abi;
-        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            return abiTextArea.getText().trim();
-        }
-        return null;
+        return metadata.abi;
     }
 
     private String getContractName(){
-        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            if(contractCombo.getSelectionModel().getSelectedItem() != null){
-                return contractCombo.getSelectionModel().getSelectedItem().toString();
-            }else{
-                return "";
-            }
+        if(contractCombo.getSelectionModel().getSelectedItem() != null){
+            return contractCombo.getSelectionModel().getSelectedItem().toString();
+        }else{
+            return "";
         }
-        return "";
     }
 
     public BigInteger getAmount() {
@@ -784,21 +767,11 @@ public class SmartContractUpdaterController extends BaseViewController {
         }
 
         // 데이터 입력 여부 체크
-        if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            String data = solidityTextArea.getText();
-            String gasLimit = gasCalculatorController.getGasLimit().toString();
-            if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
-            }else{
-                return false;
-            }
-        }
-        else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
-            String byteCode = byteCodeTextArea.getText();
-            String abi = abiTextArea.getText();
-            if(byteCode != null && byteCode.length() > 0 && abi != null && abi.length() > 0){
-            }else{
-                return false;
-            }
+        String data = solidityTextArea.getText();
+        String gasLimit = gasCalculatorController.getGasLimit().toString();
+        if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
+        }else{
+            return false;
         }
 
         return true;

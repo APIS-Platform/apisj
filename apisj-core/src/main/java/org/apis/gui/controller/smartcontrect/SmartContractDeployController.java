@@ -198,7 +198,7 @@ public class SmartContractDeployController extends BaseViewController {
             System.out.println("data ==> \n"+ByteUtil.toHexString(data));
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
-            controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
+            controller.setData(address, value, gasPrice, gasLimit, new byte[0], new byte[0], data);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success(Transaction tx) {
