@@ -579,6 +579,7 @@ public class StringManager {
         public SimpleStringProperty updateCaution = new SimpleStringProperty();
         public SimpleStringProperty noSelectAFunctionTitle = new SimpleStringProperty();
         public SimpleStringProperty noSelectAFunctionSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty creatorNotMatch = new SimpleStringProperty();
 
 
 
@@ -598,7 +599,7 @@ public class StringManager {
             readWriteContract.set(StringManager.this.getString("smart_contract_read_write_contract", "Read / Write Contract"));
             solidityCode.set(StringManager.this.getString("smart_contract_solidity_code", "Solidity Code"));
             startCompileButton.set(StringManager.this.getString("smart_contract_start_compile_button", "Start to compile"));
-            selectContractConstructor.set(StringManager.this.getString("smart_contract_select_contract_constructor", "Contract Constructor Address"));
+            selectContractConstructor.set(StringManager.this.getString("smart_contract_select_contract_creator", "Contract Creator Address"));
             nonce.set(StringManager.this.getString("smart_contract_nonce_label", "Nonce value at the deployment of contract"));
             pleaseClick1.set(StringManager.this.getString("smart_contract_please_click_1", "Please click a"));
             pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
@@ -606,6 +607,7 @@ public class StringManager {
             updateCaution.set(StringManager.this.getString("smart_contract_update_caution", "If you execute, the code will be modified."));
             noSelectAFunctionTitle.set(StringManager.this.getString("smart_contract_no_select_function_title", "'No Select a function'"));
             noSelectAFunctionSubTitle.set(StringManager.this.getString("smart_contract_no_select_function_sub_title", "Please click a 'Select a function' button"));
+            creatorNotMatch.set(StringManager.this.getString("smart_contract_creator_not_match", "Address of contract creator does not match."));
         }
     }
 

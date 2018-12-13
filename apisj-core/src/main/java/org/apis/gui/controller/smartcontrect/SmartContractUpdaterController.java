@@ -190,9 +190,22 @@ public class SmartContractUpdaterController extends BaseViewController {
         if(nonce >= 0){
             solidityCodeTabPane.setVisible(true);
             solidityCodeTabPane.setPrefHeight(-1);
+
+            cautionLabel.textProperty().unbind();
+            cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.updateCaution);
         }else{
+            nonceTextField.setText("");
+
             solidityCodeTabPane.setVisible(false);
             solidityCodeTabPane.setPrefHeight(0);
+
+            if(contractAddress.length > 0){
+                cautionLabel.textProperty().unbind();
+                cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.creatorNotMatch);
+            }else{
+                cautionLabel.textProperty().unbind();
+                cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.updateCaution);
+            }
         }
     }
 
