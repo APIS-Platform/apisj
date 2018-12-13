@@ -201,6 +201,11 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     itemController.setTxtColor("#b01e1e");
                     itemController.setOnClickCopyText(true,fromValue);
                     contentsBody = fromValue;
+                    if(contentsBody != null && !contentsBody.equals("")) {
+                        if (AppManager.getInstance().isFrozen(contentsBody)) {
+                            itemController.addFrozen();
+                        }
+                    }
                     mask = AppManager.getInstance().getMaskWithAddress(fromValue);
                     if(mask != null && mask.length() > 0){
                         contentsBody = contentsBody + " ("+mask+")";
@@ -213,6 +218,11 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     itemController.setTxtColor("#b01e1e");
                     itemController.setOnClickCopyText(true,toValue);
                     contentsBody = toValue;
+                    if(contentsBody != null && !contentsBody.equals("")) {
+                        if (AppManager.getInstance().isFrozen(contentsBody)) {
+                            itemController.addFrozen();
+                        }
+                    }
                     mask = AppManager.getInstance().getMaskWithAddress(toValue);
                     if(mask != null && mask.length() > 0){
                         contentsBody = contentsBody + " ("+mask+")";

@@ -4,9 +4,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -16,6 +19,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -127,6 +131,17 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addFrozen() {
+        Image frozen = new Image("image/ic_freeze@2x.png");
+        ImageView frozenImg = new ImageView(frozen);
+
+        frozenImg.setFitWidth(13);
+        frozenImg.setFitHeight(14);
+        contentsBodyList.getChildren().add(frozenImg);
+        contentsBodyList.setMargin(frozenImg, new Insets(4, 4, 0, 4));
+        setTxtColor(StyleManager.AColor.C4871ff);
     }
 
 }

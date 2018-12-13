@@ -16,6 +16,7 @@ import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -36,7 +37,7 @@ public class TransactionNativeListController extends BaseViewController {
     @FXML
     private Label blockNumber, hash, from, to, state, value, fee, time;
     @FXML
-    private ImageView arrowImg;
+    private ImageView arrowImg, fromFrozenImg, toFrozenImg;
 
     private Image failArrowImg, pendingArrowImg, successArrowImg;
     private TransactionRecord record;
@@ -96,6 +97,10 @@ public class TransactionNativeListController extends BaseViewController {
                 setTime(strTime);
             }});
 
+        fromFrozenImg.setFitWidth(0.01);
+        toFrozenImg.setFitWidth(0.01);
+        fromFrozenImg.setVisible(false);
+        toFrozenImg.setVisible(false);
     }
 
     @FXML
@@ -235,6 +240,16 @@ public class TransactionNativeListController extends BaseViewController {
         }else{
             this.from.setText(AddressUtil.getShortAddress(from, 8));
         }
+
+        if(AppManager.getInstance().isFrozen(from)) {
+            fromFrozenImg.setFitWidth(13);
+            fromFrozenImg.setVisible(true);
+            StyleManager.fontColorStyle(this.from, StyleManager.AColor.C4871ff);
+        } else {
+            fromFrozenImg.setFitWidth(0.01);
+            fromFrozenImg.setVisible(false);
+            StyleManager.fontColorStyle(this.from, StyleManager.AColor.Cb01e1e);
+        }
     }
 
     public String getTo() {
@@ -248,6 +263,16 @@ public class TransactionNativeListController extends BaseViewController {
             this.to.setText(strToMask);
         }else{
             this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+        }
+
+        if(AppManager.getInstance().isFrozen(to)) {
+            toFrozenImg.setFitWidth(13);
+            toFrozenImg.setVisible(true);
+            StyleManager.fontColorStyle(this.to, StyleManager.AColor.C4871ff);
+        } else {
+            toFrozenImg.setFitWidth(0.01);
+            toFrozenImg.setVisible(false);
+            StyleManager.fontColorStyle(this.to, StyleManager.AColor.Cb01e1e);
         }
     }
 
