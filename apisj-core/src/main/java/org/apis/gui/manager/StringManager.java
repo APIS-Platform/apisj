@@ -577,6 +577,8 @@ public class StringManager {
         public SimpleStringProperty pleaseClick2 = new SimpleStringProperty();
         public SimpleStringProperty pleaseClick3 = new SimpleStringProperty();
         public SimpleStringProperty updateCaution = new SimpleStringProperty();
+        public SimpleStringProperty noSelectAFunctionTitle = new SimpleStringProperty();
+        public SimpleStringProperty noSelectAFunctionSubTitle = new SimpleStringProperty();
 
 
 
@@ -602,6 +604,8 @@ public class StringManager {
             pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
             pleaseClick3.set(StringManager.this.getString("smart_contract_please_click_3", "button"));
             updateCaution.set(StringManager.this.getString("smart_contract_update_caution", "If you execute, the code will be modified."));
+            noSelectAFunctionTitle.set(StringManager.this.getString("smart_contract_no_select_function_title", "'No Select a function'"));
+            noSelectAFunctionSubTitle.set(StringManager.this.getString("smart_contract_no_select_function_sub_title", "Please click a 'Select a function' button"));
         }
     }
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
    <children>
       <GridPane styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -41,27 +41,65 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#b01e1e" GridPane.columnIndex="3">
+            <GridPane GridPane.columnIndex="3">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#b01e1e">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+                  <ImageView fx:id="fromFrozenImg" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                     <image>
+                        <Image url="@../../image/ic_freeze@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets left="4.0" right="4.0" />
+                     </GridPane.margin>
+                  </ImageView>
+               </children>
+            </GridPane>
             <ImageView fx:id="arrowImg" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                <image>
                   <Image url="@../../image/ic_pending_arrow@2x.png" />
                </image>
             </ImageView>
-            <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#b01e1e" GridPane.columnIndex="5">
+            <GridPane GridPane.columnIndex="5">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#b01e1e">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+                  <ImageView fx:id="toFrozenImg" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="4.0" right="4.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../../image/ic_freeze@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </GridPane>
             <GridPane GridPane.columnIndex="6" GridPane.halignment="RIGHT">
                <GridPane.margin>
                   <Insets />

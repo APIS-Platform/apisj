@@ -45,6 +45,7 @@ public class StyleManager {
         public static String Ce2e2e2 = "#e2e2e2";
         public static String Cefefef = "#efefef";
         public static String Cc1c1c1 = "#c1c1c1";
+        public static String C910000 = "#910000";
 
     }
 
@@ -55,6 +56,7 @@ public class StyleManager {
         public static JavaFXStyle Size16 = new JavaFXStyle().add("-fx-font-size", "16px");
         public static JavaFXStyle Size18 = new JavaFXStyle().add("-fx-font-size", "18px");
         public static JavaFXStyle Size20 = new JavaFXStyle().add("-fx-font-size", "20px");
+        public static JavaFXStyle Size32 = new JavaFXStyle().add("-fx-font-size", "32px");
     }
 
     public static class Standard {
@@ -71,6 +73,18 @@ public class StyleManager {
     public static class Hex {
         public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Roboto Mono'");
         public static JavaFXStyle Medium = new JavaFXStyle().add("-fx-font-family", "'Roboto Mono Medium'");
+    }
+
+    public static class Barlow{
+        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Barlow'");
+        public static JavaFXStyle Regular12 = new JavaFXStyle(Regular).add(AFontSize.Size12);
+        public static JavaFXStyle Regular14 = new JavaFXStyle(Regular).add(AFontSize.Size14);
+        public static JavaFXStyle Regular32 = new JavaFXStyle(Regular).add(AFontSize.Size32);
+
+
+        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "'Barlow SemiBold'");
+        public static JavaFXStyle SemiBold12 = new JavaFXStyle(SemiBold).add(AFontSize.Size12);
+        public static JavaFXStyle SemiBold14 = new JavaFXStyle(SemiBold).add(AFontSize.Size14);
     }
 }
 

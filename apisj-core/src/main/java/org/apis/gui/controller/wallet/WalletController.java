@@ -145,13 +145,23 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold12);
 
+        StyleManager.fontStyle(totalMainNatureLabel, StyleManager.Barlow.Regular32);
+        StyleManager.fontStyle(totalMainUnitLabel, StyleManager.Barlow.SemiBold12);
+        StyleManager.fontStyle(totalSubNatureLabel, StyleManager.Barlow.Regular12);
+        StyleManager.fontStyle(totalSubUnitLabel, StyleManager.Barlow.Regular12);
+        StyleManager.fontStyle(totalSubTitle, StyleManager.Barlow.Regular12);
+        StyleManager.fontStyle(rewardedLabel, StyleManager.Barlow.SemiBold12);
+
         StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold12);
 
         StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(totalAssetLabel, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.Regular14);
+        StyleManager.fontStyle(totalAssetLabel, StyleManager.Barlow.SemiBold14);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Barlow.Regular14);
+        StyleManager.fontStyle(totalTitle, StyleManager.Barlow.Regular14);
+        StyleManager.fontStyle(rewarded, StyleManager.Barlow.Regular32);
+
 
         StyleManager.fontStyle(rewardEng1, StyleManager.Standard.Regular12);
         StyleManager.fontStyle(rewardEng2, StyleManager.Standard.SemiBold13);

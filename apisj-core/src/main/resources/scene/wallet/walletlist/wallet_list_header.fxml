@@ -67,7 +67,6 @@
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
                       <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
@@ -86,7 +85,7 @@
                                  </GridPane.margin></Label>
                               <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #999999;" text="MASTERNODE" textFill="#999999" GridPane.columnIndex="1">
                                  <GridPane.margin>
-                                    <Insets right="4.0" />
+                                    <Insets bottom="2.0" right="4.0" />
                                  </GridPane.margin>
                                  <padding>
                                     <Insets left="4.0" right="4.0" />
@@ -95,10 +94,13 @@
                                     <String fx:value="border_radius_4444" />
                                     <String fx:value="font_semibold_10" />
                                  </styleClass>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
                               </Label>
                            </children>
                         </GridPane>
-                        <GridPane GridPane.rowIndex="2">
+                        <GridPane GridPane.rowIndex="1">
                            <columnConstraints>
                               <ColumnConstraints maxWidth="140.0" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
@@ -122,7 +124,7 @@
                               </ImageView>
                               <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="2">
                                  <padding>
-                                    <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
+                                    <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
                                  </padding>
                                  <styleClass>
                                     <String fx:value="font_regular_10" />
@@ -166,7 +168,7 @@
                   </Label>
                </children>
             </GridPane>
-            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
+            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
                <padding>
                   <Insets bottom="8.0" left="20.0" right="16.0" top="8.0" />
                </padding>
@@ -180,8 +182,12 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <styleClass>
+                  <String fx:value="border_radius_4444" />
+                  <String fx:value="font_semibold_12" />
+               </styleClass>
             </Label>
-            <Label fx:id="btnTransfer" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" text="Transfer" textFill="#999999" GridPane.columnIndex="5">
+            <Label fx:id="btnTransfer" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" text="Transfer" textFill="#999999" GridPane.columnIndex="5">
                <padding>
                   <Insets bottom="8.0" left="20.0" right="16.0" top="8.0" />
                </padding>
@@ -195,6 +201,10 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <styleClass>
+                  <String fx:value="border_radius_4444" />
+                  <String fx:value="font_semibold_12" />
+               </styleClass>
             </Label>
             <GridPane GridPane.columnIndex="4">
               <columnConstraints>
@@ -206,7 +216,7 @@
                 <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label fx:id="valueUnit" styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
+                  <Label fx:id="valueUnit" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                     <columnConstraints>
                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -215,7 +225,7 @@
                       <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="value" styleClass="font_regular_14" text="123,456,231">
+                        <Label fx:id="value" styleClass="barlow_font_regular_14" text="123,456,231">
                            <GridPane.margin>
                               <Insets right="8.0" />
                            </GridPane.margin></Label>
