@@ -341,7 +341,7 @@ public class TransactionNativeController extends BaseViewController {
 
                 if (internalTxValue[i].compareTo(BigInteger.ZERO) == 0) {
                     internalTxValue[i] = BigInteger.ZERO;
-                    internalTxValueString[i] = internalTxValue.toString();
+                    internalTxValueString[i] = internalTxValue[i].toString();
                 } else {
                     internalTxValueString[i] = ApisUtil.readableApis(internalTxValue[i], ',', true);
                 }
