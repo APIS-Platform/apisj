@@ -6,7 +6,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -20,7 +19,7 @@
 
 <AnchorPane style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractUpdaterController">
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" />
          </columnConstraints>
@@ -186,7 +185,7 @@
                   <RowConstraints valignment="BOTTOM" />
                </rowConstraints>
                <children>
-                  <Label fx:id="nonceLabel" styleClass="font_semibold_14" text="Nonce" textFill="#2b2b2b">
+                  <Label fx:id="nonceLabel" styleClass="font_semibold_14" text="Nonce value at the deployment of contract" textFill="#2b2b2b">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -214,200 +213,145 @@
                   <Label fx:id="cautionLabel" styleClass="font_semibold_12" text="If you execute, the code will be modified." textFill="#b01e1e" GridPane.columnIndex="2" />
                </children>
             </GridPane>
-            <GridPane style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" visible="false" GridPane.rowIndex="14">
-               <columnConstraints>
-                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                  <ColumnConstraints />
-                  <ColumnConstraints hgrow="SOMETIMES" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" />
-               </rowConstraints>
+            <AnchorPane fx:id="solidityCodeTabPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" visible="false" GridPane.rowIndex="16">
                <children>
-                  <AnchorPane fx:id="sideTab11" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked">
-                     <children>
-                        <fx:include fx:id="tabMenu" source="../module/tab_menu.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </GridPane>
-            <GridPane fx:id="solidityCodeTabPane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="16">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-               </rowConstraints>
-               <children>
-                  <Label fx:id="amountToSend22" styleClass="font_regular_11" text="Solidity Code" textFill="#999999">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets bottom="4.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="amountToSend23" styleClass="font_regular_11" text="Return Data" textFill="#999999" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets bottom="4.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <GridPane GridPane.rowIndex="2">
+                  <GridPane maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" />
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <Label fx:id="btnStartCompile" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#startToCompile" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="31.0" style="-fx-background-color: #ffffff; -fx-border-color: #999999;" text="Start to compile" textFill="#999999" GridPane.columnIndex="1">
-                           <padding>
-                              <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
-                           </padding>
-                           <GridPane.margin>
-                              <Insets bottom="24.0" top="4.0" />
-                           </GridPane.margin>
-                           <styleClass>
-                              <String fx:value="border_radius_4444" />
-                              <String fx:value="font_semibold_12" />
-                           </styleClass>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Label>
-                     </children>
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </GridPane>
-                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
-                     <children>
-                        <GridPane fx:id="solidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints vgrow="SOMETIMES" />
-                           </rowConstraints>
-                           <padding>
-                              <Insets right="1.0" />
-                           </padding>
-                        </GridPane>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                     <children>
-                        <ScrollPane fitToWidth="true" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <content>
-                              <TextFlow fx:id="solidityTextFlow" style="-fx-prompt-text-fill: #999999;" styleClass="mono_font_regular_10">
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </TextFlow>
-                           </content>
-                           <styleClass>
-                              <String fx:value="listview" />
-                              <String fx:value="scroll_pane_border_transparent" />
-                           </styleClass>
-                        </ScrollPane>
-                        <AnchorPane fx:id="contractInputView" layoutX="1.0" layoutY="1.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <GridPane layoutX="16.0" layoutY="16.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" styleClass="border_radius_3333" />
-                                    <VBox fx:id="contractMethodList" maxHeight="-Infinity" minHeight="-Infinity" spacing="8.0" GridPane.rowIndex="2" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                        <Label fx:id="textareaMessage" styleClass="mono_font_regular_10" text="Message" textFill="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                     </children>
-                  </AnchorPane>
-                  <GridPane GridPane.rowIndex="4">
-                     <columnConstraints>
-                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
-                     </columnConstraints>
-                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                        <Label fx:id="amountToSend22" styleClass="font_regular_11" text="Solidity Code" textFill="#999999">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="amountToSend23" styleClass="font_regular_11" text="Return Data" textFill="#999999" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <GridPane GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
-                              <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <Label fx:id="btnStartCompile" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#startToCompile" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="31.0" style="-fx-background-color: #ffffff; -fx-border-color: #999999;" text="Start to compile" textFill="#999999" GridPane.columnIndex="1">
+                                 <padding>
+                                    <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+                                 </padding>
+                                 <GridPane.margin>
+                                    <Insets bottom="24.0" top="4.0" />
+                                 </GridPane.margin>
+                                 <styleClass>
+                                    <String fx:value="border_radius_4444" />
+                                    <String fx:value="font_semibold_12" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Label>
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </GridPane>
+                        <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
+                           <children>
+                              <GridPane fx:id="solidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <padding>
+                                    <Insets right="1.0" />
+                                 </padding>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <children>
+                              <ScrollPane fitToWidth="true" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <content>
+                                    <TextFlow fx:id="solidityTextFlow" style="-fx-prompt-text-fill: #999999;" styleClass="mono_font_regular_10">
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </TextFlow>
+                                 </content>
+                                 <styleClass>
+                                    <String fx:value="listview" />
+                                    <String fx:value="scroll_pane_border_transparent" />
+                                 </styleClass>
+                              </ScrollPane>
+                              <AnchorPane fx:id="contractInputView" layoutX="1.0" layoutY="1.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <GridPane layoutX="16.0" layoutY="16.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" styleClass="border_radius_3333" />
+                                          <VBox fx:id="contractMethodList" maxHeight="-Infinity" minHeight="-Infinity" spacing="8.0" GridPane.rowIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                              <Label fx:id="textareaMessage" styleClass="mono_font_regular_10" text="Message" textFill="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                           </children>
+                        </AnchorPane>
+                        <GridPane GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                                 <children>
+                                    <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                        <AnchorPane GridPane.rowIndex="6">
+                           <children>
+                              <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>
                   </GridPane>
-                  <AnchorPane GridPane.rowIndex="6">
-                     <children>
-                        <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
                </children>
-            </GridPane>
-            <GridPane fx:id="byteCodeTabPane" visible="false" GridPane.rowIndex="16">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                  <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                  <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label styleClass="font_regular_11" text="Byte Code" textFill="#999999">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets bottom="4.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="amountToSend211" styleClass="font_regular_11" text="JSON Interface" textFill="#999999" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets bottom="4.0" top="8.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                     <children>
-                        <TextArea fx:id="byteCodeTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
-                     <children>
-                        <TextArea fx:id="abiTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </GridPane>
+            </AnchorPane>
             <AnchorPane fx:id="cnstAddrSelect1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                <children>
                   <fx:include fx:id="selectWallet" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
