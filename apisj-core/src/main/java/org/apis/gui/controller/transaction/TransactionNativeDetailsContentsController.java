@@ -140,7 +140,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         frozenImg.setFitWidth(13);
         frozenImg.setFitHeight(14);
         contentsBodyList.getChildren().add(frozenImg);
-        contentsBodyList.setMargin(frozenImg, new Insets(4, 4, 0, 4));
+        contentsBodyList.setMargin(frozenImg, new Insets(2, 4, 0, 4));
         setTxtColor(StyleManager.AColor.C4871ff);
     }
 

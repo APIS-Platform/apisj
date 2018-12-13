@@ -241,14 +241,16 @@ public class TransactionNativeListController extends BaseViewController {
             this.from.setText(AddressUtil.getShortAddress(from, 8));
         }
 
-        if(AppManager.getInstance().isFrozen(from)) {
-            fromFrozenImg.setFitWidth(13);
-            fromFrozenImg.setVisible(true);
-            StyleManager.fontColorStyle(this.from, StyleManager.AColor.C4871ff);
-        } else {
-            fromFrozenImg.setFitWidth(0.01);
-            fromFrozenImg.setVisible(false);
-            StyleManager.fontColorStyle(this.from, StyleManager.AColor.Cb01e1e);
+        if(from != null && !from.equals("")) {
+            if (AppManager.getInstance().isFrozen(from)) {
+                fromFrozenImg.setFitWidth(13);
+                fromFrozenImg.setVisible(true);
+                StyleManager.fontColorStyle(this.from, StyleManager.AColor.C4871ff);
+            } else {
+                fromFrozenImg.setFitWidth(0.01);
+                fromFrozenImg.setVisible(false);
+                StyleManager.fontColorStyle(this.from, StyleManager.AColor.Cb01e1e);
+            }
         }
     }
 
@@ -265,14 +267,16 @@ public class TransactionNativeListController extends BaseViewController {
             this.to.setText(AddressUtil.getShortAddress(strTo, 8));
         }
 
-        if(AppManager.getInstance().isFrozen(to)) {
-            toFrozenImg.setFitWidth(13);
-            toFrozenImg.setVisible(true);
-            StyleManager.fontColorStyle(this.to, StyleManager.AColor.C4871ff);
-        } else {
-            toFrozenImg.setFitWidth(0.01);
-            toFrozenImg.setVisible(false);
-            StyleManager.fontColorStyle(this.to, StyleManager.AColor.Cb01e1e);
+        if(to != null && !to.equals("")) {
+            if (AppManager.getInstance().isFrozen(to)) {
+                toFrozenImg.setFitWidth(13);
+                toFrozenImg.setVisible(true);
+                StyleManager.fontColorStyle(this.to, StyleManager.AColor.C4871ff);
+            } else {
+                toFrozenImg.setFitWidth(0.01);
+                toFrozenImg.setVisible(false);
+                StyleManager.fontColorStyle(this.to, StyleManager.AColor.Cb01e1e);
+            }
         }
     }
 
