@@ -599,7 +599,7 @@ public class StringManager {
             solidityCode.set(StringManager.this.getString("smart_contract_solidity_code", "Solidity Code"));
             startCompileButton.set(StringManager.this.getString("smart_contract_start_compile_button", "Start to compile"));
             selectContractConstructor.set(StringManager.this.getString("smart_contract_select_contract_constructor", "Contract Constructor Address"));
-            nonce.set(StringManager.this.getString("smart_contract_nonce_label", "Nonce"));
+            nonce.set(StringManager.this.getString("smart_contract_nonce_label", "Nonce value at the deployment of contract"));
             pleaseClick1.set(StringManager.this.getString("smart_contract_please_click_1", "Please click a"));
             pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
             pleaseClick3.set(StringManager.this.getString("smart_contract_please_click_3", "button"));

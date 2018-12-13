@@ -50,14 +50,13 @@ public class SmartContractUpdaterController extends BaseViewController {
     private final int CONTRACT_ADDRESS_TYPE_INPUT = 1;
     private int contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
 
-    @FXML private GridPane solidityTextGrid, solidityCodeTabPane;
-    @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
+    @FXML private GridPane solidityTextGrid;
+    @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane, solidityCodeTabPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
     @FXML private ImageView selectContractIcon, inputContractIcon, frozenImg;
     @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
-    @FXML private TextArea byteCodeTextArea, abiTextArea;
     @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel, btnStartCompile;
     @FXML private Label selectContract, contractCnstAddr, nonceLabel, cautionLabel;
 
@@ -157,32 +156,14 @@ public class SmartContractUpdaterController extends BaseViewController {
             }
         });
 
-        byteCodeTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-                isCompiled = (byteCodeTextArea.getText().length() > 0);
-                btnStartPreGasUsedController.setCompiled(isCompiled);
-
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-        abiTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
         btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
             @Override
             public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
                 estimateGasLimit();
             }
         });
+
+        update();
     }
 
     public void languageSetting() {
@@ -206,9 +187,13 @@ public class SmartContractUpdaterController extends BaseViewController {
         long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
         nonceTextField.setText(Long.toString(nonce));
 
-//        if(nonce ){
-////
-////        }
+        if(nonce >= 0){
+            solidityCodeTabPane.setVisible(true);
+            solidityCodeTabPane.setPrefHeight(-1);
+        }else{
+            solidityCodeTabPane.setVisible(false);
+            solidityCodeTabPane.setPrefHeight(0);
+        }
     }
 
     public void sendTransfer() {
@@ -695,16 +680,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
 
-        System.out.println("from : " +from);
-        System.out.println("contractAddr : " +ByteUtil.toHexString(contractAddr));
-        System.out.println("contractSource : " +contractSource);
-        System.out.println("nonce : " +ByteUtil.bytesToBigInteger(nonce).toString());
         byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
-
-        System.out.println("contractAddr : "+contractAddr.length);
-        System.out.println("nonce : "+nonce.length);
-        System.out.println("byteCode : "+byteCode.length);
-
         return ByteUtil.merge(contractAddr, nonce, byteCode);
     }
 
