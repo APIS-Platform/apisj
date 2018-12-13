@@ -877,6 +877,7 @@ public class IntroController extends BaseViewController {
                     String wName = createWalletPhaseTwoWalletNameController.getText();
                     String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
                     KeyStoreData keyStoreData = KeyStoreManager.getInstance().savePrivateKeyStore(wName, wPasswd.toCharArray());
+                    keystoreJsonData = keyStoreData.toString();
 
                     try {
                         privateKey = KeyStoreUtil.decryptPrivateKey(keyStoreData.toString(), wPasswd);
@@ -970,8 +971,8 @@ public class IntroController extends BaseViewController {
     }
 
     public void createWalletDownloadKeystoreFile() {
-        KeyStoreData keyStoreData = AppManager.getInstance().openFileReader();
-        if(keyStoreData != null){
+        String path = AppManager.getInstance().openDirectoryReader();
+        if(path != null){
             this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
             StyleManager.backgroundColorStyle(createWalletPhaseThreeNext, StyleManager.AColor.Cb01e1e);
             this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
@@ -979,7 +980,7 @@ public class IntroController extends BaseViewController {
             this.downloadKeystoreSuccess.setVisible(true);
             this.introModalBackground.requestFocus();
 
-            KeyStoreManager.getInstance().savePrivateKeyStore(keyStoreData);
+            KeyStoreManager.getInstance().savePrivateKeyStore(keystoreJsonData, path);
         }
     }
 

@@ -107,7 +107,7 @@ public class TokenListHeadController extends BaseViewController {
                 this.walletIcon.setImage(ImageManager.apisIcon);
                 this.name.setText(tokenName);
                 this.valueUnit1.setText(tokenSymbol);
-                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', false));
+                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', true));
             } else if (tokenAddress.equals("-2")) {
                 tokenName = "MINERAL";
                 tokenValue = AppManager.getInstance().getTotalMineral() ;
@@ -115,7 +115,7 @@ public class TokenListHeadController extends BaseViewController {
                 this.walletIcon.setImage(ImageManager.mineraIcon);
                 this.name.setText(tokenName);
                 this.valueUnit1.setText("MNR");
-                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', false));
+                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', true));
             } else {
                 for(int i=0; i<AppManager.getInstance().getTokens().size(); i++){
                     if(AppManager.getInstance().getTokens().get(i).getTokenAddress().equals(this.tokenAddress)){
@@ -136,7 +136,7 @@ public class TokenListHeadController extends BaseViewController {
                 this.walletIcon.setImage(ImageManager.getIdenticons(tokenAddress));
                 this.name.setText(tokenName);
                 this.valueUnit1.setText(tokenSymbol);
-                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', false));
+                this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', true));
             }
         }
     }

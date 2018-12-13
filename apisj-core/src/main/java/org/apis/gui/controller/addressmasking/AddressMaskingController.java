@@ -6,12 +6,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.control.*;
 import javafx.util.Duration;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
@@ -23,14 +23,15 @@ import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import java.awt.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AddressMaskingController extends BaseViewController {
+
+    public static final String REGISTER_DOMAIN_URL = "https://goo.gl/forms/oytS76KKssTcosND3";
 
     public static final int TAB_MENU = -1;
     public static final int TAB_REGISTER_MASK = 0;
@@ -45,14 +46,12 @@ public class AddressMaskingController extends BaseViewController {
     private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");
     private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
-    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane3;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask;
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane tab2RightPane1, bodyScrollPaneContentPane;
+    @FXML private GridPane bodyScrollPaneContentPane;
     @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
-    @FXML private GridPane cardManuPane, bodyPane, domainRequestSendBtn;
+    @FXML private GridPane cardManuPane, bodyPane;
     @FXML private Label backButton;
-    @FXML private TextField publicDomainTextField, emailTextField;
-    @FXML private TextArea publicTextArea;
     @FXML private Label titleRegisterMask, titleHandOverMask, titleRegisterDomain;
     @FXML private Label subTitleRegisterMask, subTitleHandOverMask, subTitleRegisterDomain;
     @FXML private Label subTitleRegisterMask2, subTitleHandOverMask2, subTitleRegisterDomain2;
@@ -61,12 +60,6 @@ public class AddressMaskingController extends BaseViewController {
 
     @FXML private GridPane btnPay;
     private boolean isScrolling = false;
-
-    // Multilingual Support Label
-    @FXML
-    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicMessageTitle, publicMessageDesc;
-    @FXML private Label publicDomainDesc1, publicDomainDesc2, publicDomainDesc3, publicDomainDesc4;
-    @FXML private Label commercialDomainDesc1, commercialDomainDesc2, emailLabel;
 
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingReceiptController receiptController;
@@ -207,53 +200,6 @@ public class AddressMaskingController extends BaseViewController {
             }
         });
 
-
-
-
-        this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
-        this.publicDomainTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                String domain = publicDomainTextField.getText().trim();
-                String message = publicTextArea.getText().trim();
-                String email = emailTextField.getText().trim();
-
-                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
-                }else {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
-                }
-            }
-        });
-        this.publicTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                String domain = publicDomainTextField.getText().trim();
-                String message = publicTextArea.getText().trim();
-                String email = emailTextField.getText().trim();
-
-                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
-                }else {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
-                }
-            }
-        });
-        this.emailTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                String domain = publicDomainTextField.getText().trim();
-                String message = publicTextArea.getText().trim();
-                String email = emailTextField.getText().trim();
-
-                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
-                }else {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
-                }
-            }
-        });
-
         aniLine1.setVisible(false);
         aniLine2.setVisible(false);
         aniLine3.setVisible(false);
@@ -273,25 +219,6 @@ public class AddressMaskingController extends BaseViewController {
 
 
     public void languageSetting() {
-        emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
-        emailTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.emailPlaceholder);
-        emailDesc1.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc1);
-        emailDesc2.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc2);
-        emailDesc3.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc3);
-        requestBtnLabel.textProperty().bind(StringManager.getInstance().common.requestButton);
-        publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
-        publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
-        publicDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
-        publicDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
-        publicDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
-        publicDomainDesc4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
-        commercialDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
-        commercialDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
-
-        publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
-        publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
-        publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
-        publicTextArea.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicTextareaPlaceholder);
 
         titleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterMask);
         titleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.titleHandOverMask);
@@ -307,26 +234,6 @@ public class AddressMaskingController extends BaseViewController {
         backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
-    private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            // Focus in Function
-            if(newValue) {
-                if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                }
-            }
-
-            // Focus out Function
-            else {
-                if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                }
-            }
-        }
-    };
 
     @FXML
     private void onMouseClicked(InputEvent event){
@@ -336,19 +243,18 @@ public class AddressMaskingController extends BaseViewController {
             initStyleTab(TAB_MENU);
         }
 
-
-        else if(id.equals("commercialBackBtn")) {
-            this.tab2RightPane1.setVisible(false);
-            this.tab2LeftPane3.setVisible(true);
-
-        }
-
         if(id.equals("cardRegisterMask")){
             initStyleTab(TAB_REGISTER_MASK);
         }else if(id.equals("cardHandOverMask")){
             initStyleTab(TAB_HAND_OVER_MASK);
         }else if(id.equals("cardRegisterDomain")) {
-            initStyleTab(TAB_REGISTER_DOMAIN);
+            try {
+                Desktop.getDesktop().browse(new URI(REGISTER_DOMAIN_URL));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -456,10 +362,8 @@ public class AddressMaskingController extends BaseViewController {
 
             this.tab1LeftPane.setVisible(true);         this.tab1LeftPane.setPrefHeight(-1);
             this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
-            this.tab2LeftPane3.setVisible(false);       this.tab2LeftPane3.setPrefHeight(0);
 
             this.tab1RightPane.setVisible(true);
-            this.tab2RightPane1.setVisible(false);
             this.tabRightHandOverReceiptPane.setVisible(false);
 
         } else if(index == TAB_HAND_OVER_MASK) {
@@ -468,24 +372,10 @@ public class AddressMaskingController extends BaseViewController {
 
             this.tab1LeftPane.setVisible(false);        this.tab1LeftPane.setPrefHeight(0);
             this.tabLeftHandOfMask.setVisible(true);    this.tabLeftHandOfMask.setPrefHeight(-1);
-            this.tab2LeftPane3.setVisible(false);       this.tab2LeftPane3.setPrefHeight(0);
             this.handOverMaskController.update();
 
             this.tab1RightPane.setVisible(false);
-            this.tab2RightPane1.setVisible(false);
             this.tabRightHandOverReceiptPane.setVisible(true);
-
-        } else if(index == TAB_REGISTER_DOMAIN) {
-            this.cardManuPane.setVisible(false);
-            this.bodyPane.setVisible(true);
-
-            this.tab1LeftPane.setVisible(false);         this.tab1LeftPane.setPrefHeight(0);
-            this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
-            this.tab2LeftPane3.setVisible(true);       this.tab2LeftPane3.setPrefHeight(-1);
-
-            this.tab1RightPane.setVisible(false);
-            this.tab2RightPane1.setVisible(true);
-            this.tabRightHandOverReceiptPane.setVisible(false);
 
         }
     }
@@ -527,36 +417,6 @@ public class AddressMaskingController extends BaseViewController {
         handOverReceiptController.setToAddress(toAddress);
         handOverReceiptController.setMask(mask);
         handOverReceiptController.setValue(ApisUtil.readableApis(value, ',', true) + " APIS");
-    }
-
-    public void domainRequestMouseClicked(){
-        String domain = this.publicDomainTextField.getText().trim();
-        String message = this.publicTextArea.getText().trim();
-        String email = this.emailTextField.getText().trim();
-
-        if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-            try {
-                Map<String, Object> params = new LinkedHashMap<>();
-                params.put("domain", domain);
-                params.put("message", message);
-                params.put("email", email);
-
-                String response = HttpRequestManager.sendRequestPublicDomain(params);
-                System.out.println("response > \n" + response);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // 완료 팝업
-            PopupManager.getInstance().showMainPopup(null, "popup_success.fxml", 1);
-        }
     }
 
     public void update() {

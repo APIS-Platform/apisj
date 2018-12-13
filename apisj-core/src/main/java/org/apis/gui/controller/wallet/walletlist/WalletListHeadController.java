@@ -224,7 +224,7 @@ public class WalletListHeadController extends BaseViewController {
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
             this.labelWalletAlias.setText(itemModel.getAlias());
             this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 8));
-            this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
+            this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
             setMask(itemModel.getMask());
 
             // 마이닝 / 마스터노드 체크
@@ -232,12 +232,12 @@ public class WalletListHeadController extends BaseViewController {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("MINING");
                 this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else if (itemModel.isMasterNode()) {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("MASTERNODE");
                 this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else {
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("");

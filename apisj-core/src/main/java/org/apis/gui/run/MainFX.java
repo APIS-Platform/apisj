@@ -52,9 +52,9 @@ public class MainFX extends Application  {
         Font.loadFont(getClass().getClassLoader().getResource("font/Barlow-SemiBold.ttf").toString(), 14);
 
         // TODO : 사용가능한 폰트 출력
-//        for(String fontName : javafx.scene.text.Font.getFamilies()){
-//            System.out.println("fontName : "+fontName);
-//        }
+        for(String fontName : javafx.scene.text.Font.getFamilies()){
+            System.out.println("fontName : "+fontName);
+        }
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();
         URL fileUrl = getClass().getClassLoader().getResource("scene/intro.fxml");

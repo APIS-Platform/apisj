@@ -131,6 +131,32 @@ public class KeyStoreManager {
         return data;
     }
 
+    public KeyStoreData savePrivateKeyStore(String keystoreJsonData, String path){
+        System.out.println("keystoreJsonData : "+keystoreJsonData);
+
+        KeyStoreData data = new GsonBuilder().create().fromJson(keystoreJsonData, KeyStoreData.class);
+        if(data == null) {
+            return null;
+        }
+
+        // 기존 파일을 삭제한다.
+        deleteKeystore(Hex.decode(data.address));
+
+        // 파일을 저장한다.
+        PrintWriter writer;
+        try {
+            System.out.println("path : "+path);
+            writer = new PrintWriter(path + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
+            writer.print(keystoreJsonData);
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return data;
+        }
+
+        return data;
+    }
+
     public KeyStoreData savePrivateKeyStore(KeyStoreData data){
         if(data == null) {
             return null;
