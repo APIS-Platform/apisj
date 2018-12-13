@@ -343,7 +343,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             args[0] = proofKey;
             byte[] functionCallBytes = functionRegisterProofKey.encode(args);
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_warning.fxml", 1);
-            controller.setData(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, functionCallBytes);
+            controller.setData(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, new byte[0], functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success(Transaction tx) {

@@ -351,7 +351,7 @@ public class SmartContractCallSendController extends BaseViewController {
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
 
-            controller.setData(address, value, gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setData(address, value, gasPrice, gasLimit, contractAddress, new byte[0], functionCallBytes);
 
         }
 

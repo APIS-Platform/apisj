@@ -20,6 +20,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -155,7 +156,12 @@ public class TransferApisController extends BaseViewController {
     }
 
     public String getReceiveAddress() {
-        return (recevingTextField.getText() != null) ? recevingTextField.getText().trim() : "";
+        String address = (recevingTextField.getText() != null) ? recevingTextField.getText().trim() : "";
+        if(address.length() > 0 && !AddressUtil.isAddress(address)){
+            return AppManager.getInstance().getAddressWithMask(address);
+        }else{
+            return address;
+        }
     }
 
     public BigInteger getFee() {
