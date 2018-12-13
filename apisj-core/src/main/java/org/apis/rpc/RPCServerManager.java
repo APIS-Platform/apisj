@@ -161,7 +161,7 @@ public class RPCServerManager {
         }
         rpcServer = new RPCWebSocketServer(port, id, password, ethereum);
         rpcServer.setConnectionRule(whitelist, maxConnection);
-        rpcServer.setReuseAddr(false);
+        rpcServer.setReuseAddr(true);
 
         rpcServer.start();
         isRun = true;
