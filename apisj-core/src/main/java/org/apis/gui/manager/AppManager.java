@@ -488,7 +488,7 @@ public class AppManager {
                 return nonce;
             }
         }
-        return 0;
+        return -1;
     }
 
     public void initTokens(){
@@ -629,7 +629,7 @@ public class AppManager {
     public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, char[] password, char[] knowledgeKey, Object[] args){
         byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
+        Transaction tx = AppManager.getInstance().generateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, new byte[0], functionCallBytes,  password, knowledgeKey);
         AppManager.getInstance().ethereumSendTransactions(tx);
     }
 
@@ -990,7 +990,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, char[] passwd, char[] knowledgeKey){
+    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -1014,6 +1014,7 @@ public class AppManager {
                 gasPrice,   //price
                 gasLimit,   //gasLimit
                 toAddress,  //reciveAddress
+                toMask, //mask
                 value,  //value
                 data, // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
@@ -1028,9 +1029,9 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, char[] passwd, char[] knowledgeKey){
+    public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
         BigInteger nonce = this.mEthereum.getPendingState().getNonce(Hex.decode(addr));
-        return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, data, passwd, knowledgeKey);
+        return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
     }
 
     public void ethereumSendTransactions(Transaction tx){

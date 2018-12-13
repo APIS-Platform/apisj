@@ -343,7 +343,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             byte[] functionCallBytes = functionRegisterProofKey.encode(args);
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_warning.fxml", 1);
-            controller.setData(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, functionCallBytes);
+            controller.setData(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, new byte[0], functionCallBytes);
             controller.requestFocus();
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
@@ -369,7 +369,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
                     byte[] functionCallBytes = functionRemoveProofKey.encodeSignature();
 
                     // 트랜잭션 생성
-                    Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, functionCallBytes, password, knowledgeKey);
+                    Transaction tx = AppManager.getInstance().generateTransaction(address, value.toString(), gasPrice.toString(), gasLimit.toString(), contractAddress, new byte[0], functionCallBytes, password, knowledgeKey);
 
                     // 트랜잭션 먼저 전송해보기
                     EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);

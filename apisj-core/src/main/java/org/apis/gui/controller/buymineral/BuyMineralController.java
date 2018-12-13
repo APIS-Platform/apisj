@@ -65,7 +65,7 @@ public class BuyMineralController extends BasePopupController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 1);
-                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), buyMineralAddress, functionCallBytes);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), buyMineralAddress, new byte[0], functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {

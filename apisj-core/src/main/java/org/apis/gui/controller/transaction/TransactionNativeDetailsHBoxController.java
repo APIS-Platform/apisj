@@ -4,16 +4,21 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
 
 import java.net.URL;
@@ -21,6 +26,9 @@ import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsHBoxController implements Initializable {
     @FXML private HBox contentsBodyHBox;
+
+    private Image frozen = new Image("image/ic_freeze@2x.png");
+    private ImageView frozenImg = new ImageView(frozen);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,18 +74,26 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
     public void addItems(String copyText, SimpleStringProperty bindText, String setText) {
         AnchorPane anchorPane = new AnchorPane();
         Label label = new Label();
+        boolean isFrozen = false;
 
         if(copyText != null) {
             label.setText(setText);
             label.setCursor(Cursor.HAND);
-            label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #b01e1e;");
+            if(!copyText.equals("")) {
+                isFrozen = AppManager.getInstance().isFrozen(copyText);
+                if(isFrozen) {
+                    label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #4871ff;");
+                } else {
+                    label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #b01e1e;");
+                }
+            }
 
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
                     PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null,"popup_copy.fxml", 0);
                     controller.setCopyWalletAddress(copyText);
-            }
+                }
             });
             label.setOnMouseEntered(event -> label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-underline", "true").toString()));
             label.setOnMouseExited(event -> label.setStyle(new JavaFXStyle(label.getStyle()).remove("-fx-underline").toString()));
@@ -98,6 +114,13 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
         anchorPane.getChildren().add(label);
 
         this.contentsBodyHBox.getChildren().add(anchorPane);
+
+        if(isFrozen) {
+            frozenImg.setFitWidth(13);
+            frozenImg.setFitHeight(14);
+            this.contentsBodyHBox.setMargin(frozenImg, new Insets(2, 4, 0, 4));
+            this.contentsBodyHBox.getChildren().add(frozenImg);
+        }
     }
 
 }

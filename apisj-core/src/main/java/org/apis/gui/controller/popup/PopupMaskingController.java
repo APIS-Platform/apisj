@@ -368,7 +368,7 @@ public class PopupMaskingController extends BasePopupController {
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_warning.fxml", 1);
-            controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, new byte[0], functionCallBytes);
             controller.requestFocus();
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
