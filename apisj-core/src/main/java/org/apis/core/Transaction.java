@@ -495,13 +495,13 @@ public class Transaction {
                     "... (" + data.length + " bytes)";
         }
         return "TransactionData [" + "hash=" + ByteUtil.toHexString(hash) +
-                "  nonce=" + ByteUtil.bytesToBigInteger(nonce) +
-                ", gasPrice=" + ApisUtil.readableApis(ByteUtil.bytesToBigInteger(gasPrice), ApisUtil.Unit.nAPIS, ',', true) + " nAPIS" +
-                ", gas=" + ByteUtil.bytesToBigInteger(gasLimit) +
+                String.format(" nonce=%s(%s)", ByteUtil.bytesToBigInteger(nonce), ByteUtil.toHexString0x(nonce)) +
+                String.format(", gasPrice=%s(%s)", ApisUtil.readableApis(ByteUtil.bytesToBigInteger(gasPrice), ApisUtil.Unit.aAPIS, ',', true), ByteUtil.toHexString0x(gasPrice)) +
+                String.format(", gas=%s(%s)", ByteUtil.bytesToBigInteger(gasLimit), ByteUtil.toHexString0x(gasLimit)) +
                 ", receiveAddress=" + ByteUtil.toHexString(receiveAddress) +
                 ", receiveAddressMask=" + new String(receiveMask, Charset.forName("UTF-8")) +
                 ", sendAddress=" + ByteUtil.toHexString(getSender())  +
-                ", value=" + ApisUtil.readableApis(ByteUtil.bytesToBigInteger(value), ',', true) + " APIS" +
+                String.format(" value=%s(%s)", ApisUtil.readableApis(ByteUtil.bytesToBigInteger(value), ApisUtil.Unit.aAPIS, ',', true), ByteUtil.toHexString0x(value)) +
                 ", data=" + dataS +
                 ", signatureV=" + (signature == null ? "" : signature.v) +
                 ", signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) +
