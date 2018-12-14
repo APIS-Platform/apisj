@@ -494,11 +494,18 @@ public class Transaction {
             dataS = ByteUtil.toHexString(Arrays.copyOfRange(data, 0, maxDataSize)) +
                     "... (" + data.length + " bytes)";
         }
+        String receiverStr = "";
+        if(getContractAddress() == null) {
+            receiverStr = ", receiveAddress=" + ByteUtil.toHexString(receiveAddress);
+        } else {
+            receiverStr = ", contractAddress=" + ByteUtil.toHexString(getContractAddress());
+        }
+
         return "TransactionData [" + "hash=" + ByteUtil.toHexString(hash) +
                 String.format(" nonce=%s(%s)", ByteUtil.bytesToBigInteger(nonce), ByteUtil.toHexString0x(nonce)) +
                 String.format(", gasPrice=%s(%s)", ApisUtil.readableApis(ByteUtil.bytesToBigInteger(gasPrice), ApisUtil.Unit.aAPIS, ',', true), ByteUtil.toHexString0x(gasPrice)) +
                 String.format(", gas=%s(%s)", ByteUtil.bytesToBigInteger(gasLimit), ByteUtil.toHexString0x(gasLimit)) +
-                ", receiveAddress=" + ByteUtil.toHexString(receiveAddress) +
+                receiverStr +
                 ", receiveAddressMask=" + new String(receiveMask, Charset.forName("UTF-8")) +
                 ", sendAddress=" + ByteUtil.toHexString(getSender())  +
                 String.format(" value=%s(%s)", ApisUtil.readableApis(ByteUtil.bytesToBigInteger(value), ApisUtil.Unit.aAPIS, ',', true), ByteUtil.toHexString0x(value)) +
