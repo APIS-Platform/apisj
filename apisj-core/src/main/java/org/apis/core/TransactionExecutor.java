@@ -216,6 +216,9 @@ public class TransactionExecutor {
         BigInteger totalCost = toBI(tx.getValue()).add(txGasCost);
 
         BigInteger senderMNR = track.getMineral(tx.getSender(), currentBlock.getNumber());
+        if(txGasCost.compareTo(senderMNR) < 0) {
+            senderMNR = txGasCost;
+        }
         BigInteger senderBalance = track.getBalance(tx.getSender());
 
         if (!isCovers(senderBalance.add(senderMNR), totalCost)) {
