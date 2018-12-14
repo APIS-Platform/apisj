@@ -72,6 +72,7 @@ public class PopupContractWarningController extends BasePopupController {
             public void change(String old_text, String new_text) {
                 yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
                 tx = null;
+                rawTxArea.setText("");
             }
 
             @Override
@@ -103,6 +104,7 @@ public class PopupContractWarningController extends BasePopupController {
             public void change(String old_text, String new_text) {
                 yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
                 tx = null;
+                rawTxArea.setText("");
             }
 
             @Override
@@ -152,6 +154,7 @@ public class PopupContractWarningController extends BasePopupController {
 
         yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
         tx = null;
+        rawTxArea.setText("");
 
         if(!AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
             return ;
