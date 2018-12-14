@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="tab1RightPane" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingReceiptController">
+<AnchorPane fx:id="tab1RightPane" prefHeight="460.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingReceiptController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -20,7 +20,7 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="108.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -96,7 +96,7 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints minHeight="16.0" vgrow="SOMETIMES" />
                         <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                      </rowConstraints>
                      <children>

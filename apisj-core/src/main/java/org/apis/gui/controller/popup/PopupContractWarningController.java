@@ -70,7 +70,9 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+                tx = null;
+                rawTxArea.setText("");
             }
 
             @Override
@@ -100,7 +102,9 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+                tx = null;
+                rawTxArea.setText("");
             }
 
             @Override
@@ -133,19 +137,7 @@ public class PopupContractWarningController extends BasePopupController {
         String id = ((Node)event.getSource()).getId();
 
         if("generateTxBtn".equals(id)){
-
-            if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
-                byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
-                if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
-                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                    return;
-                } else {
-                    generateTx();
-                    knowledgeKeyController.succeededForm();
-                }
-            }else{
-                generateTx();
-            }
+            generateTx();
 
         }else if("noBtn".equals(id)){
             exit();
@@ -159,6 +151,23 @@ public class PopupContractWarningController extends BasePopupController {
     public void generateTx() {
         char[] password = passwordController.getText().toCharArray();
         char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
+
+        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+        tx = null;
+        rawTxArea.setText("");
+
+        if(!AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
+            return ;
+        }
+
+        byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
+        if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+            return;
+        } else {
+            knowledgeKeyController.succeededForm();
+        }
+
 
         if (password == null || password.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
