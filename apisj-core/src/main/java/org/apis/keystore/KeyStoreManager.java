@@ -140,7 +140,7 @@ public class KeyStoreManager {
         }
 
         // 기존 파일을 삭제한다.
-        deleteKeystore(Hex.decode(data.address));
+        deleteKeystore(Hex.decode(data.address), path);
 
         // 파일을 저장한다.
         PrintWriter writer;
@@ -257,13 +257,18 @@ public class KeyStoreManager {
     }
 
     public void deleteKeystore(byte[] address){
+        deleteKeystore(address, config.keystoreDir());
+    }
+
+    public void deleteKeystore(byte[] address, String path){
         if(address == null || ByteUtil.toHexString(address).length() < 40){
             return ;
         }
 
-        File keystore = new File(config.keystoreDir());
+        File keystore = new File(path);
         if(!keystore.exists()) {
             if(!keystore.mkdirs()) {
+                System.out.println("keystore.mkdirs ! ");
                 return ;
             }
         }
@@ -274,6 +279,7 @@ public class KeyStoreManager {
         // check delete file list
         List<File> deleteFiles = new ArrayList<>();
         if(keyList != null) {
+            System.out.println("keyList : "+keyList.length);
             for (File file : keyList) {
                 if (file.isFile()) {
                     try {

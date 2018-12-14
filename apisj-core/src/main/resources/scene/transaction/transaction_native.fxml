@@ -328,7 +328,7 @@
                                  <rowConstraints>
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="2.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="1.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
                                     <GridPane>
@@ -388,7 +388,7 @@
                                           </Label>
                                        </children>
                                     </GridPane>
-                                    <Pane opacity="0.8" prefHeight="2.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="2" />
+                                    <Pane maxHeight="-Infinity" minHeight="-Infinity" opacity="0.8" prefHeight="1.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                               <Label fx:id="transactionLabel" styleClass="font_semibold_14" text="Transaction" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
