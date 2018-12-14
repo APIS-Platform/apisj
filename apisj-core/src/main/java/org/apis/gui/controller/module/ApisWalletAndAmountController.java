@@ -21,9 +21,9 @@ import java.util.ResourceBundle;
 
 public class ApisWalletAndAmountController extends BaseViewController {
 
-    @FXML private AnchorPane rootPane, selectApisUnitPane;
+    @FXML private AnchorPane rootPane, selectApisUnitPane, errorMessagePane;
     @FXML private GridPane tokenTotalPane;
-    @FXML private Label selectWalletLabel, amountToSendLabel, apisTotalBalance, apisTotalLabel, tokenTotalLabel, tokenTotalBalance, tokenSymbol;
+    @FXML private Label selectWalletLabel, amountToSendLabel, apisTotalBalance, apisTotalLabel, tokenTotalLabel, tokenTotalBalance, tokenSymbol, errorMessage;
     @FXML private TextField amountTextField;
     @FXML private ApisSelectBoxUnitController selectApisUnitController;
     @FXML private ApisSelectBoxPercentController selectPercentController;
@@ -175,12 +175,14 @@ public class ApisWalletAndAmountController extends BaseViewController {
         });
 
         setViewTypeApis(ViewType.apis);
+        hideError();
     }
 
     public void languageSetting(){
         selectWalletLabel.textProperty().bind(StringManager.getInstance().module.selectWallet);
         amountToSendLabel.textProperty().bind(StringManager.getInstance().module.amountToSend);
         apisTotalLabel.textProperty().bind(StringManager.getInstance().module.apisTotal);
+        errorMessage.textProperty().bind(StringManager.getInstance().common.notEnoughMineral);
     }
 
     @FXML
@@ -242,6 +244,15 @@ public class ApisWalletAndAmountController extends BaseViewController {
         if(this.handler != null){
             handler.change(getAmount());
         }
+    }
+
+    public void showError() {
+        errorMessagePane.setPrefHeight(-1);
+        errorMessagePane.setVisible(true);
+    }
+    public void hideError() {
+        errorMessagePane.setPrefHeight(0);
+        errorMessagePane.setVisible(false);
     }
 
     /**

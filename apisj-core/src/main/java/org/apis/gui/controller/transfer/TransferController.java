@@ -240,8 +240,12 @@ public class TransferController extends BaseViewController {
         }
         if(recevingAddress == null || recevingAddress.length() == 0
                 || balance.compareTo(totalAmount) <0 ){
+            if(transferApisController.getAmount().compareTo(BigInteger.ZERO) > 0) {
+                transferApisController.showError();
+            }
             apisReceiptController.transferButtonDefault();
         }else{
+            transferApisController.hideError();
             apisReceiptController.transferButtonActive();
         }
 

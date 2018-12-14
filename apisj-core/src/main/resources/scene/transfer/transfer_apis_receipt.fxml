@@ -22,7 +22,7 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints minHeight="343.0" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <AnchorPane>
@@ -249,12 +249,13 @@
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
                                  </columnConstraints>
                                  <rowConstraints>
+                                    <RowConstraints prefHeight="5.0" vgrow="SOMETIMES" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                  </rowConstraints>
                                  <children>
-                                    <AnchorPane style="-fx-background-color: f8f8fb;" styleClass="border_radius_4444">
+                                    <AnchorPane style="-fx-background-color: f8f8fb;" styleClass="border_radius_4444" GridPane.rowIndex="1">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>
@@ -283,7 +284,7 @@
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
-                                    <GridPane fx:id="transferBtn" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                    <GridPane fx:id="transferBtn" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="3">
                                        <columnConstraints>
                                           <ColumnConstraints prefWidth="24.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

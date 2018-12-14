@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="1000.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisWalletAndAmountController">
+<AnchorPane prefWidth="1000.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisWalletAndAmountController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -27,9 +27,6 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints />
-            <RowConstraints />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>
@@ -114,14 +111,28 @@
                   <Label fx:id="totalMineralLabel" layoutX="635.0" styleClass="font_semibold_10" text="* Total MINERAL" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="hintMaskAddress" minHeight="0.0" prefHeight="0.0" visible="false" GridPane.rowIndex="10">
+            <AnchorPane fx:id="errorMessagePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="7">
                <children>
-                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                  <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
-                     <image>
-                        <Image url="@../../image/ic_check_green@2x.png" />
-                     </image>
-                  </ImageView>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                     </rowConstraints>
+                     <children>
+                        <ImageView fx:id="errorIcon" fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/ic_error_red@2x.png" />
+                           </image>
+                           <GridPane.margin>
+                              <Insets right="8.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                        <Label fx:id="errorMessage" styleClass="font_semibold_12" text="error" textFill="#910000" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="amountPane" GridPane.rowIndex="6">

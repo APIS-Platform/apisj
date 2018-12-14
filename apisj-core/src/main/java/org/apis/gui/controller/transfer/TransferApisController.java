@@ -118,6 +118,13 @@ public class TransferApisController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
     }
 
+    public void showError() {
+        walletAndAmountController.showError();
+    }
+    public void hideError() {
+        walletAndAmountController.hideError();
+    }
+
     public void selectedItemWithWalletAddress(String address) {
         this.walletAndAmountController.selectedItemWithWalletAddress(address);
         this.walletAndAmountController.update();
