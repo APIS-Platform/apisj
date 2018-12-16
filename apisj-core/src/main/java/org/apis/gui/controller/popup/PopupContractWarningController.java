@@ -156,18 +156,15 @@ public class PopupContractWarningController extends BasePopupController {
         tx = null;
         rawTxArea.setText("");
 
-        if(!AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
-            return ;
+        if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
+            byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
+            if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+                knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                return;
+            } else {
+                knowledgeKeyController.succeededForm();
+            }
         }
-
-        byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
-        if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
-            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-            return;
-        } else {
-            knowledgeKeyController.succeededForm();
-        }
-
 
         if (password == null || password.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
