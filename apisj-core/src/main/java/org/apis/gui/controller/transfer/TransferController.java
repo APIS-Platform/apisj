@@ -210,6 +210,9 @@ public class TransferController extends BaseViewController {
         // apis balance
         BigInteger balance = transferApisController.getBalance();
 
+        // mineral
+        BigInteger mineral = transferApisController.getMineral();
+
         // amount
         BigInteger value = transferApisController.getAmount();
         String sValue = ApisUtil.readableApis(value, ',', true);
@@ -238,8 +241,10 @@ public class TransferController extends BaseViewController {
                 recevingAddress = null;
             }
         }
-        if(recevingAddress == null || recevingAddress.length() == 0
-                || balance.compareTo(totalAmount) <0 ){
+
+        if(recevingAddress == null || recevingAddress.length() == 0){
+            apisReceiptController.transferButtonDefault();
+        }else if(balance.compareTo(value) == 0 && mineral.compareTo(fee) < 0){
             if(transferApisController.getAmount().compareTo(BigInteger.ZERO) > 0) {
                 transferApisController.showError();
             }

@@ -63,7 +63,6 @@ public class TransferApisController extends BaseViewController {
     public void settingLayoutData(){
         //mineral
         BigInteger mineral = walletAndAmountController.getMineral();
-        String sMineral = mineral.toString();
         gasCalculatorController.setMineral(mineral);
 
         // gas
