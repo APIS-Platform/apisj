@@ -369,7 +369,7 @@
                                                    <children>
                                                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../../image/ic_mnr_logo_20x23@2x.png" />
+                                                            <Image url="@../../image/ic_mnr_logo_22x22@2x.png" />
                                                          </image>
                                                          <GridPane.margin>
                                                             <Insets left="16.0" />

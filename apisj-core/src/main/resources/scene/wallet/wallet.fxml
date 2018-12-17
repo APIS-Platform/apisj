@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
+<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
     <children>
         <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="280.0">
             <columnConstraints>
@@ -351,24 +351,39 @@
                                         </Label>
                               <AnchorPane GridPane.halignment="LEFT">
                                  <children>
-                                    <Label fx:id="buyMineralButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClickedBuyMineral" prefHeight="32.0" prefWidth="110.0" style="-fx-border-color: #ffffff;" styleClass="border_radius_4444" text="Buy Mineral" textAlignment="RIGHT" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
-                                       <graphic>
-                                          <ImageView fx:id="icMineralButton" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" translateX="-0.0">
+                                    <GridPane fx:id="buyMineralButton" onMouseClicked="#onMouseClickedBuyMineral" style="-fx-border-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="buyMineralLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" text="BUY MINERAL" textAlignment="RIGHT" textFill="WHITE" GridPane.columnIndex="1">
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <padding>
+                                                <Insets right="8.0" />
+                                             </padding>
+                                          </Label>
+                                          <ImageView fx:id="icMineralButton" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../image/ic_mnr_logo@2x.png" />
                                              </image>
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
+                                             <GridPane.margin>
+                                                <Insets left="8.0" right="8.0" />
+                                             </GridPane.margin>
                                           </ImageView>
-                                       </graphic>
-                                       <padding>
-                                          <Insets left="9.0" />
-                                       </padding>
+                                       </children>
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
-                                    </Label>
+                                    </GridPane>
                                  </children>
                               </AnchorPane>
                                     </children>
