@@ -89,7 +89,7 @@ public class WalletListBodyController extends BaseViewController{
             }else if(itemModel.getTokenAddress().equals("-2")){
                 this.tokenValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',',false));
                 this.tokenIcon.setImage(ImageManager.mineraIcon);
-                this.tokenName.setText("MINERAL");
+                this.tokenName.setText("MNR");
                 this.tokenSymbol.setText("MNR");
             }else {
                 this.tokenValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress()), ',', false));
