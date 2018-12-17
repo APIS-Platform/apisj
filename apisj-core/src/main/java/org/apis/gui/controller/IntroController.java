@@ -1294,7 +1294,6 @@ public class IntroController extends BaseViewController {
     }
 
     public void homeBtnClicked() {
-        KeyStoreManager.getInstance().deleteKeystore(address);
         AppManager.getInstance().guiFx.pageMoveMain();
 
     }
