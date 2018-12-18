@@ -109,7 +109,7 @@ public class TokenListHeadController extends BaseViewController {
                 this.valueUnit1.setText(tokenSymbol);
                 this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', true));
             } else if (tokenAddress.equals("-2")) {
-                tokenName = "MINERAL";
+                tokenName = "MNR";
                 tokenValue = AppManager.getInstance().getTotalMineral() ;
                 tokenSymbol = "MNR";
                 this.walletIcon.setImage(ImageManager.mineraIcon);

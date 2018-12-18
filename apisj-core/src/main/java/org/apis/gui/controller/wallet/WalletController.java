@@ -65,10 +65,10 @@ public class WalletController extends BaseViewController {
     @FXML private ImageView imgHeaderWalletSortName, imgHeaderWalletSortMask, imgHeaderWalletSortAmount;
     @FXML private WalletListController walletListController;
     // tab token
-    @FXML private GridPane tokenTable;
+    @FXML private GridPane tokenTable, buyMineralButton;
     @FXML private AnchorPane headerTokenItem, tokenTableScrollContentPane;
     @FXML private ScrollPane tokenTableScrollPane;
-    @FXML private Label headerTokenNameLabel, headerTokenAmountLabel, buyMineralButton;
+    @FXML private Label headerTokenNameLabel, headerTokenAmountLabel, buyMineralLabel;
     @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount;
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
@@ -100,7 +100,7 @@ public class WalletController extends BaseViewController {
 
 
     public void languageSetting() {
-        this.buyMineralButton.textProperty().bind(StringManager.getInstance().common.buyMineralButton);
+        this.buyMineralLabel.textProperty().bind(StringManager.getInstance().common.buyMineralButton);
 
         this.tabMenuController.addItem(StringManager.getInstance().wallet.tabApis, TAB_TOP_TYPE_APIS);
         this.tabMenuController.addItem(StringManager.getInstance().wallet.tabMineral, TAB_TOP_TYPE_MINERAL);
@@ -139,6 +139,8 @@ public class WalletController extends BaseViewController {
         this.rewardKor3.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
         this.rewardKor4.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
         this.rewardKor5.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
+
+        StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold12);
 
         StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold12);

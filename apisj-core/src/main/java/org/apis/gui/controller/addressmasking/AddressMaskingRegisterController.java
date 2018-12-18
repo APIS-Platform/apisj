@@ -67,7 +67,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 addrMaskingIDTextField.setText(addrMaskingIDTextField.getText().replaceAll("@",""));
 
-                if(newValue.length() > 64){
+                if(newValue.length() > 8){
                     addrMaskingIDTextField.setText(oldValue);
                 }
 

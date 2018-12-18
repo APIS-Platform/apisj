@@ -253,7 +253,7 @@ public class WalletListGroupController extends BaseViewController {
         if(getTokenAddress().equals("-1")){
             return "APIS";
         }else if(getTokenAddress().equals("-2")){
-            return "MINERAL";
+            return "MNR";
         }
         return AppManager.getInstance().getTokenName(getTokenAddress());
     }
