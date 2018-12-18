@@ -169,8 +169,16 @@ public class BlockMiner {
             return;
         }
 
-        // It prevents checking multiple times in the same block number.
+
         Block bestBlock = blockchain.getBestBlock();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
+
+        // 아직 마스터노드 참여가 시작되지 않은 경우는 생략한다.
+        if(bestBlock.getNumber() < constants.getMASTERNODE_EARLYBIRD_PERIOD()) {
+            return;
+        }
+
+        // It prevents checking multiple times in the same block number.
         if(bestBlock.getNumber() - lastMnCheckedBlock == 0) {
             return;
         }
@@ -194,7 +202,6 @@ public class BlockMiner {
          * 잔고가 마스터노드 기준 금액과 동일해야한다.
          * The balance should be equal to the master node reference amount.
          */
-        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
         BigInteger mnBalance = mnRepo.getBalance(mnKey.getAddress());
         if (constants.getMASTERNODE_LIMIT(mnBalance) == 0) {
             return;
@@ -207,8 +214,16 @@ public class BlockMiner {
          * If the MnStartBalance value of the AccountStatus  is 0, it means that this address is not masternode.
          */
         if(mnState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
-            sendMasternodeTransaction(mnKey, blockNumber);
+            // 마스터노드 갯수를 확인한다. 여유가 있을 경우 시도한다.
+            long limit = constants.getMASTERNODE_LIMIT(mnBalance);
+            List<byte[]> mns = new ArrayList<>();
+            mns.addAll(mnRepo.getMasterNodeList(constants.getMASTERNODE_BASE_EARLY_RUN(mnBalance)));
+            mns.addAll(mnRepo.getMasterNodeList(constants.getMASTERNODE_BASE_NORMAL(mnBalance)));
+            mns.addAll(mnRepo.getMasterNodeList(constants.getMASTERNODE_BASE_LATE(mnBalance)));
 
+            if(mns.size() < limit) {
+                sendMasternodeTransaction(mnKey, blockNumber);
+            }
         }
         /*
          * 현재 마스터노드가 업데이트 대상 목록에 존재하는지 확인하고 존재한다면 업데이트를 실시한다.
