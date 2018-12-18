@@ -11,8 +11,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.buymineral.BuyMineralReceiptController">
+<AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -20,8 +21,8 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="108.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -68,16 +69,17 @@
                         </GridPane>
                         <ImageView fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                            <image>
-                              <Image url="@../../image/apis_logo@2x.png" />
+                              <Image url="@../../../image/apis_logo@2x.png" />
                            </image>
                         </ImageView>
                      </children>
                   </GridPane>
+                  <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: e3e5e9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" />
                </children>
             </AnchorPane>
-            <AnchorPane GridPane.rowIndex="1">
+            <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
-                  <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: e3e5e9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0" />
+                  <VBox fx:id="itemList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0" />
                </children>
             </AnchorPane>
             <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="2">
@@ -87,55 +89,10 @@
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-                        <RowConstraints minHeight="24.0" vgrow="SOMETIMES" />
                         <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="addressLabel" styleClass="font_semibold_12" text="Address : " textFill="#999999" />
-                        <Label fx:id="fromAddress" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
-                        <Pane prefHeight="0.0" style="-fx-border-color: #e3e5e9; -fx-border-width: 1 0 0 0; -fx-border-style: dotted;" GridPane.rowIndex="4" />
-                        <AnchorPane fx:id="maskPane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="6">
-                           <children>
-                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" />
-                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label fx:id="maskLabel" styleClass="font_semibold_12" text="Mask" textFill="#999999" />
-                                    <Label fx:id="mask" styleClass="font_semibold_11" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                        <Label fx:id="totalFeeLabel" styleClass="font_semibold_12" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
-                        <Label fx:id="value" styleClass="font_semibold_11" text="0 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
-                        <Pane prefHeight="0.0" style="-fx-border-color: #e3e5e9; -fx-border-width: 1 0 0 0; -fx-border-style: dotted;" GridPane.rowIndex="10" />
-                        <Label fx:id="payerLabel" styleClass="font_semibold_12" text="Payer : " textFill="#999999" GridPane.rowIndex="12">
-                           <GridPane.margin>
-                              <Insets bottom="9.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <GridPane fx:id="btnPay" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="16">
+                        <GridPane fx:id="button" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />
@@ -145,14 +102,14 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="payBtn" styleClass="font_semibold_12" text="PAY" textFill="WHITE">
+                              <Label fx:id="buttonLabel" styleClass="font_semibold_12" text="PAY" textFill="WHITE">
                                  <GridPane.margin>
                                     <Insets left="24.0" />
                                  </GridPane.margin>
                               </Label>
                               <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                  <image>
-                                    <Image url="@../../image/btn_transferarrow@2x.png" />
+                                    <Image url="@../../../image/btn_transferarrow@2x.png" />
                                  </image>
                                  <GridPane.margin>
                                     <Insets right="24.0" />
@@ -166,7 +123,6 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </GridPane>
-                        <Label fx:id="toAddress" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="13" />
                      </children>
                   </GridPane>
                </children>

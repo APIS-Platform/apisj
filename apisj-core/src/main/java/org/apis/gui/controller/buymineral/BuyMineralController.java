@@ -13,6 +13,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
 import org.spongycastle.util.encoders.Hex;
@@ -34,7 +35,7 @@ public class BuyMineralController extends BasePopupController {
     @FXML private Label buyMineralLabel,buyMineralSubTitleLabel, backBtn;
     @FXML private ImageView icBack;
     @FXML private BuyMineralBodyController bodyController;
-    @FXML private BuyMineralReceiptController receiptController;
+    @FXML private ReceiptController receiptController;
 
     private boolean isScrolling;
 
@@ -43,6 +44,8 @@ public class BuyMineralController extends BasePopupController {
 
         languageSetting();
 
+        receiptSetting();
+
         bodyController.setHandelr(new BuyMineralBodyController.BuyMineralBodyImpl() {
             @Override
             public void settingLayoutData() {
@@ -50,9 +53,9 @@ public class BuyMineralController extends BasePopupController {
             }
         });
 
-        receiptController.setHandler(new BuyMineralReceiptController.BuyMineralReceiptImpl() {
+        receiptController.setHandler(new ReceiptController.ReceiptImpl() {
             @Override
-            public void transfer() {
+            public void send() {
                 String beneficiaryAddress = bodyController.getBeneficiaryAddress();
                 String fromAddress = bodyController.getPayerAddress();
                 BigInteger value = bodyController.getValue();
@@ -77,7 +80,9 @@ public class BuyMineralController extends BasePopupController {
                 });
             }
         });
-        receiptController.setSuccessed(false);
+
+
+
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -120,12 +125,29 @@ public class BuyMineralController extends BasePopupController {
             }
         });
 
+        settingLayoutData();
+
     }
 
     public void languageSetting(){
         buyMineralLabel.textProperty().bind(StringManager.getInstance().buymineral.buyMineralLabel);
         buyMineralSubTitleLabel.textProperty().bind(StringManager.getInstance().buymineral.buyMineralSubTitleLabel);
         backBtn.textProperty().bind(StringManager.getInstance().common.backButton);
+    }
+
+    public void receiptSetting(){
+        receiptController.addAddress();
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addMaskAddress();
+        receiptController.addVSpace(16);
+        receiptController.addTotalFee();
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addPayerAddress();
+        receiptController.setSuccessed(false);
     }
 
     public void settingLayoutData(){
@@ -136,7 +158,7 @@ public class BuyMineralController extends BasePopupController {
         String payerAddress = bodyController.getPayerAddress();
         receiptController.setAddress(beneficiary);
         receiptController.setMask(mask);
-        receiptController.setTotalFee(totalFee);
+        receiptController.setTotalFee(totalFee + "APIS");
         receiptController.setPayerAddress(payerAddress);
 
         receiptController.setSuccessed(bodyController.isSuccessed());

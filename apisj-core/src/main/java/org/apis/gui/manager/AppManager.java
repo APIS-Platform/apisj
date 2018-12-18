@@ -95,20 +95,14 @@ public class AppManager {
      *  KeyStoreManager Field : public
      * ============================================== */
     // File Read
-    public KeyStoreData openFileReader(){
-        KeyStoreData result = null;
+    public File openFileReader(){
         File selectFile = null;
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(SystemProperties.getDefault().keystoreDir()));
         selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
-        if(selectFile == null) {
-        } else {
-            result = KeyStoreManager.checkKeystoreFile(selectFile);
-        }
-
-        return result;
+        return selectFile;
     }
 
     // Directory Read

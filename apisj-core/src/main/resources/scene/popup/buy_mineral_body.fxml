@@ -113,7 +113,7 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="3">
                <children>
-                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="1.0" style="-fx-background-color: #e3e5e9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -369,7 +369,7 @@
                                                    <children>
                                                       <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../../image/ic_mnr_logo_20x23@2x.png" />
+                                                            <Image url="@../../image/ic_mnr_logo_22x22@2x.png" />
                                                          </image>
                                                          <GridPane.margin>
                                                             <Insets left="16.0" />

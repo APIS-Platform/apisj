@@ -54,7 +54,7 @@ public class PopupRecentAddressItemController implements Initializable {
         String fxId = ((Node)event.getSource()).getId();
         if("rootPane".equals(fxId)){
             if(handler != null){
-                handler.onMouseClicked(address.getText().trim());
+                handler.onMouseClicked(strAddress);
             }
         }
     }
@@ -92,7 +92,7 @@ public class PopupRecentAddressItemController implements Initializable {
     }
 
     public String getAddress() {
-        return this.address.getText().trim();
+        return this.strAddress;
     }
 
     public interface PopupRecentAddressItemImpl{

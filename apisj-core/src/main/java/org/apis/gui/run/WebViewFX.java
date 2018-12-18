@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.apis.util.ConsoleUtil;
 
-public class WebViewFx  extends Application {
+public class WebViewFX extends Application {
 
     public static void main(String[] args) {
         launch(args);

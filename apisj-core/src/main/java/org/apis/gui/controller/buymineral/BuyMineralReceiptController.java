@@ -20,6 +20,8 @@ public class BuyMineralReceiptController extends BaseViewController {
     @FXML private AnchorPane maskPane;
     @FXML private GridPane btnPay;
 
+    private boolean isSuccessed;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -28,11 +30,15 @@ public class BuyMineralReceiptController extends BaseViewController {
         btnPay.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(handler != null){
-                    handler.transfer();
+                if(isSuccessed){
+                    if(handler != null){
+                        handler.transfer();
+                    }
                 }
             }
         });
+
+        setSuccessed(false);
     }
 
     public void languageSetting(){
@@ -68,20 +74,19 @@ public class BuyMineralReceiptController extends BaseViewController {
         toAddress.setText(payerAddress);
     }
 
+    public void setSuccessed(boolean isSuccessed) {
+        this.isSuccessed = isSuccessed;
+        if(isSuccessed){
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cb01e1e);
+        }else{
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);
+        }
+    }
+
 
     private BuyMineralReceiptImpl handler;
     public void setHandler(BuyMineralReceiptImpl handler){
         this.handler = handler;
-    }
-
-    public void setSuccessed(boolean isSuccessed) {
-        if(isSuccessed){
-            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cb01e1e);
-            btnPay.setDisable(false);
-        }else{
-            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);
-            btnPay.setDisable(true);
-        }
     }
 
     public interface BuyMineralReceiptImpl {
