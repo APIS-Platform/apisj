@@ -1115,18 +1115,21 @@ public class IntroController extends BaseViewController {
         KeyStoreData result = null;
         if(selectFile == null) {
         } else {
+            keystoreFileName = selectFile.getName();
             result = KeyStoreManager.checkKeystoreFile(selectFile);
         }
 
         if(selectFile == null) {
             // Nothing to do
         } else if(result != null) {
+            keystoreJsonData = result.toString();
             keystoreFileDragZone.setImage(keystoreFileCorrect);
             dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(keystoreFileName);
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(false);
         } else {
+            keystoreJsonData = "";
             keystoreFileDragZone.setImage(keystoreFileWrong);
             dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(keystoreFileName);
@@ -1171,7 +1174,7 @@ public class IntroController extends BaseViewController {
                     keystoreFileNameGrid.setVisible(true);
                     keystoreFileMessage.setVisible(false);
                 }else {
-                    keystoreJsonData = null;
+                    keystoreJsonData = "";
                     keystoreFileDragZone.setImage(keystoreFileWrong);
                     dragDropGrid.setVisible(false);
                     keystoreFileNameLabel.setText(keystoreFileName);
