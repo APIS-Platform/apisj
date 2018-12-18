@@ -15,7 +15,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
@@ -95,7 +95,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         this.warningLabel.setVisible(false);
 
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -124,7 +124,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

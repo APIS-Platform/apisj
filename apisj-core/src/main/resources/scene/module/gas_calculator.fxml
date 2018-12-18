@@ -160,6 +160,9 @@
                                  <image>
                                     <Image url="@../../image/btn_box_plus@2x.png" />
                                  </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                               <ImageView fx:id="gasPriceMinusBtn" fitHeight="22.0" fitWidth="22.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -168,6 +171,9 @@
                                  <VBox.margin>
                                     <Insets top="-1.0" />
                                  </VBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                            <GridPane.margin>

@@ -1,4 +1,4 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.selectbox;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

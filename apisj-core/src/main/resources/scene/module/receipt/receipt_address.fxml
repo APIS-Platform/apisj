@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,7 +16,10 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
    </rowConstraints>
    <children>
-      <Label fx:id="title" styleClass="font_semibold_12" text="Address : " textFill="#999999" />
-      <Label fx:id="address" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
+      <Label fx:id="titleLabel" styleClass="font_semibold_12" text="Address : " textFill="#999999" />
+      <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textAlignment="RIGHT" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Label>
    </children>
 </GridPane>

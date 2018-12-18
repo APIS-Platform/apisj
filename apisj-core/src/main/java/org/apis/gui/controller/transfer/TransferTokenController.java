@@ -75,10 +75,6 @@ public class TransferTokenController extends BaseViewController {
                 settingLayoutData();
             }
 
-            @Override
-            public void changeGasPricePopup(boolean isVisible){
-
-            }
         });
 
         recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {

@@ -1,5 +1,7 @@
 package org.apis.gui.controller.buymineral;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -16,9 +18,10 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.InputConditionManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
@@ -61,14 +64,13 @@ public class BuyMineralBodyController extends BaseViewController {
         AppManager.settingTextFieldStyle(beneficiaryTextField);
         AppManager.settingTextFieldStyle(chargeAmount);
 
-        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        beneficiaryTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(handelr != null){
-                    handelr.settingLayoutData();
-                }
+        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+
+
+        beneficiaryTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(handelr != null){
+                handelr.settingLayoutData();
             }
         });
 
@@ -111,11 +113,6 @@ public class BuyMineralBodyController extends BaseViewController {
             @Override
             public void gasPriceSliderChangeValue(int value) {
                 settingLayoutData();
-            }
-
-            @Override
-            public void changeGasPricePopup(boolean isVisible){
-
             }
         });
 

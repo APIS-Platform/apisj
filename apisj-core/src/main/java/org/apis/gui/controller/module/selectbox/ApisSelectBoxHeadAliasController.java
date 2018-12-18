@@ -1,4 +1,4 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.selectbox;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -12,9 +12,9 @@ import org.apis.gui.model.base.BaseModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxHeadAddressController extends BaseSelectBoxHeaderController {
+public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderController{
 
-    @FXML private Label  addressLabel, maskLabel;
+    @FXML private Label aliasLabel, addressLabel, maskLabel;
     @FXML private ImageView icon, icKnowledgekey;
 
     @Override
@@ -29,9 +29,15 @@ public class ApisSelectBoxHeadAddressController extends BaseSelectBoxHeaderContr
     @Override
     public void setModel(BaseModel model) {
         this.itemModel = (SelectBoxItemModel)model;
+
         if(model != null) {
-            addressLabel.setText(this.itemModel.getAddress());
-            maskLabel.setText(this.itemModel.getMask());
+            aliasLabel.textProperty().unbind();
+            addressLabel.textProperty().unbind();
+            maskLabel.textProperty().unbind();
+
+            aliasLabel.textProperty().bind(this.itemModel.aliasProperty());
+            addressLabel.textProperty().bind(this.itemModel.addressProperty());
+            maskLabel.textProperty().bind(this.itemModel.maskProperty());
             icon.setImage(this.itemModel.getIdenticon());
 
             // 보안키 체크

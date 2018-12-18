@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -67,14 +66,16 @@
                               </GridPane>
                            </children>
                         </GridPane>
-                        <ImageView fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                        <ImageView fitWidth="54.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                            <image>
                               <Image url="@../../../image/apis_logo@2x.png" />
                            </image>
+                           <GridPane.margin>
+                              <Insets top="8.0" />
+                           </GridPane.margin>
                         </ImageView>
                      </children>
                   </GridPane>
-                  <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: e3e5e9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" />
                </children>
             </AnchorPane>
             <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">

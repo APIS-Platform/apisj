@@ -1,10 +1,12 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.selectbox;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
+import org.apis.gui.controller.base.BaseSelectBoxItemController;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -12,8 +14,10 @@ import org.apis.gui.model.base.BaseModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderController{
+public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemController {
+    private SelectBoxItemModel model = new SelectBoxItemModel();
 
+    @FXML private AnchorPane rootPane;
     @FXML private Label aliasLabel, addressLabel, maskLabel;
     @FXML private ImageView icon, icKnowledgekey;
 
@@ -28,17 +32,19 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
 
     @Override
     public void setModel(BaseModel model) {
-        this.itemModel = (SelectBoxItemModel)model;
+        this.model.set((SelectBoxItemModel)model);
+        SelectBoxItemModel itemModel = this.model;
 
         if(model != null) {
             aliasLabel.textProperty().unbind();
             addressLabel.textProperty().unbind();
             maskLabel.textProperty().unbind();
 
-            aliasLabel.textProperty().bind(this.itemModel.aliasProperty());
-            addressLabel.textProperty().bind(this.itemModel.addressProperty());
-            maskLabel.textProperty().bind(this.itemModel.maskProperty());
-            icon.setImage(this.itemModel.getIdenticon());
+            aliasLabel.textProperty().bind(itemModel.aliasProperty());
+            addressLabel.textProperty().bind(itemModel.addressProperty());
+            maskLabel.textProperty().bind(itemModel.maskProperty());
+
+            icon.setImage(itemModel.getIdenticon());
 
             // 보안키 체크
             if(itemModel.isUsedProofKey()){
@@ -50,5 +56,25 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
             }
 
         }
+    }
+    @Override
+    public BaseModel getModel(){
+        return this.model;
+    }
+
+    public void onMouseEntered(){
+        rootPane.setStyle("-fx-background-color: f8f8fb");
+    }
+
+    public void onMouseExited(){
+        rootPane.setStyle("-fx-background-color: transparent");
+    }
+
+    @FXML
+    public void onMouseClicked(InputEvent event){
+        if(handler != null){
+            handler.onMouseClicked(this.model);
+        }
+        event.consume();
     }
 }

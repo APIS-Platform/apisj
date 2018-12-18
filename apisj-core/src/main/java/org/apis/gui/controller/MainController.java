@@ -81,13 +81,16 @@ public class MainController extends BaseViewController {
                 }else if(newValue.equals("KOR")){
                     AppManager.saveGeneralProperties("language", "KOR");
                     StringManager.getInstance().changeBundleKor();
-                }else if(newValue.equals("CHN")){
+                }
+                /*
+                else if(newValue.equals("CHN")){
                     AppManager.saveGeneralProperties("language", "CHN");
                     StringManager.getInstance().changeBundleChn();
                 }else if(newValue.equals("JPN")){
                     AppManager.saveGeneralProperties("language", "JPN");
                     StringManager.getInstance().changeBundleJpn();
                 }
+                */
             }
         });
         selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
@@ -315,7 +318,7 @@ public class MainController extends BaseViewController {
             }
         });
         tabMenuController.selectedMenu(MainTab.WALLET.num);
-        tabMenuController.setFontSize14();
+        tabMenuController.setFontSize14(40);
 
         this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override

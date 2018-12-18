@@ -897,7 +897,7 @@ public class WalletController extends BaseViewController {
             }
         });
         this.tabMenuController.selectedMenu(TAB_TOP_TYPE_APIS);
-        this.tabMenuController.setFontSize14();
+        this.tabMenuController.setFontSize14(20);
         this.tabMenuController.setHSpace(20);
 
         this.walletListTabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
@@ -907,7 +907,7 @@ public class WalletController extends BaseViewController {
             }
         });
         this.walletListTabMenuController.selectedMenu(TAB_LIST_TYPE_WALLET);
-        this.walletListTabMenuController.setFontSize14();
+        this.walletListTabMenuController.setFontSize14(20);
         this.walletListTabMenuController.setHSpace(20);
 
         this.rewardTooltip.setVisible(false);

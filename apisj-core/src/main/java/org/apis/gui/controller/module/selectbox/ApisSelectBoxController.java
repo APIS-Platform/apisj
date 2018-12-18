@@ -1,9 +1,6 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.selectbox;
 
-import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -15,7 +12,6 @@ import javafx.scene.layout.VBox;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
@@ -28,7 +24,6 @@ import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +32,7 @@ import java.util.ResourceBundle;
 
 public class ApisSelectBoxController extends BaseViewController {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
-    public static final int SELECT_BOX_TYPE_ADDRESS = 1;
-    public static final int SELECT_BOX_TYPE_DOMAIN = 2;
+    public static final int SELECT_BOX_TYPE_DOMAIN = 1;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
     @FXML private AnchorPane rootPane;
@@ -89,7 +83,6 @@ public class ApisSelectBoxController extends BaseViewController {
         // 도메인 목록이 필요한 타입 = { SELECT_BOX_TYPE_DOMAIN }
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS :
-            case SELECT_BOX_TYPE_ADDRESS :
                 for (int i = 0; i < AppManager.getInstance().getKeystoreExpList().size(); i++) {
                     KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -203,8 +196,6 @@ public class ApisSelectBoxController extends BaseViewController {
     public void setSelectBoxType(int boxType){
         if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
             this.scrollPane.maxHeightProperty().setValue(170);
-        }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
-            this.scrollPane.maxHeightProperty().setValue(162);
         }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
             this.scrollPane.maxHeightProperty().setValue(162);
         }
@@ -214,11 +205,9 @@ public class ApisSelectBoxController extends BaseViewController {
 
             String fxmlUrl = null;
             if(boxType == SELECT_BOX_TYPE_ALIAS){
-                fxmlUrl = "module/apis_selectbox_head_alias.fxml";
-            }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
-                fxmlUrl = "module/apis_selectbox_head_address.fxml";
+                fxmlUrl = "module/selectbox/apis_selectbox_head_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
-                fxmlUrl = "module/apis_selectbox_head_domain.fxml";
+                fxmlUrl = "module/selectbox/apis_selectbox_head_domain.fxml";
             }
 
             if(headerFxml == null) {
@@ -241,13 +230,11 @@ public class ApisSelectBoxController extends BaseViewController {
     }
     public void addItem(int boxType, SelectBoxItemModel model){
         try {
-            String itemUrl = "module/apis_selectbox_item_alias.fxml";
+            String itemUrl = "module/selectbox/apis_selectbox_item_alias.fxml";
             if(boxType == SELECT_BOX_TYPE_ALIAS){
-                itemUrl = "module/apis_selectbox_item_alias.fxml";
-            }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
-                itemUrl = "module/apis_selectbox_item_address.fxml";
+                itemUrl = "module/selectbox/apis_selectbox_item_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
-                itemUrl = "module/apis_selectbox_item_domain.fxml";
+                itemUrl = "module/selectbox/apis_selectbox_item_domain.fxml";
             }
             BaseFxmlController itemFxml = new BaseFxmlController(itemUrl);
             BaseSelectBoxItemController itemController = (BaseSelectBoxItemController)itemFxml.getController();
@@ -285,8 +272,6 @@ public class ApisSelectBoxController extends BaseViewController {
         }else{
             if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
                 this.rootPane.prefHeightProperty().setValue(56);
-            }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
-                this.rootPane.prefHeightProperty().setValue(44);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
                 this.rootPane.prefHeightProperty().setValue(44);
             }
