@@ -560,13 +560,14 @@ public class BlockMiner {
         List<Block> minedBlocks = new ArrayList<>();
         minedBlocks.add(newBlock);
         Block parentBlock = newBlock;
+        long parentTimestamp = parentBlock.getTimestamp();
         for(int i = 0; i < 4 && parentBlock.getNumber() > 1; i++) {
             parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             minedBlocks.add(0, parentBlock);
         }
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
-        if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
+        if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks) || newBlock.getTimestamp() - parentTimestamp > 20) {
             Block parent = blockStore.getBlockByHash(newBlock.getParentHash());
 
             // 너무 오랜 시간이 지났으면, 일단 채굴한 블럭을 체인에 연결한다.
