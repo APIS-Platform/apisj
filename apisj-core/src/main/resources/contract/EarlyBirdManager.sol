@@ -453,7 +453,7 @@ contract EarlyBirdManager is Owners {
     using SafeMath for uint256;
 
 
-    event EarlyBirdRegister(address participant, address masternode, uint256 collateral);
+    event EarlyBirdRegister(address participant, address masternode, address recipient, uint256 collateral);
     event MasternodeCancel (address participant, address masternode, uint256 collateral);
 
 
@@ -739,6 +739,41 @@ contract EarlyBirdManager is Owners {
     }
 
 
+    function registerGeneral(address participant, address recipient)
+    public
+    payable
+    onlyWorker
+    registrableBlockNumber                      // 신청 가능한 블록인지 확인
+    validCollateral(COLLATERAL_GENERAL)         // 컨트렉트에 담보 금액이 충분한지 확인
+    enoughMasternodeSpace(COLLATERAL_GENERAL)   // 해당 담보금액의 마스터노드 수에 여유가 있는지
+    {
+        earlyBirdRegister(participant, recipient, COLLATERAL_GENERAL);
+    }
+
+    function registerMajor (address participant, address recipient)
+    public
+    payable
+    onlyWorker
+    registrableBlockNumber
+    validCollateral(COLLATERAL_MAJOR)
+    enoughMasternodeSpace(COLLATERAL_MAJOR)
+    {
+        earlyBirdRegister(participant, recipient, COLLATERAL_MAJOR);
+    }
+
+    function registerPrivate (address participant, address recipient)
+    public
+    payable
+    onlyWorker
+    registrableBlockNumber
+    validCollateral(COLLATERAL_PRIVATE)
+    enoughMasternodeSpace(COLLATERAL_PRIVATE)
+    {
+        earlyBirdRegister(participant, recipient, COLLATERAL_PRIVATE);
+    }
+
+
+
 
     /**
      * @dev 마스터노드 상품에 얼리버드로 참여한다.
@@ -746,13 +781,8 @@ contract EarlyBirdManager is Owners {
      * @param participant 참여자의 주소 (플랫폼의 입금 주소)
      * @param collateral 참여자의 담보금액 (50,000APIS, 200,000APIS, 500,000APIS)
      */
-    function earlyBirdRegister(address participant, uint256 collateral)
-    public
-    payable
-    onlyWorker
-    registrableBlockNumber ()           // 신청 가능한 블록인지 확인
-    validCollateral (collateral)        // 컨트렉트에 담보 금액이 충분한지 확인
-    enoughMasternodeSpace(collateral)   // 해당 담보금액의 마스터노드 수에 여유가 있는지
+    function earlyBirdRegister(address participant, address recipient, uint256 collateral)
+    internal
     {
         uint32 round = getRound();
         uint32 nonce = participationNonce[participant] + 1;
@@ -787,7 +817,7 @@ contract EarlyBirdManager is Owners {
 
         participationNonce[participant] = nonce;
 
-        emit EarlyBirdRegister(participant, masternode, collateral);
+        emit EarlyBirdRegister(participant, masternode, recipient, collateral);
     }
 
 

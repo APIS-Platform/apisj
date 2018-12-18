@@ -628,12 +628,12 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(eventName.equals("EarlyBirdRegister")) {
                 byte[] participant  = (byte[]) event.args[0];
                 byte[] masternode   = (byte[]) event.args[1];
-                BigInteger collateral = (BigInteger)event.args[2] ;
+                byte[] recipient = (byte[])event.args[2] ;
+                BigInteger collateral = (BigInteger)event.args[3];
 
-                // prevMasternode 주소가 0x0 인 경우, 이번 라운드의 첫번째 마스터노드 등록인 경우다.
                 MasternodeSize sizeofEarlyBird = sizeofMasterNode(getEarlyBirdBaseAddress(collateral, constants));
                 if(sizeofEarlyBird.getSize() < constants.getMASTERNODE_LIMIT(collateral)) {
-                    insertMnState(sizeofEarlyBird.getLastNode(), masternode, blockNumber, collateral, participant);
+                    insertMnState(sizeofEarlyBird.getLastNode(), masternode, blockNumber, collateral, recipient);
                 }
 
                 return;
