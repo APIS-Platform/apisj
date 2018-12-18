@@ -1026,7 +1026,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return isValid;
     }
 
-    private boolean isValidMasterNodeTx(Repository repo, Transaction tx, long blockNumber) {
+    private boolean isValidMasterNodeTx(Repository repo, Transaction tx) {
         if(tx.getReceiveAddress() == null) {
             return false;
         }
@@ -1232,7 +1232,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             if(summary != null) {
                 // 마스터노드 상태를 업데이트하는 tx일 경우
-                if(isValidMasterNodeTx(txTrack, tx, block.getNumber())) {
+                if(isValidMasterNodeTx(txTrack, tx)) {
                     txTrack.updateMasterNode(tx, block.getNumber());
                 }
                 // AddressMasking 관련 tx인 경우

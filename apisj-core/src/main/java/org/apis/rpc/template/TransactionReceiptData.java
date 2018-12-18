@@ -5,8 +5,8 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
 import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
+import org.apis.vm.program.InternalTransaction;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -42,6 +42,8 @@ public class TransactionReceiptData {
      * block number where this transaction was in.
      */
     private long blockNumber;
+
+    private String timestamp;
 
     /**
      * 20 Bytes - address of the sender.
@@ -99,6 +101,8 @@ public class TransactionReceiptData {
      */
     private List<LogInfoData> logs;
 
+    private List<InternalTransactionData> internalTransactions;
+
     /**
      * 256 Bytes - Bloom filter for light clients toAddress quickly retrieve related logs.
      */
@@ -112,9 +116,19 @@ public class TransactionReceiptData {
         this.blockNumber = block.getNumber();
 
         this.blockHash = toHexString0x(info.getBlockHash());
+
+        this.timestamp = String.valueOf(block.getTimestamp());
+
+
+        if(info.getReceipt().getInternalTransactionList().size() > 0) {
+            this.internalTransactions = new ArrayList<>();
+            for(InternalTransaction itx : info.getReceipt().getInternalTransactionList()) {
+                this.internalTransactions.add(new InternalTransactionData(itx, block));
+            }
+        }
     }
 
-    public TransactionReceiptData(TransactionReceipt receipt) {
+    private TransactionReceiptData(TransactionReceipt receipt) {
         Transaction tx = receipt.getTransaction();
 
         this.transactionHash = toHexString0x(tx.getHash());
@@ -173,7 +187,6 @@ public class TransactionReceiptData {
         this.status = toHexString0x(receipt.getPostTxState());
     }
 
-
     @Override
     public String toString() {
         return "TransactionReceiptData{" +
@@ -182,6 +195,7 @@ public class TransactionReceiptData {
                 ", transactionIndex=" + transactionIndex +
                 ", blockHash='" + blockHash + '\'' +
                 ", blockNumber=" + blockNumber +
+                ", timestamp='" + timestamp + '\'' +
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
@@ -200,6 +214,7 @@ public class TransactionReceiptData {
                 ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
                 ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +
                 ", logs=" + logs +
+                ", internalTransactions=" + internalTransactions +
                 ", logsBloom='" + logsBloom + '\'' +
                 '}';
     }
