@@ -124,49 +124,49 @@ public class Start {
          */
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-            logger.debug(ConsoleUtil.colorBBlue("OnBlock : " + block.getShortDescr()));
-
-            Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
-
-            logger.debug(ConsoleUtil.colorYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE()))));
-
-            List<byte[]> generalEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
-            List<byte[]> generalRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL());
-            List<byte[]> generalLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
-
-            List<byte[]> majorEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_MAJOR());
-            List<byte[]> majorRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_MAJOR());
-            List<byte[]> majorLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
-
-            List<byte[]> privateEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_PRIVATE());
-            List<byte[]> privateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-            List<byte[]> privateLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
-
-            logger.debug(ConsoleUtil.colorYellow("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
-            logger.debug(ConsoleUtil.colorYellow("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size()));
-            logger.debug(ConsoleUtil.colorYellow("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size()));
-
-            generalEarlyRepo.addAll(generalRepo);
-            generalEarlyRepo.addAll(generalLateRepo);
-            majorEarlyRepo.addAll(majorRepo);
-            majorEarlyRepo.addAll(majorLateRepo);
-            privateEarlyRepo.addAll(privateRepo);
-            privateEarlyRepo.addAll(privateLateRepo);
-            logger.debug(ConsoleUtil.colorYellow("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
-
-            //if(block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
-            if(constants.isMasternodeRewardTime(block.getNumber())) {
-                logger.debug(ConsoleUtil.colorCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size()));
-            }
-
-
-
-
-            SecureRandom rnd = new SecureRandom();
-
-            if(synced && block.getNumber() > 10) {
-                //generateTransactions(rnd.nextInt(77));
-            }
+//            logger.debug(ConsoleUtil.colorBBlue("OnBlock : " + block.getShortDescr()));
+//
+//            Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+//
+//            logger.debug(ConsoleUtil.colorYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE()))));
+//
+//            List<byte[]> generalEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+//            List<byte[]> generalRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL());
+//            List<byte[]> generalLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+//
+//            List<byte[]> majorEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_MAJOR());
+//            List<byte[]> majorRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_MAJOR());
+//            List<byte[]> majorLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+//
+//            List<byte[]> privateEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_PRIVATE());
+//            List<byte[]> privateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+//            List<byte[]> privateLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+//
+//            logger.debug(ConsoleUtil.colorYellow("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
+//            logger.debug(ConsoleUtil.colorYellow("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size()));
+//            logger.debug(ConsoleUtil.colorYellow("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size()));
+//
+//            generalEarlyRepo.addAll(generalRepo);
+//            generalEarlyRepo.addAll(generalLateRepo);
+//            majorEarlyRepo.addAll(majorRepo);
+//            majorEarlyRepo.addAll(majorLateRepo);
+//            privateEarlyRepo.addAll(privateRepo);
+//            privateEarlyRepo.addAll(privateLateRepo);
+//            logger.debug(ConsoleUtil.colorYellow("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
+//
+//            //if(block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
+//            if(constants.isMasternodeRewardTime(block.getNumber())) {
+//                logger.debug(ConsoleUtil.colorCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size()));
+//            }
+//
+//
+//
+//
+//            SecureRandom rnd = new SecureRandom();
+//
+//            if(synced && block.getNumber() > 10) {
+//                //generateTransactions(rnd.nextInt(77));
+//            }
         }
     };
 

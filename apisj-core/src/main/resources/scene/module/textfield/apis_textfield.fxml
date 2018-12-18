@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTextFieldController">
+<AnchorPane stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.textfield.ApisTextFieldController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -43,7 +43,7 @@
                <children>
                   <ImageView fx:id="keyboardBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                      <image>
-                        <Image url="@../../image/ic_keyboard_gray.png" />
+                        <Image url="@../../../image/ic_keyboard_gray.png" />
                      </image>
                      <cursor>
                         <Cursor fx:constant="HAND" />
@@ -57,7 +57,7 @@
                         <Insets left="8.0" />
                      </GridPane.margin>
                      <image>
-                        <Image url="@../../image/ic_private@2x.png" />
+                        <Image url="@../../../image/ic_private@2x.png" />
                      </image>
                      <cursor>
                         <Cursor fx:constant="HAND" />
@@ -68,7 +68,7 @@
                         <Insets left="8.0" />
                      </GridPane.margin>
                      <image>
-                        <Image url="@../../image/ic_circle_cross_red@2x.png" />
+                        <Image url="@../../../image/ic_circle_cross_red@2x.png" />
                      </image>
                      <cursor>
                         <Cursor fx:constant="HAND" />
@@ -87,7 +87,7 @@
                <children>
                   <ImageView fx:id="messageImg" fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../image/ic_error_red@2x.png" />
+                        <Image url="@../../../image/ic_error_red@2x.png" />
                      </image></ImageView>
                   <Label fx:id="messageLabel" styleClass="font_semibold_12" text="Please check your password." textFill="#910000" GridPane.columnIndex="1">
                      <font>
@@ -103,7 +103,7 @@
                </GridPane.margin>
             </GridPane>
             <AnchorPane id="abcd" fx:id="oskPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" translateY="10.0" visible="false" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                <fx:include fx:id="osk" source="on_screen_keyboard.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <fx:include fx:id="osk" source="../on_screen_keyboard.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </AnchorPane>
          </children>
       </GridPane>

@@ -6,14 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.AddressLabelController;
-import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;

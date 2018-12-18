@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
