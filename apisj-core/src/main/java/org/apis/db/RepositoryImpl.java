@@ -626,7 +626,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
             // 얼리버드 등록
             if(eventName.equals("EarlyBirdRegister")) {
-                byte[] participant  = (byte[]) event.args[0];
                 byte[] masternode   = (byte[]) event.args[1];
                 byte[] recipient = (byte[])event.args[2] ;
                 BigInteger collateral = (BigInteger)event.args[3];
