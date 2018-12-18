@@ -1110,34 +1110,29 @@ public class IntroController extends BaseViewController {
         // Reset File data before Validation
         keystoreJsonData = "";
 
-        KeyStoreData data = AppManager.getInstance().openFileReader();
+        File selectFile = AppManager.getInstance().openFileReader();
 
-        if(data != null){
+        KeyStoreData result = null;
+        if(selectFile == null) {
+        } else {
+            result = KeyStoreManager.checkKeystoreFile(selectFile);
+        }
+
+        if(selectFile == null) {
+            // Nothing to do
+        } else if(result != null) {
             keystoreFileDragZone.setImage(keystoreFileCorrect);
             dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(keystoreFileName);
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(false);
-        }else{
+        } else {
             keystoreFileDragZone.setImage(keystoreFileWrong);
             dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(keystoreFileName);
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(true);
         }
-
-//        if (result.equals("FileException")) {
-//            keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
-//            dragDropGrid.setVisible(true);
-//            keystoreFileNameGrid.setVisible(false);
-//            keystoreFileMessage.setVisible(false);
-//        } else if (result.equals("IncorrectFileForm")) {
-//
-//        } else if (result.equals("CancelFileChooser")) {
-//            // Nothing to do
-//        } else {
-//
-//        }
 
         if(loadWalletPhaseThreeTypeFilePwController.getText().length() > 0) {
             loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
@@ -1165,20 +1160,18 @@ public class IntroController extends BaseViewController {
             keystoreFilePath = null;
             if(db.getFiles() != null && db.getFiles().size() > 0) {
                 keystoreFilePath = db.getFiles().get(0).getAbsolutePath();
-
                 File file = new File(keystoreFilePath);
                 keystoreFileName = file.getName();
-
                 KeyStoreData result = KeyStoreManager.getInstance().checkKeystoreFile(file);
-                keystoreJsonData = result.toString();
-
                 if(result != null){
+                    keystoreJsonData = result.toString();
                     keystoreFileDragZone.setImage(keystoreFileCorrect);
                     dragDropGrid.setVisible(false);
                     keystoreFileNameLabel.setText(keystoreFileName);
                     keystoreFileNameGrid.setVisible(true);
                     keystoreFileMessage.setVisible(false);
                 }else {
+                    keystoreJsonData = null;
                     keystoreFileDragZone.setImage(keystoreFileWrong);
                     dragDropGrid.setVisible(false);
                     keystoreFileNameLabel.setText(keystoreFileName);
