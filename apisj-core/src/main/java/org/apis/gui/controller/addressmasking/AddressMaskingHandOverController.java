@@ -12,7 +12,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
@@ -50,8 +50,8 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
         AppManager.settingTextFieldStyle(handedAddressTextField);
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
 
         selectAddressController.setHandler(selectBoxImpl);
         selectAddressController.selectedItem(0);
@@ -69,12 +69,6 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
-
-            }
-
-            @Override
-            public void changeGasPricePopup(boolean isVisible){
-
             }
         });
 

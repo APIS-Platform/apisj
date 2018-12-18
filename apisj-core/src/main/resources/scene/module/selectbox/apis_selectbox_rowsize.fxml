@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisSelectBoxRowsizeController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxRowsizeController">
    <children>
       <AnchorPane fx:id="pSelectBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -33,7 +33,7 @@
                               <Insets left="2.0" />
                            </GridPane.margin>
                            <image>
-                              <Image url="@../../image/ic_down_black@2x.png" />
+                              <Image url="@../../../image/ic_down_black@2x.png" />
                            </image>
                         </ImageView>
                      </children>

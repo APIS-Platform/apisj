@@ -21,14 +21,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import org.apis.config.Constants;
-import org.apis.config.SystemProperties;
-import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.*;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
@@ -127,11 +125,6 @@ public class SmartContractUpdaterController extends BaseViewController {
                 if(handler != null){
                     handler.onAction();
                 }
-            }
-
-            @Override
-            public void changeGasPricePopup(boolean isVisible){
-
             }
 
         });

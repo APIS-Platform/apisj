@@ -88,7 +88,7 @@ public class SmartContractController extends BaseViewController {
 
         // handler init
         tabMenuController.setHandler(tabMenuImpl);
-        tabMenuController.setFontSize14();
+        tabMenuController.setFontSize14(20);
         smartContractDeployController.setHandler(smartContractDeployImpl);
         smartContractCallSendController.setHandler(smartContractCallSendImpl);
         smartContractUpdaterController.setHandler(smartContractUpdaterImpl);

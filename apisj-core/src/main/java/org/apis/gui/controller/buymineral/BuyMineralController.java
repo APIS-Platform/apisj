@@ -16,6 +16,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -53,6 +54,8 @@ public class BuyMineralController extends BasePopupController {
             }
         });
 
+        receiptController.setTitle(StringManager.getInstance().receipt.totalFee);
+        receiptController.setButtonTitle(StringManager.getInstance().common.payButton);
         receiptController.setHandler(new ReceiptController.ReceiptImpl() {
             @Override
             public void send() {
@@ -80,8 +83,6 @@ public class BuyMineralController extends BasePopupController {
                 });
             }
         });
-
-
 
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
@@ -136,11 +137,11 @@ public class BuyMineralController extends BasePopupController {
     }
 
     public void receiptSetting(){
-        receiptController.addAddress();
+        receiptController.addBeneficiaryAddress();
         receiptController.addVSpace(16);
         receiptController.addLineStyleDotted();
         receiptController.addVSpace(16);
-        receiptController.addMaskAddress();
+        receiptController.addAmount();
         receiptController.addVSpace(16);
         receiptController.addTotalFee();
         receiptController.addVSpace(16);
@@ -153,12 +154,12 @@ public class BuyMineralController extends BasePopupController {
     public void settingLayoutData(){
 
         String beneficiary = bodyController.getBeneficiaryAddress();
-        String mask = bodyController.getMask();
+        String amount = ApisUtil.readableApis(bodyController.getValue(),',',true);
         String totalFee = bodyController.getTotalFee();
         String payerAddress = bodyController.getPayerAddress();
-        receiptController.setAddress(beneficiary);
-        receiptController.setMask(mask);
-        receiptController.setTotalFee(totalFee + "APIS");
+        receiptController.setBeneficiaryAddress(beneficiary);
+        receiptController.setAmount(amount);
+        receiptController.setTotalFee(totalFee + " APIS");
         receiptController.setPayerAddress(payerAddress);
 
         receiptController.setSuccessed(bodyController.isSuccessed());

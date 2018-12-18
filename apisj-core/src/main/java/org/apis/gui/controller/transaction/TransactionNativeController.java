@@ -1,6 +1,5 @@
 package org.apis.gui.controller.transaction;
 
-import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,19 +21,16 @@ import org.apis.db.sql.TokenRecord;
 import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxRowsizeController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxRowsizeController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
-import org.spongycastle.util.encoders.DecoderException;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;

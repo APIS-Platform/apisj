@@ -19,7 +19,7 @@ import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.AddressLabelController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
@@ -395,7 +395,7 @@ public class PopupMaskingController extends BasePopupController {
         introNavi = new Image("image/ic_nav@2x.png");
         introNaviCircle = new Image("image/ic_nav_circle@2x.png");
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -419,7 +419,7 @@ public class PopupMaskingController extends BasePopupController {
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

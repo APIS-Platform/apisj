@@ -81,12 +81,12 @@
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                        <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <ImageView fx:id="selectContractIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <GridPane.margin>
-                              <Insets bottom="15.0" left="15.0" right="8.0" top="15.0" />
+                              <Insets left="15.0" right="8.0" />
                            </GridPane.margin>
                            <image>
                               <Image url="@../../image/ic_circle_grey@2x.png" />
@@ -354,7 +354,7 @@
             </AnchorPane>
             <AnchorPane fx:id="cnstAddrSelect1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                <children>
-                  <fx:include fx:id="selectWallet" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include fx:id="selectWallet" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>

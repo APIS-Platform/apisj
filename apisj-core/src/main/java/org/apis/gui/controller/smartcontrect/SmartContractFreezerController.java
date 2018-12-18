@@ -1,6 +1,5 @@
 package org.apis.gui.controller.smartcontrect;
 
-import com.google.zxing.WriterException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -14,10 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -80,11 +78,6 @@ public class SmartContractFreezerController extends BaseViewController {
                 if(handler != null){
                     handler.onAction();
                 }
-            }
-
-            @Override
-            public void changeGasPricePopup(boolean isVisible){
-
             }
         });
 

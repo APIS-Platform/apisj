@@ -1,5 +1,6 @@
 package org.apis.gui.controller.module.receipt;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -20,14 +21,16 @@ public class ReceiptController extends BaseViewController {
 
     @FXML private GridPane button;
     @FXML private VBox itemList;
-    @FXML private Label buttonLabel;
+    @FXML private Label title, buttonLabel;
 
 
     private ReceiptAddressController addressController;
+    private ReceiptAddressController beneficiaryAddressController;
     private ReceiptAddressController payerAddressController;
+    private ReceiptItemController amountItemController;
     private ReceiptItemController maskItemController;
     private ReceiptItemController totalFeeItemController;
-    private String address, payerAddress, mask, totalFee, fee;
+    private String address, beneficiaryAddress, payerAddress, amount, mask, totalFee, fee;
     private boolean isSuccessed;
 
     @Override
@@ -54,8 +57,16 @@ public class ReceiptController extends BaseViewController {
             addressController.setAddress(address);
         }
 
+        if(beneficiaryAddressController != null){
+            beneficiaryAddressController.setAddress(beneficiaryAddress);
+        }
+
         if(payerAddressController != null){
             payerAddressController.setAddress(payerAddress);
+        }
+
+        if(amountItemController != null){
+            amountItemController.setValue(amount);
         }
 
         if(maskItemController != null){
@@ -65,6 +76,16 @@ public class ReceiptController extends BaseViewController {
         if(totalFeeItemController != null){
             totalFeeItemController.setValue(totalFee);
         }
+    }
+
+    public void setTitle(SimpleStringProperty title){
+        this.title.textProperty().unbind();
+        this.title.textProperty().bind(title);
+    }
+
+    public void setButtonTitle(SimpleStringProperty btn){
+        this.buttonLabel.textProperty().unbind();
+        this.buttonLabel.textProperty().bind(btn);
     }
 
     public void addAddress(){
@@ -78,12 +99,34 @@ public class ReceiptController extends BaseViewController {
         }
     }
 
+    public void addBeneficiaryAddress(){
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_address.fxml");
+            itemList.getChildren().add(fxmlController.getNode());
+            beneficiaryAddressController = (ReceiptAddressController)fxmlController.getController();
+            beneficiaryAddressController.setTitle(StringManager.getInstance().buymineral.titleLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addPayerAddress(){
         try {
             BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_address.fxml");
             itemList.getChildren().add(fxmlController.getNode());
             payerAddressController = (ReceiptAddressController)fxmlController.getController();
             payerAddressController.setTitle(StringManager.getInstance().receipt.payer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addAmount(){
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_item.fxml");
+            itemList.getChildren().add(fxmlController.getNode());
+            amountItemController = (ReceiptItemController) fxmlController.getController();
+            amountItemController.setTitle(StringManager.getInstance().receipt.amount);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -135,6 +178,11 @@ public class ReceiptController extends BaseViewController {
         update();
     }
 
+    public void setBeneficiaryAddress(String beneficiaryAddress){
+        this.beneficiaryAddress = beneficiaryAddress;
+        update();
+    }
+
     public void setPayerAddress(String payerAddress){
         this.payerAddress = payerAddress;
         update();
@@ -142,6 +190,11 @@ public class ReceiptController extends BaseViewController {
 
     public void setMask(String mask) {
         this.mask = mask;
+        update();
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
         update();
     }
 
@@ -167,5 +220,6 @@ public class ReceiptController extends BaseViewController {
 
     private ReceiptImpl handler;
     public void setHandler(ReceiptImpl handler){ this.handler = handler; }
+
     public interface ReceiptImpl{ void send(); }
 }

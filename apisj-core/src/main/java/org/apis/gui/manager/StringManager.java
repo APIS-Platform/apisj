@@ -230,6 +230,7 @@ public class StringManager {
 
     public class Receipt implements StringManagerImpl{
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
+        public SimpleStringProperty amount = new SimpleStringProperty();
         public SimpleStringProperty fee = new SimpleStringProperty();
         public SimpleStringProperty totalFee = new SimpleStringProperty();
         public SimpleStringProperty address = new SimpleStringProperty();
@@ -252,6 +253,7 @@ public class StringManager {
         @Override
         public void update(){
             transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
+            amount.set(StringManager.this.getString("receipt_amount", "Amount"));
             fee.set(StringManager.this.getString("receipt_fee", "(+)Fee"));
             totalFee.set(StringManager.this.getString("receipt_total_fee", "Total Fee"));
             address.set(StringManager.this.getString("receipt_address", "address"));

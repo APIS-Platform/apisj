@@ -1,4 +1,4 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.selectbox;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

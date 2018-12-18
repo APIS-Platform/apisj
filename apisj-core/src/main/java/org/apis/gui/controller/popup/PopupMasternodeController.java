@@ -3,7 +3,6 @@ package org.apis.gui.controller.popup;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,7 +12,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
-import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
@@ -25,7 +24,6 @@ import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -124,7 +122,7 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
 
-        recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         recipientController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

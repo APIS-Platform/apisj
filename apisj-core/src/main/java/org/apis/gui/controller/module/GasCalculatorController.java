@@ -67,14 +67,6 @@ public class GasCalculatorController extends BaseViewController {
         //hideGasPricePopup();
         settingLayoutData();
 
-        rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                hideGasPricePopup();
-            }
-        });
-
-
     }
 
     @FXML
@@ -83,32 +75,21 @@ public class GasCalculatorController extends BaseViewController {
 
         // Gas Price
         if(fxid.equals("gasPricePlusMinusPane")) {
-            showGasPricePopup();
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPriceMinusBtn")) {
-            slider.setValue(slider.getValue());
-            if(gasPricePlusMinusPane.isVisible()) {
-                slider.setValue(slider.getValue()-10);
-            }
+            slider.setValue(slider.getValue()-10);
             progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
-            showGasPricePopup();
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPricePlusBtn")) {
-            slider.setValue(slider.getValue());
-            if(gasPricePlusMinusPane.isVisible()) {
-                slider.setValue(slider.getValue()+10);
-            }
+            slider.setValue(slider.getValue()+10);
             progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
-            showGasPricePopup();
             slider.requestFocus();
             event.consume();
 
-        } else if(fxid.equals("rootPane")){
-            hideGasPricePopup();
         }
     }
 
@@ -195,20 +176,18 @@ public class GasCalculatorController extends BaseViewController {
     private ChangeListener<Number> sliderListener = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            if(gasPricePlusMinusPane.isVisible()) {
-                progressBar.setProgress((newValue.doubleValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
+            progressBar.setProgress((newValue.doubleValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
 
-                gasPrice = BigInteger.valueOf(newValue.intValue());
-                gasPriceTextField.setText(gasPrice.toString());
-                gasPricePopupLabel.setText(gasPrice.toString() + " nAPIS");
+            gasPrice = BigInteger.valueOf(newValue.intValue());
+            gasPriceTextField.setText(gasPrice.toString());
+            gasPricePopupLabel.setText(gasPrice.toString() + " nAPIS");
 
-                // (Default) 라는 문구 표기/숨기기
-                gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
+            // (Default) 라는 문구 표기/숨기기
+            gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
 
-                settingLayoutData();
-                if (handler != null) {
-                    handler.gasPriceSliderChangeValue(newValue.intValue());
-                }
+            settingLayoutData();
+            if (handler != null) {
+                handler.gasPriceSliderChangeValue(newValue.intValue());
             }
         }
     };
@@ -225,22 +204,6 @@ public class GasCalculatorController extends BaseViewController {
         lowLabel.textProperty().bind(StringManager.getInstance().module.tab1LowLabel);
         highLabel.textProperty().bind(StringManager.getInstance().module.tab1HighLabel);
         gasPriceTextField.setText(gasPrice.toString());
-    }
-
-    public void showGasPricePopup() {
-        gasPricePlusMinusPane.setVisible(true);
-
-        if(handler != null){
-            handler.changeGasPricePopup(true);
-        }
-    }
-
-    public void hideGasPricePopup() {
-        gasPricePlusMinusPane.setVisible(false);
-
-        if(handler != null){
-            handler.changeGasPricePopup(false);
-        }
     }
 
     public void settingLayoutData(){
@@ -292,6 +255,5 @@ public class GasCalculatorController extends BaseViewController {
         void gasLimitTextFieldFocus(boolean isFocused);
         void gasLimitTextFieldChangeValue(String oldValue, String newValue);
         void gasPriceSliderChangeValue(int value);
-        void changeGasPricePopup(boolean isVisible);
     }
 }
