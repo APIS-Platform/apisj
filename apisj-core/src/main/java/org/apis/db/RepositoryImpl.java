@@ -763,13 +763,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
         /*
-         * 마스터노드 얼리버드가 초기화되는 블록에 도달했는지 확인한다.
+         * 마스터노드 얼리버드 접수가 시작되는 블록이 되면, 얼리버드 목록을 초기화한다
          */
-        if(isGeneralMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+        if(isMnEbStartBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants);
-        } else if(isMajorMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants);
-        } else if(isPrivateMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY(), constants);
         }
 
@@ -777,45 +775,33 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          * 마스터노드 초기화 블록에 도달했는지 확인한다.
          * 얼리버드 노드들을, 실행중인(RUN) 얼리버드 노드와 연결한다.
          */
-        if(isGeneralMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+        if(isMnStartBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_NORMAL(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_LATE(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), constants);
 
             connectEarlybirdToRun(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), blockNumber);
-
-        } else if(isMajorMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_NORMAL(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_LATE(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), constants);
-
             connectEarlybirdToRun(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), blockNumber);
-
-        } else if(isPrivateMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_NORMAL(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_LATE(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), constants);
-
             connectEarlybirdToRun(constants.getMASTERNODE_PRIVATE_BASE_EARLY(), constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), blockNumber);
         }
 
 
-        List<byte[]> mnExpiredList = new ArrayList<>();
+        List<byte[]> expiredList = new ArrayList<>();
 
 
         /*
          * 업데이트가 만료된 마스터노드를 탐색하고 제거한다.
          */
-        List<byte[]> mnExpiringList = getExpiringMnList(blockNumber);
+        List<byte[]> checkingNodeList = getNodeListToCheckExpiration(blockNumber);
 
-        for(byte[] mn : mnExpiringList) {
+        for(byte[] mn : checkingNodeList) {
             AccountState mnState = getAccountState(mn);
-            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_LIMIT_TOTAL()) {
-                mnExpiredList.add(mn);
+            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_LIMIT_TOTAL()*2) {
+                expiredList.add(mn);
             }
         }
 
-        finishMasterNodes(mnExpiredList);
+        finishMasterNodes(expiredList);
     }
 
     /**
@@ -901,16 +887,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      * @param resetPeriod 마스터노드 리셋 주기 (약 3달)
      * @return TRUE : 리셋 블록에 해당하는 경우
      */
-    private boolean isGeneralMnEbResetBlock(long blockNumber, long resetPeriod) {
+    private boolean isMnEbStartBlock(long blockNumber, long resetPeriod) {
         return (blockNumber % resetPeriod == 0);
-    }
-    private boolean isMajorMnEbResetBlock(long blockNumber, long resetPeriod) {
-        long offset = resetPeriod/3;
-        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == 0);
-    }
-    private boolean isPrivateMnEbResetBlock(long blockNumber, long resetPeriod) {
-        long offset = resetPeriod*2/3;
-        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == 0);
     }
 
 
@@ -922,16 +900,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      * @param blocksPerDay 하루에 생성되는 블록의 수 (하루 동안 얼리버드 신청을 받은 뒤, 마스터노드가 시작되기 때문)
      * @return TRUE : 리셋 블록에 해당하는 경우
      */
-    private boolean isGeneralMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
+    private boolean isMnStartBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
         return (blockNumber % resetPeriod == blocksPerDay);
-    }
-    private boolean isMajorMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
-        long offset = resetPeriod/3;
-        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == blocksPerDay);
-    }
-    private boolean isPrivateMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
-        long offset = resetPeriod*2/3;
-        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == blocksPerDay);
     }
 
 
