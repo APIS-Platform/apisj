@@ -5,7 +5,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
-public class WebViewFx  extends Application {
+public class WebViewFX extends Application {
 
     public static void main(String[] args) {
         launch(args);
