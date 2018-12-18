@@ -20,6 +20,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.InputConditionManager;
 import org.apis.gui.manager.StringManager;
@@ -48,7 +49,8 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
     @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput, titleLabel, chargeLabel, payerLabel, bonusLabel;
     @FXML private Label apisTotalBalance, apisTotalLabel;
-    @FXML private TextField beneficiaryTextField, chargeAmount;
+    @FXML private TextField chargeAmount;
+    @FXML private ApisAddressFieldController beneficiaryTextFieldController;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
@@ -61,16 +63,18 @@ public class BuyMineralBodyController extends BaseViewController {
 
         languageSetting();
 
-        AppManager.settingTextFieldStyle(beneficiaryTextField);
+
         AppManager.settingTextFieldStyle(chargeAmount);
 
         beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
 
-
-        beneficiaryTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(handelr != null){
-                handelr.settingLayoutData();
+        beneficiaryTextFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+            @Override
+            public void change(String oldValue, String newValue) {
+                if(handelr != null){
+                    handelr.settingLayoutData();
+                }
             }
         });
 
@@ -193,16 +197,16 @@ public class BuyMineralBodyController extends BaseViewController {
             StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.C000000);
             StyleManager.borderColorStyle(beneficiaryInputButton, StyleManager.AColor.C000000);
             StyleManager.fontColorStyle(beneficiaryInputButton, StyleManager.AColor.Cffffff);
-            beneficiaryTextField.setText("");
+            beneficiaryTextFieldController.setText("");
             beneficiaryController.setVisible(false);
-            beneficiaryTextField.setVisible(true);
+            beneficiaryTextFieldController.setVisible(true);
         } else {
             isBeneficiarySelected = true;
             StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.Cf8f8fb);
             StyleManager.borderColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
             StyleManager.fontColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
             beneficiaryController.setVisible(true);
-            beneficiaryTextField.setVisible(false);
+            beneficiaryTextFieldController.setVisible(false);
         }
 
         if(handelr != null){
@@ -357,7 +361,7 @@ public class BuyMineralBodyController extends BaseViewController {
         if(isBeneficiarySelected){
             return this.beneficiaryController.getAddress();
         }else{
-            return this.beneficiaryTextField.getText().trim();
+            return this.beneficiaryTextFieldController.getText().trim();
         }
     }
 

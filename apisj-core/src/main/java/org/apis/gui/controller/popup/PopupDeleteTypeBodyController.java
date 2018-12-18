@@ -8,8 +8,8 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.controller.module.ApisTextFieldController;
-import org.apis.gui.controller.module.ApisTextFieldGroup;
+import org.apis.gui.controller.module.textfield.ApisTextFieldController;
+import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
@@ -22,7 +22,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 

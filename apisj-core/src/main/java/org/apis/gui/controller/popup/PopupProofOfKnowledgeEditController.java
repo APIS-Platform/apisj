@@ -21,6 +21,8 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.*;
+import org.apis.gui.controller.module.textfield.ApisTextFieldController;
+import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
