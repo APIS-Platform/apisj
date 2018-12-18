@@ -196,7 +196,7 @@ public class Constants {
     public long getMASTERNODE_LIMIT_PRIVATE() {return MASTERNODE_PRIVATE_LIMIT; }
     public long getMASTERNODE_LIMIT_TOTAL() {return MASTERNODE_GENERAL_LIMIT + MASTERNODE_MAJOR_LIMIT + MASTERNODE_PRIVATE_LIMIT; }
     private long getMASTERNODE_REWARD_PERIOD() { return MASTERNODE_REWARD_PERIOD; }
-    public long getMASTERNODE_EARLYBIRD_PERIOD() {return getMASTERNODE_EARLYBIRD_PERIOD(); }
+    public long getMASTERNODE_EARLYBIRD_PERIOD() {return MASTERNODE_EARLYBIRD_PERIOD; }
 
     /**
      * 입력된 블록 번호가 마스터노드 보상을 지급하는 블록번호인지 확인한다.
