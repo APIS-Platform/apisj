@@ -401,7 +401,7 @@
             <AnchorPane GridPane.rowIndex="1">
                 <children>
                     <fx:include fx:id="beneficiary" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <fx:include fx:id="beneficiaryTextField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include fx:id="beneficiaryTextField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
          </children>
