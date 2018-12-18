@@ -188,6 +188,9 @@ dependencies {
     //compile group: 'org.usb4java', name: 'usb4java', version: '1.3.0' // https://mvnrepository.com/artifact/org.usb4java/usb4java
     compile group: 'org.usb4java', name: 'usb4java-javax', version: '1.3.0'// https://mvnrepository.com/artifact/org.usb4java/usb4java-javax
 
+    // https://mvnrepository.com/artifact/com.mohamnag/javafx-webview-debugger
+    compile group: 'com.mohamnag', name: 'javafx-webview-debugger', version: '0.0.1'
+
 
 
     // Create QRCode Library
@@ -212,7 +215,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
-
 
     // used to hide spring initialization logs messages in samples
     optional "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
