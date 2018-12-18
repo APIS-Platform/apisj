@@ -743,17 +743,17 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
 
-    public void checkMasternodeCollateral(byte[] sender, byte[] receiver) {
+    @Override
+    public void checkMasternodeCollateral(byte[] sender) {
         AccountState senderState = getAccountState(sender);
-        if(senderState.getBalance().compareTo(senderState.getMnStartBalance()) < 0) {
-            removeMasternode(sender);
+        if(senderState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
+            // 마스터노드가 아닐 경우 별도로 체크할 것은 없다
+            return;
         }
 
-        if(receiver != null) {
-            AccountState receiverState = getAccountState(receiver);
-            if (receiverState.getBalance().compareTo(receiverState.getMnStartBalance()) < 0) {
-                removeMasternode(receiver);
-            }
+        // 잔고가 마스터노드 참여 담보 금액보다 낮아지면 해제한다
+        if(senderState.getBalance().compareTo(senderState.getMnStartBalance()) < 0) {
+            removeMasternode(sender);
         }
     }
 

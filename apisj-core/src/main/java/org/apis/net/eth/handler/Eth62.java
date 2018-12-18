@@ -543,7 +543,7 @@ public class Eth62 extends EthHandler {
                 /*
                  * 블럭에 포함된 마스터노드의 수가 저장소의 수와 일치하는지 확인한다.
                  */
-                if(constants.isMasternodeRewardTime(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
+                if(constants.isMasternodeRewardBlock(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
                     Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
                     if (parentRepo != null) {
                         List<byte[]> generalOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));

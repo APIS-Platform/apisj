@@ -202,7 +202,7 @@ public class Constants {
      * @param blockNumber 검증하려는 블록 번호
      * @return TRUE 보상을 지급하는 블록이 맞을 경우
      */
-    public boolean isMasternodeRewardTime(long blockNumber) {
+    public boolean isMasternodeRewardBlock(long blockNumber) {
         if(blockNumber < MASTERNODE_EARLYBIRD_PERIOD) {
             return false;
         }
