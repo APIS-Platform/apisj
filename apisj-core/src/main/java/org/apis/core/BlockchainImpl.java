@@ -590,17 +590,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if(constants.isMasternodeRewardTime(blockNumber)) {
 
             // 각 마스터노드 갯수를 구한다.
-            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
-            List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
-            List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
+            List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
+            List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
-            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
-            List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
-            List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
+            List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
+            List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
 
-            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
-            List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-            List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
+            List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
+            List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
             List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
             allGeneral.addAll(generalNormal);
@@ -1026,7 +1026,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return isValid;
     }
 
-    private boolean isValidMasterNodeTx(Repository repo, Transaction tx) {
+    private boolean isValidMasterNodeTx(Repository repo, Transaction tx, long blockNumber) {
         if(tx.getReceiveAddress() == null) {
             return false;
         }
@@ -1157,7 +1157,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         Transaction tx = receipt.getTransaction();
         if(tx == null || tx.getReceiveAddress() == null) { return false; }
 
-        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_PLATFORM(), tx.getReceiveAddress())) {return false;}
+        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_PLATFORM_CONTRACT(), tx.getReceiveAddress())) {return false;}
 
         if(!receipt.isSuccessful()) { return false;}
 
@@ -1232,7 +1232,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             if(summary != null) {
                 // 마스터노드 상태를 업데이트하는 tx일 경우
-                if(isValidMasterNodeTx(txTrack, tx)) {
+                if(isValidMasterNodeTx(txTrack, tx, block.getNumber())) {
                     txTrack.updateMasterNode(tx, block.getNumber());
                 }
                 // AddressMasking 관련 tx인 경우
@@ -1348,17 +1348,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 if(storedMnReward.compareTo(totalGeneralReward.add(totalMajorReward).add(totalPrivateReward)) >= 0) {
 
                     // 레포지토리에 저장된 마스터노드 갯수를 구한다.
-                    List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
-                    List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
-                    List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+                    List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
+                    List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
+                    List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
-                    List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
-                    List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
-                    List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+                    List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
+                    List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
+                    List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
 
-                    List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
-                    List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-                    List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+                    List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
+                    List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
+                    List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
                     List<byte[]> allGeneral = new ArrayList<>(generalEarly);
                     allGeneral.addAll(generalNormal);
@@ -1499,7 +1499,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
-            distributeReward(constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM(), fee, track, rewards);
+            distributeReward(constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM_CONTRACT(), fee, track, rewards);
 
             ConsoleUtil.printlnPurple("Early Bird - [%s]>>[%s] : %s (Fee %s)", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true), ApisUtil.readableApis(fee, ',', true));
         }

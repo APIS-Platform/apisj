@@ -546,17 +546,17 @@ public class Eth62 extends EthHandler {
                 if(constants.isMasternodeRewardTime(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
                     Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
                     if (parentRepo != null) {
-                        List<byte[]> generalOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL()));
-                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL()));
-                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL()));
+                        List<byte[]> generalOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));
+                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
+                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
 
-                        List<byte[]> majorOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR()));
-                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR()));
-                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR()));
+                        List<byte[]> majorOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN()));
+                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL()));
+                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
 
-                        List<byte[]> privateOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE()));
-                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE()));
-                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE()));
+                        List<byte[]> privateOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN()));
+                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
+                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
 
 
                         List<byte[]> generalOnBlock = block.getMnGeneralList();

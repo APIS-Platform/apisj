@@ -345,7 +345,7 @@ public class ContractLoader {
                 ByteUtil.bigIntegerToBytes(nonce),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000L),
-                config.getBlockchainConfig().getCommonConstants().getMASTERNODE_PLATFORM(),
+                config.getBlockchainConfig().getCommonConstants().getMASTERNODE_PLATFORM_CONTRACT(),
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
                 chainId

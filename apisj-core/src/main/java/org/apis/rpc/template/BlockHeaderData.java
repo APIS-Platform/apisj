@@ -1,13 +1,9 @@
 package org.apis.rpc.template;
 
 import org.apis.core.Block;
-import org.apis.core.Transaction;
 import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 /* use RPC server json string*/
 public class BlockHeaderData {
@@ -50,7 +46,7 @@ public class BlockHeaderData {
         this.number = block.getNumber();
         this.hash = ByteUtil.toHexString0x(block.getHash());
         this.parentHash = ByteUtil.toHexString0x(block.getParentHash());
-        this.coinbase = ByteUtil.toHexString0x(block.getCoinbase());
+        this.coinbase = ByteUtil.toHexString(block.getCoinbase());
         this.stateRoot = ByteUtil.toHexString0x(block.getStateRoot());
         this.txTrieHash = ByteUtil.toHexString0x(block.getTxTrieRoot());
         this.receiptsTrieHash = ByteUtil.toHexString0x(block.getReceiptsRoot());
