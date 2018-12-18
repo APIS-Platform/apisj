@@ -1,4 +1,4 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.textfield;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 

@@ -1,4 +1,4 @@
-package org.apis.gui.controller.module;
+package org.apis.gui.controller.module.textfield;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -161,7 +161,7 @@ public class ApisTextFieldPkController extends BaseViewController {
             PrinterJob job = PrinterJob.createPrinterJob();
             rootPrint.prefWidth(pageLayout.getPrintableWidth());
             rootPrint.prefHeight(pageLayout.getPrintableHeight());
-            if (job != null && job.showPrintDialog(rootPrint.getScene().getWindow())) {
+            if (job != null) {
                 boolean success = job.printPage(pageLayout, rootPrint);
                 if (success) {
                     job.endJob();

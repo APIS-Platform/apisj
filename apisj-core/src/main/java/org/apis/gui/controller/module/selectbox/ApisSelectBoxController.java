@@ -342,14 +342,14 @@ public class ApisSelectBoxController extends BaseViewController {
         return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getDomainId();
     }
 
+    public void setVisible(boolean isVisible) {
+        this.rootPane.setVisible(isVisible);
+    }
+
 
 
     private ApisSelectBoxImpl handler;
     public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
-
-    public void setVisible(boolean isVisible) {
-        this.rootPane.setVisible(isVisible);
-    }
 
     public interface ApisSelectBoxImpl{
         void onMouseClick();

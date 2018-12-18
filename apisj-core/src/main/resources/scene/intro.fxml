@@ -1137,7 +1137,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoConfirmPassword" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoConfirmPassword" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="4">
@@ -1145,7 +1145,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="module/apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="module/textfield/apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="1">
@@ -1153,7 +1153,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1347,7 +1347,7 @@
                                              <children>
                                                 <Label fx:id="introCwPhaseFourRightPkLabel" styleClass="font_semibold_12" text="Private key" textFill="#2b2b2b" />
                                                 <AnchorPane GridPane.rowIndex="1">
-                                                    <fx:include fx:id="createWalletPrivateKey" source="module/apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    <fx:include fx:id="createWalletPrivateKey" source="module/textfield/apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
                                                       <Insets left="3.0" top="8.0" />
                                                    </GridPane.margin>
@@ -1777,7 +1777,7 @@
                                                 </GridPane>
                                                 <Label fx:id="introLwPhaseThreeRightPwLabel" styleClass="font_semibold_12" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="6" />
                                                 <AnchorPane id="abcde" GridPane.rowIndex="7">
-                                                    <fx:include fx:id="loadWalletPhaseThreeTypeFilePw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    <fx:include fx:id="loadWalletPhaseThreeTypeFilePw" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
@@ -1898,7 +1898,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="loadWalletPrivateKey" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="loadWalletPrivateKey" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -2033,7 +2033,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                     <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                     </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="4">
@@ -2041,7 +2041,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                     <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                     </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="1">
@@ -2049,7 +2049,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>

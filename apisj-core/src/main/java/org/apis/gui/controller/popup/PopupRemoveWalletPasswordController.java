@@ -3,7 +3,7 @@ package org.apis.gui.controller.popup;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -14,7 +14,6 @@ import org.apis.keystore.KeyStoreManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.ResourceBundle;
 
