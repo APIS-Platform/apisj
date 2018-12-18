@@ -520,19 +520,26 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         //Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
-        final long blockGasLimit = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getBlockGasLimit().longValue();
-        EstimateTransaction estimator = EstimateTransaction.getInstance();
-        long totalGasUsed = 0;
         List<Transaction> addingTxs = new ArrayList<>();
-        for(Transaction tx : txs) {
-            totalGasUsed += estimator.estimate(tx, 0, 10_000L).getGasUsed();
+        long blockNumber = parent.getNumber() + 1;
 
-            if(totalGasUsed < blockGasLimit) {
-                addingTxs.add(tx);
-            } else {
-                break;
+        // 마스터노드 보상 블록이 아닐 경우에만 트랜잭션을 추가한다
+        if(!constants.isMasternodeRewardBlock(blockNumber)) {
+            final long blockGasLimit = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getBlockGasLimit().longValue();
+            EstimateTransaction estimator = EstimateTransaction.getInstance();
+            long totalGasUsed = 0;
+
+            for(Transaction tx : txs) {
+                totalGasUsed += estimator.estimate(tx, 0, 10_000L).getGasUsed();
+
+                if(totalGasUsed < blockGasLimit) {
+                    addingTxs.add(tx);
+                } else {
+                    break;
+                }
             }
         }
+
 
         long timestamp = now/1000L;
 
@@ -587,30 +594,33 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         // Start distributing reward to the MNs======================================================================
-        if(constants.isMasternodeRewardTime(blockNumber)) {
+        if(constants.isMasternodeRewardBlock(blockNumber)) {
 
             // 각 마스터노드 갯수를 구한다.
-            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
-            List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
-            List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
+            List<byte[]> generalEarlybird   = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
+            List<byte[]> generalNormal      = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
+            List<byte[]> generalLate        = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
-            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
-            List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
-            List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
+            List<byte[]> majorEarlybird     = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
+            List<byte[]> majorNormal        = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
+            List<byte[]> majorLate          = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
 
-            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
-            List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
-            List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
+            List<byte[]> privateEarlybird   = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
+            List<byte[]> privateNormal      = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
+            List<byte[]> privateLate        = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-            List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+            List<byte[]> allGeneral = new ArrayList<>();
+            allGeneral.addAll(generalEarlybird);
             allGeneral.addAll(generalNormal);
             allGeneral.addAll(generalLate);
 
-            List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+            List<byte[]> allMajor = new ArrayList<>();
+            allMajor.addAll(majorEarlybird);
             allMajor.addAll(majorNormal);
             allMajor.addAll(majorLate);
 
-            List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+            List<byte[]> allPrivate = new ArrayList<>();
+            allPrivate.addAll(privateEarlybird);
             allPrivate.addAll(privateNormal);
             allPrivate.addAll(privateLate);
 
@@ -827,7 +837,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 블록에 등록된 마스터노드가 저장소에도 마스터노드로 등록되어있어야 한다.
-        if(constants.isMasternodeRewardTime(block.getNumber())) {
+        if(constants.isMasternodeRewardBlock(block.getNumber())) {
             List<byte[]> mnList = new ArrayList<>(block.getMnGeneralList());
             mnList.addAll(block.getMnMajorList());
             mnList.addAll(block.getMnPrivateList());
@@ -1230,30 +1240,28 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
 
-            if(summary != null) {
+            if (summary != null) {
                 // 마스터노드 상태를 업데이트하는 tx일 경우
-                if(isValidMasterNodeTx(txTrack, tx)) {
+                if (isValidMasterNodeTx(txTrack, tx)) {
                     txTrack.updateMasterNode(tx, block.getNumber());
                 }
                 // AddressMasking 관련 tx인 경우
-                else if(isValidAddressMaskTx(executor.getReceipt())) {
+                else if (isValidAddressMaskTx(executor.getReceipt())) {
                     txTrack.updateAddressMask(executor.getReceipt());
                 }
                 // ProofOfKnowledge 관련 tx인 경우
-                else if(isValidProofOfKnowledgeTx(executor.getReceipt())) {
+                else if (isValidProofOfKnowledgeTx(executor.getReceipt())) {
                     txTrack.updateProofOfKnowledge(executor.getReceipt());
-                }
-
-                else if(isValidBuyMineralTx(executor.getReceipt())) {
+                } else if (isValidBuyMineralTx(executor.getReceipt())) {
                     txTrack.updatePurchasedMineral(executor.getReceipt(), block.getNumber());
                 }
                 // Check earlyBird-Masternode
-                else if(isValidMasternodeEarlyBird(executor.getReceipt())) {
+                else if (isValidMasternodeEarlyBird(executor.getReceipt())) {
                     txTrack.updateMasterNodeEarlyBird(executor.getReceipt(), block.getNumber());
                 }
                 // 마스터노드 잔고가 조건을 만족하는지 확인한다
                 else {
-                    txTrack.checkMasternodeCollateral(tx.getSender(), tx.getReceiveAddress());
+                    txTrack.checkMasternodeCollateral(tx.getSender());
                 }
             }
 
@@ -1305,7 +1313,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
         // 마스터노드 보상을 분배한다.
-        if(constants.isMasternodeRewardTime(block.getNumber())) {
+        if(constants.isMasternodeRewardBlock(block.getNumber())) {
 
             BigInteger storedMnReward = track.getBalance(constants.getMASTERNODE_STORAGE());
             BigInteger mnRewardUnit = block.getMnReward();
@@ -1320,6 +1328,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 int countMajorOnBlock = mnMajorsOnBlock.size();
                 int countPrivateOnBlock = mnPrivatesOnBlock.size();
 
+                // 마스터노드 1개가 받는 보상
                 BigInteger mnRewardGeneral  = BigInteger.ZERO;
                 BigInteger mnRewardMajor    = BigInteger.ZERO;
                 BigInteger mnRewardPrivate  = BigInteger.ZERO;
@@ -1360,7 +1369,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
                     List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-                    List<byte[]> allGeneral = new ArrayList<>(generalEarly);
+                    /*List<byte[]> allGeneral = new ArrayList<>(generalEarly);
                     allGeneral.addAll(generalNormal);
                     allGeneral.addAll(generalLate);
 
@@ -1370,14 +1379,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                     List<byte[]> allPrivate = new ArrayList<>(privateEarly);
                     allPrivate.addAll(privateNormal);
-                    allPrivate.addAll(privateLate);
+                    allPrivate.addAll(privateLate);*/
+
+                    byte[] repoMnHash = calcMnHash(generalEarly, generalNormal, generalLate, majorEarly, majorNormal, majorLate, privateEarly, privateNormal, privateLate);
 
                     // 레포지토리에서 읽어온 리스트와 블록으로 전달받은 리스트의 수가 동일해야만 진행한다.
-                    if (mnGeneralsOnBLock.size() == allGeneral.size() && mnMajorsOnBlock.size() == allMajor.size() && mnPrivatesOnBlock.size() == allPrivate.size()) {
+                    //if (mnGeneralsOnBLock.size() == allGeneral.size() && mnMajorsOnBlock.size() == allMajor.size() && mnPrivatesOnBlock.size() == allPrivate.size()) {
+                    if(FastByteComparisons.equal(block.getMnHash(), repoMnHash)) {
                         /* Give rewards to late participating masternodes.
                          *
                          * 늦게 참여한 마스터노드는 보상의 70%만을 가져갈 수 있다.
-                         * 나머지 20%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 10%는 재산에 부여된다.
+                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재산에 부여된다.
                          */
                         BigInteger remainRewardByLateNode;  // 보상의 30% 잔여분
                         remainRewardByLateNode = distributeLateMnReward(mnRewardGeneral, generalLate, track, constants, rewards);
@@ -1386,10 +1398,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                         /*
                          * 늦게 참여한 마스터노드에게 분배하고 남은 보상을 다른 노드들에게 할당되는 부분과 재단에 할당되는 부분으로 나눠야 한다.
-                         * 다른 마스터노드에게는 2/3 만큼을 할당 (rewardToOtherNodes)
-                         * 재단에는 나머지 1/3 만큼을 할당 (rewardToFoundation)
+                         * 다른 마스터노드에게는 1/2 만큼을 할당 (rewardToOtherNodes)
+                         * 재단에는 나머지 1/2 만큼을 할당 (rewardToFoundation)
                          */
-                        BigInteger rewardToOtherNodes = remainRewardByLateNode.multiply(BigInteger.valueOf(2)).divide(BigInteger.valueOf(3));
+                        BigInteger rewardToOtherNodes = remainRewardByLateNode.divide(BigInteger.valueOf(2));
                         BigInteger rewardToFoundation = remainRewardByLateNode.subtract(rewardToOtherNodes);
 
                         // 재단에 할당된 부분을 전송한다.
@@ -1425,9 +1437,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         mnRewardPrivate = mnRewardPrivate.add(debrisRewardPrivate);
 
                         // 얼리버드 처리
-                        distributeEbMnReward(mnRewardGeneral, generalEarly, track, constants, rewards);
-                        distributeEbMnReward(mnRewardMajor, majorEarly, track, constants, rewards);
-                        distributeEbMnReward(mnRewardPrivate, privateEarly, track, constants, rewards);
+                        distributeMnReward(mnRewardGeneral, generalEarly, track, constants, rewards);
+                        distributeMnReward(mnRewardMajor, majorEarly, track, constants, rewards);
+                        distributeMnReward(mnRewardPrivate, privateEarly, track, constants, rewards);
 
 
                         // 일반 노드 처리
