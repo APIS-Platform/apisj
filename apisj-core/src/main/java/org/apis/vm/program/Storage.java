@@ -198,8 +198,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public List<byte[]> getExpiringMnList(long blockNumber) {
-        return repository.getExpiringMnList(blockNumber);
+    public List<byte[]> getNodeListToCheckExpiration(long blockNumber) {
+        return repository.getNodeListToCheckExpiration(blockNumber);
     }
 
     @Override
@@ -223,8 +223,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public void checkMasternodeCollateral(byte[] sender, byte[] receiver) {
-        repository.checkMasternodeCollateral(sender, receiver);
+    public void checkMasternodeCollateral(byte[] sender) {
+        repository.checkMasternodeCollateral(sender);
     }
 
     @Override

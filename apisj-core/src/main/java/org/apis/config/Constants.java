@@ -42,9 +42,9 @@ public class Constants {
     private static final int UNCLE_GENERATION_LIMIT = 7;
     private static final int UNCLE_LIST_LIMIT = 2;
 
-    private static final BigInteger MASTERNODE_GENERAL_BALANCE = BigInteger.valueOf(50_000L).multiply(BigInteger.TEN.pow(18));
-    private static final BigInteger MASTERNODE_MAJOR_BALANCE = BigInteger.valueOf(200_000L).multiply(BigInteger.TEN.pow(18));
-    private static final BigInteger MASTERNODE_PRIVATE_BALANCE = BigInteger.valueOf(500_000L).multiply(BigInteger.TEN.pow(18));
+    private static final BigInteger MASTERNODE_GENERAL_COLLATERAL = BigInteger.valueOf(50_000L).multiply(BigInteger.TEN.pow(18));
+    private static final BigInteger MASTERNODE_MAJOR_COLLATERAL = BigInteger.valueOf(200_000L).multiply(BigInteger.TEN.pow(18));
+    private static final BigInteger MASTERNODE_PRIVATE_COLLATERAL = BigInteger.valueOf(500_000L).multiply(BigInteger.TEN.pow(18));
 
     private static final long MASTERNODE_GENERAL_LIMIT = 4_000L;
     private static final long MASTERNODE_MAJOR_LIMIT = 3_000L;
@@ -88,18 +88,18 @@ public class Constants {
 
     private static final byte[] MASTERNODE_PLATFORM = Hex.decode("1000000000000000000000000000000000037454");
     private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777770");
-    private static final byte[] MASTERNODE_EARLY_GENERAL = Hex.decode("7777777777777777777777777777777777777771");
-    private static final byte[] MASTERNODE_EARLY_MAJOR   = Hex.decode("7777777777777777777777777777777777777772");
-    private static final byte[] MASTERNODE_EARLY_PRIVATE = Hex.decode("7777777777777777777777777777777777777773");
-    private static final byte[] MASTERNODE_GENERAL       = Hex.decode("7777777777777777777777777777777777777774");
-    private static final byte[] MASTERNODE_MAJOR         = Hex.decode("7777777777777777777777777777777777777775");
-    private static final byte[] MASTERNODE_PRIVATE       = Hex.decode("7777777777777777777777777777777777777776");
-    private static final byte[] MASTERNODE_LATE_GENERAL  = Hex.decode("7777777777777777777777777777777777777777");
-    private static final byte[] MASTERNODE_LATE_MAJOR    = Hex.decode("7777777777777777777777777777777777777778");
-    private static final byte[] MASTERNODE_LATE_PRIVATE  = Hex.decode("7777777777777777777777777777777777777779");
-    private static final byte[] MASTERNODE_EARLY_RUN_GENERAL  = Hex.decode("777777777777777777777777777777777777777a");
-    private static final byte[] MASTERNODE_EARLY_RUN_MAJOR    = Hex.decode("777777777777777777777777777777777777777b");
-    private static final byte[] MASTERNODE_EARLY_RUN_PRIVATE  = Hex.decode("777777777777777777777777777777777777777c");
+    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777771");
+    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777772");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777773");
+    private static final byte[] MASTERNODE_GENERAL_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777774");
+    private static final byte[] MASTERNODE_MAJOR_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777775");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777776");
+    private static final byte[] MASTERNODE_GENERAL_BASE_LATE = Hex.decode("7777777777777777777777777777777777777777");
+    private static final byte[] MASTERNODE_MAJOR_BASE_LATE = Hex.decode("7777777777777777777777777777777777777778");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_LATE = Hex.decode("7777777777777777777777777777777777777779");
+    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777a");
+    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777b");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777c");
 
 
 
@@ -187,9 +187,9 @@ public class Constants {
         return REWARD_PORTION_DENOMINATOR;
     }
 
-    public BigInteger getMASTERNODE_BALANCE_GENERAL() { return MASTERNODE_GENERAL_BALANCE; }
-    public BigInteger getMASTERNODE_BALANCE_MAJOR() { return MASTERNODE_MAJOR_BALANCE; }
-    public BigInteger getMASTERNODE_BALANCE_PRIVATE() { return MASTERNODE_PRIVATE_BALANCE; }
+    public BigInteger getMASTERNODE_BALANCE_GENERAL() { return MASTERNODE_GENERAL_COLLATERAL; }
+    public BigInteger getMASTERNODE_BALANCE_MAJOR() { return MASTERNODE_MAJOR_COLLATERAL; }
+    public BigInteger getMASTERNODE_BALANCE_PRIVATE() { return MASTERNODE_PRIVATE_COLLATERAL; }
 
     public long getMASTERNODE_LIMIT_GENERAL() {return MASTERNODE_GENERAL_LIMIT; }
     public long getMASTERNODE_LIMIT_MAJOR() {return MASTERNODE_MAJOR_LIMIT; }
@@ -202,7 +202,7 @@ public class Constants {
      * @param blockNumber 검증하려는 블록 번호
      * @return TRUE 보상을 지급하는 블록이 맞을 경우
      */
-    public boolean isMasternodeRewardTime(long blockNumber) {
+    public boolean isMasternodeRewardBlock(long blockNumber) {
         if(blockNumber < MASTERNODE_EARLYBIRD_PERIOD) {
             return false;
         }
@@ -212,12 +212,12 @@ public class Constants {
 
     public long getCONTINUOUS_MINING_LIMIT() { return CONTINUOUS_MINING_LIMIT; }
 
-    public long getMASTERNODE_LIMIT(BigInteger balance) {
-        if(balance.compareTo(MASTERNODE_GENERAL_BALANCE) == 0) {
+    public long getMASTERNODE_LIMIT(BigInteger collateral) {
+        if(collateral.compareTo(MASTERNODE_GENERAL_COLLATERAL) == 0) {
             return getMASTERNODE_LIMIT_GENERAL();
-        } else if(balance.compareTo(MASTERNODE_MAJOR_BALANCE) == 0) {
+        } else if(collateral.compareTo(MASTERNODE_MAJOR_COLLATERAL) == 0) {
             return getMASTERNODE_LIMIT_MAJOR();
-        } else if(balance.compareTo(MASTERNODE_PRIVATE_BALANCE) == 0) {
+        } else if(collateral.compareTo(MASTERNODE_PRIVATE_COLLATERAL) == 0) {
             return getMASTERNODE_LIMIT_PRIVATE();
         } else {
             return 0;
@@ -245,21 +245,103 @@ public class Constants {
 
     public long getMASTERNODE_UPDATING_LIMIT() { return MASTERNODE_UPDATING_LIMIT; }
 
-    public byte[] getMASTERNODE_PLATFORM() { return MASTERNODE_PLATFORM; }
-    public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; }
-    public byte[] getMASTERNODE_EARLY_MAJOR() { return MASTERNODE_EARLY_MAJOR; }
-    public byte[] getMASTERNODE_EARLY_PRIVATE() { return MASTERNODE_EARLY_PRIVATE; }
-    public byte[] getMASTERNODE_EARLY_RUN_GENERAL() { return MASTERNODE_EARLY_RUN_GENERAL; }
-    public byte[] getMASTERNODE_EARLY_RUN_MAJOR() { return MASTERNODE_EARLY_RUN_MAJOR; }
-    public byte[] getMASTERNODE_EARLY_RUN_PRIVATE() { return MASTERNODE_EARLY_RUN_PRIVATE; }
-    public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; }
-    public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; }
-    public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; }
-    public byte[] getMASTERNODE_LATE_GENERAL() { return MASTERNODE_LATE_GENERAL; }
-    public byte[] getMASTERNODE_LATE_MAJOR() { return MASTERNODE_LATE_MAJOR; }
-    public byte[] getMASTERNODE_LATE_PRIVATE() { return MASTERNODE_LATE_PRIVATE; }
+    public byte[] getMASTERNODE_PLATFORM_CONTRACT() { return MASTERNODE_PLATFORM; }
+
+    public byte[] getMASTERNODE_GENERAL_BASE_EARLY() { return MASTERNODE_GENERAL_BASE_EARLY; }
+    public byte[] getMASTERNODE_GENERAL_BASE_EARLY_RUN() { return MASTERNODE_GENERAL_BASE_EARLY_RUN; }
+    public byte[] getMASTERNODE_GENERAL_BASE_NORMAL() { return MASTERNODE_GENERAL_BASE_NORMAL; }
+    public byte[] getMASTERNODE_GENERAL_BASE_LATE() { return MASTERNODE_GENERAL_BASE_LATE; }
+
+    public byte[] getMASTERNODE_MAJOR_BASE_EARLY() { return MASTERNODE_MAJOR_BASE_EARLY; }
+    public byte[] getMASTERNODE_MAJOR_BASE_EARLY_RUN() { return MASTERNODE_MAJOR_BASE_EARLY_RUN; }
+    public byte[] getMASTERNODE_MAJOR_BASE_NORMAL() { return MASTERNODE_MAJOR_BASE_NORMAL; }
+    public byte[] getMASTERNODE_MAJOR_BASE_LATE() { return MASTERNODE_MAJOR_BASE_LATE; }
+
+    public byte[] getMASTERNODE_PRIVATE_BASE_EARLY() { return MASTERNODE_PRIVATE_BASE_EARLY; }
+    public byte[] getMASTERNODE_PRIVATE_BASE_EARLY_RUN() { return MASTERNODE_PRIVATE_BASE_EARLY_RUN; }
+    public byte[] getMASTERNODE_PRIVATE_BASE_NORMAL() { return MASTERNODE_PRIVATE_BASE_NORMAL; }
+    public byte[] getMASTERNODE_PRIVATE_BASE_LATE() { return MASTERNODE_PRIVATE_BASE_LATE; }
+
     public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
+
     public long getMASTERNODE_PERIOD() { return MASTERNODE_RESET_PERIOD; }
+
+    public byte[] getMASTERNODE_BASE_EARLY(BigInteger collateral) {
+        return getMASTERNODE_BASE(MASTERNODE_TYPE_EARLY, collateral);
+    }
+
+    public byte[] getMASTERNODE_BASE_EARLY_RUN(BigInteger collateral) {
+        return getMASTERNODE_BASE(MASTERNODE_TYPE_EARLY_RUN, collateral);
+    }
+
+    public byte[] getMASTERNODE_BASE_NORMAL(BigInteger collateral) {
+        return getMASTERNODE_BASE(MASTERNODE_TYPE_NORMAL, collateral);
+    }
+
+    public byte[] getMASTERNODE_BASE_LATE(BigInteger collateral) {
+        return getMASTERNODE_BASE(MASTERNODE_TYPE_LATE, collateral);
+    }
+
+    private static final int MASTERNODE_TYPE_EARLY = 1;
+    private static final int MASTERNODE_TYPE_EARLY_RUN = 2;
+    private static final int MASTERNODE_TYPE_NORMAL = 3;
+    private static final int MASTERNODE_TYPE_LATE = 4;
+
+    private byte[] getMASTERNODE_BASE(final int type, BigInteger collateral) {
+        byte[] baseGeneral;
+        byte[] baseMajor;
+        byte[] basePrivate;
+
+        switch(type) {
+            case MASTERNODE_TYPE_EARLY:
+                baseGeneral = MASTERNODE_GENERAL_BASE_EARLY;
+                baseMajor = MASTERNODE_MAJOR_BASE_EARLY;
+                basePrivate = MASTERNODE_PRIVATE_BASE_EARLY;
+                break;
+            case MASTERNODE_TYPE_EARLY_RUN:
+                baseGeneral = MASTERNODE_GENERAL_BASE_EARLY_RUN;
+                baseMajor = MASTERNODE_MAJOR_BASE_EARLY_RUN;
+                basePrivate = MASTERNODE_PRIVATE_BASE_EARLY_RUN;
+                break;
+            case MASTERNODE_TYPE_NORMAL:
+                baseGeneral = MASTERNODE_GENERAL_BASE_NORMAL;
+                baseMajor = MASTERNODE_MAJOR_BASE_NORMAL;
+                basePrivate = MASTERNODE_PRIVATE_BASE_NORMAL;
+                break;
+            case MASTERNODE_TYPE_LATE:
+                baseGeneral = MASTERNODE_GENERAL_BASE_LATE;
+                baseMajor = MASTERNODE_MAJOR_BASE_LATE;
+                basePrivate = MASTERNODE_PRIVATE_BASE_LATE;
+                break;
+            default:
+                return null;
+        }
+
+        if(collateral.compareTo(MASTERNODE_GENERAL_COLLATERAL) == 0) {
+            return baseGeneral;
+        }
+        else if(collateral.compareTo(MASTERNODE_MAJOR_COLLATERAL) == 0) {
+            return baseMajor;
+        }
+        else if(collateral.compareTo(MASTERNODE_PRIVATE_COLLATERAL) == 0) {
+            return basePrivate;
+        }
+        return null;
+    }
+
+    /**
+     * 입력된 블록 번호가 마스터노드 Normal 등급의 신청이 이루어지는 기간에 포함되는지 확인한다.
+     * @param blockNumber 확인하려는 블록 번호
+     * @return TRUE : Normal 참여 가능할 경우
+     */
+    public boolean isMasternodeNormalPeriod(long blockNumber) {
+        long blockNumberInRound = blockNumber % getMASTERNODE_PERIOD();
+        long day_1 = getBLOCKS_PER_DAY();
+        long day_2 = getBLOCKS_PER_DAY()*2;
+
+        return blockNumberInRound >= day_1 && blockNumberInRound < day_2;
+    }
+
 
 
     /**

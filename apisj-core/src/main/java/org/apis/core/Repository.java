@@ -211,11 +211,11 @@ public interface Repository extends org.apis.facade.Repository {
     BigInteger setMnStartBalance(byte[] addr, BigInteger balance);
 
     List<byte[]> getUpdatingMnList(long blockNumber);
-    List<byte[]> getExpiringMnList(long blockNumber);
+    List<byte[]> getNodeListToCheckExpiration(long blockNumber);
 
     void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
-    void checkMasternodeCollateral(byte[] sender, byte[] receiver);
+    void checkMasternodeCollateral(byte[] sender);
     void cleaningMasterNodes(long blockNumber);
     void updateMasterNode(Transaction tx, long blockNumber);
     MasternodeSize sizeofMasterNode(byte[] baseNode);

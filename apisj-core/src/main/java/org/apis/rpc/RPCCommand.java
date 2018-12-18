@@ -1068,17 +1068,17 @@ public class RPCCommand {
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
-                    List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
-                    List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY());
+                    List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
+                    List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
-                    List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
-                    List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
-                    List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+                    List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
+                    List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
+                    List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
 
-                    List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
-                    List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-                    List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+                    List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
+                    List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
+                    List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
                     List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
                     allGeneral.addAll(generalNormal);

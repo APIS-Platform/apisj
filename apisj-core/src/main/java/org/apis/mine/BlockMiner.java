@@ -7,13 +7,14 @@ import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
-import org.apis.db.ByteArrayWrapper;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.server.Channel;
-import org.apis.util.*;
+import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -339,12 +339,12 @@ public class BlockMiner {
          * 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
          * 100 블록 이내에는 초기 세팅 중이므로 충분한 수의 노드가 존재하지 않을 수 있으므로 예외로 한다.
          */
-        List<ByteArrayWrapper> recentMiners = new ArrayList<>();
+        //List<ByteArrayWrapper> recentMiners = new ArrayList<>();
         if(bestBlock.getNumber() > 100) {
             long continuousMiningLimit = constants.getCONTINUOUS_MINING_LIMIT();
             Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
             for (int i = 0; i < continuousMiningLimit; i++) {
-                recentMiners.add(new ByteArrayWrapper(parentBlock.getCoinbase()));
+                //recentMiners.add(new ByteArrayWrapper(parentBlock.getCoinbase()));
 
                 if (FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
                     printMiningMessage(String.format("You have created #%d block. If there is a block created by coinbase within %d blocks, skip mining.", parentBlock.getNumber(), continuousMiningLimit), bestBlock.getNumber());
@@ -414,7 +414,7 @@ public class BlockMiner {
 
 
         // 연결된 노드들의 RP 값과 비교했을 때 내 RP 값이 현저히 낮을 경우, 블록을 생성하지 않는다
-        Collection<Channel> peers = ethereum.getChannelManager().getActivePeers();
+        /*Collection<Channel> peers = ethereum.getChannelManager().getActivePeers();
         Repository rpRepo = RewardPointUtil.getRewardPointBalanceRepo(bestRepo, bestBlock, blockStore);
         List<BigInteger> rpList = new ArrayList<>();
         for(Channel peer : peers) {
@@ -449,7 +449,7 @@ public class BlockMiner {
                 printMiningMessage("I will not create a block because my RP value is smaller than the RP value of the other peers.", bestBlock.getNumber());
                 return false;
             }
-        }
+        }*/
 
 
 
@@ -560,13 +560,14 @@ public class BlockMiner {
         List<Block> minedBlocks = new ArrayList<>();
         minedBlocks.add(newBlock);
         Block parentBlock = newBlock;
+        long parentTimestamp = parentBlock.getTimestamp();
         for(int i = 0; i < 4 && parentBlock.getNumber() > 1; i++) {
             parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             minedBlocks.add(0, parentBlock);
         }
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
-        if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
+        if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks) || newBlock.getTimestamp() - parentTimestamp > 20) {
             Block parent = blockStore.getBlockByHash(newBlock.getParentHash());
 
             // 너무 오랜 시간이 지났으면, 일단 채굴한 블럭을 체인에 연결한다.

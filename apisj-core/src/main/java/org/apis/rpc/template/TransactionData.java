@@ -19,6 +19,7 @@ public class TransactionData {
     private String blockHash;
     private String blockNumber;
     private String transactionIndex;
+    private String timestamp;
     private String from;
     private String to, toMask;
     private String contractAddress;
@@ -43,6 +44,7 @@ public class TransactionData {
         if(block != null) {
             this.blockHash = toHexString0x(block.getHash());
             this.blockNumber = String.valueOf(block.getNumber());
+            this.timestamp = String.valueOf(block.getTimestamp());
         }
 
         this.from = toHexString0x(tx.getSender());

@@ -26,10 +26,12 @@ import org.apis.contract.ContractLoader;
 import org.apis.contract.Wink;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
-import org.apis.db.ContractDetails;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.*;
+import org.apis.util.ByteArraySet;
+import org.apis.util.ByteUtil;
+import org.apis.util.FastByteComparisons;
+import org.apis.util.Utils;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
 import org.apis.vm.program.InternalTransaction;
@@ -41,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.Console;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -660,6 +661,18 @@ public class TransactionExecutor {
             } else {
                 mineralUsed = fee;
                 mineralRefund = m_usedMineral.subtract(fee);
+            }
+
+            // 인터널 트랜잭션의 대상자에 마스터노드는 포함될 수 없다
+            List<InternalTransaction> itxs = result.getInternalTransactions();
+            for(InternalTransaction itx : itxs) {
+                byte[] to = itx.getReceiveAddress();
+                AccountState toState = track.getAccountState(to);
+                if(toState.getMnStartBalance().compareTo(BigInteger.ZERO) > 0) {
+                    String err = "Can not designate a receiver as a masternode in an internal transaction.";
+                    result.setException(new NotEnoughMineralException(err));
+                    break;
+                }
             }
 
 
