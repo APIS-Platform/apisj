@@ -182,8 +182,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public List<byte[]> getExpiringMnList(long blockNumber) {
-        return blockchain.getRepository().getExpiringMnList(blockNumber);
+    public List<byte[]> getNodeListToCheckExpiration(long blockNumber) {
+        return blockchain.getRepository().getNodeListToCheckExpiration(blockNumber);
     }
 
     @Override

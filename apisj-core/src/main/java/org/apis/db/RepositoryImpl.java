@@ -376,34 +376,33 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      * @return 마스터노드 주소들의 리스트
      */
     @Override
-    public List<byte[]> getExpiringMnList(long blockNumber) {
-        List<byte[]> expiringList;
+    public List<byte[]> getNodeListToCheckExpiration(long blockNumber) {
+        List<byte[]> expiringList = new ArrayList<>();
 
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-        int updatingStart = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL()) - 20;
+        int firstCheckNodeNumber = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL()) - 20;
 
-        List<byte[]> allNodes = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
+        List<byte[]> allNodes = new ArrayList<>();
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
 
-        if(updatingStart < 0) {
-            updatingStart = (int) (constants.getMASTERNODE_LIMIT_TOTAL() + updatingStart);
+        if(firstCheckNodeNumber < 0) {
+            firstCheckNodeNumber = (int) (constants.getMASTERNODE_LIMIT_TOTAL() + firstCheckNodeNumber);
         }
-        int updatingEnd = updatingStart + 10;
 
-        if(updatingStart >= allNodes.size()) {
+        if(firstCheckNodeNumber >= allNodes.size()) {
             return new ArrayList<>();
         }
 
-        if(updatingEnd > allNodes.size()) {
-            updatingEnd = allNodes.size();
+        for(int i = 0; i < 10; i++) {
+            int index = (firstCheckNodeNumber + i) % allNodes.size();
+            expiringList.add(allNodes.get(index));
         }
-
-        expiringList = allNodes.subList(updatingStart, updatingEnd);
 
         return expiringList;
     }
