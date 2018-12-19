@@ -799,22 +799,26 @@ public class RPCCommand {
 
                     if(params.length > 1) {
                         try {
-                            rowCount = Long.valueOf((String) params[1]);
-                        } catch (NumberFormatException ignored) {}
+                            rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
                     }
                     if(params.length > 2) {
                         try {
-                            offset = Long.valueOf((String) params[2]);
-                        } catch (NumberFormatException ignored) {}
+                            offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[2]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
                     }
 
                     DBManager dbManager = DBManager.getInstance();
                     List<TransactionRecord> txRecords = dbManager.selectTransactions(txHashString, rowCount, offset);
+                    List<TransactionReceiptData> txReceipts = new ArrayList<>();
                     for(TransactionRecord txRecord : txRecords) {
-                        txRecord.init(ethereum);
+                        byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
+                        TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
+                        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+                        txReceipts.add(new TransactionReceiptData(txInfo, block));
                     }
 
-                    command = createJson(id, method, txRecords);
+                    command = createJson(id, method, txReceipts);
                 } catch (Exception e) {
                     e.printStackTrace();
                     command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);

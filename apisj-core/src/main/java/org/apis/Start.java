@@ -65,6 +65,9 @@ public class Start {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
             if(rpcServerManager.isAvailable()) {
                 rpcServerManager.startServer();
+
+                // DB Sync Start
+                DBSyncManager.getInstance(mEthereum).syncThreadStart();
             }
         } catch (IOException e) {
             logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));
@@ -83,10 +86,6 @@ public class Start {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             logger.debug(ConsoleUtil.colorBBlue("OnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
-
-            // DB Sync Start
-            DBSyncManager.getInstance(mEthereum).syncThreadStart();
-
 
             Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
