@@ -1,18 +1,15 @@
 package org.apis.gui.controller.popup;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
-import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
@@ -32,10 +29,10 @@ public class PopupMasternodeController extends BasePopupController {
 
     @FXML private ApisSelectBoxController recipientController;
     @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
+    @FXML private ApisAddressFieldController recipientFieldController;
     @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
     @FXML private Label address, recipientInputBtn, startBtn;
-    @FXML private ImageView addrIdentImg, recipientAddrImg;
-    @FXML private TextField recipientTextField;
+    @FXML private ImageView addrIdentImg;
     @FXML private Label title, walletAddrLabel, passwordLabel, knowledgeKeyLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
@@ -60,10 +57,6 @@ public class PopupMasternodeController extends BasePopupController {
         ellipse1.setCenterY(12);
 
         addrIdentImg.setClip(ellipse);
-        recipientAddrImg.setClip(ellipse1);
-
-        AppManager.settingTextFieldLineStyle(recipientTextField);
-        recipientTextField.textProperty().addListener(recipientKeyListener);
 
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -144,7 +137,6 @@ public class PopupMasternodeController extends BasePopupController {
         knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().popup.masternodeKnowledgeKeyLabel);
         recipientLabel.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientLabel);
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
-        recipientTextField.promptTextProperty().bind(StringManager.getInstance().popup.masternodeRecipientPlaceholder);
         recipientDesc1.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc1);
         recipientDesc2.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc2);
         startBtn.textProperty().bind(StringManager.getInstance().popup.masternodeStartMasternode);
@@ -168,8 +160,7 @@ public class PopupMasternodeController extends BasePopupController {
                 StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.Cffffff);
-                recipientTextField.setText("");
-                recipientAddrImg.setImage(greyCircleAddrImg);
+                recipientFieldController.setText("");
                 recipientSelect.setVisible(false);
                 recipientInput.setVisible(true);
 
@@ -193,33 +184,6 @@ public class PopupMasternodeController extends BasePopupController {
         }
     }
 
-    private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            String address = recipientTextField.getText();
-
-            if(address.indexOf("@") >= 0){
-                address = AppManager.getInstance().getAddressWithMask(address);
-            }
-
-            int maxlangth = 40;
-            if(address == null || address.length() < maxlangth) {
-                recipientAddrImg.setImage(greyCircleAddrImg);
-
-                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cd8d8d8);
-                startBtn.setDisable(true);
-            } else {
-                Image image = IdenticonGenerator.createIcon(address);
-                if(image != null){
-                    recipientAddrImg.setImage(image);
-                }
-
-                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cb01e1e);
-                startBtn.setDisable(false);
-            }
-        }
-    };
-
     public void startMasternode(){
         if (passwordController.getCheckBtnEnteredFlag()) {
             passwordController.setText("");
@@ -233,7 +197,7 @@ public class PopupMasternodeController extends BasePopupController {
         byte[] recipientAddr = Hex.decode(recipientController.getAddress());
         // 직접 입력한 경우
         if(!isMyAddressSelected){
-            recipientAddr = Hex.decode(recipientTextField.getText().trim());
+            recipientAddr = Hex.decode(recipientFieldController.getAddress());
         }
 
         passwordController.succeededForm();
