@@ -464,7 +464,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void onAction() {
-
+                loadWalletPhaseThreeTypePkNextClick();
             }
 
             @Override
@@ -624,7 +624,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void onAction() {
-                loadWalletPhaseFourTypePkNmController.requestFocus();
+                loadWalletPhaseFourTypePkLoadClick();
             }
 
             @Override
