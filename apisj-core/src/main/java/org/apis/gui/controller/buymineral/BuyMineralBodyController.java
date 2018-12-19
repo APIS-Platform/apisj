@@ -18,6 +18,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
@@ -54,6 +55,7 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
+    @FXML private MessageLineController payerMessageController;
 
     private boolean isBeneficiarySelected = true;
     private boolean isSuccessed = false;
@@ -72,9 +74,7 @@ public class BuyMineralBodyController extends BaseViewController {
         beneficiaryTextFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
             public void change(String oldValue, String newValue) {
-                if(handelr != null){
-                    handelr.settingLayoutData();
-                }
+                settingLayoutData();
             }
         });
         beneficiaryTextFieldController.setVisible(false);
@@ -122,11 +122,12 @@ public class BuyMineralBodyController extends BaseViewController {
             }
         });
 
+        chargeAmount.textProperty().addListener(InputConditionManager.onlyNumberListener());
         chargeAmount.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
-                BigInteger apis = new BigInteger(ApisUtil.convert(newValue.split(" ")[0].replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
+                BigInteger apis = new BigInteger(ApisUtil.convert(newValue.replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
                 BigInteger mineral = getCalMineral(apis);
                 BigInteger percent = BigInteger.ZERO;
 
@@ -134,14 +135,13 @@ public class BuyMineralBodyController extends BaseViewController {
                     percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
                 }
 
-                chargeAmount.setText(ApisUtil.readableApis(apis, ',',true));
-                bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
-
                 BuyMineralBodyController.this.percent.setText("+"+percent.toString()+"%");
                 BuyMineralBodyController.this.percentInput.setText("+"+percent.toString()+"%");
 
 
                 isSuccessed = false;
+
+                bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
                 settingLayoutData();
             }
         });
@@ -160,6 +160,7 @@ public class BuyMineralBodyController extends BaseViewController {
         initMineralDetailSelectBox();
         hideSelectList(chargeAmountSelectListView, chargeAmountSelectList);
         hideSelectList(mineralDetailSelectListView, mineralDetailSelectList);
+
         settingLayoutData();
     }
 
@@ -171,6 +172,7 @@ public class BuyMineralBodyController extends BaseViewController {
         beneficiaryInputButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
         mineralDetailSelectHead.textProperty().bind(StringManager.getInstance().buymineral.mineralDetailSelectHead);
         apisTotalLabel.textProperty().bind(StringManager.getInstance().common.total);
+        payerMessageController.setFailed(StringManager.getInstance().common.notEnoughBalance);
     }
 
     @FXML
@@ -309,17 +311,51 @@ public class BuyMineralBodyController extends BaseViewController {
     }
 
     public void settingLayoutData(){
-        BigInteger payerTotalApis = payerController.getBalance();
-        gasCalculatorController.setMineral(payerController.getMineral());
-        apisTotalBalance.setText(ApisUtil.readableApis(payerTotalApis, ',', true));
+        boolean isCheckAddress = true;
+        boolean isCheckBalance = true;
+        boolean isCheckGasLimit = true;
 
-        String apis = chargeAmount.getText();
-        if(apis != null && !apis.equals("0") && apis.length() > 0){
-            btnByteCodePreGasUsedController.setCompiled(true);
-        }else{
-            btnByteCodePreGasUsedController.setCompiled(false);
+        String address = getBeneficiaryAddress();
+        if(address == null || address.length() <= 0){
+            isCheckAddress = false;
         }
 
+        String amount = chargeAmount.getText();
+        amount = ApisUtil.convert(amount, ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS,',',false).replaceAll(",","").replaceAll("\\.","");
+        BigInteger chargedAmount = new BigInteger(amount);
+        BigInteger payerTotalApis = payerController.getBalance();
+        apisTotalBalance.setText(ApisUtil.readableApis(payerTotalApis, ',', true));
+
+        BigInteger mineral = payerController.getMineral();
+        gasCalculatorController.setMineral(mineral);
+
+        BigInteger chargedFee = gasCalculatorController.getTotalFee();
+        if(chargedFee.compareTo(BigInteger.ZERO) <= 0){
+            chargedFee = BigInteger.ZERO;
+        }
+
+        BigInteger gasLimit = gasCalculatorController.getGasLimit();
+        if(gasLimit.compareTo(BigInteger.ZERO) <= 0){
+            isCheckGasLimit = false;
+        }
+
+        if(payerTotalApis.subtract(chargedAmount).subtract(chargedFee).compareTo(BigInteger.ZERO) < 0){
+            // show not enough balance message
+            payerMessageController.setVisible(true);
+            btnByteCodePreGasUsedController.setCompiled(false);
+            isCheckBalance = false;
+        }else{
+            // hiden not enough balance message
+            payerMessageController.setVisible(false);
+            btnByteCodePreGasUsedController.setCompiled(true);
+        }
+
+
+        if(isCheckAddress && isCheckBalance && isCheckGasLimit){
+            isSuccessed = true;
+        }else{
+            isSuccessed = false;
+        }
 
         if(handelr != null){
             handelr.settingLayoutData();

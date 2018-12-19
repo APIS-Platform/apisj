@@ -158,7 +158,7 @@ public class BuyMineralController extends BasePopupController {
         String totalFee = bodyController.getTotalFee();
         String payerAddress = bodyController.getPayerAddress();
         receiptController.setBeneficiaryAddress(beneficiary);
-        receiptController.setAmount(amount);
+        receiptController.setAmount(amount + " APIS");
         receiptController.setTotalFee(totalFee + " APIS");
         receiptController.setPayerAddress(payerAddress);
 
