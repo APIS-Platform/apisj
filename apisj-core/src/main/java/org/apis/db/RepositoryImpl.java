@@ -614,8 +614,12 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 byte[] masternode   = (byte[]) event.args[1];
                 byte[] recipient = (byte[])event.args[2] ;
                 BigInteger collateral = (BigInteger)event.args[3];
+                byte[] baseNode = constants.getMASTERNODE_BASE_EARLY(collateral);
+                if(baseNode == null) {
+                    return;
+                }
 
-                MasternodeSize sizeofEarlyBird = sizeofMasterNode(constants.getMASTERNODE_BASE_EARLY(collateral));
+                MasternodeSize sizeofEarlyBird = sizeofMasterNode(baseNode);
                 if(sizeofEarlyBird.getSize() < constants.getMASTERNODE_LIMIT(collateral)) {
                     insertMnState(sizeofEarlyBird.getLastNode(), masternode, blockNumber, collateral, recipient);
                 }
