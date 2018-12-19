@@ -1,21 +1,19 @@
 package org.apis.db.sql;
 
-import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
-import org.apis.core.*;
+import org.apis.core.Block;
+import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
+import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
-import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
-import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sqlite.SQLiteConfig;
+import org.spongycastle.util.encoders.DecoderException;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +80,9 @@ public class DBManager {
     private void create(Connection conn) throws SQLException {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
-        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `type` INTEGER, `amount` TEXT, `blockHash` TEXT, `blockNumber` NUMERIC )";
-        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` TEXT NOT NULL UNIQUE, `receiver` TEXT, `sender` TEXT, `blockUid` NUMERIC, PRIMARY KEY(`txhash`), FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`) )";
-        String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_raw` TEXT, `event_text` TEXT )";
+        //String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` TEXT NOT NULL UNIQUE, `receiver` TEXT, `sender` TEXT, `blockUid` NUMERIC, PRIMARY KEY(`txhash`), FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`) )";
+        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` BLOB NOT NULL UNIQUE, `receiver` BLOB, `sender` BLOB, `blockUid` NUMERIC, FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`), PRIMARY KEY(`txhash`) )";
+        String queryCreateEvents = "CREATE TABLE \"events\" ( `tx_hash` TEXT, `address` TEXT, `topic` TEXT )";
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
         String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
@@ -96,8 +94,6 @@ public class DBManager {
 
 
         String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address` )";
-        String queryIndexRewardAddress = "CREATE INDEX `rewardAddress` ON `rewards` ( `address` )";
-        String queryIndexRewardBlock = "CREATE INDEX `rewardBlock` ON `rewards` ( `blockHash` )";
         String queryIndexTxReceiver = "CREATE INDEX `txReceiver` ON `transactions` ( `receiver` )";
         String queryIndexTxSender = "CREATE INDEX `txSender` ON `transactions` ( `sender` )";
         String queryIndexTxBlockUid = "CREATE INDEX `txBlockUid` ON `transactions` ( `blockUid` )";
@@ -109,10 +105,6 @@ public class DBManager {
         PreparedStatement createContracts = conn.prepareStatement(queryCreateContracts);
         createContracts.execute();
         createContracts.close();
-
-        PreparedStatement createRewards = conn.prepareStatement(queryCreateRewards);
-        createRewards.execute();
-        createRewards.close();
 
         PreparedStatement createTransactions = conn.prepareStatement(queryCreateTransactions);
         createTransactions.execute();
@@ -161,14 +153,6 @@ public class DBManager {
         PreparedStatement createIndexTxBlockUid = conn.prepareStatement(queryIndexTxBlockUid);
         createIndexTxBlockUid.execute();
         createIndexTxBlockUid.close();
-
-        PreparedStatement createIndexReward = conn.prepareStatement(queryIndexRewardAddress);
-        createIndexReward.execute();
-        createIndexReward.close();
-
-        PreparedStatement createIndexBlock = conn.prepareStatement(queryIndexRewardBlock);
-        createIndexBlock.execute();
-        createIndexBlock.close();
 
         PreparedStatement createIndexEvent = conn.prepareStatement(queryIndexEvent);
         createIndexEvent.execute();
@@ -540,10 +524,6 @@ public class DBManager {
 
 
 
-    public List<TransactionRecord> selectTransactions(String searchText) {
-        return selectTransactions(searchText, 100, 0);
-    }
-
     public List<TransactionRecord> selectTransactions(String searchText, long rowCount, long offset) {
         long blockNumber = selectBlockUidWithBlockNum(searchText);
 
@@ -566,11 +546,13 @@ public class DBManager {
                 query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
+                byte[] searchBytes = ByteUtil.hexStringToBytes(searchText);
+
                 query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? OR blockUid = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
-                state.setString(1, searchText);
-                state.setString(2, searchText);
-                state.setString(3, searchText);
+                state.setBytes(1, searchBytes);
+                state.setBytes(2, searchBytes);
+                state.setBytes(3, searchBytes);
                 state.setLong(4, blockNumber);
             }
 
@@ -579,8 +561,7 @@ public class DBManager {
             while(result.next()) {
                 transactions.add(new TransactionRecord(result));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | DecoderException ignored) {
         } finally {
             close(state);
             close(result);
@@ -599,16 +580,16 @@ public class DBManager {
 
         try {
             if(searchText == null || searchText.length() == 0) {
-                query = "";
-                query = query + "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
+                query = "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "";
-                query = query + "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? OR blockUid = ? ORDER BY blockUid DESC ";
+                byte[] searchBytes = ByteUtil.hexStringToBytes(searchText);
+
+                query = "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? OR blockUid = ? ORDER BY blockUid DESC ";
                 state = this.connection.prepareStatement(query);
-                state.setString(1, searchText);
-                state.setString(2, searchText);
-                state.setString(3, searchText);
+                state.setBytes(1, searchBytes);
+                state.setBytes(2, searchBytes);
+                state.setBytes(3, searchBytes);
                 state.setLong(4, blockNumber);
             }
 
@@ -616,9 +597,9 @@ public class DBManager {
             if(result.next()){
                 count = result.getLong("cnt");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+        }
+        catch (SQLException | DecoderException ignored) {}
+        finally {
             close(state);
             close(result);
         }
@@ -636,8 +617,7 @@ public class DBManager {
         if (blockNum == null || blockNum.length() == 0) {
         }else{
             try {
-                query = "";
-                query = query + "SELECT uid FROM blocks WHERE blockNumber = ? ORDER BY uid DESC ";
+                query = "SELECT uid FROM blocks WHERE blockNumber = ? ORDER BY uid DESC ";
                 state = this.connection.prepareStatement(query);
                 state.setString(1, blockNum);
 
@@ -653,35 +633,6 @@ public class DBManager {
             }
         }
         return blockUid;
-    }
-
-
-    public boolean deleteTransactionByHash(byte[] txHash) {
-
-        try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE hash = ?");
-            state.setString(1, ByteUtil.toHexString(txHash));
-            return state.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean deleteTransactionByAddress(byte[] address) {
-
-        try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE `from` = ?");
-            state.setString(1, ByteUtil.toHexString(address));
-            boolean deleteResult = state.execute();
-            state.close();
-            return deleteResult;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
 
@@ -1187,7 +1138,6 @@ public class DBManager {
             PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
             PreparedStatement insertTx = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
             PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
-            PreparedStatement insertReward = connection.prepareStatement("INSERT INTO rewards (address, type, amount, blockHash, blockNumber) VALUES (?, ?, ?, ?, ?)");
             ResultSet blockInsertResult = null;
 
             // block이 존재하면 패스
@@ -1213,9 +1163,9 @@ public class DBManager {
                     // Transaction Insert
                     BigInteger totalFees = BigInteger.ZERO;
                     for (Transaction tx : block.getTransactionsList()) {
-                        insertTx.setString(1, ByteUtil.toHexString(tx.getHash()));            // txHash
-                        insertTx.setString(2, ByteUtil.toHexString(tx.getReceiveAddress()));  // receiver
-                        insertTx.setString(3, ByteUtil.toHexString(tx.getSender()));          // sender
+                        insertTx.setBytes(1, tx.getHash());            // txHash
+                        insertTx.setBytes(2, tx.getReceiveAddress());  // receiver
+                        insertTx.setBytes(3, tx.getSender());          // sender
                         insertTx.setLong(4, blockUid);
                         insertTx.addBatch();
 
@@ -1227,65 +1177,11 @@ public class DBManager {
                         totalFees = totalFees.add(gasUsed).multiply(gasPrice).subtract(mineralUsed);
                     }
 
-                    // Insert Rewards
-                    Constants constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
-                    BigInteger blockReward = constants.getBLOCK_REWARD(block.getNumber());
-
-
-
-                    BigInteger totalReward = blockReward.add(totalFees);
-                    BigInteger minerReward = totalReward .multiply(constants.getREWARD_PORTION_MINER()).divide(constants.getREWARD_PORTION_DENOMINATOR());
-                    BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
-                    BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
-
-                    insertReward.setString(1, ByteUtil.toHexString(block.getCoinbase()));
-                    insertReward.setInt(2, REWARD_TYPE_MINING);
-                    insertReward.setString(3, minerReward.toString());
-                    insertReward.setString(4, blockHash);
-                    insertReward.setLong(5, block.getNumber());
-                    insertReward.addBatch();
-
-                    // InsertMasternodeReward
-                    for(byte[] mn : block.getMnGeneralList()) {
-                        BigInteger mnReward = block.getMnReward().multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
-                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
-
-                        insertReward.setString(1, ByteUtil.toHexString(recipient));
-                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_GENERAL);
-                        insertReward.setString(3, mnReward.toString());
-                        insertReward.setString(4, blockHash);
-                        insertReward.setLong(5, block.getNumber());
-                        insertReward.addBatch();
-                    }
-                    for(byte[] mn : block.getMnMajorList()) {
-                        BigInteger mnReward = block.getMnReward().multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
-                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
-
-                        insertReward.setString(1, ByteUtil.toHexString(recipient));
-                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_MAJOR);
-                        insertReward.setString(3, mnReward.toString());
-                        insertReward.setString(4, blockHash);
-                        insertReward.setLong(5, block.getNumber());
-                        insertReward.addBatch();
-                    }
-                    for(byte[] mn : block.getMnPrivateList()) {
-                        BigInteger mnReward = block.getMnReward().multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
-                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
-
-                        insertReward.setString(1, ByteUtil.toHexString(recipient));
-                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_PRIVATE);
-                        insertReward.setString(3, mnReward.toString());
-                        insertReward.setString(4, blockHash);
-                        insertReward.setLong(5, block.getNumber());
-                        insertReward.addBatch();
-                    }
-
                     // Sync status update
                     updateSync.setLong(1, blockUid);
                     updateSync.execute();
                 }
                 insertTx.executeBatch();
-                insertReward.executeBatch();
 
 
             } catch (Exception e) {
@@ -1298,21 +1194,11 @@ public class DBManager {
                 close(insertBlock);
                 close(blockInsertResult);
                 close(insertTx);
-                close(insertReward);
                 close(updateSync);
             }
 
         } catch(SQLException e){
             e.printStackTrace();
         }
-    }
-
-    private void addBatchReward(PreparedStatement state, byte[] address, int type, BigInteger reward, String blockHash, long blockNumber) throws SQLException {
-        state.setString(1, ByteUtil.toHexString(address));
-        state.setInt(2, type);
-        state.setString(3, reward.toString());
-        state.setString(4, blockHash);
-        state.setLong(5, blockNumber);
-        state.addBatch();
     }
 }

@@ -5,9 +5,7 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumImpl;
 import org.apis.util.ByteUtil;
-import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -15,15 +13,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TransactionRecord {
-    private String hash;
+    private byte[] hash;
     private long blockUid;
     private long block_number;
     private String block_hash;
     private long nonce;
     private BigInteger gasPrice;
     private long gasLimit;
-    private String receiver;
-    private String sender;
+    private byte[] receiver;
+    private byte[] sender;
     private String receiverMask;
     private BigInteger amount;
     private String data;
@@ -37,17 +35,17 @@ public class TransactionRecord {
     private long timestamp;
 
     public TransactionRecord(ResultSet rs) throws SQLException {
-        this.hash = rs.getString("txHash");
-        this.receiver = rs.getString("receiver");
-        this.sender = rs.getString("sender");
+        this.hash = rs.getBytes("txHash");
+        this.receiver = rs.getBytes("receiver");
+        this.sender = rs.getBytes("sender");
         this.blockUid = rs.getLong("blockUid");
     }
 
     public TransactionRecord init(Ethereum ethereum) {
-        if(hash == null || hash.isEmpty()) {
+        if(hash == null || hash.length == 0) {
             return this;
         }
-        TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(hash));
+        TransactionInfo txInfo = ethereum.getTransactionInfo(hash);
         if(txInfo != null) {
             TransactionReceipt receipt = txInfo.getReceipt();
             Transaction tx = receipt.getTransaction();
@@ -122,11 +120,11 @@ public class TransactionRecord {
     }
 
     public String getHash() {
-        return hash;
+        return ByteUtil.toHexString(hash);
     }
 
     public String getReceiver() {
-        return receiver;
+        return ByteUtil.toHexString(receiver);
     }
 
     public String getLogs() {
@@ -138,7 +136,7 @@ public class TransactionRecord {
     }
 
     public String getSender() {
-        return sender;
+        return ByteUtil.toHexString(sender);
     }
 
     public String getContractAddress(){
