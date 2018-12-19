@@ -4,6 +4,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import org.apis.util.blockchain.ApisUtil;
 
+import java.math.BigInteger;
+
 public class InputConditionManager {
     private static InputConditionManager ourInstance = new InputConditionManager();
 
@@ -34,6 +36,25 @@ public class InputConditionManager {
         return address;
     }
 
+    public static String returnFilterNumber(String number){
+        number = number.replaceAll("[^0-9.]","");
+        String[] numbers = number.split("\\.");
+        if(numbers.length == 0){
+        }else if(numbers.length == 1){
+            if(number.indexOf(".") < 0){
+            }else if(number.indexOf(".") == 0){
+            }else if(number.indexOf(".") == number.length()-1){
+                number = numbers[0]+".";
+            }else{
+                number = numbers[0];
+            }
+        }else if(numbers.length > 1){
+            number = numbers[0] + "." + numbers[1];
+        }
+        return number;
+    }
+
+
     public static String returnFilterApis(String value, ApisUtil.Unit from, ApisUtil.Unit to){
         return ApisUtil.convert(value, from, to, ',',false);
     }
@@ -46,10 +67,10 @@ public class InputConditionManager {
         };
     }
 
-    public static ChangeListener<String> apisListener() {
+    public static ChangeListener<String> onlyNumberListener() {
         return (observable, oldValue, newValue) -> {
             StringProperty string = (StringProperty) observable;
-
+            string.set(returnFilterNumber(newValue));
         };
     }
 }

@@ -24,13 +24,14 @@
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" valignment="TOP" />
-          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" valignment="TOP" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
@@ -39,23 +40,30 @@
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                  <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                  <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="1">
                      <children>
-                        <fx:include fx:id="btnByteCodePreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0" />
+                        <fx:include fx:id="payerMessage" source="../module/message_line.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
             </GridPane>
-            <AnchorPane>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+               <children>
+                  <fx:include fx:id="btnByteCodePreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity">
                <GridPane.margin>
                   <Insets bottom="8.0" />
                </GridPane.margin>
                <children>
-                  <Label fx:id="titleLabel" styleClass="font_semibold_14" text="Beneficiary Address" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <Label fx:id="beneficiaryInputButton" alignment="CENTER" onMouseClicked="#onMouseClickedDirectInput" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="direct input" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="titleLabel" styleClass="font_semibold_14" text="Beneficiary Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="beneficiaryInputButton" alignment="CENTER" onMouseClicked="#onMouseClickedDirectInput" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -98,9 +106,9 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane GridPane.rowIndex="9">
+            <AnchorPane GridPane.rowIndex="10">
                 <children>
-                    <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
@@ -108,12 +116,11 @@
                     <fx:include fx:id="payer" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
                <GridPane.margin>
-                  <Insets bottom="4.0" />
+                  <Insets />
                </GridPane.margin>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="3">
                <children>
-                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="1.0" style="-fx-background-color: #e3e5e9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -122,7 +129,6 @@
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                     </rowConstraints>
                      <children>
                         <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClickedDetail" prefHeight="42.0" GridPane.rowIndex="2">
@@ -185,7 +191,7 @@
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                           </rowConstraints>
                            <children>

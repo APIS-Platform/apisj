@@ -83,13 +83,13 @@
                                           <Insets left="8.0" />
                                        </HBox.margin>
                                     </Label>
-                                    <Label fx:id="buyMineralSubTitleLabel" styleClass="font_regular_12" text="You can use the APIS PC WALLET more comportable." textFill="#999999">
-                                       <HBox.margin>
-                                          <Insets left="8.0" />
-                                       </HBox.margin>
-                                    </Label>
                                  </children>
                               </HBox>
+                              <Label fx:id="buyMineralSubTitleLabel" styleClass="font_regular_12" text="You can use the APIS PC WALLET more comportable." textFill="#999999" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets right="24.0" />
+                                 </GridPane.margin>
+                              </Label>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                  <children>
                                     <Pane layoutX="-28.0" layoutY="-76.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
