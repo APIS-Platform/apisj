@@ -162,6 +162,49 @@ public class ApisUtil {
         }
     }
 
+    /**
+     * APIS 단위 이상으로 큰 수를 K, M, B, T 형식으로 출력해준다.
+     * 1000 APIS -> 1K APIS
+     * 1000000 APIS -> 1M APIS
+     * 1000000000 APIS -> 1B APIS
+     * 1000000000000 APIS -> 1T APIS
+     * @param attoApis
+     * @return
+     */
+    public static String readableApisKMBT(BigInteger attoApis) {
+        String stringApis = convert(attoApis.toString(), Unit.aAPIS, Unit.APIS, ',', true);
+
+        //소수점이 제거된 BigInteger
+        BigInteger apis = new BigInteger(stringApis.replaceAll(",","").split("\\.")[0]);
+        BigInteger result = apis;
+
+        // T
+        result = apis.divide(new BigInteger("1000000000000"));
+        if(result.compareTo(BigInteger.ZERO) > 0){
+            return result.toString() + "t";
+        }
+
+        // B
+        result = apis.divide(BigInteger.valueOf(1_000_000_000));
+        if(result.compareTo(BigInteger.ZERO) > 0){
+            return result.toString() + "b";
+        }
+
+        // M
+        result = apis.divide(BigInteger.valueOf(1_000_000));
+        if(result.compareTo(BigInteger.ZERO) > 0){
+            return result.toString() + "m";
+        }
+
+        // K
+        result = apis.divide(BigInteger.valueOf(1_000));
+        if(result.compareTo(BigInteger.ZERO) > 0){
+            return result.toString() + "k";
+        }
+
+        return apis.toString();
+    }
+
 
 
 

@@ -72,6 +72,7 @@ public class SmartContractDeployController extends BaseViewController {
 
         // setting handler and listener
         tabMenuController.setHandler(tabMenuImpl);
+        tabMenuController.setFontSize14(16);
         walletAndAmountController.setHandler(walletAndAmountImpl);
         gasCalculatorController.setHandler(gasCalculatorImpl);
         contractCombo.getSelectionModel().selectedItemProperty().addListener(contractComboListener);

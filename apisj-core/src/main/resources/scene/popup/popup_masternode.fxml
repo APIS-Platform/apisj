@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMasternodeController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMasternodeController">
    <children>
       <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -136,22 +135,9 @@
                               </AnchorPane>
                            </children>
                         </GridPane>
-                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" visible="false" GridPane.rowIndex="12">
+                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" visible="false" GridPane.rowIndex="12">
                            <children>
-                              <TextField fx:id="recipientTextField" promptText="please enter your address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <padding>
-                                    <Insets left="40.0" right="9.0" />
-                                 </padding>
-                                 <styleClass>
-                                    <String fx:value="border_radius_4444" />
-                                    <String fx:value="mono_font_regular_12" />
-                                 </styleClass>
-                              </TextField>
-                              <ImageView fx:id="recipientAddrImg" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="9.0" AnchorPane.topAnchor="9.0">
-                                 <image>
-                                    <Image url="@../../image/ic_circle_grey@2x.png" />
-                                 </image>
-                              </ImageView>
+                              <fx:include fx:id="recipientField" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <GridPane GridPane.rowIndex="13">
@@ -185,7 +171,7 @@
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
                         </AnchorPane>
-                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" GridPane.rowIndex="12">
+                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="12">
                              <fx:include fx:id="recipient" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
                         <AnchorPane GridPane.rowIndex="8">

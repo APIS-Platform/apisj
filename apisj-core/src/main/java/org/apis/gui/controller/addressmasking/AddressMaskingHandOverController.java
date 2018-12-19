@@ -50,8 +50,8 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
         AppManager.settingTextFieldStyle(handedAddressTextField);
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
+        selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
 
         selectAddressController.setHandler(selectBoxImpl);
         selectAddressController.selectedItem(0);

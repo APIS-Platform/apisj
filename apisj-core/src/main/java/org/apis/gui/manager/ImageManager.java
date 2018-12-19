@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.util.AddressUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -108,16 +109,12 @@ public class ImageManager {
     }
 
 
-    private static Map<String, Image> identicons = new HashMap<>();
     public static Image getIdenticons(String address) {
-        Image image = identicons.get(address);
-        if(image == null){
-            image = IdenticonGenerator.createIcon(address);
-        }
 
-        if(address.length() < 20){
-            image = ImageManager.icCrcleNone;
+        if(address == null || !AddressUtil.isAddress(address)){
+            return ImageManager.icCrcleNone;
+        }else{
+            return IdenticonGenerator.createIcon(address);
         }
-        return image;
     }
 }

@@ -10,6 +10,7 @@ import org.apis.gui.controller.base.BaseSelectBoxItemController;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,8 +19,10 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
     private SelectBoxItemModel model = new SelectBoxItemModel();
 
     @FXML private AnchorPane rootPane;
-    @FXML private Label aliasLabel, addressLabel, maskLabel;
+    @FXML private Label aliasLabel, addressLabel, balanceLabel;
     @FXML private ImageView icon, icKnowledgekey;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,14 +39,15 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
         SelectBoxItemModel itemModel = this.model;
 
         if(model != null) {
-            aliasLabel.textProperty().unbind();
-            addressLabel.textProperty().unbind();
-            maskLabel.textProperty().unbind();
-
-            aliasLabel.textProperty().bind(itemModel.aliasProperty());
-            addressLabel.textProperty().bind(itemModel.addressProperty());
-            maskLabel.textProperty().bind(itemModel.maskProperty());
-
+            String stringBalance = "0 APIS";
+            if(isReadableApisKMBT) {
+                stringBalance = ApisUtil.readableApisKMBT(itemModel.getBalance());
+            }else {
+                stringBalance = ApisUtil.readableApis(itemModel.getBalance(),',',true).replaceAll(",","").split("\\.")[0];
+            }
+            balanceLabel.setText(stringBalance);
+            aliasLabel.setText(itemModel.aliasProperty().get());
+            addressLabel.setText(itemModel.addressProperty().get());
             icon.setImage(itemModel.getIdenticon());
 
             // 보안키 체크
@@ -57,6 +61,8 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
 
         }
     }
+
+
     @Override
     public BaseModel getModel(){
         return this.model;

@@ -95,7 +95,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         this.warningLabel.setVisible(false);
 
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -109,7 +109,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
             }
         });
 
-        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
+        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN, false);
         selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -124,7 +124,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

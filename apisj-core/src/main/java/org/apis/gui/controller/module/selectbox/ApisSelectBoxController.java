@@ -40,7 +40,7 @@ public class ApisSelectBoxController extends BaseViewController {
     @FXML private GridPane header;
     @FXML private ScrollPane scrollPane;
 
-
+    private boolean isReadableApisKMBT = false;
     private BaseFxmlController headerFxml;
     private ArrayList<BaseFxmlController> itemFxmlList = new ArrayList<>();
     private SelectBoxItemModel selectedItemModel = null;
@@ -73,8 +73,10 @@ public class ApisSelectBoxController extends BaseViewController {
         event.consume();
     }
 
-    public void init(int boxType){
+    public void init(int boxType, boolean isReadableApisKMBT){
+
         this.selectBoxType = boxType;
+        this.isReadableApisKMBT = isReadableApisKMBT;
 
         setSelectBoxType(this.selectBoxType);
 
@@ -89,6 +91,7 @@ public class ApisSelectBoxController extends BaseViewController {
                     String address = dataExp.address;
                     String alias = dataExp.alias;
                     String mask = dataExp.mask;
+
                     SelectBoxItemModel model = new SelectBoxItemModel();
                     model.addressProperty().setValue(address);
                     model.aliasProperty().setValue(alias);
@@ -170,7 +173,7 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void update(){
-        init(this.selectBoxType);
+        init(this.selectBoxType, this.isReadableApisKMBT);
         if(selectedItemModel != null) {
             for(int i=0; i<itemFxmlList.size(); i++){
 
@@ -213,7 +216,9 @@ public class ApisSelectBoxController extends BaseViewController {
             if(headerFxml == null) {
                 headerFxml = new BaseFxmlController(fxmlUrl);
             }
-            headerFxml.getController().setModel(model);
+            BaseSelectBoxHeaderController headerController = (BaseSelectBoxHeaderController)headerFxml.getController();
+            headerController.setModel(model);
+            headerController.setReadableApisKMBT(isReadableApisKMBT);
 
             header.getChildren().clear();
             header.add(headerFxml.getNode(),0,0);
@@ -239,6 +244,7 @@ public class ApisSelectBoxController extends BaseViewController {
             BaseFxmlController itemFxml = new BaseFxmlController(itemUrl);
             BaseSelectBoxItemController itemController = (BaseSelectBoxItemController)itemFxml.getController();
             itemController.setModel(model);
+            itemController.setReadableApisKMBT(isReadableApisKMBT);
             itemController.setHandler(new BaseSelectBoxItemController.BaseSelectBoxItemImpl() {
                 @Override
                 public void onMouseClicked(SelectBoxItemModel itemModel) {

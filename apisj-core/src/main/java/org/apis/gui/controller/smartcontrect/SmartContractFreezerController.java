@@ -41,7 +41,7 @@ public class SmartContractFreezerController extends BaseViewController {
         ellipse.setCenterX(12);
         ctrtAddrImg.setClip(ellipse);
 
-        contractCnstSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        contractCnstSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         contractCnstSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

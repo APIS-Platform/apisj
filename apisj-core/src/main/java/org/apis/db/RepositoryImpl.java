@@ -491,7 +491,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         AccountState accountState = getAccountState(tx.getSender());
 
-        if(blockNumber < constants.getBLOCKS_PER_DAY()) {
+        if(blockNumber < constants.getMASTERNODE_EARLYBIRD_PERIOD()) {
             // 첫번째 얼리버드 신청 기간 중이기 때문에 마스터노드 참여가 불가능하다.
             return;
         }

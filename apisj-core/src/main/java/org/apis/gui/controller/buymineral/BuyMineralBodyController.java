@@ -66,8 +66,8 @@ public class BuyMineralBodyController extends BaseViewController {
 
         AppManager.settingTextFieldStyle(chargeAmount);
 
-        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
+        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
 
         beneficiaryTextFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
@@ -77,6 +77,7 @@ public class BuyMineralBodyController extends BaseViewController {
                 }
             }
         });
+        beneficiaryTextFieldController.setVisible(false);
 
         beneficiaryController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -89,6 +90,7 @@ public class BuyMineralBodyController extends BaseViewController {
                 settingLayoutData();
             }
         });
+        beneficiaryController.setVisible(true);
 
         payerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -361,7 +363,7 @@ public class BuyMineralBodyController extends BaseViewController {
         if(isBeneficiarySelected){
             return this.beneficiaryController.getAddress();
         }else{
-            return this.beneficiaryTextFieldController.getText().trim();
+            return this.beneficiaryTextFieldController.getAddress();
         }
     }
 
