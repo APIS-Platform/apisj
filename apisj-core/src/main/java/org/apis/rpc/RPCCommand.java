@@ -9,6 +9,8 @@ import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TransactionRecord;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
@@ -58,12 +60,13 @@ public class RPCCommand {
     static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
     static final String COMMAND_APIS_GAS_PRICE = "apis_gasPrice";
 
-    static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
-    static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
-    static final String COMMAND_APIS_GETTRANSACTIONBYHASH = "apis_getTransactionByHash";
-    static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKHASHANDINDEX = "apis_getTransactionByBlockHashAndIndex";
-    static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
-    static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
+    private static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
+    private static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
+    private static final String COMMAND_APIS_GETTRANSACTIONBYHASH = "apis_getTransactionByHash";
+    private static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKHASHANDINDEX = "apis_getTransactionByBlockHashAndIndex";
+    private static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
+    private static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
+    private static final String COMMAND_APIS_GETTRANSACTIONBYKEYWORD = "apis_getTransactionsByKeyword";
 
     // apis only
     public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
@@ -771,6 +774,53 @@ public class RPCCommand {
                 } catch (Exception e) {
                     e.printStackTrace();
 
+                    command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                }
+
+                break;
+            }
+
+            case COMMAND_APIS_GETTRANSACTIONBYKEYWORD: {
+                if (params.length == 0) { // error : (hash 부재)
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                try {
+                    String txHashString = (String) params[0];
+                    if (txHashString.contains("@")) {
+                        byte[] address = ethereum.getRepository().getAddressByMask(txHashString);
+                        txHashString = ByteUtil.toHexString(address);
+                    }
+
+                    long rowCount = 0;
+                    long offset = 0;
+
+                    if(params.length > 1) {
+                        try {
+                            rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+                    if(params.length > 2) {
+                        try {
+                            offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[2]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+
+                    DBManager dbManager = DBManager.getInstance();
+                    List<TransactionRecord> txRecords = dbManager.selectTransactions(txHashString, rowCount, offset);
+                    List<TransactionSearchData> txReceipts = new ArrayList<>();
+                    for(TransactionRecord txRecord : txRecords) {
+                        byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
+                        TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
+                        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+                        txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
+                    }
+
+                    command = createJson(id, method, txReceipts);
+                } catch (Exception e) {
+                    e.printStackTrace();
                     command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
                 }
 

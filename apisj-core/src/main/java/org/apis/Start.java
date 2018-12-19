@@ -6,6 +6,7 @@ import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.Repository;
 import org.apis.core.TransactionReceipt;
+import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.listener.EthereumListener;
@@ -64,6 +65,9 @@ public class Start {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
             if(rpcServerManager.isAvailable()) {
                 rpcServerManager.startServer();
+
+                // DB Sync Start
+                DBSyncManager.getInstance(mEthereum).syncThreadStart();
             }
         } catch (IOException e) {
             logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));

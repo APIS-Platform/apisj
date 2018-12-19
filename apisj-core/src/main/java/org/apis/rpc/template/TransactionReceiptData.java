@@ -187,6 +187,82 @@ public class TransactionReceiptData {
         this.status = toHexString0x(receipt.getPostTxState());
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public long getBlockNumber() {
+        return blockNumber;
+    }
+
+    public String getBlockHash() {
+        return blockHash;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public String getToMask() {
+        return toMask;
+    }
+
+    String getContractAddress() {
+        return contractAddress;
+    }
+
+    long getGas() {
+        return gas;
+    }
+
+    long getGasUsed() {
+        return gasUsed;
+    }
+
+    String getGasPrice() {
+        return gasPrice;
+    }
+
+    String getGasPriceAPIS() {
+        return gasPriceAPIS;
+    }
+
+    String getFee() {
+        return fee;
+    }
+
+    String getFeeAPIS() {
+        return feeAPIS;
+    }
+
+    String getFeePaid() {
+        return feePaid;
+    }
+
+    String getFeePaidAPIS() {
+        return feePaidAPIS;
+    }
+
+    String getMineralUsed() {
+        return mineralUsed;
+    }
+
+    String getMineralUsedMNR() {
+        return mineralUsedMNR;
+    }
+
     @Override
     public String toString() {
         return "TransactionReceiptData{" +

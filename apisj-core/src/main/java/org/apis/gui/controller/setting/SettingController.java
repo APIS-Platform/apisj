@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
@@ -337,13 +339,17 @@ public class SettingController extends BasePopupController {
                     File file = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
                     if ("true".equals(prop.getProperty("in_system_log"))) {
                         try {
+                            String exePath = URLDecoder.decode(file.getAbsoluteFile().getParentFile().getParent(), "UTF-8");
                             ArrayList<String> cmd = new ArrayList<String>();
                             cmd.add("powershell.exe");
                             cmd.add("Start-Process");
+                            cmd.add("-WindowStyle");
+                            cmd.add("hidden");
+                            cmd.add("-FilePath");
                             cmd.add("powershell.exe");
                             cmd.add("-verb runAs");
                             cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
-                                    file.getAbsoluteFile().getParentFile().getParent() + "\\apis-core.exe' /f\\\"");
+                                    exePath + "\\apis-core.exe' /f\\\"");
 
                             ProcessBuilder builder = new ProcessBuilder(cmd);
                             Process proc = builder.start();
@@ -359,6 +365,9 @@ public class SettingController extends BasePopupController {
                             ArrayList<String> cmd = new ArrayList<String>();
                             cmd.add("powershell.exe");
                             cmd.add("Start-Process");
+                            cmd.add("-WindowStyle");
+                            cmd.add("hidden");
+                            cmd.add("-FilePath");
                             cmd.add("powershell.exe");
                             cmd.add("-verb runAs");
                             cmd.add("\\\"reg Delete 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /f\\\"");
