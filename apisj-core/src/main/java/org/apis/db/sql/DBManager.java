@@ -8,6 +8,8 @@ import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
+import org.apis.vm.DataWord;
+import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.DecoderException;
@@ -80,16 +82,15 @@ public class DBManager {
     private void create(Connection conn) throws SQLException {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
-        //String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` TEXT NOT NULL UNIQUE, `receiver` TEXT, `sender` TEXT, `blockUid` NUMERIC, PRIMARY KEY(`txhash`), FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` BLOB NOT NULL UNIQUE, `receiver` BLOB, `sender` BLOB, `blockUid` NUMERIC, FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`), PRIMARY KEY(`txhash`) )";
-        String queryCreateEvents = "CREATE TABLE \"events\" ( `tx_hash` TEXT, `address` TEXT, `topic` TEXT )";
+        String queryCreateEvents = "CREATE TABLE \"events\" ( `tx_hash` TEXT UNIQUE, `address` TEXT, `topic` TEXT )";
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
         String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
         String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `exist` INTEGER DEFAULT 0 )";
         String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL )";
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
-        String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` TEXT NOT NULL UNIQUE, `blockNumber` INTEGER )";
+        String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` BLOB NOT NULL UNIQUE, `blockNumber` INTEGER )";
         String queryCreateTokens = "CREATE TABLE \"tokens\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `token_address` TEXT NOT NULL UNIQUE, `token_name` TEXT DEFAULT 'Unnamed', `token_symbol` TEXT NOT NULL, `decimal` INTEGER, `total_supply` TEXT )";
 
 
@@ -1114,7 +1115,7 @@ public class DBManager {
 
         try {
             state = this.connection.prepareStatement("SELECT * FROM blocks WHERE hash = ?");
-            state.setString(1, ByteUtil.toHexString(blockHash));
+            state.setBytes(1, blockHash);
             result = state.executeQuery();
 
             if(result.next()) {
@@ -1137,6 +1138,7 @@ public class DBManager {
 
             PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
             PreparedStatement insertTx = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
+            PreparedStatement insertEvent = connection.prepareStatement("INSERT OR REPLACE INTO events (tx_hash, address, topic) VALUES (?, ?, ?)");
             PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
             ResultSet blockInsertResult = null;
 
@@ -1149,8 +1151,7 @@ public class DBManager {
 
                     // Block Insert
                     long blockUid = 0;
-                    String blockHash = ByteUtil.toHexString(block.getHash());
-                    insertBlock.setString(1, blockHash);
+                    insertBlock.setBytes(1, block.getHash());
                     insertBlock.setLong(2, block.getNumber());
                     insertBlock.execute();
 
@@ -1161,7 +1162,6 @@ public class DBManager {
 
 
                     // Transaction Insert
-                    BigInteger totalFees = BigInteger.ZERO;
                     for (Transaction tx : block.getTransactionsList()) {
                         insertTx.setBytes(1, tx.getHash());            // txHash
                         insertTx.setBytes(2, tx.getReceiveAddress());  // receiver
@@ -1169,12 +1169,17 @@ public class DBManager {
                         insertTx.setLong(4, blockUid);
                         insertTx.addBatch();
 
-                        // 채굴자에게 돌아가는 수수료 계산
                         TransactionReceipt txReceipt = ethereum.getTransactionInfo(tx.getHash()).getReceipt();
-                        BigInteger gasUsed = ByteUtil.bytesToBigInteger(txReceipt.getGasUsed());
-                        BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
-                        BigInteger mineralUsed = ByteUtil.bytesToBigInteger(txReceipt.getMineralUsed());
-                        totalFees = totalFees.add(gasUsed).multiply(gasPrice).subtract(mineralUsed);
+                        for(LogInfo logInfo : txReceipt.getLogInfoList()) {
+                            for(DataWord topic : logInfo.getTopics()) {
+                                byte[] topicBytes = topic.getData();
+
+                                insertEvent.setBytes(1, tx.getHash());
+                                insertEvent.setBytes(2, logInfo.getAddress());
+                                insertEvent.setBytes(3, topicBytes);
+                                insertEvent.addBatch();
+                            }
+                        }
                     }
 
                     // Sync status update
@@ -1182,6 +1187,7 @@ public class DBManager {
                     updateSync.execute();
                 }
                 insertTx.executeBatch();
+                insertEvent.executeBatch();
 
 
             } catch (Exception e) {
@@ -1194,6 +1200,7 @@ public class DBManager {
                 close(insertBlock);
                 close(blockInsertResult);
                 close(insertTx);
+                close(insertEvent);
                 close(updateSync);
             }
 
