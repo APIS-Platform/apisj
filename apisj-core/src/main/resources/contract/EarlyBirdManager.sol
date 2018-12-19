@@ -472,9 +472,9 @@ contract EarlyBirdManager is Owners {
 
 
 
-    uint256 constant private COLLATERAL_GENERAL   =  50000;//*(10**18);
-    uint256 constant private COLLATERAL_MAJOR     = 200000;//*(10**18);
-    uint256 constant private COLLATERAL_PRIVATE   = 500000;//*(10**18);
+    uint256 constant private COLLATERAL_GENERAL   =  50000*(10**18);
+    uint256 constant private COLLATERAL_MAJOR     = 200000*(10**18);
+    uint256 constant private COLLATERAL_PRIVATE   = 500000*(10**18);
 
 
     address public foundationAccount;
@@ -661,7 +661,7 @@ contract EarlyBirdManager is Owners {
      *
      * @param masternode 참여한 마스터노드의 주소
      */
-    function getMasternodeInfo(address masternode)
+    function getInfoByMasternode(address masternode)
     public
     view
     returns (address participant, uint40 round, uint16 index, uint40 nonce, bool canceled, uint256 collateral)
@@ -684,7 +684,7 @@ contract EarlyBirdManager is Owners {
      * @param participant 참여자의 주소
      * @param nonce 참여자의 참여 횟수
      */
-    function getMasternodeInfo(address participant, uint32 nonce)
+    function getInfoByParticipant(address participant, uint32 nonce)
     public
     view
     returns (address masternode, uint32 round, uint16 index, bool canceled, uint256 collateral)
