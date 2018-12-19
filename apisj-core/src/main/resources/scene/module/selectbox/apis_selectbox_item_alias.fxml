@@ -9,14 +9,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxItemAliasController">
+<AnchorPane fx:id="rootPane" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxItemAliasController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints halignment="LEFT" prefWidth="519.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-            <ColumnConstraints halignment="RIGHT" prefWidth="20.0" />
+            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
          <rowConstraints>
@@ -45,7 +45,7 @@
                         <Label fx:id="aliasLabel" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" />
                         <GridPane GridPane.rowIndex="1">
                            <columnConstraints>
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="200.0" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
@@ -67,7 +67,15 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="cu.seoul@store" GridPane.columnIndex="2" />
+            <Label fx:id="balanceLabel" styleClass="font_semibold_12" text="0" GridPane.columnIndex="2">
+               <padding>
+                  <Insets left="8.0" />
+               </padding></Label>
+            <Label styleClass="font_regular_12" text="APIS" GridPane.columnIndex="3">
+               <padding>
+                  <Insets left="2.0" />
+               </padding>
+            </Label>
          </children>
       </GridPane>
    </children>

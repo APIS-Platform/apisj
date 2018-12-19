@@ -7,10 +7,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.textfield.ApisAddressFieldController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.textfield.ApisAddressFieldController">
    <children>
-      <TextField fx:id="address" layoutX="10.0" layoutY="10.0" promptText="please enter your contract address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TextField fx:id="addressField" layoutX="10.0" layoutY="10.0" promptText="please enter your contract address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>

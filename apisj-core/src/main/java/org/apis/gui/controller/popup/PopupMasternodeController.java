@@ -122,7 +122,7 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
 
-        recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, true);
         recipientController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

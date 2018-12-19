@@ -395,7 +395,7 @@ public class PopupMaskingController extends BasePopupController {
         introNavi = new Image("image/ic_nav@2x.png");
         introNaviCircle = new Image("image/ic_nav_circle@2x.png");
 
-        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, true);
         selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -407,7 +407,7 @@ public class PopupMaskingController extends BasePopupController {
             }
         });
 
-        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
+        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN, true);
         selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -419,7 +419,7 @@ public class PopupMaskingController extends BasePopupController {
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, true);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {

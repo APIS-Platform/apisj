@@ -9,23 +9,24 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxHeadAliasController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxHeadAliasController">
    <children>
-      <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints halignment="LEFT" prefWidth="519.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-            <ColumnConstraints halignment="RIGHT" prefWidth="27.0" />
+            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+            <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <ImageView fx:id="icon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <GridPane.margin>
-                  <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
+                  <Insets left="16.0" right="8.0" />
                </GridPane.margin>
                <image>
                   <Image url="@../../../image/address_Indenticon_ex2.png" />
@@ -45,11 +46,11 @@
                         <Label fx:id="aliasLabel" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" />
                         <GridPane GridPane.rowIndex="1">
                            <columnConstraints>
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="200.0" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                              <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" />
@@ -67,15 +68,23 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                <image>
                   <Image url="@../../../image/ic_down_black@2x.png" />
                </image>
                <GridPane.margin>
-                  <Insets left="17.0" />
+                  <Insets left="8.0" />
                </GridPane.margin>
             </ImageView>
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="cu.seoul@store" textFill="#2b2b2b" GridPane.columnIndex="2" />
+            <Label fx:id="balanceLabel" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets left="8.0" />
+               </GridPane.margin></Label>
+            <Label styleClass="font_regular_12" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3">
+               <padding>
+                  <Insets left="2.0" />
+               </padding>
+            </Label>
          </children>
       </GridPane>
    </children>
