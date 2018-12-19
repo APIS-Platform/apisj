@@ -100,7 +100,7 @@
                               <Image url="@../../../image/btn_print_wallet@2x.png" />
                            </image>
                         </ImageView>
-                        <Label fx:id="printLabel" styleClass="font_semibold_12" text="Save Printout" textFill="WHITE" GridPane.columnIndex="2">
+                        <Label fx:id="saveLabel" styleClass="font_semibold_12" text="Save PDF" textFill="WHITE" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="8.0" />
                            </GridPane.margin>
