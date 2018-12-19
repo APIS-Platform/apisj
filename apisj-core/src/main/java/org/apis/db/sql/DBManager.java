@@ -1185,7 +1185,7 @@ public class DBManager {
             connection.setAutoCommit(false);
 
             PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
-            PreparedStatement insertTx = connection.prepareStatement("INSERT INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
+            PreparedStatement insertTx = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
             PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
             PreparedStatement insertReward = connection.prepareStatement("INSERT INTO rewards (address, type, amount, blockHash, blockNumber) VALUES (?, ?, ?, ?, ?)");
             ResultSet blockInsertResult = null;

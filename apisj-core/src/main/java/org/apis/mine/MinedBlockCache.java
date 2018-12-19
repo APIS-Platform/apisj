@@ -68,9 +68,9 @@ public class MinedBlockCache {
             }
 
             // 블랙리스트에 등록된 채굴자는 받아들이지 않는다
-            if(invalidMiners.indexOf(new ByteArrayWrapper(receivedBlock.getCoinbase())) >= 0) {
+            /*if(invalidMiners.indexOf(new ByteArrayWrapper(receivedBlock.getCoinbase())) >= 0) {
                 return false;
-            }
+            }*/
 
             // 블록 번호가 연속되지 않았으면 빠져나간다.
             if(i > 0 && receivedBlock.getNumber() - receivedBlocks.get(i - 1).getNumber() != 1) {
