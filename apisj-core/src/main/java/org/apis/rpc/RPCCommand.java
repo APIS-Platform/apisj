@@ -810,12 +810,12 @@ public class RPCCommand {
 
                     DBManager dbManager = DBManager.getInstance();
                     List<TransactionRecord> txRecords = dbManager.selectTransactions(txHashString, rowCount, offset);
-                    List<TransactionReceiptData> txReceipts = new ArrayList<>();
+                    List<TransactionSearchData> txReceipts = new ArrayList<>();
                     for(TransactionRecord txRecord : txRecords) {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
                         TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
                         Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
-                        txReceipts.add(new TransactionReceiptData(txInfo, block));
+                        txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
                     }
 
                     command = createJson(id, method, txReceipts);
