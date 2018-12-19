@@ -775,7 +775,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          * 마스터노드 초기화 블록에 도달했는지 확인한다.
          * 얼리버드 노드들을, 실행중인(RUN) 얼리버드 노드와 연결한다.
          */
-        if(isMnStartBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+        if(isMnStartBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getMASTERNODE_EARLYBIRD_PERIOD())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_NORMAL(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_LATE(), constants);
