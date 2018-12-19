@@ -6,6 +6,12 @@ import java.math.BigInteger;
 
 public class BaseSelectBoxHeaderController extends BaseViewController {
 
+    protected boolean isReadableApisKMBT = false;
+    public void setReadableApisKMBT(boolean isReadableApisKMBT){
+        this.isReadableApisKMBT = isReadableApisKMBT;
+    }
+
+
     protected SelectBoxItemModel itemModel;
 
     public String getAddress(){

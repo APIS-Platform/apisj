@@ -89,7 +89,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
         contractAddressTextField.textProperty().addListener(ctrtKeyListener);
 
-        selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onMouseClick() {

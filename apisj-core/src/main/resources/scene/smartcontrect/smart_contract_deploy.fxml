@@ -23,11 +23,11 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
             <RowConstraints maxHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" prefHeight="10.0" />
             <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" prefHeight="24.0" />
+            <RowConstraints maxHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>
@@ -171,7 +171,7 @@
                      <children>
                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0" />
                            </children>
                         </AnchorPane>
                      </children>

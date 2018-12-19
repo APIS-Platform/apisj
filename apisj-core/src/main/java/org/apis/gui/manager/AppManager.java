@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.stage.DirectoryChooser;
@@ -45,10 +46,7 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.KnowledgeKeyUtil;
-import org.apis.util.TimeUtils;
+import org.apis.util.*;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.ProgramResult;
@@ -56,6 +54,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
+import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -453,7 +452,7 @@ public class AppManager {
         }
     }
     public String getMaskWithAddress(String address){
-        if(mEthereum == null || address == null || address.length() != 40){
+        if(mEthereum == null || address == null || !AddressUtil.isAddress(address)){
             return null;
         }
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
@@ -1247,6 +1246,13 @@ public class AppManager {
                 }
             }
         });
+    }
+
+    public static void settingIdenticonStyle(ImageView icon){
+        Rectangle clip = new Rectangle( icon.getFitWidth()-0.5, icon.getFitHeight()-0.5 );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        icon.setClip(clip);
     }
 
     /* ==============================================
