@@ -318,7 +318,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void onAction() {
-                createWalletPhaseTwoWalletNameController.requestFocus();
+                createWalletPhaseTwoNextClick();
             }
 
             @Override
@@ -943,6 +943,7 @@ public class IntroController extends BaseViewController {
 
         this.createWalletPrivateKeyController.setText(ByteUtil.toHexString(privateKey));
         this.createWalletPrivateKeyController.init();
+        this.rootPane.requestFocus();
     }
 
     public void createWalletPhaseFourBackClick() {
@@ -997,6 +998,7 @@ public class IntroController extends BaseViewController {
     public void copyPkConfirm() {
         this.copyPk.setVisible(false);
         this.introModalBackground.setVisible(false);
+        this.rootPane.requestFocus();
     }
 
     // Load Wallet Phases

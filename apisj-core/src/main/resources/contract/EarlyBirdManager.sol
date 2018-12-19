@@ -470,12 +470,6 @@ contract EarlyBirdManager is Owners {
     //uint256 constant private PERIOD_MASTERNODE = BLOCKS_PER_DAY*90;
     uint256 constant private PERIOD_MASTERNODE = 5400;
 
-    /**
-     * @dev 3 종류의 마스터노드가 약 한달마다 순차적으로 시작되는데, 그 때의 간격
-     */
-    //uint256 constant private OFFSET_MASTERNODE = 259259;
-    uint256 constant private OFFSET_MASTERNODE = 1800;
-
 
 
     uint256 constant private COLLATERAL_GENERAL   =  50000*(10**18);
@@ -483,8 +477,6 @@ contract EarlyBirdManager is Owners {
     uint256 constant private COLLATERAL_PRIVATE   = 500000*(10**18);
 
 
-
-    uint256 public earlyBirdFee;
     address public foundationAccount;
 
     uint256 constant public CAP_GENERAL = 4000;
@@ -497,7 +489,7 @@ contract EarlyBirdManager is Owners {
     mapping(uint256 => address[]) public mnListPrivate;
 
     mapping(address => uint32) public participationNonce;
-    mapping(address => Participation) public masternodeInfo;
+    mapping(address => Participation) masternodeInfo;
 
     address private _worker;
     address private _platform;
@@ -541,7 +533,7 @@ contract EarlyBirdManager is Owners {
     /**
      * @dev 현재 블록 번호가 얼리버드 참여 가능한 번호인지 확인한다.
      */
-    modifier registrableBlockNumber () {
+    modifier registrableBlock () {
         require(block.number.mod(PERIOD_MASTERNODE) < BLOCKS_PER_DAY);
         _;
     }
@@ -551,7 +543,7 @@ contract EarlyBirdManager is Owners {
      * @dev 얼리버드 신청했을 때, 담보금액이 컨트렉트에 충분한지 확인한다.
      */
     modifier validCollateral(uint256 collateral) {
-        require(getTotalCollateral().add(collateral) <= address(this).balance);
+        require(getTotalCollateral(getRound()).add(collateral) <= address(this).balance);
         _;
     }
 
@@ -562,12 +554,17 @@ contract EarlyBirdManager is Owners {
     }
 
     modifier enoughBalance(uint256 amount) {
-        require(address(this).balance.sub(amount) >= getTotalCollateral());
+        require(address(this).balance.sub(amount) >= getTotalCollateral(getRound()));
         _;
     }
 
     modifier masternodeExist(address masternode) {
         require(masternodeInfo[masternode].participant != 0x0);
+        _;
+    }
+
+    modifier cancelableMasternode (address masternode) {
+        require (masternodeInfo[masternode].canceled == 0);
         _;
     }
 
@@ -597,6 +594,13 @@ contract EarlyBirdManager is Owners {
         return _worker;
     }
 
+    function getPlatform()
+    public
+    view
+    returns (address) {
+        return _platform;
+    }
+
 
     /**
      * @dev
@@ -604,14 +608,14 @@ contract EarlyBirdManager is Owners {
      @dev *
     /현재 블록 번호에 해당하는 라운드에 담보된 자산 합계을 구한다.
      */
-    function getTotalCollateral ()
-    internal
+    function getTotalCollateral (uint32 round)
+    public
     view
     returns (uint256 totalCollateral)
     {
-        totalCollateral += (mnListGeneral[getRound()].length.mul(COLLATERAL_GENERAL));
-        totalCollateral += (mnListMajor[getRound()].length.mul(COLLATERAL_MAJOR));
-        totalCollateral += (mnListPrivate[getRound()].length.mul(COLLATERAL_PRIVATE));
+        totalCollateral += (mnListGeneral[round].length.mul(COLLATERAL_GENERAL));
+        totalCollateral += (mnListMajor[round].length.mul(COLLATERAL_MAJOR));
+        totalCollateral += (mnListPrivate[round].length.mul(COLLATERAL_PRIVATE));
     }
 
 
@@ -622,11 +626,19 @@ contract EarlyBirdManager is Owners {
      * @return round >= 1
      */
     function getRound()
-    internal
+    public
     view
     returns (uint32)
     {
         return uint32(block.number/PERIOD_MASTERNODE + 1);
+    }
+
+
+    function getBalance()
+    public
+    view
+    returns (uint256 balance) {
+        balance = address(this).balance;
     }
 
 
@@ -649,15 +661,16 @@ contract EarlyBirdManager is Owners {
      *
      * @param masternode 참여한 마스터노드의 주소
      */
-    function getMasternodeInfo(address masternode)
+    function getInfoByMasternode(address masternode)
     public
     view
-    returns (address participant, uint40 round, uint40 nonce, bool canceled, uint256 collateral)
+    returns (address participant, uint40 round, uint16 index, uint40 nonce, bool canceled, uint256 collateral)
     {
         Participation memory info = masternodeInfo[masternode];
 
         participant = info.participant;
         round = info.round;
+        index = info.index;
         nonce = info.nonce;
         if(info.canceled > 0) {
             canceled = true;
@@ -671,16 +684,17 @@ contract EarlyBirdManager is Owners {
      * @param participant 참여자의 주소
      * @param nonce 참여자의 참여 횟수
      */
-    function getMasternodeInfo(address participant, uint32 nonce)
+    function getInfoByParticipant(address participant, uint32 nonce)
     public
     view
-    returns (address masternode, uint32 round, bool canceled, uint256 collateral)
+    returns (address masternode, uint32 round, uint16 index, bool canceled, uint256 collateral)
     {
         masternode = getMasternodeAddress(participant, nonce);
 
         Participation memory info = masternodeInfo[masternode];
 
         round = info.round;
+        index = info.index;
         if(info.canceled > 0) {
             canceled = true;
         }
@@ -733,8 +747,6 @@ contract EarlyBirdManager is Owners {
 
         _worker = worker;
 
-        earlyBirdFee = 30*(10**18);
-
         foundationAccount = 0x1000000000000000000000000000000000037448;
     }
 
@@ -743,7 +755,7 @@ contract EarlyBirdManager is Owners {
     public
     payable
     onlyWorker
-    registrableBlockNumber                      // 신청 가능한 블록인지 확인
+    registrableBlock                            // 신청 가능한 블록인지 확인
     validCollateral(COLLATERAL_GENERAL)         // 컨트렉트에 담보 금액이 충분한지 확인
     enoughMasternodeSpace(COLLATERAL_GENERAL)   // 해당 담보금액의 마스터노드 수에 여유가 있는지
     {
@@ -754,7 +766,7 @@ contract EarlyBirdManager is Owners {
     public
     payable
     onlyWorker
-    registrableBlockNumber
+    registrableBlock
     validCollateral(COLLATERAL_MAJOR)
     enoughMasternodeSpace(COLLATERAL_MAJOR)
     {
@@ -765,7 +777,7 @@ contract EarlyBirdManager is Owners {
     public
     payable
     onlyWorker
-    registrableBlockNumber
+    registrableBlock
     validCollateral(COLLATERAL_PRIVATE)
     enoughMasternodeSpace(COLLATERAL_PRIVATE)
     {
@@ -821,57 +833,49 @@ contract EarlyBirdManager is Owners {
     }
 
 
-
-
-
     function cancelMasternode(address masternode, bool withdrawal)
     public
     onlyWorker
     platformExist
     masternodeExist(masternode)
+    cancelableMasternode(masternode)
     cancelableBlock(masternode)
     {
         Participation storage info = masternodeInfo[masternode];
         info.canceled = 1;
         uint16 index = info.index;
 
-        uint256 ebStart;
-        uint256 ebEndMnStart;
-        (ebStart, ebEndMnStart, ) = getPeriodOfRound(info.round);
 
-        // 얼리버드 기간 중에는 얼리버드 목록에서 삭제한다.
-        if(block.number >= ebStart && block.number < ebEndMnStart) {
-            if(info.collateral == COLLATERAL_GENERAL) {
+        if(info.collateral == COLLATERAL_GENERAL) {
 
-                if(mnListGeneral[info.round][index] == masternode) {
-                    address lastGeneral = mnListGeneral[info.round][mnListGeneral[info.round].length - 1];
+            if(mnListGeneral[info.round][index] == masternode) {
+                address lastGeneral = mnListGeneral[info.round][mnListGeneral[info.round].length - 1];
 
-                    mnListGeneral[info.round][index] = lastGeneral;
-                    masternodeInfo[lastGeneral].index = index;
-                    mnListGeneral[info.round].length -= 1;
-                }
+                mnListGeneral[info.round][index] = lastGeneral;
+                masternodeInfo[lastGeneral].index = index;
+                mnListGeneral[info.round].length = mnListGeneral[info.round].length - 1;
             }
+        }
 
-            else if(info.collateral == COLLATERAL_MAJOR) {
+        else if(info.collateral == COLLATERAL_MAJOR) {
 
-                if(mnListMajor[info.round][index] == masternode) {
-                    address lastMajor = mnListMajor[info.round][mnListMajor[info.round].length - 1];
+            if(mnListMajor[info.round][index] == masternode) {
+                address lastMajor = mnListMajor[info.round][mnListMajor[info.round].length - 1];
 
-                    mnListMajor[info.round][index] = lastMajor;
-                    masternodeInfo[lastMajor].index = index;
-                    mnListMajor[info.round].length -= 1;
-                }
+                mnListMajor[info.round][index] = lastMajor;
+                masternodeInfo[lastMajor].index = index;
+                mnListMajor[info.round].length -= 1;
             }
+        }
 
-            else if(info.collateral == COLLATERAL_PRIVATE) {
+        else if(info.collateral == COLLATERAL_PRIVATE) {
 
-                if(mnListPrivate[info.round][index] == masternode) {
-                    address lastPrivate = mnListPrivate[info.round][mnListPrivate[info.round].length - 1];
+            if(mnListPrivate[info.round][index] == masternode) {
+                address lastPrivate = mnListPrivate[info.round][mnListPrivate[info.round].length - 1];
 
-                    mnListPrivate[info.round][index] = lastPrivate;
-                    masternodeInfo[lastPrivate].index = index;
-                    mnListPrivate[info.round].length -= 1;
-                }
+                mnListPrivate[info.round][index] = lastPrivate;
+                masternodeInfo[lastPrivate].index = index;
+                mnListPrivate[info.round].length -= 1;
             }
         }
 

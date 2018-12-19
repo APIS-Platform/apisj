@@ -42,7 +42,7 @@ public class ApisTextFieldPkController extends BaseViewController {
     @FXML private TextField textField;
     @FXML private PasswordField passwordField;
     @FXML private Pane borderLine;
-    @FXML private Label copyBtn;
+    @FXML private Label copyBtn, saveLabel;
 
     private ApisTextFieldPkImpl handler;
 
@@ -54,6 +54,7 @@ public class ApisTextFieldPkController extends BaseViewController {
 
         textField.textProperty().bindBidirectional(passwordField.textProperty());
         copyBtn.textProperty().bind(StringManager.getInstance().common.copyButton);
+        saveLabel.textProperty().bind(StringManager.getInstance().common.savePDF);
 
         textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
