@@ -337,8 +337,8 @@ public class Constants {
      */
     public boolean isMasternodeNormalPeriod(long blockNumber) {
         long blockNumberInRound = blockNumber % getMASTERNODE_PERIOD();
-        long day_1 = getBLOCKS_PER_DAY();
-        long day_2 = getBLOCKS_PER_DAY()*2;
+        long day_1 = getMASTERNODE_EARLYBIRD_PERIOD();
+        long day_2 = getMASTERNODE_EARLYBIRD_PERIOD()*2;
 
         return blockNumberInRound >= day_1 && blockNumberInRound < day_2;
     }
