@@ -148,6 +148,7 @@ public class StringManager {
         public SimpleStringProperty walletRePasswordLabel = new SimpleStringProperty();
         public SimpleStringProperty downloadLabel = new SimpleStringProperty();
         public SimpleStringProperty copyButton = new SimpleStringProperty();
+        public SimpleStringProperty savePDF = new SimpleStringProperty();
         public SimpleStringProperty passwordLabel = new SimpleStringProperty();
         public SimpleStringProperty symbolLabel = new SimpleStringProperty();
         public SimpleStringProperty supplyLabel = new SimpleStringProperty();
@@ -214,6 +215,7 @@ public class StringManager {
             walletRePasswordLabel.set(StringManager.this.getString("common_wallet_confirm_password_label","Confirm Password"));
             downloadLabel.set(StringManager.this.getString("common_download_label","Download"));
             copyButton.set(StringManager.this.getString("common_copy_button","Copy"));
+            savePDF.set(StringManager.this.getString("common_save_pdf", "Save PDF"));
             passwordLabel.set(StringManager.this.getString("common_password_label","Wallet Password"));
             symbolLabel.set(StringManager.this.getString("common_symbol_label","Token Symbol"));
             supplyLabel.set(StringManager.this.getString("common_supply_label","Total Supply"));

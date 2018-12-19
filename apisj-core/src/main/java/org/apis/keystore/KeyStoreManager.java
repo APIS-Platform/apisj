@@ -282,16 +282,19 @@ public class KeyStoreManager {
             System.out.println("keyList : "+keyList.length);
             for (File file : keyList) {
                 if (file.isFile()) {
-                    try {
-                        String fileText = readFile(file);
-                        KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
+                    if(file.length() < 10240) {
+                        try {
+                            String fileText = readFile(file);
+                            KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
 
-                        if (data != null) {
-                            if(ByteUtil.toHexString(address).equals(data.address)) {
-                                deleteFiles.add(file);
+                            if (data != null) {
+                                if (ByteUtil.toHexString(address).equals(data.address)) {
+                                    deleteFiles.add(file);
+                                }
                             }
+                        } catch (JsonSyntaxException ignored) {
                         }
-                    }catch(JsonSyntaxException ignored) {}
+                    }
                 }
             }
         }
