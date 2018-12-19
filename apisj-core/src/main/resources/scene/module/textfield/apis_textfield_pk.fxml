@@ -82,14 +82,36 @@
                   </ImageView>
                </children>
             </GridPane>
-            <ImageView fitWidth="144.0" onMouseClicked="#print" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-               <image>
-                  <Image url="@../../../image/btn_print_wallet@2x.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
+            <AnchorPane GridPane.rowIndex="4">
+               <children>
+                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#print" prefHeight="32.0" style="-fx-background-color: #999999;" styleClass="border_radius_24_24_24_24" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnConstraints>
+                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                           <image>
+                              <Image url="@../../../image/btn_print_wallet@2x.png" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="printLabel" styleClass="font_semibold_12" text="Save Printout" textFill="WHITE" GridPane.columnIndex="2">
+                           <GridPane.margin>
+                              <Insets left="8.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </GridPane>
+               </children>
+            </AnchorPane>
          </children>
       </GridPane>
    </children>
