@@ -543,7 +543,7 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            if(searchText == null || searchText.length() == 0) {
+            if(searchText == null || searchText.isEmpty()) {
                 query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
@@ -615,8 +615,7 @@ public class DBManager {
         PreparedStatement state = null;
         ResultSet result = null;
 
-        if (blockNum == null || blockNum.length() == 0) {
-        }else{
+        if (blockNum != null && !blockNum.isEmpty()) {
             try {
                 query = "SELECT uid FROM blocks WHERE blockNumber = ? ORDER BY uid DESC ";
                 state = this.connection.prepareStatement(query);

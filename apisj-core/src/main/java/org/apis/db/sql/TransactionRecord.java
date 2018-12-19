@@ -64,6 +64,7 @@ public class TransactionRecord {
             mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
             error = receipt.getError();
             logs = receipt.getLogInfoList().toString();
+            bloom = ByteUtil.toHexString(receipt.getBloomFilter().getData());
             contractAddress = ByteUtil.toHexString(tx.getContractAddress());
             timestamp = block.getTimestamp();
         }

@@ -6,6 +6,7 @@ import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.Repository;
 import org.apis.core.TransactionReceipt;
+import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.listener.EthereumListener;
@@ -82,6 +83,10 @@ public class Start {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             logger.debug(ConsoleUtil.colorBBlue("OnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
+
+            // DB Sync Start
+            DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
 
             Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
