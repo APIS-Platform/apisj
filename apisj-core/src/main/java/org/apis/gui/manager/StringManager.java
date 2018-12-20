@@ -454,6 +454,7 @@ public class StringManager {
         public SimpleStringProperty nowStaking = new SimpleStringProperty();
         public SimpleStringProperty howToGetRewardedWithApis = new SimpleStringProperty();
         public SimpleStringProperty createButton = new SimpleStringProperty();
+        public SimpleStringProperty knowledgeKeyButton = new SimpleStringProperty();
         public SimpleStringProperty miningButton = new SimpleStringProperty();
         public SimpleStringProperty masternodeButton = new SimpleStringProperty();
         public SimpleStringProperty tokenButton = new SimpleStringProperty();
@@ -493,6 +494,7 @@ public class StringManager {
             nowStaking.set(StringManager.this.getString("wallet_now_staking", "Now Staking"));
             howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
             createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
+            knowledgeKeyButton.set(StringManager.this.getString("wallet_knowledge_key_button", "Knowledge Key"));
             miningButton.set(StringManager.this.getString("wallet_mining_button", "Mining Wallet"));
             masternodeButton.set(StringManager.this.getString("wallet_masternode_button", "Masternode"));
             tokenButton.set(StringManager.this.getString("wallet_token_button", "Token"));
