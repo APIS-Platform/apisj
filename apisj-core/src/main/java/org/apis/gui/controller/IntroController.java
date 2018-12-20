@@ -73,9 +73,9 @@ public class IntroController extends BaseViewController {
             introLwPhaseThreeRightTitle, introLwPhaseThreeRightSubTitle,
             introLwPhaseThreeRightTitle2, introLwPhaseThreeRightSubTitle2, introLwPhaseFourRightTitle, introLwPhaseFourRightSubTitle,
             popupSuccessTitle, popupSuccessComment, popupSuccessButton, popupCautionTitle, popupCautionComment, popupCautionNoButton, popupCautionYesButton,
-            introLwPhaseThreeRightButtonTitle, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
+            introLwPhaseThreeRightButtonTitle, selectKeystoreBtn, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
             introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel,
-            dragDropEng1, dragDropEng2, dragDropEng3, dragDropEng4, dragDropEng5, dragDropKor1, dragDropKor2, dragDropKor3, dragDropKor4, dragDropKor5
+            dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel
     ;
 
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
@@ -716,18 +716,14 @@ public class IntroController extends BaseViewController {
         this.introLwPhaseThreeRightSubTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2Comment);
         this.introLwPhaseThreeRightPwLabel.textProperty().bind(StringManager.getInstance().common.passwordLabel);
         this.introLwPhaseThreeRightButtonTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeRightButtonTitle);
+        this.selectKeystoreBtn.textProperty().bind(StringManager.getInstance().intro.selectKeystoreBtn);
         this.introLwPhaseThreeRightPkLabel.textProperty().bind(StringManager.getInstance().common.privateKeyLabel);
 
         this.dragDropEng1.textProperty().bind(StringManager.getInstance().intro.dragDropEng1);
         this.dragDropEng2.textProperty().bind(StringManager.getInstance().intro.dragDropEng2);
-        this.dragDropEng3.textProperty().bind(StringManager.getInstance().intro.dragDropEng3);
-        this.dragDropEng4.textProperty().bind(StringManager.getInstance().intro.dragDropEng4);
-        this.dragDropEng5.textProperty().bind(StringManager.getInstance().intro.dragDropEng5);
         this.dragDropKor1.textProperty().bind(StringManager.getInstance().intro.dragDropKor1);
         this.dragDropKor2.textProperty().bind(StringManager.getInstance().intro.dragDropKor2);
-        this.dragDropKor3.textProperty().bind(StringManager.getInstance().intro.dragDropKor3);
-        this.dragDropKor4.textProperty().bind(StringManager.getInstance().intro.dragDropKor4);
-        this.dragDropKor5.textProperty().bind(StringManager.getInstance().intro.dragDropKor5);
+        this.keystoreFileMessageLabel.textProperty().bind(StringManager.getInstance().intro.keystoreFileMessage);
 
         this.introLwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1);
         this.introLwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1Comment);
