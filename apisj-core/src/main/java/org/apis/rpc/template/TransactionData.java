@@ -24,11 +24,11 @@ public class TransactionData {
     private String to, toMask;
     private String contractAddress;
     private String value = "0";
-    private String valueAPIS;
+    private String valueAPIZ;
     private String gas;
     private String gasPrice;
-    private String gasPriceAPIS;
-    private String feeLimitAPIS;
+    private String gasPriceAPIZ;
+    private String feeLimitAPIZ;
     private String data;
     private String r;
     private String s;
@@ -62,11 +62,11 @@ public class TransactionData {
         }
 
         this.value = BIUtil.toBI(tx.getValue()).toString();
-        this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
+        this.valueAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
         this.gas = bytesToBigInteger(tx.getGasLimit()).toString();
         this.gasPrice = bytesToBigInteger(tx.getGasPrice()).toString();
-        this.gasPriceAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
-        this.feeLimitAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
+        this.gasPriceAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
+        this.feeLimitAPIZ = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
         this.data = toHexString0x(tx.getData());
 
         if(tx.getSignature() != null) {
@@ -192,20 +192,21 @@ public class TransactionData {
     public String toString() {
         return "TransactionData{" +
                 "hash='" + hash + '\'' +
-                ", nonce=" + nonce +
+                ", nonce='" + nonce + '\'' +
                 ", blockHash='" + blockHash + '\'' +
-                ", blockNumber=" + blockNumber +
-                ", transactionIndex=" + transactionIndex +
+                ", blockNumber='" + blockNumber + '\'' +
+                ", transactionIndex='" + transactionIndex + '\'' +
+                ", timestamp='" + timestamp + '\'' +
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
                 ", value='" + value + '\'' +
-                ", valueAPIS='" + valueAPIS + '\'' +
-                ", gas=" + gas +
+                ", valueAPIZ='" + valueAPIZ + '\'' +
+                ", gas='" + gas + '\'' +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
-                ", feeLimitAPIS='" + feeLimitAPIS + '\'' +
+                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
+                ", feeLimitAPIZ='" + feeLimitAPIZ + '\'' +
                 ", data='" + data + '\'' +
                 ", r='" + r + '\'' +
                 ", s='" + s + '\'' +

@@ -491,11 +491,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         AccountState accountState = getAccountState(tx.getSender());
 
-        if(blockNumber < constants.getMASTERNODE_EARLYBIRD_PERIOD()) {
-            // 첫번째 얼리버드 신청 기간 중이기 때문에 마스터노드 참여가 불가능하다.
-            return;
-        }
-
         // 존재하지 않는 계정(거래이력 없음)일 경우, 마노 등록 불가
         if(accountState == null) return;
 

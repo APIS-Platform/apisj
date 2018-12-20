@@ -19,6 +19,8 @@ public class BlockData {
 
     public String coinbase;
 
+    public String coinbaseMask;
+
     public String stateRoot;
 
     public String txTrieHash;
@@ -57,6 +59,13 @@ public class BlockData {
 
     public long size;
 
+
+    public BlockData(Block block, boolean isContainFullTx, String coinbaseMask) {
+        this(block, isContainFullTx);
+        if(coinbaseMask != null) {
+            this.coinbaseMask = coinbaseMask;
+        }
+    }
 
     public BlockData(Block block, boolean isContainFullTx) {
         this.number = block.getNumber();

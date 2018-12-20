@@ -4,7 +4,9 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
 
@@ -62,10 +64,14 @@ public class TransactionReceiptData {
      */
     private String contractAddress;
 
+
+    private String value = "0";
+    private String valueAPIZ;
+
     private long gas;
 
     private String gasPrice;
-    private String gasPriceAPIS;
+    private String gasPriceAPIZ;
 
     /**
      * The amount of gas used by this specific transaction alone.
@@ -76,13 +82,13 @@ public class TransactionReceiptData {
      * The amount of mineral used by this specific transaction alone.
      */
     private String fee;
-    private String feeAPIS;
+    private String feeAPIZ;
 
     private String mineralUsed;
     private String mineralUsedMNR;
 
     private String feePaid;
-    private String feePaidAPIS;
+    private String feePaidAPIZ;
 
 
     /**
@@ -107,6 +113,8 @@ public class TransactionReceiptData {
      * 256 Bytes - Bloom filter for light clients toAddress quickly retrieve related logs.
      */
     private String logsBloom;
+
+    private String data;
 
     public TransactionReceiptData(TransactionInfo info, Block block) {
         this(info.getReceipt());
@@ -147,9 +155,12 @@ public class TransactionReceiptData {
             this.contractAddress = toHexString0x(tx.getContractAddress());
         }
 
+        this.value = BIUtil.toBI(tx.getValue()).toString();
+        this.valueAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
+
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIS = readableApis(gasPrice, ',', true);
+        this.gasPriceAPIZ = readableApis(gasPrice, ',', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
@@ -168,11 +179,11 @@ public class TransactionReceiptData {
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIS = readableApis(fee, ',', true);
+        this.feeAPIZ = readableApis(fee, ',', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
-        this.feePaidAPIS = readableApis(feePaid, ',', true);
+        this.feePaidAPIZ = readableApis(feePaid, ',', true);
 
         if (receipt.getLogInfoList().size() > 0) {
             this.logs = new ArrayList<>();
@@ -185,6 +196,8 @@ public class TransactionReceiptData {
         }
 
         this.status = toHexString0x(receipt.getPostTxState());
+
+        this.data = ByteUtil.toHexString0x(tx.getData());
     }
 
     public String getStatus() {
@@ -235,24 +248,24 @@ public class TransactionReceiptData {
         return gasPrice;
     }
 
-    String getGasPriceAPIS() {
-        return gasPriceAPIS;
+    String getGasPriceAPIZ() {
+        return gasPriceAPIZ;
     }
 
     String getFee() {
         return fee;
     }
 
-    String getFeeAPIS() {
-        return feeAPIS;
+    String getFeeAPIZ() {
+        return feeAPIZ;
     }
 
     String getFeePaid() {
         return feePaid;
     }
 
-    String getFeePaidAPIS() {
-        return feePaidAPIS;
+    String getFeePaidAPIZ() {
+        return feePaidAPIZ;
     }
 
     String getMineralUsed() {
@@ -278,14 +291,14 @@ public class TransactionReceiptData {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
                 ", gasUsed=" + gasUsed +
                 ", fee='" + fee + '\'' +
-                ", feeAPIS='" + feeAPIS + '\'' +
+                ", feeAPIZ='" + feeAPIZ + '\'' +
                 ", mineralUsed='" + mineralUsed + '\'' +
                 ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
                 ", feePaid='" + feePaid + '\'' +
-                ", feePaidAPIS='" + feePaidAPIS + '\'' +
+                ", feePaidAPIZ='" + feePaidAPIZ + '\'' +
                 ", cumulativeGasUsed=" + cumulativeGasUsed +
                 ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
                 ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +

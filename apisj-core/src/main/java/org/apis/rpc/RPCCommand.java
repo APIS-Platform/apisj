@@ -691,7 +691,10 @@ public class RPCCommand {
                     byte[] hash = ByteUtil.hexStringToBytes(blockHashString);
                     Block block = ethereum.getBlockchain().getBlockByHash(hash);
 
-                    BlockData blockData = new BlockData(block, isFull);
+                    byte[] coinbase = block.getCoinbase();
+                    String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
+
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -724,7 +727,10 @@ public class RPCCommand {
                     long blocknumber = getBlockNumber(ethereum, (String)params[0]);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blocknumber);
 
-                    BlockData blockData = new BlockData(block, isFull);
+                    byte[] coinbase = block.getCoinbase();
+                    String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
+
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();

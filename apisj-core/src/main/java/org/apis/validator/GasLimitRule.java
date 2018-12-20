@@ -36,8 +36,7 @@ public class GasLimitRule extends BlockHeaderRule {
     private final int MIN_GAS_LIMIT;
 
     public GasLimitRule(SystemProperties config) {
-        MIN_GAS_LIMIT = config.getBlockchainConfig().
-                getCommonConstants().getMIN_GAS_LIMIT();
+        MIN_GAS_LIMIT = config.getBlockchainConfig().getCommonConstants().getMIN_GAS_LIMIT();
     }
 
     @Override

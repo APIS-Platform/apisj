@@ -280,6 +280,11 @@ public class TransactionExecutor {
      * @return True if this transaction is masternode state update transaction
      */
     private boolean isMnUpdateTx(BigInteger balance) {
+        if(currentBlock.getNumber() < config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants().getMASTERNODE_EARLYBIRD_PERIOD()) {
+            execError("The masternode join has not yet opened.");
+            return false;
+        }
+
         if(tx.getSender() == null || tx.getReceiveAddress() == null) {
             return false;
         }
