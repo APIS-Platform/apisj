@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -26,8 +26,10 @@ import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
+import org.apis.db.sql.DBSyncManager;
+import org.apis.db.sql.TokenRecord;
+import org.apis.db.sql.TransactionRecord;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
@@ -54,7 +56,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
-import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -145,27 +146,14 @@ public class AppManager {
                         BigInteger totalMineral = BigInteger.ZERO;
                         BigInteger totalReward = BigInteger.ZERO;
                         AppManager.getInstance().keystoreFileReadAll();
-                        for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                            KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
-                            BigInteger balance  = keyExp.balance;
-                            BigInteger mineral  = keyExp.mineral;
-                            BigInteger reward   = keyExp.rewards;
+                        for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                            BigInteger balance = keyExp.balance;
+                            BigInteger mineral = keyExp.mineral;
+                            BigInteger reward = keyExp.rewards;
 
                             totalBalance = totalBalance.add(balance);
                             totalMineral = totalMineral.add(mineral);
                             totalReward = totalReward.add(reward);
-
-                            // DB에 저장
-                            Task<Void> task = new Task<Void>() {
-                                @Override
-                                protected Void call() {
-                                DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, balance, keyExp.mask, reward);
-                                return null;
-                                }
-                            };
-                            Thread thread = new Thread(task);
-                            thread.setDaemon(true);
-                            thread.start();
                         }
 
                         AppManager.this.setTotalBalance(totalBalance);
@@ -199,27 +187,14 @@ public class AppManager {
                 BigInteger totalReward = BigInteger.ZERO;
                 BigInteger totalTokenValue = BigInteger.ZERO;
                 AppManager.getInstance().keystoreFileReadAll();
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
-                    BigInteger balance  = keyExp.balance;
-                    BigInteger mineral  = keyExp.mineral;
-                    BigInteger reward   = keyExp.rewards;
+                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                    BigInteger balance = keyExp.balance;
+                    BigInteger mineral = keyExp.mineral;
+                    BigInteger reward = keyExp.rewards;
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
                     totalReward = totalReward.add(reward);
-
-                    // DB에 저장
-                    Task<Void> task = new Task<Void>() {
-                        @Override
-                        protected Void call() {
-                            DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, balance, keyExp.mask, reward);
-                            return null;
-                        }
-                    };
-                    Thread thread = new Thread(task);
-                    thread.setDaemon(true);
-                    thread.start();
                 }
 
                 AppManager.this.setTotalBalance(totalBalance);
