@@ -39,11 +39,6 @@ public class DBManager {
     private static final String DB_URL = "jdbc:sqlite:" + SystemProperties.getDefault().databaseDir() + "/storage.db";
     private boolean isOpen = false;
 
-    public static final int REWARD_TYPE_MINING = 1;
-    public static final int REWARD_TYPE_MASTERNODE_GENERAL = 2;
-    public static final int REWARD_TYPE_MASTERNODE_MAJOR = 3;
-    public static final int REWARD_TYPE_MASTERNODE_PRIVATE = 4;
-
 
     private DBManager () {
         try {
@@ -80,7 +75,6 @@ public class DBManager {
 
 
     private void create(Connection conn) throws SQLException {
-        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` BLOB NOT NULL UNIQUE, `receiver` BLOB, `sender` BLOB, `blockUid` NUMERIC, FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`), PRIMARY KEY(`txhash`) )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `tx_hash` TEXT UNIQUE, `address` TEXT, `topic` TEXT )";
@@ -98,10 +92,6 @@ public class DBManager {
         String queryIndexTxReceiver = "CREATE INDEX `txReceiver` ON `transactions` ( `receiver` )";
         String queryIndexTxSender = "CREATE INDEX `txSender` ON `transactions` ( `sender` )";
         String queryIndexTxBlockUid = "CREATE INDEX `txBlockUid` ON `transactions` ( `blockUid` )";
-
-        PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
-        createAccounts.execute();
-        createAccounts.close();
 
         PreparedStatement createContracts = conn.prepareStatement(queryCreateContracts);
         createContracts.execute();
@@ -176,110 +166,6 @@ public class DBManager {
         logger.debug("Database Update!");
     }
 
-
-
-
-    public boolean updateAccount(byte[] address, String title, BigInteger balance, String mask, BigInteger rewards) {
-
-        try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE accounts SET title = ?, balance = ?, mask = ?, rewards = ? WHERE address = ?");
-            update.setString(1, title);
-            update.setString(2, ByteUtil.toHexString(balance.toByteArray()));
-            update.setString(3, mask);
-            update.setString(4, ByteUtil.toHexString(rewards.toByteArray()));
-            update.setString(5, ByteUtil.toHexString(address));
-            int updateResult = update.executeUpdate();
-            if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO accounts (address, title, balance, mask, rewards) values (?, ?, ?, ?, ?)");
-                state.setString(1, ByteUtil.toHexString(address));
-                state.setString(2, title);
-                state.setString(3, ByteUtil.toHexString(balance.toByteArray()));
-                state.setString(4, mask);
-                state.setString(5, ByteUtil.toHexString(rewards.toByteArray()));
-                boolean insertResult = state.execute();
-                state.close();
-
-                return insertResult;
-            }
-
-            return updateResult > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    List<AccountRecord> selectAccounts() {
-        List<AccountRecord> wallets = new ArrayList<>();
-        PreparedStatement state = null;
-        ResultSet result = null;
-
-        try {
-            state = this.connection.prepareStatement("SELECT * FROM accounts ORDER BY uid ASC");
-            result = state.executeQuery();
-
-            while (result.next()) {
-                wallets.add(new AccountRecord(result));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(state);
-            close(result);
-        }
-
-        return wallets;
-    }
-
-    public boolean deleteAccount(byte[] address) {
-
-        try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE address = ?");
-            state.setString(1, ByteUtil.toHexString(address));
-            boolean deleteResult = state.execute();
-            state.close();
-            return deleteResult;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    /**
-     * 입력된 주소 외의 다른 주소들은 DB에서 삭제한다(정리한다).
-     * Remove any addresses other than the parameters from the DB (clean up).
-     *
-     * @param existingAddresses DB에 유지시키려는 주소들의 목록<br/>List of addresses to keep in DB
-     * @return <code>true</code> if the query execution was successful
-     */
-    public boolean clearAccount(List<byte[]> existingAddresses) {
-
-        try {
-            StringBuilder where = new StringBuilder();
-            for(int i = 0; i < existingAddresses.size(); i++) {
-                if(i == 0) {
-                    where = new StringBuilder("address != ?");
-                } else {
-                    where.append(" AND address != ?");
-                }
-            }
-
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE " + where.toString());
-            for(int i = 0 ; i < existingAddresses.size(); i++) {
-                state.setString(i + 1, ByteUtil.toHexString(existingAddresses.get(i)));
-            }
-
-            boolean clearResult = state.execute();
-            state.close();
-            return clearResult;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
 
 
     public boolean updateContractCreation(TransactionInfo txInfo) {
@@ -1007,51 +893,6 @@ public class DBManager {
         }
 
         return false;
-    }
-
-
-
-
-    synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {
-
-        try {
-            PreparedStatement updateDBInfo = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
-            updateDBInfo.setLong(1, lastSyncedBlockNumber);
-            updateDBInfo.executeUpdate();
-            updateDBInfo.close();
-
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE `accounts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
-            updateAccounts.setLong(1, lastSyncedBlockNumber);
-            updateAccounts.executeUpdate();
-            updateAccounts.close();
-
-            PreparedStatement updateContracts = this.connection.prepareStatement("UPDATE `contracts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
-            updateContracts.setLong(1, lastSyncedBlockNumber);
-            updateContracts.executeUpdate();
-            updateContracts.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setAccountSyncStarted(byte[] address) {
-        setSyncStarted(address, "accounts");
-    }
-    public void setContractSyncStarted(byte[] address) {
-        setSyncStarted(address, "contracts");
-    }
-
-    private void setSyncStarted(byte[] address, String table) {
-
-        try {
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 2 WHERE address = ? AND last_synced_block = 1");
-            updateAccounts.setString(1, ByteUtil.toHexString(address));
-            updateAccounts.executeUpdate();
-
-            updateAccounts.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 
