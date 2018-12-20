@@ -54,7 +54,7 @@ public class OsirisConfig extends AbstractConfig {
          */
         @Override
         public int getDURATION_LIMIT() {
-            return 10;
+            return 8;
         }
 
         /**
@@ -80,7 +80,7 @@ public class OsirisConfig extends AbstractConfig {
 
         @Override
         public int getMIN_GAS_LIMIT() {
-            return 50000;
+            return 50_000_000;
         }
 
         @Override
