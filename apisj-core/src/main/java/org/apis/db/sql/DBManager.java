@@ -426,7 +426,7 @@ public class DBManager {
         PreparedStatement state = null;
         ResultSet result = null;
         try {
-            query = "SELECT * FROM transactions ORDER BY blockUid ASC" + limit;
+            query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
             state = this.connection.prepareStatement(query);
             result = null;
 

@@ -113,6 +113,7 @@ contract ERC20 is IERC20 {
     uint256 private _totalSupply;
 
 
+    address private _owner;
     string private _name;
     string private _symbol;
     uint8  private _decimals;
@@ -120,10 +121,21 @@ contract ERC20 is IERC20 {
     string private _canvasUrl;
     string private _ownerUrl;
 
-    constructor(string name, string symbol, uint8 decimals) public {
+
+    modifier onlyOwner() {
+        require(_owner == msg.sender);
+        _;
+    }
+
+
+    constructor(string name, string symbol, uint8 decimals, uint256 totalSupply) public {
+        _owner = msg.sender;
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
+        _totalSupply = totalSupply;
+
+        _balances[_owner] = _totalSupply;
     }
 
     /**
@@ -157,6 +169,18 @@ contract ERC20 is IERC20 {
 
     function ownerUrl() public view returns (string) {
         return _ownerUrl;
+    }
+
+    function setIconUrl(string url) public {
+        _iconUrl = url;
+    }
+
+    function setCanvasUrl(string url) public {
+        _canvasUrl = url;
+    }
+
+    function setOwnerUrl(string url) public {
+        _ownerUrl = url;
     }
 
 
@@ -350,7 +374,3 @@ contract ERC20 is IERC20 {
         _burn(account, value);
     }
 }
-
-
-
-
