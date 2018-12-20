@@ -341,6 +341,22 @@ public class SettingController extends BasePopupController {
                         try {
                             String exePath = URLDecoder.decode(file.getAbsoluteFile().getParentFile().getParent(), "UTF-8");
                             ArrayList<String> cmd = new ArrayList<String>();
+                            // Register start-up menu
+//                            cmd.add("powershell.exe");
+//                            cmd.add("Start-Process");
+//                            cmd.add("-WindowStyle");
+//                            cmd.add("hidden");
+//                            cmd.add("-FilePath");
+//                            cmd.add("powershell.exe");
+//                            cmd.add("-verb runAs");
+//                            cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
+//                                    exePath + "\\apis-core.exe' /f\\\"");
+//
+//                            ProcessBuilder builder = new ProcessBuilder(cmd);
+//                            Process proc = builder.start();
+//                            proc.waitFor();
+
+                            // Create schedule
                             cmd.add("powershell.exe");
                             cmd.add("Start-Process");
                             cmd.add("-WindowStyle");
@@ -348,7 +364,7 @@ public class SettingController extends BasePopupController {
                             cmd.add("-FilePath");
                             cmd.add("powershell.exe");
                             cmd.add("-verb runAs");
-                            cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
+                            cmd.add("\\\"schtasks /create /sc onlogon /tn apis-core /rl highest /tr '" +
                                     exePath + "\\apis-core.exe' /f\\\"");
 
                             ProcessBuilder builder = new ProcessBuilder(cmd);
@@ -363,6 +379,21 @@ public class SettingController extends BasePopupController {
                     } else {
                         try {
                             ArrayList<String> cmd = new ArrayList<String>();
+                            // Register start-up menu
+//                            cmd.add("powershell.exe");
+//                            cmd.add("Start-Process");
+//                            cmd.add("-WindowStyle");
+//                            cmd.add("hidden");
+//                            cmd.add("-FilePath");
+//                            cmd.add("powershell.exe");
+//                            cmd.add("-verb runAs");
+//                            cmd.add("\\\"reg Delete 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /f\\\"");
+//
+//                            ProcessBuilder builder = new ProcessBuilder(cmd);
+//                            Process proc = builder.start();
+//                            proc.waitFor();
+
+                            // Create schedule
                             cmd.add("powershell.exe");
                             cmd.add("Start-Process");
                             cmd.add("-WindowStyle");
@@ -370,7 +401,7 @@ public class SettingController extends BasePopupController {
                             cmd.add("-FilePath");
                             cmd.add("powershell.exe");
                             cmd.add("-verb runAs");
-                            cmd.add("\\\"reg Delete 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /f\\\"");
+                            cmd.add("\\\"schtasks /delete /tn apis-core /f\\\"");
 
                             ProcessBuilder builder = new ProcessBuilder(cmd);
                             Process proc = builder.start();
