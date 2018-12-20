@@ -67,6 +67,8 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
     private static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
     private static final String COMMAND_APIS_GETTRANSACTIONBYKEYWORD = "apis_getTransactionsByKeyword";
+    private static final String COMMAND_APIS_GET_RECENT_TRANSACTIONS= "apis_getRecentTransactions";
+    private static final String COMMAND_APIS_GET_RECENT_BLOCKS= "apis_getRecentBlocks";
 
     // apis only
     public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
@@ -166,6 +168,7 @@ public class RPCCommand {
     static final String ERROR_NULL_TRANSACTION = "There is no transaction.";
     static final String ERROR_OUT_OF_INDEXED_TRANSACTION = "The index you entered does not exist in the block. (input : %d, index size: %d).";
     static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
+    static final String ERROR_CONNOT_FETCH_RECENT_BLOCKS = "It was not possible to load recent blocks with the input conditions.";
     static final String ERROR_NULL_TOADDRESS_OR_TOMASK = "There is no receiving address or mask.";
     static final String ERROR_NULL_BLOCK_BY_NUMBER = "There is no block can be found with the number.";
     static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
@@ -830,6 +833,76 @@ public class RPCCommand {
                     command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
                 }
 
+                break;
+            }
+
+            case COMMAND_APIS_GET_RECENT_TRANSACTIONS: {
+                try {
+                    long rowCount = 20;
+                    long offset = 0;
+
+                    if(params.length > 0) {
+                        try {
+                            rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+                    if(params.length > 1) {
+                        try {
+                            offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+
+                    DBManager dbManager = DBManager.getInstance();
+                    List<TransactionRecord> txRecords = dbManager.selectRecentTransactions(rowCount, offset);
+                    List<TransactionSearchData> txReceipts = new ArrayList<>();
+                    for(TransactionRecord txRecord : txRecords) {
+                        byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
+                        TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
+                        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+                        txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
+                    }
+
+                    command = createJson(id, method, txReceipts);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                }
+                break;
+            }
+
+            case COMMAND_APIS_GET_RECENT_BLOCKS: {
+                try {
+                    long rowCount = 20;
+                    long offset = 1;
+
+                    if(params.length > 0) {
+                        try {
+                            rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+                    if(params.length > 1) {
+                        try {
+                            offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+
+                    Block currentBlock = ethereum.getBlockchain().getBestBlock();
+
+                    for(int i = 0; i < offset && currentBlock.getNumber() > 1; i++) {
+                        currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
+                    }
+
+                    List<BlockData> blocks = new ArrayList<>();
+                    for(int i = 0; i < rowCount && currentBlock.getNumber() > 1; i++) {
+                        blocks.add(new BlockData(currentBlock, false));
+                        currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
+                    }
+
+                    command = createJson(id, method, blocks);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_CONNOT_FETCH_RECENT_BLOCKS);
+                }
                 break;
             }
 

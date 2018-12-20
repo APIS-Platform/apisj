@@ -44,6 +44,7 @@ public class BlockData {
 
     public String nonce;
 
+    public long txSize;
     public List<String> transactions;
 
     public String logsBloom;
@@ -109,6 +110,8 @@ public class BlockData {
                 this.mnPrivates.add(ByteUtil.toHexString(mn));
             }
         }
+
+        this.txSize = block.getTransactionsList().size();
 
         this.transactions = new ArrayList<>();
 
