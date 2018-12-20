@@ -4,7 +4,9 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
 
@@ -61,6 +63,10 @@ public class TransactionReceiptData {
      * 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null
      */
     private String contractAddress;
+
+
+    private String value = "0";
+    private String valueAPIZ;
 
     private long gas;
 
@@ -146,6 +152,9 @@ public class TransactionReceiptData {
         if(!ByteUtil.isNullOrZeroArray(tx.getContractAddress())) {
             this.contractAddress = toHexString0x(tx.getContractAddress());
         }
+
+        this.value = BIUtil.toBI(tx.getValue()).toString();
+        this.valueAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
