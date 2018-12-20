@@ -28,11 +28,11 @@ public class PopupTokenEditController extends BasePopupController {
 
 
     @FXML private AnchorPane rootPane;
-    @FXML private ImageView addrCircleImg, resultAddrCircleImg;
+    @FXML private ImageView addrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
 
     // Multilingual Support Label
-    @FXML private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn, symbolLabel, supplyLabel;
+    @FXML private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, noBtn, editBtn, symbolLabel, supplyLabel;
 
     private TokenRecord record;
 
@@ -45,13 +45,6 @@ public class PopupTokenEditController extends BasePopupController {
         ellipse.setCenterX(12);
         ellipse.setCenterY(12);
         addrCircleImg.setClip(ellipse);
-
-        Ellipse ellipse2 = new Ellipse(12, 12);
-        ellipse2.setCenterX(12);
-        ellipse2.setCenterY(12);
-        resultAddrCircleImg.setClip(ellipse2);
-
-        resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
 
         AppManager.getInstance().settingTextFieldLineStyle(nameTextField);
 
@@ -76,7 +69,6 @@ public class PopupTokenEditController extends BasePopupController {
         nameLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditNameLabel);
         nameTextField.promptTextProperty().bind(StringManager.getInstance().popup.tokenEditNamePlaceholder);
         minNumLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditMinNumLabel);
-        previewLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditPreviewLabel);
         noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
         editBtn.textProperty().bind(StringManager.getInstance().common.editButton);
         symbolLabel.textProperty().bind(StringManager.getInstance().common.symbolLabel);

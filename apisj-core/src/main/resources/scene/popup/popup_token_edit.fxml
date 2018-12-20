@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTokenEditController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTokenEditController">
    <children>
       <GridPane style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -80,10 +80,6 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                               <RowConstraints />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="8.0" />
-                              <RowConstraints />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                               <RowConstraints vgrow="SOMETIMES" />
                               <RowConstraints />
                            </rowConstraints>
@@ -127,7 +123,7 @@
                               </TextField>
                               <Label fx:id="minNumLabel" styleClass="font_semibold_12" text="Minimum number of decimal places" textFill="#2b2b2b" GridPane.rowIndex="10" />
                               <Label fx:id="supplyLabel" styleClass="font_semibold_12" text="Total Supply" textFill="#2b2b2b" GridPane.rowIndex="13" />
-                              <GridPane GridPane.rowIndex="21">
+                              <GridPane GridPane.rowIndex="17">
                                  <columnConstraints>
                                     <ColumnConstraints />
                                     <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
@@ -181,52 +177,6 @@
                                     <Insets left="8.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <Label fx:id="previewLabel" styleClass="font_semibold_12" text="Preview" textFill="#2b2b2b" GridPane.rowIndex="16" />
-                              <GridPane style="-fx-border-color: f8f8fb; -fx-border-width: 1 0 1 0;" GridPane.rowIndex="18">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints fillHeight="false" />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fx:id="resultAddrCircleImg" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/address_Indenticon_ex2.png" />
-                                       </image>
-                                       <GridPane.margin>
-                                          <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
-                                       </GridPane.margin>
-                                    </ImageView>
-                                    <GridPane GridPane.columnIndex="1">
-                                       <columnConstraints>
-                                          <ColumnConstraints fillWidth="false" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints />
-                                          <RowConstraints />
-                                       </rowConstraints>
-                                       <children>
-                                          <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
-                                          <GridPane>
-                                             <columnConstraints>
-                                                <ColumnConstraints />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                             <children>
-                                                <Label styleClass="font_semibold_12" text="APISTOKEN1" textFill="#2b2b2b" />
-                                             </children>
-                                          </GridPane>
-                                       </children>
-                                    </GridPane>
-                                 </children>
-                                 <opaqueInsets>
-                                    <Insets left="1.0" />
-                                 </opaqueInsets>
-                              </GridPane>
                            </children>
                         </GridPane>
                      </children>

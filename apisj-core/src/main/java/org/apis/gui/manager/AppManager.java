@@ -799,6 +799,29 @@ public class AppManager {
 
     }
 
+    public long getPreGasUsedWithNonce(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            BigInteger value = BigInteger.ZERO;
+            long nonce = this.mEthereum.getRepository().getNonce(sender).longValue();
+            System.out.println("nonce : "+nonce);
+            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, nonce, value, data);
+
+            if(estimateResult == null) {
+                return -1;
+            }
+
+            if(estimateResult.isSuccess()) {
+                return estimateResult.getGasUsed();
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+
+    }
+
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
         if(this.mEthereum != null) {
             EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);

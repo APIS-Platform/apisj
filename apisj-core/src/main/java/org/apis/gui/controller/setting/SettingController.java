@@ -64,7 +64,7 @@ public class SettingController extends BasePopupController {
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
         addGeneralItem("startWalletWithLogIn");
-        addGeneralItem("enableLogEvent");
+        //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
         addWindowItem("minimizeToTray");
 
@@ -137,8 +137,12 @@ public class SettingController extends BasePopupController {
         passwordInputController.setTextField(prop.getProperty("password"));
 
         prop = AppManager.getGeneralProperties();
-        startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
-        enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        if(startWalletWithLogInBtnController != null) {
+            startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
+        }
+        if(enableLogEventBtnController != null) {
+            enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 
         prop = AppManager.getWindowProperties();
