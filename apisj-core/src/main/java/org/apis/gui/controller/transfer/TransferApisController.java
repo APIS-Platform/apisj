@@ -153,6 +153,19 @@ public class TransferApisController extends BaseViewController {
         return this.walletAndAmountController.getAmount();
     }
 
+    public BigInteger getChargedAmount(){
+        BigInteger totalFee = getChargedFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger chargedAmount = getAmount().add(totalFee);
+
+        return chargedAmount;
+    }
+
     public BigInteger getMineral() {
         return this.walletAndAmountController.getMineral();
     }
@@ -175,6 +188,38 @@ public class TransferApisController extends BaseViewController {
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
         return fee;
     }
+    public BigInteger getChargedFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger chargedAmount = getChargedAmount();
+
+        //after balance
+        BigInteger afterBalance = getBalance().subtract(chargedAmount);
+
+        return afterBalance;
+    }
+
+    public boolean isReadyTransfer(){
+        // 소지금체크
+        if(getBalance().compareTo(BigInteger.ZERO) <= 0){
+            return false;
+        }
+
+        // 잔액체크
+        if(getAfterBalance().compareTo(BigInteger.ZERO) < 0){
+            return false;
+        }
+
+        BigInteger gasLimit = gasCalculatorController.getGasLimit();
+        if(gasLimit.compareTo(BigInteger.ONE) <= 0){
+            return false;
+        }
+
+        return true;
+    }
+
 
 
     private ApisWalletAndAmountController.ApisAmountImpl apisAmountImpl = new ApisWalletAndAmountController.ApisAmountImpl() {

@@ -29,10 +29,12 @@ public class ReceiptController extends BaseViewController {
     @FXML private GridPane button, dimNoFees, receipt;
     @FXML private VBox itemList;
     @FXML private Label titleLabel, titleValue1, titleValue2, symbolLabel, buttonLabel;
+    @FXML private Label titleLabel2, noFeesTitle, noFeesSubTitle;
 
     private ReceiptAddressController addressController;
     private ReceiptAddressController beneficiaryAddressController;
     private ReceiptAddressController payerAddressController;
+
     private ReceiptItemController maskItemController;
 
     private ReceiptValueAController amountValueController;
@@ -42,12 +44,19 @@ public class ReceiptController extends BaseViewController {
     private ReceiptValueAController chargedFeeValueController;
     private ReceiptValueAController afterBalanceController;
 
-    private String address, beneficiaryAddress, payerAddress, amount, chargedAmount, mask, fee, mineral, afterBalance, chargedFee;
+    private ReceiptOnlyValueController afterTokenValueController;
+    private ReceiptOnlyValueController tokenAmountValueController;
+
+    private String address, beneficiaryAddress, payerAddress, amount, chargedAmount, mask, fee, mineral, afterBalance, chargedFee, afterTokenBalance, tokenAmount;
     private boolean isSuccessed;
     private boolean isScrolling;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        noFeesTitle.textProperty().bind(StringManager.getInstance().receipt.nofees);
+        noFeesSubTitle.textProperty().bind(StringManager.getInstance().receipt.nofeesDesc);
+
         initializeScrollSpeed();
         setVisibleNoFees(false);
     }
@@ -150,11 +159,22 @@ public class ReceiptController extends BaseViewController {
         if(mineralValueController != null){
             mineralValueController.setValue(mineral);
         }
+
+        if(afterTokenValueController != null){
+            afterTokenValueController.setValue(afterTokenBalance);
+        }
+
+        if(tokenAmountValueController != null){
+            tokenAmountValueController.setValue(tokenAmount);
+        }
     }
 
     public void setTitle(SimpleStringProperty title){
         this.titleLabel.textProperty().unbind();
         this.titleLabel.textProperty().bind(title);
+
+        this.titleLabel2.textProperty().unbind();
+        this.titleLabel2.textProperty().bind(title);
     }
 
     public void setTitleValue(BigInteger value){
@@ -353,6 +373,34 @@ public class ReceiptController extends BaseViewController {
         }
     }
 
+    public void addAfterTokenBalance(){
+        if(afterTokenValueController != null){
+            return;
+        }
+
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_only_value.fxml");
+            itemList.getChildren().add(fxmlController.getNode());
+            afterTokenValueController = (ReceiptOnlyValueController) fxmlController.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addTokenAmount(){
+        if(tokenAmountValueController != null){
+            return;
+        }
+
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_only_value.fxml");
+            itemList.getChildren().add(fxmlController.getNode());
+            tokenAmountValueController = (ReceiptOnlyValueController) fxmlController.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setAddress(String address){
         this.address = address;
         update();
@@ -402,6 +450,28 @@ public class ReceiptController extends BaseViewController {
         this.afterBalance = afterBalance;
         update();
     }
+
+    public void setAfterTokenBalance(String afterTokenBalance){
+        this.afterTokenBalance = afterTokenBalance;
+        update();
+    }
+
+    public void setTokenSymbol(String symbol){
+        if(tokenAmountValueController != null){
+            this.tokenAmountValueController.setSymbol(symbol);
+        }
+
+        if(afterTokenValueController != null){
+            this.afterTokenValueController.setSymbol(symbol);
+        }
+    }
+
+
+    public void setTokenAmount(String tokenAmount){
+        this.tokenAmount = tokenAmount;
+        update();
+    }
+
 
     public void setSuccessed(boolean isSuccessed){
         this.isSuccessed = isSuccessed;
