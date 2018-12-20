@@ -133,7 +133,7 @@ contract ERC20 is IERC20 {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
-        _totalSupply = totalSupply*(10**_decimals);
+        _totalSupply = totalSupply*(10**uint256(_decimals));
 
         _balances[_owner] = _totalSupply;
     }
