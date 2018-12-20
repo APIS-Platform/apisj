@@ -898,6 +898,7 @@ public class RPCCommand {
                         currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
+                    Collections.reverse(blocks);
                     command = createJson(id, method, blocks);
                 } catch (Exception e) {
                     e.printStackTrace();
