@@ -806,12 +806,12 @@ public class RPCCommand {
                     long rowCount = 0;
                     long offset = 0;
 
-                    if(params.length > 1) {
+                    if(params.length > 1 && params[1] != null) {
                         try {
                             rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
                         } catch (NumberFormatException | DecoderException ignored) {}
                     }
-                    if(params.length > 2) {
+                    if(params.length > 2 && params[2] != null) {
                         try {
                             offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[2]));
                         } catch (NumberFormatException | DecoderException ignored) {}
@@ -841,12 +841,12 @@ public class RPCCommand {
                     long rowCount = 20;
                     long offset = 0;
 
-                    if(params.length > 0) {
+                    if(params.length > 0 && params[0] != null) {
                         try {
                             rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
                         } catch (NumberFormatException | DecoderException ignored) {}
                     }
-                    if(params.length > 1) {
+                    if(params.length > 1 && params[1] != null) {
                         try {
                             offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
                         } catch (NumberFormatException | DecoderException ignored) {}
@@ -875,12 +875,12 @@ public class RPCCommand {
                     long rowCount = 20;
                     long offset = 1;
 
-                    if(params.length > 0) {
+                    if(params.length > 0 && params[0] != null) {
                         try {
                             rowCount = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
                         } catch (NumberFormatException | DecoderException ignored) {}
                     }
-                    if(params.length > 1) {
+                    if(params.length > 1 && params[1] != null) {
                         try {
                             offset = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
                         } catch (NumberFormatException | DecoderException ignored) {}
