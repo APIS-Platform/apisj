@@ -1,5 +1,7 @@
 package org.apis.gui.controller.transfer;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -9,15 +11,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.GUIContractManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.solidity.SolidityType;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -25,12 +32,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransferTokenController extends BaseViewController {
+
+    private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
+    private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+    private CallTransaction.Function functionTransfer = contract.getByName("transfer");
+
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TextField recevingTextField;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
-    @FXML private Label hintMaskAddressLabel, recevingAddressLabel, btnMyAddress, btnRecentAddress, gaspriceComment1Label, gaspriceComment2Label;
+    @FXML private Label hintMaskAddressLabel, recevingAddressLabel, btnMyAddress, btnRecentAddress;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,9 +89,9 @@ public class TransferTokenController extends BaseViewController {
 
         });
 
-        recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        recevingTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 String address = AppManager.getInstance().getAddressWithMask(recevingTextField.getText());
                 if(address != null && address.length() > 0){
                     hintMaskAddress.setVisible(true);
@@ -89,6 +101,8 @@ public class TransferTokenController extends BaseViewController {
                     hintMaskAddress.setVisible(false);
                     hintMaskAddress.setPrefHeight(0);
                 }
+
+                settingLayoutData();
             }
         });
     }
@@ -99,8 +113,6 @@ public class TransferTokenController extends BaseViewController {
         btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
 
-        gaspriceComment1Label.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment1);
-        gaspriceComment2Label.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment2);
     }
 
     @Override
@@ -111,6 +123,7 @@ public class TransferTokenController extends BaseViewController {
 
     public void settingLayoutData(){
         gasCalculatorController.setMineral(walletAndAmountController.getMineral());
+        estimateGasLimit();
         if(handler != null){
             this.handler.settingLayoutData();
         }
@@ -164,6 +177,38 @@ public class TransferTokenController extends BaseViewController {
         }
     }
 
+    private void estimateGasLimit(){
+
+        String tokenAddress = walletAndAmountController.getTokenAddress();
+
+
+        Object[] args = new Object[2];
+        args[0] = getReceveAddress();// to
+        args[1] = getTokenAmount();// token value (aApis)
+
+        String functionName = functionTransfer.name;
+        byte[] address = Hex.decode(walletAndAmountController.getAddress());
+        long preGasUsed = 0;
+
+        if(tokenAddress != null && AddressUtil.isAddress(tokenAddress) && getReceveAddress() != null && AddressUtil.isAddress(getReceveAddress())){
+            System.out.println("abi : "+abi);
+            System.out.println("address : "+ByteUtil.toHexString(address));
+            System.out.println("tokenAddress : "+tokenAddress);
+            System.out.println("getAmount() : "+getAmount().toString());
+            System.out.println("functionName : "+functionName);
+            System.out.println("args[0] : "+args[0]);
+            System.out.println("args[1] : "+args[1]);
+            preGasUsed = AppManager.getInstance().getPreGasUsed(abi, address, Hex.decode(tokenAddress), getAmount(), functionName, args);
+        }
+
+        if(preGasUsed <= 1){
+            gasCalculatorController.setGasLimit("0");
+        }else{
+            gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+        }
+
+    }
+
 
 
     public void selectedItemWithWalletAddress(String address) {
@@ -191,9 +236,58 @@ public class TransferTokenController extends BaseViewController {
         return walletAndAmountController.getBalance();
     }
 
+    public BigInteger getFee() {
+        BigInteger fee = getGasPrice().multiply(getGasLimit()).subtract(getMineral());
+        fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
+        return fee;
+    }
+    public BigInteger getChargedFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger chargedAmount = getChargedAmount();
+
+        //after balance
+        BigInteger afterBalance = getBalance().subtract(chargedAmount);
+
+        return afterBalance;
+    }
+    public BigInteger getAfterTokenBalance(){
+        // total token amount
+        BigInteger chargedTokenAmount = getChargedTokenAmount();
+
+        //after token balance
+        BigInteger afterTokenBalance = getTokenBalance().subtract(chargedTokenAmount);
+
+        return afterTokenBalance;
+    }
+
     public BigInteger getAmount() {
         return walletAndAmountController.getAmount();
     }
+
+    public BigInteger getChargedAmount(){
+        BigInteger totalFee = getChargedFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger chargedAmount = getAmount().add(totalFee);
+
+        return chargedAmount;
+    }
+
+    public BigInteger getChargedTokenAmount(){
+        return getTokenAmount();
+    }
+
+    public BigInteger getTokenAmount(){
+        return walletAndAmountController.getTokenAmount();
+    }
+
 
     public BigInteger getGasPrice() {
         return gasCalculatorController.getGasPrice();

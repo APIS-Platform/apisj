@@ -310,7 +310,19 @@ public class ApisWalletAndAmountController extends BaseViewController {
     }
 
     public BigInteger getAmount(){
-        return selectApisUnitController.convert(amountTextField.getText().trim());
+        if(viewType == ViewType.apis){
+            return selectApisUnitController.convert(amountTextField.getText().trim());
+        }else{
+            return BigInteger.ZERO;
+        }
+    }
+
+    public BigInteger getTokenAmount(){
+        if(viewType == ViewType.apis){
+            return BigInteger.ZERO;
+        }else{
+            return selectApisUnitController.convert(amountTextField.getText().trim());
+        }
     }
 
     public BigInteger getPercent(){

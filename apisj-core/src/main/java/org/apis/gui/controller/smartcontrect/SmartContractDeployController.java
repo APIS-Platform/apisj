@@ -628,7 +628,7 @@ public class SmartContractDeployController extends BaseViewController {
         return this.walletAndAmountController.getMineral();
     }
 
-    public BigInteger getTotalFee() {
+    public BigInteger getChargedFee() {
         return this.gasCalculatorController.getTotalFee();
     }
 
@@ -637,7 +637,7 @@ public class SmartContractDeployController extends BaseViewController {
     }
 
     public BigInteger getChargedAmount(){
-        BigInteger totalFee = getTotalFee();
+        BigInteger totalFee = getChargedFee();
         // total fee
         if(totalFee.toString().indexOf("-") >= 0){
             totalFee = BigInteger.ZERO;

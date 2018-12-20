@@ -271,13 +271,13 @@ public class SmartContractController extends BaseViewController {
         BigInteger amount = smartContractDeployController.getAmount();
         BigInteger fee = smartContractDeployController.getFee();
         BigInteger mineral = smartContractDeployController.getMineral();
-        BigInteger chargedFee = smartContractDeployController.getTotalFee();
+        BigInteger chargedFee = smartContractDeployController.getChargedFee();
         BigInteger chargedAmount = smartContractDeployController.getChargedAmount();
         BigInteger afterBalance = smartContractDeployController.getAfterBalance();
-        // total fee
-        if(chargedFee.toString().indexOf("-") >= 0){
-            chargedFee = BigInteger.ZERO;
-        }
+
+        // charged fee
+        chargedFee = (chargedFee.compareTo(BigInteger.ZERO) >=0 ) ? chargedFee : BigInteger.ZERO;
+
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 

@@ -7,6 +7,7 @@ import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.controller.popup.PopupFailController;
 import org.apis.gui.controller.popup.PopupTransferSendController;
@@ -32,8 +33,8 @@ public class TransferController extends BaseViewController {
 
     @FXML private TransferApisController transferApisController;
     @FXML private TransferTokenController transferTokenController;
-    @FXML private TransferApisReceiptController apisReceiptController;
-    @FXML private TransferTokenReceiptController tokenReceiptController;
+    @FXML private ReceiptController apisReceiptController;
+    @FXML private ReceiptController tokenReceiptController;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
@@ -52,6 +53,8 @@ public class TransferController extends BaseViewController {
         AppManager.getInstance().guiFx.setTransfer(this);
 
         languageSetting();
+        initializeApisReceipt();
+        initializeTokenReceipt();
 
         selectTokenController.setHeader(new TransferSelectTokenController.TransferSelectTokenImpl() {
             @Override
@@ -79,9 +82,15 @@ public class TransferController extends BaseViewController {
                 TransferController.this.settingLayoutData();
             }
         });
-        apisReceiptController.setHandler(new TransferApisReceiptController.TransferApisReceiptImpl() {
+
+        settingLayoutData();
+    }
+
+    public void initializeApisReceipt(){
+
+        apisReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
             @Override
-            public void onMouseClickTransfer() {
+            public void send() {
                 // apis balance
                 BigInteger balance = transferApisController.getBalance();
 
@@ -121,7 +130,6 @@ public class TransferController extends BaseViewController {
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
-                        System.out.println("transferApisController.getReceiveAddress() : "+transferApisController.getReceiveAddress());
                         DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferApisController.getReceiveAddress()) , AppManager.getInstance().getAliasWithAddress(transferApisController.getReceiveAddress() ));
                     }
                     @Override
@@ -132,9 +140,32 @@ public class TransferController extends BaseViewController {
             }
         });
 
-        tokenReceiptController.setHandler(new TransferTokenReceiptController.TransferTokenReceiptImpl() {
+        apisReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        apisReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+        apisReceiptController.addAmount(0);
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addLineStyleDotted();
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addChargedFee(0);
+        apisReceiptController.addFee(16);
+        apisReceiptController.addMineral(16);
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addLineStyleDotted();
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addChargedAmount(0);
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addLineStyleDotted();
+        apisReceiptController.addVSpace(16);
+        apisReceiptController.addAfterBalance(0);
+        apisReceiptController.setSuccessed(false);
+    }
+
+    public void initializeTokenReceipt(){
+
+        tokenReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
             @Override
-            public void onMouseClickTransfer() {
+            public void send() {
                 String tokenAddress = selectTokenController.getSelectTokenAddress();
                 // apis
                 BigInteger balance = transferTokenController.getBalance();
@@ -163,11 +194,9 @@ public class TransferController extends BaseViewController {
 
                 Object args[] = new Object[2];
                 args[0] = transferTokenController.getReceveAddress(); // to address
-                args[1] = transferTokenController.getAmount(); // token amount
+                args[1] = transferTokenController.getTokenAmount(); // token amount
 
                 byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
-
-
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
@@ -182,10 +211,32 @@ public class TransferController extends BaseViewController {
 
                     }
                 });
-
             }
         });
 
+        tokenReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        tokenReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+        tokenReceiptController.addAmount(0);
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addTokenAmount();
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addLineStyleDotted();
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addChargedFee(0);
+        tokenReceiptController.addFee(16);
+        tokenReceiptController.addMineral(16);
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addLineStyleDotted();
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addChargedAmount(0);
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addLineStyleDotted();
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addAfterBalance(0);
+        tokenReceiptController.addVSpace(16);
+        tokenReceiptController.addAfterTokenBalance();
+        tokenReceiptController.setSuccessed(false);
     }
 
 
@@ -207,101 +258,65 @@ public class TransferController extends BaseViewController {
     }
 
     private void settingLayoutApisData(){
-        // apis balance
-        BigInteger balance = transferApisController.getBalance();
-
-        // mineral
-        BigInteger mineral = transferApisController.getMineral();
-
-        // amount
-        BigInteger value = transferApisController.getAmount();
-        String sValue = ApisUtil.readableApis(value, ',', true);
-
-        //fee
+        BigInteger amount = transferApisController.getAmount();
         BigInteger fee = transferApisController.getFee();
-        String sFee = ApisUtil.readableApis(fee, ',', true);
+        BigInteger mineral = transferApisController.getMineral();
+        BigInteger chargedFee = transferApisController.getChargedFee();
+        BigInteger chargedAmount = transferApisController.getChargedAmount();
+        BigInteger afterBalance = transferApisController.getAfterBalance();
 
-        //total amount
-        BigInteger totalAmount = value.add(fee);
-        String sTotalAmount = ApisUtil.readableApis(totalAmount,',',false);
-        String sTotalAmountSplit[] = sTotalAmount.split("\\.");
+        // charged fee
+        chargedFee = (chargedFee.compareTo(BigInteger.ZERO) >=0 ) ? chargedFee : BigInteger.ZERO;
 
         //after balance
-        BigInteger afterBalance = balance.subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-        String sAfterBalace = ApisUtil.readableApis(afterBalance, ',', true);
 
-        // 전송버튼 색상 변경
-        String recevingAddress = transferApisController.getReceiveAddress();
-        if(recevingAddress != null && recevingAddress.length() > 0 && !AddressUtil.isAddress(recevingAddress)){
-            String address = AppManager.getInstance().getAddressWithMask(recevingAddress);
-            if(address != null && address.length() > 0){
-                recevingAddress = address;
-            }else{
-                recevingAddress = null;
-            }
-        }
-
-        if(recevingAddress == null || recevingAddress.length() == 0){
-            apisReceiptController.transferButtonDefault();
-        }else if(balance.compareTo(value) == 0 && mineral.compareTo(fee) < 0){
-            if(transferApisController.getAmount().compareTo(BigInteger.ZERO) > 0) {
-                transferApisController.showError();
-            }
-            apisReceiptController.transferButtonDefault();
-        }else{
-            transferApisController.hideError();
-            apisReceiptController.transferButtonActive();
-        }
-
-        apisReceiptController.setAfterBalance(sAfterBalace);
-        apisReceiptController.setAmount(sValue);
-        apisReceiptController.setFee(sFee);
-        apisReceiptController.setTotalAmount(sTotalAmountSplit[0], sTotalAmountSplit[1]);
-        apisReceiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
+        apisReceiptController.setTitleValue(chargedAmount);
+        apisReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        apisReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee,',',true));
+        apisReceiptController.setFee(ApisUtil.readableApis(fee,',',true));
+        apisReceiptController.setMineral(ApisUtil.readableApis(mineral,',',true));
+        apisReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount,',',true));
+        apisReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        apisReceiptController.setSuccessed(transferApisController.isReadyTransfer());
     }
 
     private void settingLayoutTokenData(){
 
-        // apis
-        BigInteger balance = transferTokenController.getBalance();
-        // token balance
-        BigInteger tokenBalance = transferTokenController.getTokenBalance();
-        // amount
-        BigInteger value = transferTokenController.getAmount();
-        String sValue = ApisUtil.readableApis(value,',', true);
+        BigInteger amount = transferTokenController.getAmount();
+        BigInteger tokenAmount = transferTokenController.getTokenAmount();
+        BigInteger fee = transferTokenController.getFee();
+        BigInteger mineral = transferTokenController.getMineral();
+        BigInteger chargedFee = transferTokenController.getChargedFee();
+        BigInteger chargedAmount = transferTokenController.getChargedAmount();
+        BigInteger afterBalance = transferTokenController.getAfterBalance();
+        BigInteger afterTokenBalance = transferTokenController.getAfterTokenBalance();
 
-        //fee
-        BigInteger totalFee = transferTokenController.getTotalFee();
-        totalFee = (totalFee.compareTo(BigInteger.ZERO) > 0) ? totalFee : BigInteger.ZERO;
-        String sTotalFee = ApisUtil.readableApis(totalFee, ',', true);
-
-        //total amount
-        BigInteger totalAmount = value;
-        String sTotalAmount = ApisUtil.readableApis(totalAmount, ',', false);
-        String sTotalAmountSplit[] = sTotalAmount.split("\\.");
-
-        //after balance
-        BigInteger afterBalance = tokenBalance.subtract(totalAmount);
-        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-        String sAfterBalace = ApisUtil.readableApis(afterBalance, ',', true);
-
-        // 전송버튼 색상 변경
-        if(transferTokenController.getReceveAddress() == null || transferTokenController.getReceveAddress().trim().length() == 0
-                || balance.compareTo(totalFee) < 0
-                || tokenBalance.compareTo(totalAmount) < 0){
-            tokenReceiptController.transferButtonDefault();
+        if(afterBalance.compareTo(BigInteger.ZERO) >=0
+                && afterTokenBalance.compareTo(BigInteger.ZERO) >= 0){
+            tokenReceiptController.setSuccessed(true);
         }else{
-            tokenReceiptController.transferButtonActive();
+            tokenReceiptController.setSuccessed(true);
         }
 
+        // charged fee
+        chargedFee = (chargedFee.compareTo(BigInteger.ZERO) >=0 ) ? chargedFee : BigInteger.ZERO;
+
+        //after balance
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        //after token balance
+        afterTokenBalance = (afterTokenBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterTokenBalance : BigInteger.ZERO;
+
         tokenReceiptController.setTokenSymbol(selectTokenController.getTokenSymbol());
-        tokenReceiptController.setAfterBalance(ApisUtil.readableApis(balance.subtract(totalFee),',',true));
-        tokenReceiptController.setAfterTokenBalance(sAfterBalace);
-        tokenReceiptController.setAmount(sValue);
-        tokenReceiptController.setFee(sTotalFee);
-        tokenReceiptController.setTotalAmount(sTotalAmountSplit[0], sTotalAmountSplit[1]);
-        tokenReceiptController.setWithdrawal(ApisUtil.readableApis(totalAmount, ',', true));
+        tokenReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        tokenReceiptController.setTokenAmount(ApisUtil.readableApis(tokenAmount, ',', true));
+        tokenReceiptController.setFee(ApisUtil.readableApis(fee, ',', true));
+        tokenReceiptController.setMineral(ApisUtil.readableApis(mineral, ',', true));
+        tokenReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee, ',', true));
+        tokenReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount, ',', true));
+        tokenReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance, ',', true));
+        tokenReceiptController.setAfterTokenBalance(ApisUtil.readableApis(afterTokenBalance, ',', true));
     }
 
     private void refreshToApis(){
@@ -309,6 +324,8 @@ public class TransferController extends BaseViewController {
         apisPane.setPrefHeight(-1);
         tokenPane.setVisible(false);
         tokenPane.setPrefHeight(0);
+        apisReceiptController.setVisible(true);
+        tokenReceiptController.setVisible(false);
 
     }
     private void refreshToToken(){
@@ -320,6 +337,8 @@ public class TransferController extends BaseViewController {
         transferTokenController.setTokenAddress(selectTokenController.getSelectTokenAddress());
         transferTokenController.setTokenName(selectTokenController.getSelectTokenName());
         transferTokenController.update();
+        apisReceiptController.setVisible(false);
+        tokenReceiptController.setVisible(true);
     }
 
     private void init(){
@@ -398,7 +417,7 @@ public class TransferController extends BaseViewController {
         String tokenAddress = selectTokenController.getSelectTokenAddress();
         Object args[] = new Object[2];
         args[0] = transferTokenController.getReceveAddress(); // to address
-        args[1] = transferTokenController.getAmount(); // token amount
+        args[1] = transferTokenController.getTokenAmount(); // token amount
 
         byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);

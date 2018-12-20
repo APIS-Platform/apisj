@@ -35,7 +35,6 @@ public class AddressMaskingRegisterController extends BaseViewController {
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterMask = contract.getByName("registerMask");
 
-
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
