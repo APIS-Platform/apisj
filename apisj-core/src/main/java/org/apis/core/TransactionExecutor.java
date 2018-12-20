@@ -259,6 +259,11 @@ public class TransactionExecutor {
                     return;
                 }
             }
+        } else {
+            if(currentBlock.getNumber() < config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants().getMASTERNODE_EARLYBIRD_PERIOD()) {
+                execError("The masternode join has not yet opened.");
+                return;
+            }
         }
 
         // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
@@ -280,11 +285,6 @@ public class TransactionExecutor {
      * @return True if this transaction is masternode state update transaction
      */
     private boolean isMnUpdateTx(BigInteger balance) {
-        if(currentBlock.getNumber() < config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants().getMASTERNODE_EARLYBIRD_PERIOD()) {
-            execError("The masternode join has not yet opened.");
-            return false;
-        }
-
         if(tx.getSender() == null || tx.getReceiveAddress() == null) {
             return false;
         }
