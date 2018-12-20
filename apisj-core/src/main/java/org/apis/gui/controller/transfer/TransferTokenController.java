@@ -191,13 +191,6 @@ public class TransferTokenController extends BaseViewController {
         long preGasUsed = 0;
 
         if(tokenAddress != null && AddressUtil.isAddress(tokenAddress) && getReceveAddress() != null && AddressUtil.isAddress(getReceveAddress())){
-            System.out.println("abi : "+abi);
-            System.out.println("address : "+ByteUtil.toHexString(address));
-            System.out.println("tokenAddress : "+tokenAddress);
-            System.out.println("getAmount() : "+getAmount().toString());
-            System.out.println("functionName : "+functionName);
-            System.out.println("args[0] : "+args[0]);
-            System.out.println("args[1] : "+args[1]);
             preGasUsed = AppManager.getInstance().getPreGasUsed(abi, address, Hex.decode(tokenAddress), getAmount(), functionName, args);
         }
 

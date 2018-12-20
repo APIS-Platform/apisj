@@ -136,7 +136,7 @@ public class StringManager {
         public SimpleStringProperty afterBalance = new SimpleStringProperty();
         public SimpleStringProperty notEnoughBalance = new SimpleStringProperty();
         public SimpleStringProperty notEnoughMineral = new SimpleStringProperty();
-        public SimpleStringProperty confrimPassword = new SimpleStringProperty();
+        public SimpleStringProperty confirmPassword = new SimpleStringProperty();
         public SimpleStringProperty newPassword = new SimpleStringProperty();
         public SimpleStringProperty deleteButton = new SimpleStringProperty();
         public SimpleStringProperty editLabel = new SimpleStringProperty();
@@ -203,7 +203,7 @@ public class StringManager {
             afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
             notEnoughBalance.set(StringManager.this.getString("common_not_enough_balance","* There is not enough balance."));
             notEnoughMineral.set(StringManager.this.getString("common_not_enough_mineral", "The amount of Minerals should exceed the commission to send 100%"));
-            confrimPassword.set(StringManager.this.getString("common_confrim_password","Confrim password"));
+            confirmPassword.set(StringManager.this.getString("common_confirm_password","Confirm password"));
             newPassword.set(StringManager.this.getString("common_new_password","New password"));
             deleteButton.set(StringManager.this.getString("common_delete_button","Delete"));
             editLabel.set(StringManager.this.getString("common_edit_label","Edit"));
