@@ -36,6 +36,10 @@ public class TransactionSearchData {
 
     private String toMask;
 
+
+    private String value;
+    private String valueAPIZ;
+
     /**
      * 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null
      */
@@ -73,6 +77,8 @@ public class TransactionSearchData {
         this.from = txData.getFrom();
         this.to = txData.getTo();
         this.toMask = txData.getToMask();
+        this.value = txData.getValue();
+        this.valueAPIZ = txData.getValueAPIZ();
         this.contractAddress = txData.getContractAddress();
         this.gas = txData.getGas();
         this.gasPrice = txData.getGasPrice();
@@ -97,6 +103,8 @@ public class TransactionSearchData {
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
+                ", value='" + value + '\'' +
+                ", valueAPIZ='" + valueAPIZ + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
