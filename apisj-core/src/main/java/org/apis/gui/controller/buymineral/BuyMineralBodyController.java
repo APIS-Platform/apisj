@@ -50,7 +50,7 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
     @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput, titleLabel, chargeLabel, payerLabel, bonusLabel;
     @FXML private Label apisTotalBalance, apisTotalLabel;
-    @FXML private TextField chargeAmount;
+    @FXML private TextField amount;
     @FXML private ApisAddressFieldController beneficiaryTextFieldController;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -66,7 +66,7 @@ public class BuyMineralBodyController extends BaseViewController {
         languageSetting();
 
 
-        AppManager.settingTextFieldStyle(chargeAmount);
+        AppManager.settingTextFieldStyle(amount);
 
         beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
@@ -122,8 +122,8 @@ public class BuyMineralBodyController extends BaseViewController {
             }
         });
 
-        chargeAmount.textProperty().addListener(InputConditionManager.onlyNumberListener());
-        chargeAmount.textProperty().addListener(new ChangeListener<String>() {
+        amount.textProperty().addListener(InputConditionManager.onlyNumberListener());
+        amount.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
@@ -220,7 +220,7 @@ public class BuyMineralBodyController extends BaseViewController {
 
     @FXML
     public void estimateGasLimit(){
-        BigInteger value = getValue();
+        BigInteger value = getAmount();
         String functionName = "buyMNR";
         byte[] from = Hex.decode(payerController.getAddress());
         byte[] to = buyMineralAddress;
@@ -294,7 +294,7 @@ public class BuyMineralBodyController extends BaseViewController {
                 BigInteger percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
 
                 bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
-                chargeAmount.setText(ApisUtil.readableApis(apis, ',',true).split(" ")[0].replaceAll(",",""));
+                amount.setText(ApisUtil.readableApis(apis, ',',true).split(" ")[0].replaceAll(",",""));
 
                 BuyMineralBodyController.this.percent.setText("+"+percent.toString()+"%");
                 BuyMineralBodyController.this.percentInput.setText("+"+percent.toString()+"%");
@@ -320,9 +320,6 @@ public class BuyMineralBodyController extends BaseViewController {
             isCheckAddress = false;
         }
 
-        String amount = chargeAmount.getText();
-        amount = ApisUtil.convert(amount, ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS,',',false).replaceAll(",","").replaceAll("\\.","");
-        BigInteger chargedAmount = new BigInteger(amount);
         BigInteger payerTotalApis = payerController.getBalance();
         apisTotalBalance.setText(ApisUtil.readableApis(payerTotalApis, ',', true));
 
@@ -334,12 +331,17 @@ public class BuyMineralBodyController extends BaseViewController {
             chargedFee = BigInteger.ZERO;
         }
 
+        String amount = this.amount.getText();
+        amount = ApisUtil.convert(amount, ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS,',',false).replaceAll(",","").replaceAll("\\.","");
+        BigInteger chargedAmount = new BigInteger(amount);
+        chargedAmount = chargedAmount.add(chargedFee);
+
         BigInteger gasLimit = gasCalculatorController.getGasLimit();
         if(gasLimit.compareTo(BigInteger.ZERO) <= 0){
             isCheckGasLimit = false;
         }
 
-        if(payerTotalApis.subtract(chargedAmount).subtract(chargedFee).compareTo(BigInteger.ZERO) < 0){
+        if(payerTotalApis.subtract(chargedAmount).compareTo(BigInteger.ZERO) < 0){
             // show not enough balance message
             payerMessageController.setVisible(true);
             btnByteCodePreGasUsedController.setCompiled(false);
@@ -411,7 +413,7 @@ public class BuyMineralBodyController extends BaseViewController {
         }
     }
 
-    public String getTotalFee() {
+    public String getChargedFee() {
         if(gasCalculatorController.getTotalFee().compareTo(BigInteger.ZERO) >= 0) {
             return ApisUtil.readableApis(gasCalculatorController.getTotalFee(), ',', true);
         }else{
@@ -435,10 +437,26 @@ public class BuyMineralBodyController extends BaseViewController {
         return this.gasCalculatorController.getGasLimit();
     }
 
-    public BigInteger getValue() {
-        String changeAmount = ApisUtil.convert(this.chargeAmount.getText().trim().replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","");
-        BigInteger value = new BigInteger(changeAmount);
+    public BigInteger getAmount() {
+        String amount = ApisUtil.convert(this.amount.getText().trim().replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","");
+        BigInteger value = new BigInteger(amount);
         return value;
+    }
+
+    public BigInteger getChargedAmount(){
+        BigInteger mineral = payerController.getMineral();
+        gasCalculatorController.setMineral(mineral);
+
+        BigInteger chargedFee = gasCalculatorController.getTotalFee();
+        if(chargedFee.compareTo(BigInteger.ZERO) <= 0){
+            chargedFee = BigInteger.ZERO;
+        }
+
+        String amount = this.amount.getText();
+        amount = ApisUtil.convert(amount, ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS,',',false).replaceAll(",","").replaceAll("\\.","");
+        BigInteger chargedAmount = new BigInteger(amount);
+        chargedAmount = chargedAmount.add(chargedFee);
+        return chargedAmount;
     }
 
     public boolean isSuccessed(){

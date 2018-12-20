@@ -228,9 +228,9 @@ public class AddressMaskingRegisterController extends BaseViewController {
         boolean isUseAddress = false;
         boolean isUseMaskingId = false;
 
-        String domain = selectDomainController.getDomain().trim();
+        String domain = selectDomainController.getDomain();
         String maskingId = addrMaskingIDTextField.getText().trim();
-        String valueApis = selectDomainController.getValueApis().trim();
+        String valueApis = selectDomainController.getValueApis();
         BigInteger mineral = selectPayerController.getMineral();
         String address = null;
         String mask = null;

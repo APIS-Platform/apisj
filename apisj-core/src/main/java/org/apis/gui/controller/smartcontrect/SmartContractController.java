@@ -1,59 +1,23 @@
 package org.apis.gui.controller.smartcontrect;
 
-import com.google.zxing.WriterException;
-import javafx.application.Platform;
-import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import org.apis.core.CallTransaction;
-import org.apis.gui.common.IdenticonGenerator;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
-import org.apis.gui.controller.popup.PopupContractWarningController;
+import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.GUIContractManager;
-import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.gui.model.ContractModel;
-import org.apis.solidity.SolidityType;
-import org.apis.solidity.compiler.CompilationResult;
-import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
-import org.spongycastle.util.encoders.Hex;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController extends BaseViewController {
@@ -76,7 +40,10 @@ public class SmartContractController extends BaseViewController {
     @FXML private SmartContractUpdaterController smartContractUpdaterController;
     @FXML private SmartContractCanvasController smartContractCanvasController;
 
-    @FXML private SmartContractReceiptController receiptController;
+    @FXML private ReceiptController deployReceiptController;
+    @FXML private ReceiptController callSendReceiptController;
+    @FXML private ReceiptController updaterReceiptController;
+    @FXML private ReceiptController canvasReceiptController;
 
     private boolean isMyAddressSelected1 = true;
     private boolean isScrolling = false;
@@ -86,6 +53,13 @@ public class SmartContractController extends BaseViewController {
         AppManager.getInstance().guiFx.setSmartContract(this);
         languageSetting();
 
+        initializeDeployReceipt();
+        initializeCallSendReceipt();
+        initializeUpdateReceipt();
+        initializeCanvasReceipt();
+
+        initializeScrollSpeed();
+
         // handler init
         tabMenuController.setHandler(tabMenuImpl);
         tabMenuController.setFontSize14(16);
@@ -94,10 +68,26 @@ public class SmartContractController extends BaseViewController {
         smartContractUpdaterController.setHandler(smartContractUpdaterImpl);
         smartContractCanvasController.setHandler(smartContractCanvasImpl);
 
+        deployReceiptController.setVisibleNoFees(false);
+        callSendReceiptController.setVisibleNoFees(true);
+        updaterReceiptController.setVisibleNoFees(false);
+        canvasReceiptController.setVisibleNoFees(false);
+
         // setting init
         tabMenuController.selectedMenu(TAB_DEPLOY);
         settingLayoutData();
+    }
 
+    public void languageSetting() {
+        tabTitle.textProperty().bind(StringManager.getInstance().smartContract.tabTitle);
+
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
+        //tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+    }
+
+    private void initializeScrollSpeed(){
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -140,14 +130,100 @@ public class SmartContractController extends BaseViewController {
         });
     }
 
-    public void languageSetting() {
-        tabTitle.textProperty().bind(StringManager.getInstance().smartContract.tabTitle);
+    public void initializeDeployReceipt(){
 
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
-        //tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+        deployReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
+            @Override
+            public void send() {
+                smartContractDeployController.sendTransfer();
+            }
+        });
+
+        deployReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        deployReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+        deployReceiptController.addAmount(0);
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addLineStyleDotted();
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addChargedFee(0);
+        deployReceiptController.addFee(16);
+        deployReceiptController.addMineral(16);
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addLineStyleDotted();
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addChargedAmount(0);
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addLineStyleDotted();
+        deployReceiptController.addVSpace(16);
+        deployReceiptController.addAfterBalance(0);
+        deployReceiptController.setSuccessed(false);
     }
+
+    public void initializeCallSendReceipt(){
+
+        callSendReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        callSendReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+        callSendReceiptController.addAmount(0);
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addLineStyleDotted();
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addChargedFee(0);
+        callSendReceiptController.addFee(16);
+        callSendReceiptController.addMineral(16);
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addLineStyleDotted();
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addChargedAmount(0);
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addLineStyleDotted();
+        callSendReceiptController.addVSpace(16);
+        callSendReceiptController.addAfterBalance(0);
+        callSendReceiptController.setSuccessed(false);
+
+
+    }
+
+    public void initializeUpdateReceipt(){
+
+        updaterReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
+            @Override
+            public void send() {
+                smartContractUpdaterController.sendTransfer();
+            }
+        });
+
+        updaterReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        updaterReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+        updaterReceiptController.addAmount(0);
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addLineStyleDotted();
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addChargedFee(0);
+        updaterReceiptController.addFee(16);
+        updaterReceiptController.addMineral(16);
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addLineStyleDotted();
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addChargedAmount(0);
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addLineStyleDotted();
+        updaterReceiptController.addVSpace(16);
+        updaterReceiptController.addAfterBalance(0);
+        updaterReceiptController.setSuccessed(false);
+    }
+
+    public void initializeCanvasReceipt(){
+
+        canvasReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
+            @Override
+            public void send() {
+            }
+        });
+    }
+
 
     @FXML
     private void onMouseClicked(InputEvent event) {
@@ -193,90 +269,77 @@ public class SmartContractController extends BaseViewController {
     public void settingLayoutDataDeploy(){
 
         BigInteger amount = smartContractDeployController.getAmount();
-        BigInteger totalFee = smartContractDeployController.getTotalFee();
-        BigInteger totalAmount = smartContractDeployController.getTotalAmount();
+        BigInteger fee = smartContractDeployController.getFee();
+        BigInteger mineral = smartContractDeployController.getMineral();
+        BigInteger chargedFee = smartContractDeployController.getTotalFee();
+        BigInteger chargedAmount = smartContractDeployController.getChargedAmount();
         BigInteger afterBalance = smartContractDeployController.getAfterBalance();
         // total fee
-        if(totalFee.toString().indexOf("-") >= 0){
-            totalFee = BigInteger.ZERO;
+        if(chargedFee.toString().indexOf("-") >= 0){
+            chargedFee = BigInteger.ZERO;
         }
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String[] totalAmountSplit = ApisUtil.readableApis(totalAmount, ',', false).split("\\.");
+        deployReceiptController.setTitleValue(chargedAmount);
+        deployReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        deployReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee,',',true));
+        deployReceiptController.setFee(ApisUtil.readableApis(fee,',',true));
+        deployReceiptController.setMineral(ApisUtil.readableApis(mineral,',',true));
+        deployReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount,',',true));
+        deployReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        deployReceiptController.setSuccessed(smartContractDeployController.isReadyTransfer());
 
-        receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
-        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
-        receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
-        receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
-        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
-        receiptController.setActive(smartContractDeployController.isReadyTransfer());
-        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
-            @Override
-            public void onMouseClickTransfer() {
-                smartContractDeployController.sendTransfer();
-            }
-        });
     }
     public void settingLayoutDataCallSend(){
 
         BigInteger amount = smartContractCallSendController.getAmount();
-        BigInteger totalFee = smartContractCallSendController.getTotalFee();
-        BigInteger totalAmount = smartContractCallSendController.getTotalAmount();
+        BigInteger fee = smartContractCallSendController.getFee();
+        BigInteger mineral = smartContractCallSendController.getMineral();
+        BigInteger chargedFee = smartContractCallSendController.getChargedFee();
+        BigInteger chargedAmount = smartContractCallSendController.getChargedAmount();
         BigInteger afterBalance = smartContractCallSendController.getAfterBalance();
 
-        // total fee
-        if(totalFee.toString().indexOf("-") >= 0){
-            totalFee = BigInteger.ZERO;
+        // charged fee
+        if(chargedFee.toString().indexOf("-") >= 0){
+            chargedFee = BigInteger.ZERO;
         }
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String totalAmountString = ApisUtil.readableApis(totalAmount, ',', true);
-        if(totalAmountString.indexOf(".") < 0){
-            totalAmountString = totalAmountString+".000000000000000000";
-        }
-        String[] totalAmountSplit = totalAmountString.split("\\.");
-
-        receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
-        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
-        receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
-        receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
-        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        callSendReceiptController.setTitleValue(chargedAmount);
+        callSendReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        callSendReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee,',',true));
+        callSendReceiptController.setFee(ApisUtil.readableApis(fee,',',true));
+        callSendReceiptController.setMineral(ApisUtil.readableApis(mineral,',',true));
+        callSendReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount,',',true));
+        callSendReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
 
     }
     public void settingLayoutDataUpdater(){
 
         BigInteger amount = smartContractUpdaterController.getAmount();
-        BigInteger totalFee = smartContractUpdaterController.getTotalFee();
-        BigInteger totalAmount = smartContractUpdaterController.getTotalAmount();
+        BigInteger fee = smartContractUpdaterController.getFee();
+        BigInteger mineral = smartContractUpdaterController.getMineral();
+        BigInteger chargedFee = smartContractUpdaterController.getChargedFee();
+        BigInteger chargedAmount = smartContractUpdaterController.getChargedAmount();
         BigInteger afterBalance = smartContractUpdaterController.getAfterBalance();
-        boolean isReadyTransfer = smartContractUpdaterController.isReadyTransfer();
-        // total fee
-        if(totalFee.toString().indexOf("-") >= 0){
-            totalFee = BigInteger.ZERO;
+
+        // charged fee
+        if(chargedFee.toString().indexOf("-") >= 0){
+            chargedFee = BigInteger.ZERO;
         }
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String totalAmountString = ApisUtil.readableApis(totalAmount, ',', true);
-        if(totalAmountString.indexOf("\\.") < 0){
-            totalAmountString = totalAmountString+".000000000000000000";
-        }
-        String[] totalAmountSplit = totalAmountString.split("\\.");
 
-        receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
-        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
-        receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
-        receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
-        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
-        receiptController.setActive(isReadyTransfer);
-        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
-            @Override
-            public void onMouseClickTransfer() {
-                smartContractUpdaterController.sendTransfer();
-            }
-        });
+        updaterReceiptController.setTitleValue(chargedAmount);
+        updaterReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        updaterReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee,',',true));
+        updaterReceiptController.setFee(ApisUtil.readableApis(fee,',',true));
+        updaterReceiptController.setMineral(ApisUtil.readableApis(mineral,',',true));
+        updaterReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount,',',true));
+        updaterReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
 
     }
     public void settingLayoutDataCanvas(){
@@ -289,40 +352,37 @@ public class SmartContractController extends BaseViewController {
         bodyScrollPane.setVvalue(0);
 
 
+        this.deployReceiptController.setVisible(false);
+        this.callSendReceiptController.setVisible(false);
+        this.updaterReceiptController.setVisible(false);
+        this.canvasReceiptController.setVisible(false);
         if(index == TAB_DEPLOY) {
             this.tabLeftDeploy.setVisible(true);
             this.tabLeftDeploy.setPrefHeight(-1);
-            this.receiptController.hideNoFees();
 
-            // transfer button
-            this.receiptController.setVisibleTransferButton(true);
+            this.deployReceiptController.setVisible(true);
+            this.deployReceiptController.setVisibleTransferButton(true);
 
         } else if(index == TAB_CALL_SEND) {
             this.tabLeftCallSend.setVisible(true);
             this.tabLeftCallSend.setPrefHeight(-1);
-            if(this.smartContractCallSendController.isReadMethod()){
-                this.receiptController.showNoFees();
-            }else{
-                this.receiptController.hideNoFees();
-            }
 
-            // transfer button
-            this.receiptController.setVisibleTransferButton(false);
+            this.callSendReceiptController.setVisible(true);
+            this.callSendReceiptController.setVisibleTransferButton(false);
+            this.callSendReceiptController.setVisibleNoFees(this.smartContractCallSendController.isReadMethod());
 
         } else if(index == TAB_CONTRACT_UPDATER) {
             this.tabLeftUpdater.setVisible(true);
             this.tabLeftUpdater.setPrefHeight(-1);
-            this.receiptController.hideNoFees();
 
-            this.receiptController.setVisibleTransferButton(true);
+            this.updaterReceiptController.setVisible(true);
+            this.updaterReceiptController.setVisibleTransferButton(true);
 
 
         } else if(index == TAB_CANVAS) {
             this.tabLeftCanvas.setVisible(true);
-            tabLeftCanvas.setPrefHeight(-1);
-            this.receiptController.hideNoFees();
-
-            this.receiptController.setVisibleTransferButton(true);
+            this.tabLeftCanvas.setPrefHeight(-1);
+            this.updaterReceiptController.setVisibleTransferButton(true);
         }
 
         settingLayoutData();
@@ -341,7 +401,8 @@ public class SmartContractController extends BaseViewController {
         tabLeftUpdater.setPrefHeight(0);
         tabLeftCanvas.setPrefHeight(0);
 
-        receiptController.hideNoFees();
+        //receiptController.hideNoFees();
+
 
     }
 
@@ -366,11 +427,8 @@ public class SmartContractController extends BaseViewController {
         @Override
         public void isReadMethod(boolean isReadMethod){
             System.out.println("isReadMethod : "+isReadMethod);
-            if(isReadMethod){
-                receiptController.showNoFees();
-            }else{
-                receiptController.hideNoFees();
-            }
+
+            callSendReceiptController.setVisibleNoFees(isReadMethod);
         }
     };
     private SmartContractFreezerController.SmartContractFreezerImpl smartContractFreezerImpl = new SmartContractFreezerController.SmartContractFreezerImpl() {

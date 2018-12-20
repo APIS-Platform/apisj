@@ -231,10 +231,12 @@ public class StringManager {
     }
 
     public class Receipt implements StringManagerImpl{
+        public SimpleStringProperty chargedAmount = new SimpleStringProperty();
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
         public SimpleStringProperty amount = new SimpleStringProperty();
         public SimpleStringProperty fee = new SimpleStringProperty();
-        public SimpleStringProperty totalFee = new SimpleStringProperty();
+        public SimpleStringProperty mineral = new SimpleStringProperty();
+        public SimpleStringProperty chargedFee = new SimpleStringProperty();
         public SimpleStringProperty address = new SimpleStringProperty();
         public SimpleStringProperty mask = new SimpleStringProperty();
         public SimpleStringProperty payer = new SimpleStringProperty();
@@ -254,10 +256,12 @@ public class StringManager {
 
         @Override
         public void update(){
+            chargedAmount.set(StringManager.this.getString("receipt_charged_amount", "Charged Amount"));
             transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
             amount.set(StringManager.this.getString("receipt_amount", "Amount"));
-            fee.set(StringManager.this.getString("receipt_fee", "(+)Fee"));
-            totalFee.set(StringManager.this.getString("receipt_total_fee", "Total Fee"));
+            fee.set(StringManager.this.getString("receipt_fee", "Fee"));
+            mineral.set(StringManager.this.getString("receipt_mineral", "Mineral"));
+            chargedFee.set(StringManager.this.getString("receipt_charged_fee", "Charged Fee"));
             address.set(StringManager.this.getString("receipt_address", "address"));
             mask.set(StringManager.this.getString("receipt_mask", "mask"));
             payer.set(StringManager.this.getString("receipt_payer", "Payer : "));

@@ -24,7 +24,7 @@ public class AddressMaskingHandOverReceiptController extends BaseViewController 
         languageSetting();
     }
     public void languageSetting() {
-        totalFeeTitle.textProperty().bind(StringManager.getInstance().receipt.totalFee);
+        totalFeeTitle.textProperty().bind(StringManager.getInstance().receipt.chargedFee);
         addressLabel.textProperty().bind(StringManager.getInstance().receipt.address);
         maskLabel.textProperty().bind(StringManager.getInstance().receipt.mask);
         handValueLabel.textProperty().bind(StringManager.getInstance().receipt.handedToValue);

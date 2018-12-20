@@ -44,8 +44,7 @@ public class BuyMineralController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
 
         languageSetting();
-
-        receiptSetting();
+        initializeReceipt();
 
         bodyController.setHandelr(new BuyMineralBodyController.BuyMineralBodyImpl() {
             @Override
@@ -54,14 +53,14 @@ public class BuyMineralController extends BasePopupController {
             }
         });
 
-        receiptController.setTitle(StringManager.getInstance().receipt.totalFee);
+        receiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
         receiptController.setButtonTitle(StringManager.getInstance().common.payButton);
         receiptController.setHandler(new ReceiptController.ReceiptImpl() {
             @Override
             public void send() {
                 String beneficiaryAddress = bodyController.getBeneficiaryAddress();
                 String fromAddress = bodyController.getPayerAddress();
-                BigInteger value = bodyController.getValue();
+                BigInteger value = bodyController.getAmount();
                 BigInteger gasPrice = bodyController.getGasPrice();
                 BigInteger gasLimit = bodyController.getGasLimit();
 
@@ -136,33 +135,37 @@ public class BuyMineralController extends BasePopupController {
         backBtn.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
-    public void receiptSetting(){
-        receiptController.addBeneficiaryAddress();
+    public void initializeReceipt(){
+        receiptController.addBeneficiaryAddress(0);
         receiptController.addVSpace(16);
         receiptController.addLineStyleDotted();
         receiptController.addVSpace(16);
-        receiptController.addAmount();
+        receiptController.addAmount(0);
         receiptController.addVSpace(16);
-        receiptController.addTotalFee();
+        receiptController.addChargedFee(0);
         receiptController.addVSpace(16);
         receiptController.addLineStyleDotted();
         receiptController.addVSpace(16);
-        receiptController.addPayerAddress();
+        receiptController.addPayerAddress(0);
         receiptController.setSuccessed(false);
     }
 
     public void settingLayoutData(){
 
+        BigInteger chargedAmount = bodyController.getChargedAmount();
         String beneficiary = bodyController.getBeneficiaryAddress();
-        String amount = ApisUtil.readableApis(bodyController.getValue(),',',true);
-        String totalFee = bodyController.getTotalFee();
+        String amount = ApisUtil.readableApis(bodyController.getAmount(),',',true);
+        String chargedFee = bodyController.getChargedFee();
         String payerAddress = bodyController.getPayerAddress();
+
+        receiptController.setTitleValue(chargedAmount);
         receiptController.setBeneficiaryAddress(beneficiary);
-        receiptController.setAmount(amount + " APIS");
-        receiptController.setTotalFee(totalFee + " APIS");
+        receiptController.setAmount(amount);
+        receiptController.setChargedFee(chargedFee);
         receiptController.setPayerAddress(payerAddress);
 
         receiptController.setSuccessed(bodyController.isSuccessed());
+
     }
 
 

@@ -68,9 +68,6 @@
                      </cursor>
                   </Label>
                </children>
-               <padding>
-                  <Insets top="24.0" />
-               </padding>
             </AnchorPane>
             <Label fx:id="selectContract" styleClass="font_semibold_14" text="Select Contract" textFill="#2b2b2b">
                <GridPane.margin>
@@ -156,6 +153,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                   <RowConstraints />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                </rowConstraints>
                <children>
                   <AnchorPane GridPane.rowIndex="4">
@@ -203,19 +201,21 @@
                   <Insets />
                </GridPane.margin>
             </GridPane>
-            <AnchorPane fx:id="walletSelectViewDim" style="-fx-background-color: #ffffff;" GridPane.rowIndex="9">
+            <AnchorPane fx:id="walletSelectViewDim" minHeight="0.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="9">
                <children>
                   <GridPane layoutX="214.0" layoutY="74.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <ImageView fitHeight="115.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="115.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
                            <image>
                               <Image url="@../../image/ic_empty_contract@2x.png" />
                            </image>
@@ -223,12 +223,12 @@
                               <Insets top="33.0" />
                            </GridPane.margin>
                         </ImageView>
-                        <Label fx:id="noSelectAFunctionTitle" styleClass="font_regular_14" text="'No Select a function'" textFill="#c1c1c1" GridPane.rowIndex="1">
+                        <Label fx:id="noSelectAFunctionTitle" styleClass="font_regular_14" text="'No Select a function'" textFill="#c1c1c1" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="noSelectAFunctionSubTitle" text="Please click a 'Select a function' button" textFill="#d8d8d8" GridPane.rowIndex="2">
+                        <Label fx:id="noSelectAFunctionSubTitle" text="Please click a 'Select a function' button" textFill="#d8d8d8" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets top="8.0" />
                            </GridPane.margin>

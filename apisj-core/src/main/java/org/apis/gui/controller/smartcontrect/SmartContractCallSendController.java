@@ -1,6 +1,5 @@
 package org.apis.gui.controller.smartcontrect;
 
-import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -708,33 +707,41 @@ public class SmartContractCallSendController extends BaseViewController {
         return this.walletAndAmountController.getAmount();
     }
 
+    public BigInteger getMineral(){
+        return this.walletAndAmountController.getMineral();
+    }
+
     public BigInteger getBalance() {
         return this.walletAndAmountController.getBalance();
     }
 
-    public BigInteger getTotalFee() {
+    public BigInteger getChargedFee() {
         return this.gasCalculatorController.getTotalFee();
     }
 
-    public BigInteger getTotalAmount(){
-        BigInteger totalFee = getTotalFee();
+    public BigInteger getFee(){
+        return this.gasCalculatorController.getFee();
+    }
+
+    public BigInteger getChargedAmount(){
+        BigInteger chargedFee = getChargedFee();
         // total fee
-        if(totalFee.toString().indexOf("-") >= 0){
-            totalFee = BigInteger.ZERO;
+        if(chargedFee.toString().indexOf("-") >= 0){
+            chargedFee = BigInteger.ZERO;
         }
 
         // total amount
-        BigInteger totalAmount = getAmount().add(totalFee);
+        BigInteger chargedAmount = getAmount().add(chargedFee);
 
-        return totalAmount;
+        return chargedAmount;
     }
 
     public BigInteger getAfterBalance(){
         // total amount
-        BigInteger totalAmount = getTotalAmount();
+        BigInteger chargedAmount = getChargedAmount();
 
         //after balance
-        BigInteger afterBalance = getBalance().subtract(totalAmount);
+        BigInteger afterBalance = getBalance().subtract(chargedAmount);
 
         return afterBalance;
     }

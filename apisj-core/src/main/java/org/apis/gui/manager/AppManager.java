@@ -689,7 +689,9 @@ public class AppManager {
 
         // 목록에 있는 데이터들의 값을 갱신한다.
         if(mEthereum != null) {
-            for (KeyStoreDataExp keyExp : keyStoreDataExpList) {
+            KeyStoreDataExp keyExp = null;
+            for(int i=0; i<keyStoreDataExpList.size(); i++){
+                keyExp = keyStoreDataExpList.get(i);
                 keyExp.mask = getMaskWithAddress(keyExp.address);
                 keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address));
                 keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
