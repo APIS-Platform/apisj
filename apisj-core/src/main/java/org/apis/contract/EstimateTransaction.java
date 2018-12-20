@@ -169,7 +169,7 @@ public class EstimateTransaction {
     }
 
     public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, byte[] data) {
-        Transaction tx = makeTransaction(from, to, nonce, value, data);
+        Transaction tx = makeTransaction(from, to, nonce, 0, value, data);
         return estimate(tx);
     }
 
@@ -252,7 +252,7 @@ public class EstimateTransaction {
         }
 
         Transaction tx = CallTransaction.createRawTransaction(
-                0,
+                nonce,
                 gasPrice,
                 gasLimit,
                 ByteUtil.toHexString(to),
