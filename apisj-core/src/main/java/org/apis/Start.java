@@ -26,6 +26,7 @@ public class Start {
 
     private static Ethereum mEthereum;
 
+    private static boolean isRunRpc = false;
     private static boolean synced = false;
     protected static Logger logger = LoggerFactory.getLogger("start");
 
@@ -65,9 +66,7 @@ public class Start {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
             if(rpcServerManager.isAvailable()) {
                 rpcServerManager.startServer();
-
-                // DB Sync Start
-                DBSyncManager.getInstance(mEthereum).syncThreadStart();
+                isRunRpc = true;
             }
         } catch (IOException e) {
             logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));
@@ -86,6 +85,12 @@ public class Start {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             logger.debug(ConsoleUtil.colorBBlue("OnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
+
+            // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.
+            if(synced) {
+                // DB Sync Start
+                DBSyncManager.getInstance(mEthereum).syncThreadStart();
+            }
 
             Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
