@@ -410,6 +410,41 @@ public class DBManager {
     }
 
 
+    public List<TransactionRecord> selectRecentTransactions(long rowCount, long offset) {
+        List<TransactionRecord> transactions = new ArrayList<>();
+
+        String limit = "";
+        if(rowCount > 0) {
+            limit += " LIMIT " + rowCount;
+        }
+        if(offset > 0) {
+            limit += " OFFSET " + offset;
+        }
+
+
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+        try {
+            query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
+            state = this.connection.prepareStatement(query);
+            result = null;
+
+            result = state.executeQuery();
+
+            while(result.next()) {
+                transactions.add(new TransactionRecord(result));
+            }
+        } catch (SQLException | DecoderException ignored) {
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return transactions;
+    }
+
+
 
     public List<TransactionRecord> selectTransactions(String searchText, long rowCount, long offset) {
         long blockNumber = selectBlockUidWithBlockNum(searchText);
@@ -493,6 +528,7 @@ public class DBManager {
 
         return count;
     }
+
 
     public long selectBlockUidWithBlockNum(String blockNum) {
         long blockUid = 0;
