@@ -12,10 +12,10 @@ import org.apis.gui.manager.StyleManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ReceiptItemController extends BaseViewController {
+public class ReceiptValueBController extends BaseViewController {
 
     @FXML private GridPane rootPane;
-    @FXML private Label titleLabel, value;
+    @FXML private Label titleLabel, value1, value2, unit;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -23,7 +23,14 @@ public class ReceiptItemController extends BaseViewController {
     }
 
     public void setValue(String value){
-        this.value.setText(value);
+        if(value == null){
+            value = "0.0";
+        }
+        String valueSplit[] = value.split("\\.");
+        this.value1.setText(valueSplit[0]);
+        if(valueSplit.length > 1){
+            this.value2.setText("."+valueSplit[1]);
+        }
     }
 
     public void setTitle(SimpleStringProperty title) {

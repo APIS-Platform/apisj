@@ -192,7 +192,9 @@ public class ApisSelectBoxController extends BaseViewController {
                 }
             }
         }else{
-            setHeader(this.selectBoxType, (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
+            if(itemFxmlList.size() > 0){
+                setHeader(this.selectBoxType, (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
+            }
         }
     }
 

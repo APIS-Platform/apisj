@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptItemController">
+<GridPane fx:id="rootPane" prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptItemController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />
    </columnConstraints>
@@ -26,8 +26,8 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="title" styleClass="font_semibold_12" text="Mask" textFill="#999999" />
-                  <Label fx:id="value" styleClass="mono_font_regular_12" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.columnIndex="2" />
+                  <Label fx:id="titleLabel" styleClass="font_semibold_12" text="Mask" textFill="#999999" />
+                  <Label fx:id="value" styleClass="font_regular_12" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.columnIndex="2" />
                </children>
             </GridPane>
          </children>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="rootPane" prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptValueBController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+   </rowConstraints>
+   <children>
+      <AnchorPane fx:id="maskPane" maxHeight="-Infinity" minHeight="-Infinity">
+         <children>
+            <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="titleLabel" styleClass="font_semibold_12" text="Title" textFill="#999999" />
+                  <GridPane GridPane.columnIndex="2">
+                    <columnConstraints>
+                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
+                      <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="value1" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.halignment="RIGHT" />
+                        <GridPane GridPane.rowIndex="1">
+                           <columnConstraints>
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="unit" styleClass="font_regular_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="4.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="value2" styleClass="font_semibold_10" text=".000000000000000000" textFill="#999999" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
+   </children>
+</GridPane>

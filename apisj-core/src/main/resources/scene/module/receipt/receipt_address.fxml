@@ -6,13 +6,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptAddressController">
+<GridPane fx:id="rootPane" prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptAddressController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
    </rowConstraints>
    <children>

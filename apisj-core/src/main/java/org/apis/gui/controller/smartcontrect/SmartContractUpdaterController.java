@@ -706,16 +706,23 @@ public class SmartContractUpdaterController extends BaseViewController {
         return BigInteger.ZERO;
     }
 
+    public BigInteger getMineral() {
+        return this.selectWalletController.getMineral();
+    }
+
     public BigInteger getBalance() {
         return this.selectWalletController.getBalance();
     }
 
-    public BigInteger getTotalFee() {
+    public BigInteger getFee() {
+        return this.gasCalculatorController.getFee();
+    }
+    public BigInteger getChargedFee() {
         return this.gasCalculatorController.getTotalFee();
     }
 
-    public BigInteger getTotalAmount(){
-        BigInteger totalFee = getTotalFee();
+    public BigInteger getChargedAmount(){
+        BigInteger totalFee = getChargedFee();
         // total fee
         if(totalFee.toString().indexOf("-") >= 0){
             totalFee = BigInteger.ZERO;
@@ -729,7 +736,7 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     public BigInteger getAfterBalance(){
         // total amount
-        BigInteger totalAmount = getTotalAmount();
+        BigInteger totalAmount = getChargedAmount();
 
         //after balance
         BigInteger afterBalance = getBalance().subtract(totalAmount);
