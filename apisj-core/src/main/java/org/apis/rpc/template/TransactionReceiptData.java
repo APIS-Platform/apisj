@@ -204,7 +204,7 @@ public class TransactionReceiptData {
         return status;
     }
 
-    public String getTransactionHash() {
+    String getTransactionHash() {
         return transactionHash;
     }
 
@@ -228,12 +228,20 @@ public class TransactionReceiptData {
         return to;
     }
 
-    public String getToMask() {
+    String getToMask() {
         return toMask;
     }
 
     String getContractAddress() {
         return contractAddress;
+    }
+
+    String getValue() {
+        return value;
+    }
+
+    String getValueAPIZ() {
+        return valueAPIZ;
     }
 
     long getGas() {
@@ -289,6 +297,8 @@ public class TransactionReceiptData {
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
+                ", value='" + value + '\'' +
+                ", valueAPIZ='" + valueAPIZ + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
                 ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
@@ -305,6 +315,7 @@ public class TransactionReceiptData {
                 ", logs=" + logs +
                 ", internalTransactions=" + internalTransactions +
                 ", logsBloom='" + logsBloom + '\'' +
+                ", data='" + data + '\'' +
                 '}';
     }
 }
