@@ -114,6 +114,8 @@ public class TransactionReceiptData {
      */
     private String logsBloom;
 
+    private String data;
+
     public TransactionReceiptData(TransactionInfo info, Block block) {
         this(info.getReceipt());
 
@@ -194,6 +196,8 @@ public class TransactionReceiptData {
         }
 
         this.status = toHexString0x(receipt.getPostTxState());
+
+        this.data = ByteUtil.toHexString0x(tx.getData());
     }
 
     public String getStatus() {
