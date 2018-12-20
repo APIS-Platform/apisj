@@ -168,6 +168,11 @@ public class EstimateTransaction {
         return estimate(tx);
     }
 
+    public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, byte[] data) {
+        Transaction tx = makeTransaction(from, to, nonce, value, data);
+        return estimate(tx);
+    }
+
     public EstimateTransactionResult estimate(Transaction tx) {
         return estimate(tx, -1, -1);
     }
@@ -181,7 +186,7 @@ public class EstimateTransaction {
     }
 
 
-    public EstimateTransactionResult estimateDeploy(byte[] from, String soliditySourceCode, String targetContractName, Object ... args) {
+    public EstimateTransactionResult estimateDeploy(byte[] from, long nonce, String soliditySourceCode, String targetContractName, Object ... args) {
         String error;
         try {
             if(soliditySourceCode == null || soliditySourceCode.isEmpty()) {
@@ -220,7 +225,7 @@ public class EstimateTransaction {
                 return new EstimateTransactionResult(error);
             }
 
-            return estimate(from, null, DEFAULT_VALUE, data);
+            return estimate(from, null, nonce,  DEFAULT_VALUE, data);
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -235,7 +240,7 @@ public class EstimateTransaction {
         return makeTransaction(from, to, DEFAULT_GAS_LIMIT, value, data);
     }
 
-    private Transaction makeTransaction(byte[] from, byte[] to, long gasLimit, BigInteger value, byte[] data) {
+    private Transaction makeTransaction(byte[] from, byte[] to, long nonce, long gasLimit, BigInteger value, byte[] data) {
         if(from == null) {
             from = ECKey.DUMMY.getAddress();
         }
@@ -257,5 +262,9 @@ public class EstimateTransaction {
         tx.setTempSender(from);
 
         return tx;
+    }
+
+    private Transaction makeTransaction(byte[] from, byte[] to, long gasLimit, BigInteger value, byte[] data) {
+        return makeTransaction(from, to, 0, gasLimit, value, data);
     }
 }

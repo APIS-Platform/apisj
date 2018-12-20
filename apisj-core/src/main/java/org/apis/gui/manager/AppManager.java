@@ -817,10 +817,10 @@ public class AppManager {
             return -1;
         }
     }
-    public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
+    public long getPreGasCreateContract(byte[] sender, long nonce, String contractSource, String contractName, Object ... args){
         if(this.mEthereum != null) {
             EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
-            EstimateTransactionResult estimateResult = estimator.estimateDeploy(sender, contractSource, contractName, args);
+            EstimateTransactionResult estimateResult = estimator.estimateDeploy(sender, nonce, contractSource, contractName, args);
 
             if(estimateResult == null) {
                 return -1;
@@ -849,9 +849,9 @@ public class AppManager {
         return new byte[0];
     }
 
-    public byte[] getContractCreationCode(String sender, String contractSource, String contractName) {
+    public byte[] getContractCreationCode(String sender, long nonce, String contractSource, String contractName) {
         EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
-        EstimateTransactionResult estimateResult = estimator.estimateDeploy(ByteUtil.hexStringToBytes(sender), contractSource, contractName);
+        EstimateTransactionResult estimateResult = estimator.estimateDeploy(ByteUtil.hexStringToBytes(sender), nonce, contractSource, contractName);
 
         return estimateResult.getDeployBytes();
     }

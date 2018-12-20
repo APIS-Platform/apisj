@@ -686,7 +686,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
 
-        byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
+        byteCode = AppManager.getInstance().getContractCreationCode(from, ByteUtil.byteArrayToLong(nonce), contractSource, contractName);
         return ByteUtil.merge(contractAddr, nonce, byteCode);
     }
 
