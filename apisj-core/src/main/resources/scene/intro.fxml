@@ -1001,7 +1001,7 @@
                                       </rowConstraints>
                                        <children>
                                           <Label alignment="CENTER_RIGHT" styleClass="font_semibold_12" text="APIS WALLET" textFill="WHITE" />
-                                          <Label fx:id="version" styleClass="font_semibold_12" text="VER.1.0.1" textFill="WHITE" GridPane.columnIndex="2" />
+                                          <Label fx:id="version" styleClass="font_semibold_12" text="VER.0.8.743" textFill="WHITE" GridPane.columnIndex="2" />
                                           <ImageView fitWidth="116.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                              <image>
                                                 <Image url="@../image/ic_horizontal_line@2x.png" />
