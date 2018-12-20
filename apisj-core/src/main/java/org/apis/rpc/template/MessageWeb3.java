@@ -68,8 +68,11 @@ public class MessageWeb3 {
                 continue;
             }
 
-            merged.append(param.toString());
+            if(param != null) {
+                merged.append(param.toString());
+            }
         }
+
         return merged.toString().replaceAll("/['\"]+/g", "").replaceAll("=", "").replaceAll(":", "").replaceAll(" ", "");
     }
 
