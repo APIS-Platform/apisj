@@ -21,19 +21,19 @@ public class OsirisConfig extends AbstractConfig {
 
     private static final BigInteger SECP256K1N_HALF = Constants.getSECP256K1N().divide(BigInteger.valueOf(2));
 
-    public static class FrontierConstants extends Constants {
+    public static class OsirisConstants extends Constants {
         /**
-         * 1차년도 블록 채굴 보상  392 APIS
-         * 초기 발행량(9,520,000,000)의 13%(1,237,600,000)를 1년동안의 블록 수(3,153,600)로 나눈 양
+         * 1차년도 블록 채굴 보상  314 APIS
+         * 초기 발행량(9,520,000,000)의 13%(1,237,600,000)를 1년동안의 블록 수(3,942,000)로 나눈 양
          */
-        private static final BigInteger INIT_BLOCK_REWARD = new BigInteger("392000000000000000000");
-        private static final long BLOCKS_IN_YEAR = 3_153_600L;
+        private static final BigInteger INIT_BLOCK_REWARD = new BigInteger("314000000000000000000");
+        private static final long BLOCKS_IN_YEAR = 3_942_000L;
 
         private BigInteger[] blockRewards = new BigInteger[100];
         private long[] blockNumbers = new long[100];
 
 
-        FrontierConstants() {
+        OsirisConstants() {
             // 해마다 변경되는 블록 보상을 미리 계산한다.
             for(int i = 0; i < 100; i++) {
                 if(i == 0) {
@@ -95,7 +95,7 @@ public class OsirisConfig extends AbstractConfig {
     };
 
     public OsirisConfig() {
-        this(new FrontierConstants());
+        this(new OsirisConstants());
     }
 
     public OsirisConfig(Constants constants) {
