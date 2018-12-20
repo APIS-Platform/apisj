@@ -11,16 +11,16 @@ public class WalletInfo {
     private String address;
     private String index;
     private String mask;
-    private String aAPIS;
+    private String aAPIZ;
     private String aMNR;
     private String nonce;
-    private String APIS;
+    private String APIZ;
     private String MNR;
     private String proofKey;
     private boolean isMasternode;
     private String isContract;
 
-    public WalletInfo(int index, byte[] address, String mask, BigInteger aapis, BigInteger amineral, BigInteger nonce, byte[] proofKey, String isContract, boolean isMasternode) {
+    public WalletInfo(int index, byte[] address, String mask, BigInteger aAPIZ, BigInteger amineral, BigInteger nonce, byte[] proofKey, String isContract, boolean isMasternode) {
         if(index >= 0) {
             this.index = String.valueOf(index);
         }
@@ -33,8 +33,8 @@ public class WalletInfo {
             this.mask = "";
         }
 
-        this.aAPIS = aapis.toString();
-        this.APIS = ApisUtil.readableApis(aapis, ',', true);
+        this.aAPIZ = aAPIZ.toString();
+        this.APIZ = ApisUtil.readableApis(aAPIZ, ',', true);
         this.aMNR = amineral.toString();
         this.MNR = ApisUtil.readableApis(amineral, ',', true);
 
@@ -58,12 +58,12 @@ public class WalletInfo {
     public String toString() {
         return "WalletInfo{" +
                 "address='" + address + '\'' +
-                ", index=" + index +
+                ", index='" + index + '\'' +
                 ", mask='" + mask + '\'' +
-                ", aAPIS='" + aAPIS + '\'' +
+                ", aAPIZ='" + aAPIZ + '\'' +
                 ", aMNR='" + aMNR + '\'' +
                 ", nonce='" + nonce + '\'' +
-                ", APIS='" + APIS + '\'' +
+                ", APIZ='" + APIZ + '\'' +
                 ", MNR='" + MNR + '\'' +
                 ", proofKey='" + proofKey + '\'' +
                 ", isMasternode=" + isMasternode +

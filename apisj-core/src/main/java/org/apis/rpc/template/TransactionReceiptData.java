@@ -65,7 +65,7 @@ public class TransactionReceiptData {
     private long gas;
 
     private String gasPrice;
-    private String gasPriceAPIS;
+    private String gasPriceAPIZ;
 
     /**
      * The amount of gas used by this specific transaction alone.
@@ -76,13 +76,13 @@ public class TransactionReceiptData {
      * The amount of mineral used by this specific transaction alone.
      */
     private String fee;
-    private String feeAPIS;
+    private String feeAPIZ;
 
     private String mineralUsed;
     private String mineralUsedMNR;
 
     private String feePaid;
-    private String feePaidAPIS;
+    private String feePaidAPIZ;
 
 
     /**
@@ -149,7 +149,7 @@ public class TransactionReceiptData {
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIS = readableApis(gasPrice, ',', true);
+        this.gasPriceAPIZ = readableApis(gasPrice, ',', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
@@ -168,11 +168,11 @@ public class TransactionReceiptData {
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIS = readableApis(fee, ',', true);
+        this.feeAPIZ = readableApis(fee, ',', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
-        this.feePaidAPIS = readableApis(feePaid, ',', true);
+        this.feePaidAPIZ = readableApis(feePaid, ',', true);
 
         if (receipt.getLogInfoList().size() > 0) {
             this.logs = new ArrayList<>();
@@ -235,24 +235,24 @@ public class TransactionReceiptData {
         return gasPrice;
     }
 
-    String getGasPriceAPIS() {
-        return gasPriceAPIS;
+    String getGasPriceAPIZ() {
+        return gasPriceAPIZ;
     }
 
     String getFee() {
         return fee;
     }
 
-    String getFeeAPIS() {
-        return feeAPIS;
+    String getFeeAPIZ() {
+        return feeAPIZ;
     }
 
     String getFeePaid() {
         return feePaid;
     }
 
-    String getFeePaidAPIS() {
-        return feePaidAPIS;
+    String getFeePaidAPIZ() {
+        return feePaidAPIZ;
     }
 
     String getMineralUsed() {
@@ -278,14 +278,14 @@ public class TransactionReceiptData {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
                 ", gasUsed=" + gasUsed +
                 ", fee='" + fee + '\'' +
-                ", feeAPIS='" + feeAPIS + '\'' +
+                ", feeAPIZ='" + feeAPIZ + '\'' +
                 ", mineralUsed='" + mineralUsed + '\'' +
                 ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
                 ", feePaid='" + feePaid + '\'' +
-                ", feePaidAPIS='" + feePaidAPIS + '\'' +
+                ", feePaidAPIZ='" + feePaidAPIZ + '\'' +
                 ", cumulativeGasUsed=" + cumulativeGasUsed +
                 ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
                 ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +

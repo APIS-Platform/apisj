@@ -44,7 +44,7 @@ public class TransactionSearchData {
     private long gas;
 
     private String gasPrice;
-    private String gasPriceAPIS;
+    private String gasPriceAPIZ;
 
     /**
      * The amount of gas used by this specific transaction alone.
@@ -55,13 +55,13 @@ public class TransactionSearchData {
      * The amount of mineral used by this specific transaction alone.
      */
     private String fee;
-    private String feeAPIS;
+    private String feeAPIZ;
 
     private String mineralUsed;
     private String mineralUsedMNR;
 
     private String feePaid;
-    private String feePaidAPIS;
+    private String feePaidAPIZ;
 
 
     public TransactionSearchData(TransactionReceiptData txData) {
@@ -76,16 +76,15 @@ public class TransactionSearchData {
         this.contractAddress = txData.getContractAddress();
         this.gas = txData.getGas();
         this.gasPrice = txData.getGasPrice();
-        this.gasPriceAPIS = txData.getGasPriceAPIS();
+        this.gasPriceAPIZ = txData.getGasPriceAPIZ();
         this.gasUsed = txData.getGasUsed();
         this.fee = txData.getFee();
-        this.feeAPIS = txData.getFeeAPIS();
+        this.feeAPIZ = txData.getFeeAPIZ();
         this.feePaid = txData.getFeePaid();
-        this.feePaidAPIS = txData.getFeePaidAPIS();
+        this.feePaidAPIZ = txData.getFeePaidAPIZ();
         this.mineralUsed = txData.getMineralUsed();
         this.mineralUsedMNR = txData.getMineralUsedMNR();
     }
-
 
     @Override
     public String toString() {
@@ -101,14 +100,14 @@ public class TransactionSearchData {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
                 ", gasUsed=" + gasUsed +
                 ", fee='" + fee + '\'' +
-                ", feeAPIS='" + feeAPIS + '\'' +
+                ", feeAPIZ='" + feeAPIZ + '\'' +
                 ", mineralUsed='" + mineralUsed + '\'' +
                 ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
                 ", feePaid='" + feePaid + '\'' +
-                ", feePaidAPIS='" + feePaidAPIS + '\'' +
+                ", feePaidAPIZ='" + feePaidAPIZ + '\'' +
                 '}';
     }
 }
