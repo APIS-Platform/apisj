@@ -54,7 +54,7 @@ public class PopupMaskingController extends BasePopupController {
     @FXML private AnchorPane rootPane;
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon, idIcon;
-    @FXML private Label tab1Label, tab2Label, totalBalance, idIcon2, idMsg, idMsg2, requestNextBtn, emailAddrLabel, registerComercialButton;
+    @FXML private Label tab1Label, tab2Label, totalBalance, idMsg, idMsg2, requestNextBtn, emailAddrLabel;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -64,7 +64,7 @@ public class PopupMaskingController extends BasePopupController {
             domainLabel, domainMsgLabel,
             idLabel,
             walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel,reCentPayerLabel, payMsg1, payMsg2,
-            tab5TitleLabel, tab5SubTitleLabel, pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
+            tab5TitleLabel, tab5SubTitleLabel,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
             backBtn1, backBtn2, backBtn3, backBtn4, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, requestBtn,
             maskId, maskValue, timeLabel, errorLabel
@@ -107,18 +107,12 @@ public class PopupMaskingController extends BasePopupController {
 
         tab5TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
         tab5SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRegisterDomainMsg);
-        pDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
-        pDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
-        pDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
-        pDomainMsg4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
 
         pDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain2);
         purposeDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestPurposeDomain);
 
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
         emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
-
-        registerComercialButton.textProperty().bind(StringManager.getInstance().addressMasking.registerCommercialDomain);
 
         StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
 
@@ -346,8 +340,8 @@ public class PopupMaskingController extends BasePopupController {
             setSelectedTab(1);
             setStep(0);
         }else if(id.equals("requestNextBtn")){
-            setSelectedTab(1);
-            setStep(1);
+            AppManager.getInstance().openBrowserRegisterDomain();
+
         }else if(id.equals("payBtn")){
 
             String faceAddress = selectAddressController.getAddress().trim();

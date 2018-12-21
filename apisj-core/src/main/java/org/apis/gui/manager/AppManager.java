@@ -63,6 +63,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -72,6 +74,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class AppManager {
+    public static final String REGISTER_DOMAIN_URL = "https://goo.gl/forms/oytS76KKssTcosND3";
 
     /* ==============================================
      *  KeyStoreManager Field : private
@@ -337,10 +340,6 @@ public class AppManager {
         return df.format(num);
     }
 
-    public static String commaSpace(String number) {
-        return comma(number).replaceAll(","," ");
-    }
-
     // setting block timestamp
     public static String setBlockTimestamp(long lastBlockTimestamp, long nowBlockTimestamp){
         //Date nowDate = new Date();
@@ -517,6 +516,16 @@ public class AppManager {
         }
 
         return true;
+    }
+
+    public void openBrowserRegisterDomain(){
+        try {
+            Desktop.getDesktop().browse(new URI(REGISTER_DOMAIN_URL));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isMasterNode(String address){

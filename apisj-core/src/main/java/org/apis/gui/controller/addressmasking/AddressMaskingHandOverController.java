@@ -59,16 +59,17 @@ public class AddressMaskingHandOverController extends BaseViewController {
         gasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
             @Override
             public void gasLimitTextFieldFocus(boolean isFocused) {
-
+                settingLayoutData();
             }
 
             @Override
             public void gasLimitTextFieldChangeValue(String oldValue, String newValue) {
-
+                settingLayoutData();
             }
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
+                settingLayoutData();
             }
         });
 

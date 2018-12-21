@@ -1,12 +1,15 @@
 package org.apis.gui.controller.module.selectbox;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -31,6 +34,19 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+
+        addressLabel.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                addressLabel.setText(model.addressProperty().get());
+            }
+        });
+        addressLabel.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                addressLabel.setText(returnMask());
+            }
+        });
     }
 
     @Override
@@ -47,7 +63,7 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
             }
             balanceLabel.setText(stringBalance);
             aliasLabel.setText(itemModel.aliasProperty().get());
-            addressLabel.setText(itemModel.addressProperty().get());
+            addressLabel.setText(returnMask());
             icon.setImage(itemModel.getIdenticon());
 
             // 보안키 체크
@@ -60,6 +76,18 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
             }
 
         }
+    }
+
+    public String returnMask(){
+        String address = model.addressProperty().get();
+        String mask;
+        if(address != null){
+            mask = AppManager.getInstance().getMaskWithAddress(address);
+            if (mask != null && mask.length() > 0) {
+                address = mask;
+            }
+        }
+        return address;
     }
 
 
