@@ -139,6 +139,7 @@ public class SettingController extends BasePopupController {
         whiteListInputController.setTextField(prop.getProperty("allow_ip"));
         idInputController.setTextField(prop.getProperty("id"));
         passwordInputController.setTextField(prop.getProperty("password"));
+        rpcStartInputController.setSelected(prop.getProperty("use_rpc").equals("true"));
 
         prop = AppManager.getGeneralProperties();
         if(startWalletWithLogInBtnController != null) {
@@ -349,7 +350,14 @@ public class SettingController extends BasePopupController {
             prop.setProperty("password", passwordInputController.getTextField().trim());
             prop.setProperty("max_connections", userNumLabel.getText());
             prop.setProperty("allow_ip", whiteListInputController.getTextField().trim());
+            prop.setProperty("use_rpc", "" + rpcStartInputController.isSelected());
             AppManager.saveRPCProperties();
+
+            // RPC server start/stop
+            AppManager.getInstance().stopRPC();
+            if(rpcStartInputController.isSelected()){
+                AppManager.getInstance().startRPC();
+            }
 
             prop = AppManager.getGeneralProperties();
             if(!Boolean.toString(startWalletWithLogInBtnController.isSelected()).equals(prop.getProperty("in_system_log"))) {
@@ -453,12 +461,6 @@ public class SettingController extends BasePopupController {
                 for(int i = 0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
                     SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
                 }
-            }
-
-            if(AppManager.getInstance().startRPC()){
-                System.out.println("RPC 실행됨.");
-            }else{
-                System.out.println("RPC 실행오류.");
             }
 
             //exit();

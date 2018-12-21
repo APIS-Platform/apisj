@@ -829,7 +829,7 @@
               <tabs>
                 <Tab text="Phase-1">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
                               <GridPane layoutX="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
@@ -1015,6 +1015,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                   </content>
                 </Tab>
@@ -1166,6 +1169,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                 </Tab>
@@ -1290,6 +1296,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>
@@ -1400,6 +1409,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>
@@ -1537,6 +1549,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>
@@ -1778,6 +1793,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>
@@ -1897,6 +1915,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>
@@ -2048,6 +2069,9 @@
                                  </children>
                               </GridPane>
                            </children>
+                           <padding>
+                              <Insets top="17.0" />
+                           </padding>
                         </AnchorPane>
                      </content>
                   </Tab>

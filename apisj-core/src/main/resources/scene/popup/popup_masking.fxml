@@ -157,6 +157,9 @@
                                              </children>
                                           </GridPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
@@ -241,6 +244,9 @@
                                              </children>
                                           </GridPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
@@ -442,12 +448,15 @@
                                              </children>
                                           </AnchorPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
                               <Tab text="step4">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane prefHeight="255.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
                                             <columnConstraints>
@@ -809,12 +818,15 @@
                                              </children>
                                           </GridPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
                               <Tab text="step1">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane layoutX="56.0" layoutY="44.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="44.0">
                                              <columnConstraints>
@@ -929,12 +941,15 @@
                                              </children>
                                           </GridPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
                               <Tab text="step2">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane layoutX="194.0" layoutY="136.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="40.0">
                                              <columnConstraints>
@@ -1037,12 +1052,15 @@
                                              </children>
                                           </GridPane>
                                        </children>
+                                       <padding>
+                                          <Insets top="17.0" />
+                                       </padding>
                                     </AnchorPane>
                                  </content>
                               </Tab>
                            </tabs>
                            <GridPane.margin>
-                              <Insets top="-33.0" />
+                              <Insets top="-50.0" />
                            </GridPane.margin>
                         </TabPane>
                         <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_0_0">

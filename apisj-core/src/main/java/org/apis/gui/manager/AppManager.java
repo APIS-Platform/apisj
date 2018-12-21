@@ -134,6 +134,9 @@ public class AppManager {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
 
+            // start rpc server
+            AppManager.getInstance().startRPC();
+
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -488,8 +491,10 @@ public class AppManager {
         // start server
         try {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            rpcServerManager.loadProperties();
             if(rpcServerManager.isAvailable()) {
                 rpcServerManager.startServer();
+                System.out.println("START RPC SERVER ======== >>");
             }
         } catch (IOException e) {
             return false;
@@ -502,9 +507,8 @@ public class AppManager {
         // stop server
         try {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
-            if(rpcServerManager.isAvailable()) {
-                rpcServerManager.stopServer();
-            }
+            rpcServerManager.stopServer();
+            System.out.println("<< ======== STOP RPC SERVER");
         } catch (IOException e) {
             return false;
         }
