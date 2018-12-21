@@ -516,7 +516,7 @@ public class SettingController extends BasePopupController {
                         public void run() {
                             if(SystemTray.isSupported()) {
                                 stage.hide();
-                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
+//                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("APIS", "apis-core", TrayIcon.MessageType.INFO);
                             } else {
                                 System.exit(0);
                             }
