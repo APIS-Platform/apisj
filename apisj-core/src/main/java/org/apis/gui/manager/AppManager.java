@@ -90,7 +90,9 @@ public class AppManager {
     private CallTransaction.Contract tokenContract = null;
     private ArrayList<TokenModel> tokens = new ArrayList<>();
 
+    // totalBalance
     private Map<String, BigInteger> totalValue = new HashMap<>();
+
 
     /* ==============================================
      *  KeyStoreManager Field : public
