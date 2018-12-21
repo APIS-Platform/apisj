@@ -1455,6 +1455,7 @@ public class AppManager {
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("max_connections", String.valueOf(5));
             prop.setProperty("allow_ip", "127.0.0.1");
+            prop.setProperty("use_rpc", "false");
 
             try {
                 File config = new File("config");
