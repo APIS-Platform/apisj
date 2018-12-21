@@ -170,7 +170,7 @@ public class MainController extends BaseViewController {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           //syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
+           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
         }
     }
 
@@ -247,7 +247,6 @@ public class MainController extends BaseViewController {
     @FXML
     public void onMousePressed(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
-        System.out.println("btnSettingbtnSettingbtnSettingbtnSettingbtnSettingbtnSetting id : "+id);
 
         if(id.equals("btnAddressInfo")){
             icAddressInfo.setVisible(true);
