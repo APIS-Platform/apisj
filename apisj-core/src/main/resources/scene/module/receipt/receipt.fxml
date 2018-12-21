@@ -95,7 +95,7 @@
                                                 <Font size="10.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="symbolLabel" styleClass="font_semibold_10" text="APIZ" textFill="#999999" GridPane.columnIndex="1">
+                                          <Label fx:id="symbolLabel" styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                                              <font>
                                                 <Font size="10.0" />
                                              </font>

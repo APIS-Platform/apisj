@@ -274,6 +274,46 @@ public class AddressMaskingHandOverController extends BaseViewController {
         }
     }
 
+    public BigInteger getFee(){
+        return gasCalculatorController.getFee();
+    }
+
+    public BigInteger getChargedFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+
+    public BigInteger getMineral(){
+        return this.selectAddressController.getMineral();
+    }
+
+    public BigInteger getAmount() {
+        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
+        BigInteger value = new BigInteger(""+values[0]);
+        return value;
+    }
+
+    public BigInteger getChargedAmount(){
+        BigInteger totalFee = getChargedFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger chargedAmount = getAmount().add(totalFee);
+
+        return chargedAmount;
+    }
+
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger chargedAmount = getChargedAmount();
+
+        //after balance
+        BigInteger afterBalance = selectAddressController.getBalance().subtract(chargedAmount);
+
+        return afterBalance;
+    }
 
     public void setGasLimit(String gasLimit){
         this.gasCalculatorController.setGasLimit(gasLimit);
