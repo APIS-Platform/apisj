@@ -148,7 +148,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         btnDelete.textProperty().bind(StringManager.getInstance().common.deleteButton);
         errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
 
-        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confrimPassword.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_MAIN);
+        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confirmPassword.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_MAIN);
         knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_MAIN);
     }
 

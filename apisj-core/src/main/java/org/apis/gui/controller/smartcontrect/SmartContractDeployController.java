@@ -433,7 +433,7 @@ public class SmartContractDeployController extends BaseViewController {
                 } else {
                     data = new byte[0];
                 }
-                long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+                long preGasUsed = AppManager.getInstance().getPreGasUsedWithNonce(address, new byte[0], data);
                 gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
             }
         }else{

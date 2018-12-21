@@ -136,7 +136,7 @@ public class StringManager {
         public SimpleStringProperty afterBalance = new SimpleStringProperty();
         public SimpleStringProperty notEnoughBalance = new SimpleStringProperty();
         public SimpleStringProperty notEnoughMineral = new SimpleStringProperty();
-        public SimpleStringProperty confrimPassword = new SimpleStringProperty();
+        public SimpleStringProperty confirmPassword = new SimpleStringProperty();
         public SimpleStringProperty newPassword = new SimpleStringProperty();
         public SimpleStringProperty deleteButton = new SimpleStringProperty();
         public SimpleStringProperty editLabel = new SimpleStringProperty();
@@ -203,7 +203,7 @@ public class StringManager {
             afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
             notEnoughBalance.set(StringManager.this.getString("common_not_enough_balance","* There is not enough balance."));
             notEnoughMineral.set(StringManager.this.getString("common_not_enough_mineral", "The amount of Minerals should exceed the commission to send 100%"));
-            confrimPassword.set(StringManager.this.getString("common_confrim_password","Confrim password"));
+            confirmPassword.set(StringManager.this.getString("common_confirm_password","Confirm password"));
             newPassword.set(StringManager.this.getString("common_new_password","New password"));
             deleteButton.set(StringManager.this.getString("common_delete_button","Delete"));
             editLabel.set(StringManager.this.getString("common_edit_label","Edit"));
@@ -1046,6 +1046,7 @@ public class StringManager {
         public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcIdLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcPwLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcStartLabel = new SimpleStringProperty();
         public SimpleStringProperty generalTitle = new SimpleStringProperty();
         public SimpleStringProperty startWalletWithLogInLabel = new SimpleStringProperty();
         public SimpleStringProperty enableLogEventLabel = new SimpleStringProperty();
@@ -1064,6 +1065,7 @@ public class StringManager {
             rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));
             rpcIdLabel.set(StringManager.this.getString("setting_rpc_id_label", "ID"));
             rpcPwLabel.set(StringManager.this.getString("setting_rpc_pw_label", "Password"));
+            rpcStartLabel.set(StringManager.this.getString("setting_rpc_start_label", "Start RPC"));
             generalTitle.set(StringManager.this.getString("setting_general_title", "General"));
             startWalletWithLogInLabel.set(StringManager.this.getString("setting_start_wallet_with_log_in_label", "Start APIS Wallet with system log in"));
             enableLogEventLabel.set(StringManager.this.getString("setting_enable_log_event_label", "Enable log event"));
