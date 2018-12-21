@@ -541,7 +541,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
 
-        long timestamp = now/1000L;
+        long timestamp;
+
+        if(now - parent.getTimestamp()*1000 < constants.getBLOCK_TIME_MS()*2) {
+            timestamp = parent.getTimestamp() + constants.getBLOCK_TIME();
+        } else {
+            timestamp = now / 1000L;
+        }
 
         return createNewBlock(parent, addingTxs, timestamp);
         //return createNewBlock(parent, txs, timestamp);
