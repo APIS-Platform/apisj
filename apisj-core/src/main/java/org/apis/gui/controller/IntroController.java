@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
@@ -765,18 +766,7 @@ public class IntroController extends BaseViewController {
     }
 
     public void versionSetting() {
-        try {
-            Properties prop = new Properties();
-            InputStream input = new FileInputStream(getClass().getClassLoader().getResource("version.properties").getPath());
-            prop.load(input);
-            input.close();
-
-            version.setText("VER." + prop.getProperty("versionNumber").replaceAll("'", ""));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        version.setText("VER." + SystemProperties.getDefault().projectVersion());
     }
 
     public void setVisibleHomeBtn(boolean isVisible) {
