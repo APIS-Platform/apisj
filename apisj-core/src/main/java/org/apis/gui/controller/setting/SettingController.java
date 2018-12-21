@@ -35,6 +35,8 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
+    private final int maxPeerNumber = 30;
+
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
@@ -335,7 +337,7 @@ public class SettingController extends BasePopupController {
 
         } else if(fxid.equals("userNumPlus")) {
             int num = Integer.parseInt(userNumLabel.getText());
-            if(num < 5) num++;
+            if(num < maxPeerNumber) num++;
             userNumLabel.setText(Integer.toString(num));
 
         } else if(fxid.equals("cancelBtn")) {

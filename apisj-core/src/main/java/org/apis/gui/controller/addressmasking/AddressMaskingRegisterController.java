@@ -21,6 +21,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -34,6 +35,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
     private byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterMask = contract.getByName("registerMask");
+    private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -379,6 +381,46 @@ public class AddressMaskingRegisterController extends BaseViewController {
         return this.isEnabled;
     }
 
+    public BigInteger getFee(){
+        return gasCalculatorController.getFee();
+    }
+
+    public BigInteger getChargedFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+
+    public BigInteger getMineral(){
+        return this.selectPayerController.getMineral();
+    }
+
+    public BigInteger getAmount() {
+        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
+        BigInteger value = new BigInteger(""+values[0]);
+        return value;
+    }
+
+    public BigInteger getChargedAmount(){
+        BigInteger totalFee = getChargedFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger chargedAmount = getAmount().add(totalFee);
+
+        return chargedAmount;
+    }
+
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger chargedAmount = getChargedAmount();
+
+        //after balance
+        BigInteger afterBalance = selectPayerController.getBalance().subtract(chargedAmount);
+
+        return afterBalance;
+    }
 
     public String getPayerAddress() {
         return this.selectPayerController.getAddress();

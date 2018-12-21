@@ -12,7 +12,7 @@ import org.apis.gui.manager.StyleManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ReceiptItemController extends BaseViewController {
+public class ReceiptItemAController extends BaseViewController {
 
     @FXML private GridPane rootPane;
     @FXML private Label titleLabel, value;

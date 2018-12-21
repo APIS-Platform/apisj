@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="rootPane" prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptOnlyValueController">
+<GridPane fx:id="rootPane" prefWidth="360.0" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptItemAController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />
    </columnConstraints>
@@ -19,20 +18,16 @@
          <children>
             <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnConstraints>
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                   <ColumnConstraints hgrow="SOMETIMES" />
                   <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                  <ColumnConstraints maxWidth="60.0" minWidth="-Infinity" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="valueLabel" styleClass="font_regular_12" text="0.0" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                  <Label fx:id="symbolLabel" styleClass="font_regular_12" text="SYMBOL" textFill="#999999" GridPane.columnIndex="2">
-                     <GridPane.margin>
-                        <Insets left="4.0" />
-                     </GridPane.margin>
-                  </Label>
+                  <Label fx:id="titleLabel" styleClass="font_semibold_12" text="Mask" textFill="#999999" />
+                  <Label fx:id="value" styleClass="font_regular_12" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.columnIndex="2" />
                </children>
             </GridPane>
          </children>

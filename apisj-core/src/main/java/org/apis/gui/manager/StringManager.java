@@ -231,6 +231,7 @@ public class StringManager {
     }
 
     public class Receipt implements StringManagerImpl{
+        public SimpleStringProperty beneficiaryAddress = new SimpleStringProperty();
         public SimpleStringProperty chargedAmount = new SimpleStringProperty();
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
         public SimpleStringProperty amount = new SimpleStringProperty();
@@ -256,6 +257,7 @@ public class StringManager {
 
         @Override
         public void update(){
+            beneficiaryAddress.set(StringManager.this.getString("receipt_beneficiay_address", "Beneficiary Address"));
             chargedAmount.set(StringManager.this.getString("receipt_charged_amount", "Charged Amount"));
             transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
             amount.set(StringManager.this.getString("receipt_amount", "Amount"));
@@ -264,7 +266,7 @@ public class StringManager {
             chargedFee.set(StringManager.this.getString("receipt_charged_fee", "Charged Fee"));
             address.set(StringManager.this.getString("receipt_address", "address"));
             mask.set(StringManager.this.getString("receipt_mask", "mask"));
-            payer.set(StringManager.this.getString("receipt_payer", "Payer : "));
+            payer.set(StringManager.this.getString("receipt_payer", "Payer Address"));
             withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
             afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
             handedTo.set(StringManager.this.getString("receipt_handed_to", "Handed to"));
@@ -491,7 +493,7 @@ public class StringManager {
             totalBuyMineral.set(StringManager.this.getString("wallet_total_buy_mineral", "BUY MINERAL"));
             myRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
             rewarded.set(StringManager.this.getString("wallet_rewarded", "rewarded"));
-            nowStaking.set(StringManager.this.getString("wallet_now_staking", "Now Staking"));
+            nowStaking.set(StringManager.this.getString("wallet_mining", "Mining"));
             howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
             createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
             knowledgeKeyButton.set(StringManager.this.getString("wallet_knowledge_key_button", "Knowledge Key"));

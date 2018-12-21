@@ -35,7 +35,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
-            <Label fx:id="symbolLabel" styleClass="font_regular_10" text="APIZ" textAlignment="RIGHT" textFill="#999999" GridPane.columnIndex="2">
+            <Label fx:id="symbolLabel" styleClass="font_regular_10" text="APIS" textAlignment="RIGHT" textFill="#999999" GridPane.columnIndex="2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
