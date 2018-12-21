@@ -68,6 +68,8 @@ public class TransactionReceiptData {
     private String value = "0";
     private String valueAPIS;
 
+    private long nonce;
+
     private long gas;
 
     private String gasPrice;
@@ -154,6 +156,8 @@ public class TransactionReceiptData {
         if(!ByteUtil.isNullOrZeroArray(tx.getContractAddress())) {
             this.contractAddress = toHexString0x(tx.getContractAddress());
         }
+
+        this.nonce = ByteUtil.byteArrayToLong(tx.getNonce());
 
         this.value = BIUtil.toBI(tx.getValue()).toString();
         this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
