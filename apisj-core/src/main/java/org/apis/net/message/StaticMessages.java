@@ -80,7 +80,7 @@ public class StaticMessages {
             system = "Android";
         String phrase = config.helloPhrase();
 
-        return String.format("Ethereum(J)/v%s/%s/%s/Java/%s", numberVersion, system,
+        return String.format("APIS/v%s/%s/%s/Java/%s", numberVersion, system,
                 config.projectVersionModifier().equalsIgnoreCase("release") ? "Release" : "Dev", phrase);
     }
 }
