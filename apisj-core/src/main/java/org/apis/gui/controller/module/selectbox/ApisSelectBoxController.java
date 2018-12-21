@@ -245,8 +245,8 @@ public class ApisSelectBoxController extends BaseViewController {
             }
             BaseFxmlController itemFxml = new BaseFxmlController(itemUrl);
             BaseSelectBoxItemController itemController = (BaseSelectBoxItemController)itemFxml.getController();
-            itemController.setModel(model);
             itemController.setReadableApisKMBT(isReadableApisKMBT);
+            itemController.setModel(model);
             itemController.setHandler(new BaseSelectBoxItemController.BaseSelectBoxItemImpl() {
                 @Override
                 public void onMouseClicked(SelectBoxItemModel itemModel) {
