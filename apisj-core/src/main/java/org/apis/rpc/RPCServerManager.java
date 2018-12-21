@@ -47,7 +47,7 @@ public class RPCServerManager {
         loadProperties();
     }
 
-    private void loadProperties() throws IOException {
+    public void loadProperties() throws IOException {
         prop = new Properties() {
             @Override
             public synchronized Enumeration<Object> keys() {

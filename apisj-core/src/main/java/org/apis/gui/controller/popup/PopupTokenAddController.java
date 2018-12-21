@@ -27,10 +27,9 @@ import java.util.ResourceBundle;
 public class PopupTokenAddController extends BasePopupController {
 
     @FXML private AnchorPane rootPane;
-    @FXML private ImageView addrCircleImg, resultAddrCircleImg;
+    @FXML private ImageView addrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
-    @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn, supplyLabel, symbolLabel;
-    @FXML private Label previewTokenAddress, previewTokenName;
+    @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, noBtn, addBtn, supplyLabel, symbolLabel;
     @FXML private ScrollPane scrollPane;
 
     @Override
@@ -43,12 +42,6 @@ public class PopupTokenAddController extends BasePopupController {
         ellipse.setCenterY(12);
 
         addrCircleImg.setClip(ellipse);
-
-        Ellipse ellipse2 = new Ellipse(12, 12);
-        ellipse2.setCenterX(12);
-        ellipse2.setCenterY(12);
-        resultAddrCircleImg.setClip(ellipse2);
-        resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
 
         AppManager.settingTextFieldStyle(tokenAddressTextField);
         AppManager.settingTextFieldLineStyle(nameTextField);
@@ -118,7 +111,6 @@ public class PopupTokenAddController extends BasePopupController {
         nameLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditNameLabel);
         nameTextField.promptTextProperty().bind(StringManager.getInstance().popup.tokenEditNamePlaceholder);
         minNumLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditMinNumLabel);
-        previewLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditPreviewLabel);
         noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
         addBtn.textProperty().bind(StringManager.getInstance().common.addButton);
         supplyLabel.textProperty().bind(StringManager.getInstance().common.supplyLabel);

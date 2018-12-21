@@ -46,6 +46,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.*;
@@ -89,7 +90,9 @@ public class AppManager {
     private CallTransaction.Contract tokenContract = null;
     private ArrayList<TokenModel> tokens = new ArrayList<>();
 
+    // totalBalance
     private Map<String, BigInteger> totalValue = new HashMap<>();
+
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -132,6 +135,9 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
+
+            // start rpc server
+            AppManager.getInstance().startRPC();
 
             Platform.runLater(new Runnable() {
                 @Override
@@ -483,6 +489,35 @@ public class AppManager {
         }
     }
 
+    public boolean startRPC(){
+        // start server
+        try {
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            rpcServerManager.loadProperties();
+            if(rpcServerManager.isAvailable()) {
+                rpcServerManager.startServer();
+                System.out.println("START RPC SERVER ======== >>");
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean stopRPC(){
+        // stop server
+        try {
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            rpcServerManager.stopServer();
+            System.out.println("<< ======== STOP RPC SERVER");
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
     public boolean isMasterNode(String address){
         return ((Repository)mEthereum.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
     }
@@ -783,6 +818,29 @@ public class AppManager {
 
             EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
             EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, value, data);
+
+            if(estimateResult == null) {
+                return -1;
+            }
+
+            if(estimateResult.isSuccess()) {
+                return estimateResult.getGasUsed();
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+
+    }
+
+    public long getPreGasUsedWithNonce(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            BigInteger value = BigInteger.ZERO;
+            long nonce = this.mEthereum.getRepository().getNonce(sender).longValue();
+            System.out.println("nonce : "+nonce);
+            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, nonce, value, data);
 
             if(estimateResult == null) {
                 return -1;

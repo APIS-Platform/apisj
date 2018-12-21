@@ -116,7 +116,6 @@ public class MainFX extends Application  {
                         public void run() {
                             if(SystemTray.isSupported()) {
                                 stage.hide();
-                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
                             } else {
                                 System.exit(0);
                             }

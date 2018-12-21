@@ -21,6 +21,8 @@ import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
+import org.apis.rpc.RPCServerManager;
+import org.apis.util.ConsoleUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -37,7 +39,7 @@ public class SettingController extends BasePopupController {
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
-    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
+    @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
@@ -63,8 +65,10 @@ public class SettingController extends BasePopupController {
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "RPC Start");
+
         addGeneralItem("startWalletWithLogIn");
-        addGeneralItem("enableLogEvent");
+        //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
         addWindowItem("minimizeToTray");
 
@@ -135,10 +139,15 @@ public class SettingController extends BasePopupController {
         whiteListInputController.setTextField(prop.getProperty("allow_ip"));
         idInputController.setTextField(prop.getProperty("id"));
         passwordInputController.setTextField(prop.getProperty("password"));
+        rpcStartInputController.setSelected(prop.getProperty("use_rpc").equals("true"));
 
         prop = AppManager.getGeneralProperties();
-        startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
-        enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        if(startWalletWithLogInBtnController != null) {
+            startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
+        }
+        if(enableLogEventBtnController != null) {
+            enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 
         prop = AppManager.getWindowProperties();
@@ -198,6 +207,18 @@ public class SettingController extends BasePopupController {
                 this.passwordInputController = (SettingItemInputController)loader.getController();
                 this.passwordInputController.setInput(inputFlag);
                 this.passwordInputController.setContents(StringManager.getInstance().setting.rpcPwLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(contentsId.equals("RPC Start")){
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.rpcStartInputController = (SettingItemBtnController)loader.getController();
+                this.rpcStartInputController.setContents(StringManager.getInstance().setting.rpcStartLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -329,7 +350,14 @@ public class SettingController extends BasePopupController {
             prop.setProperty("password", passwordInputController.getTextField().trim());
             prop.setProperty("max_connections", userNumLabel.getText());
             prop.setProperty("allow_ip", whiteListInputController.getTextField().trim());
+            prop.setProperty("use_rpc", "" + rpcStartInputController.isSelected());
             AppManager.saveRPCProperties();
+
+            // RPC server start/stop
+            AppManager.getInstance().stopRPC();
+            if(rpcStartInputController.isSelected()){
+                AppManager.getInstance().startRPC();
+            }
 
             prop = AppManager.getGeneralProperties();
             if(!Boolean.toString(startWalletWithLogInBtnController.isSelected()).equals(prop.getProperty("in_system_log"))) {
@@ -415,7 +443,9 @@ public class SettingController extends BasePopupController {
                 }
             }
             prop.setProperty("in_system_log", "" + startWalletWithLogInBtnController.isSelected());
-            prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            if(enableLogEventBtnController != null) {
+                prop.setProperty("enable_event_log", "" + enableLogEventBtnController.isSelected());
+            }
             prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
@@ -488,7 +518,7 @@ public class SettingController extends BasePopupController {
                         public void run() {
                             if(SystemTray.isSupported()) {
                                 stage.hide();
-                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
+//                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("APIS", "apis-core", TrayIcon.MessageType.INFO);
                             } else {
                                 System.exit(0);
                             }

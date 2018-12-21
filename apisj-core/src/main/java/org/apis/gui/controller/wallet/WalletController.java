@@ -111,6 +111,7 @@ public class WalletController extends BaseViewController {
         this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.myRewards);
         this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
         this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
+        this.btnKnowledgeKey.textProperty().bind(StringManager.getInstance().wallet.knowledgeKeyButton);
         this.btnMiningWallet.textProperty().bind(StringManager.getInstance().wallet.miningButton);
         this.btnMasternode.textProperty().bind(StringManager.getInstance().wallet.masternodeButton);
         this.btnToken.textProperty().bind(StringManager.getInstance().wallet.tokenButton);
