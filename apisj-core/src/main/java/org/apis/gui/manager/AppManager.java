@@ -33,6 +33,7 @@ import org.apis.db.sql.TransactionRecord;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
@@ -63,6 +64,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -635,7 +637,34 @@ public class AppManager {
         }else if(tokenAddress.equals("-2")){
             return ImageManager.mineraIcon;
         }else{
-            return ImageManager.getIdenticons(tokenAddress);
+            return getTokenImage(tokenAddress);
+        }
+    }
+
+    private HashMap<String, Image> tokenIconWithUrl = new HashMap<>();
+    private Image getTokenImage(String tokenAddress){
+        Image image = null;
+        if(tokenAddress != null && tokenAddress.length() > 0){
+            String url = AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("iconUrl"))[0].toString();
+            if( isValidURL(url) ){
+                image = tokenIconWithUrl.get(url);
+                if(image == null){
+                    image = new Image(url);
+                    tokenIconWithUrl.put(url, image);
+                }
+            }else{
+                image = ImageManager.getIdenticons(tokenAddress);
+            }
+        }
+        return image;
+    }
+    private boolean isValidURL(String urlStr) {
+        try {
+            URL url = new URL(urlStr);
+            return true;
+        }
+        catch (MalformedURLException e) {
+            return false;
         }
     }
 
@@ -1424,7 +1453,7 @@ public class AppManager {
             prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("max_connections", String.valueOf(1));
+            prop.setProperty("max_connections", String.valueOf(5));
             prop.setProperty("allow_ip", "127.0.0.1");
 
             try {

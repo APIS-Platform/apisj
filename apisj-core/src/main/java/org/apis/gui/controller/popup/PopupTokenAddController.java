@@ -62,7 +62,7 @@ public class PopupTokenAddController extends BasePopupController {
                     symbolTextField.setText(tokenSymbol);
                     totalSupplyTextField.setText(totalSupply.toString());
                     decimalTextField.setText(Long.toString(decimal));
-                    addrCircleImg.setImage(ImageManager.getIdenticons(contractAddress));
+                    addrCircleImg.setImage(AppManager.getInstance().getTokenIcon(contractAddress));
                 }
             }
         });

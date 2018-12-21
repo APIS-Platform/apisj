@@ -129,7 +129,7 @@ public class PopupTokenEditController extends BasePopupController {
         this.decimalTextField.setText(Long.toString(this.record.getDecimal()));
         this.totalSupplyTextField.setText(this.record.getTotalSupply().toString());
 
-        this.addrCircleImg.setImage(ImageManager.getIdenticons(ByteUtil.toHexString(this.record.getTokenAddress())));
+        this.addrCircleImg.setImage(AppManager.getInstance().getTokenIcon(ByteUtil.toHexString(this.record.getTokenAddress())));
     }
 
     @Override
