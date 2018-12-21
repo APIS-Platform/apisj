@@ -20,8 +20,9 @@ import org.apis.keystore.*;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class IntroController extends BaseViewController {
@@ -75,7 +76,7 @@ public class IntroController extends BaseViewController {
             popupSuccessTitle, popupSuccessComment, popupSuccessButton, popupCautionTitle, popupCautionComment, popupCautionNoButton, popupCautionYesButton,
             introLwPhaseThreeRightButtonTitle, selectKeystoreBtn, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
             introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel,
-            dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel
+            dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel, version
     ;
 
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
@@ -104,6 +105,9 @@ public class IntroController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setIntro(this);
+
+        // Version
+        versionSetting();
 
         // 언어 설정
         languageSetting();
@@ -758,6 +762,21 @@ public class IntroController extends BaseViewController {
         this.popupCopyTitle.textProperty().bind(StringManager.getInstance().popup.copyPkTitle);
         this.popupCopySubTitle.textProperty().bind(StringManager.getInstance().popup.copyPkSubTitle);
         this.popupCopyConfirmBtn.textProperty().bind(StringManager.getInstance().common.confirmButton);
+    }
+
+    public void versionSetting() {
+        try {
+            Properties prop = new Properties();
+            InputStream input = new FileInputStream(getClass().getClassLoader().getResource("version.properties").getPath());
+            prop.load(input);
+            input.close();
+
+            version.setText("VER." + prop.getProperty("versionNumber").replaceAll("'", ""));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setVisibleHomeBtn(boolean isVisible) {
