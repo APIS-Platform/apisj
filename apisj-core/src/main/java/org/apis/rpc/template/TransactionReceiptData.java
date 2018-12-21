@@ -66,12 +66,12 @@ public class TransactionReceiptData {
 
 
     private String value = "0";
-    private String valueAPIZ;
+    private String valueAPIS;
 
     private long gas;
 
     private String gasPrice;
-    private String gasPriceAPIZ;
+    private String gasPriceAPIS;
 
     /**
      * The amount of gas used by this specific transaction alone.
@@ -82,13 +82,13 @@ public class TransactionReceiptData {
      * The amount of mineral used by this specific transaction alone.
      */
     private String fee;
-    private String feeAPIZ;
+    private String feeAPIS;
 
     private String mineralUsed;
     private String mineralUsedMNR;
 
     private String feePaid;
-    private String feePaidAPIZ;
+    private String feePaidAPIS;
 
 
     /**
@@ -156,11 +156,11 @@ public class TransactionReceiptData {
         }
 
         this.value = BIUtil.toBI(tx.getValue()).toString();
-        this.valueAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
+        this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIZ = readableApis(gasPrice, ',', true);
+        this.gasPriceAPIS = readableApis(gasPrice, ',', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
@@ -179,11 +179,11 @@ public class TransactionReceiptData {
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIZ = readableApis(fee, ',', true);
+        this.feeAPIS = readableApis(fee, ',', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
-        this.feePaidAPIZ = readableApis(feePaid, ',', true);
+        this.feePaidAPIS = readableApis(feePaid, ',', true);
 
         if (receipt.getLogInfoList().size() > 0) {
             this.logs = new ArrayList<>();
@@ -240,8 +240,8 @@ public class TransactionReceiptData {
         return value;
     }
 
-    String getValueAPIZ() {
-        return valueAPIZ;
+    String getValueAPIS() {
+        return valueAPIS;
     }
 
     long getGas() {
@@ -256,24 +256,24 @@ public class TransactionReceiptData {
         return gasPrice;
     }
 
-    String getGasPriceAPIZ() {
-        return gasPriceAPIZ;
+    String getGasPriceAPIS() {
+        return gasPriceAPIS;
     }
 
     String getFee() {
         return fee;
     }
 
-    String getFeeAPIZ() {
-        return feeAPIZ;
+    String getFeeAPIS() {
+        return feeAPIS;
     }
 
     String getFeePaid() {
         return feePaid;
     }
 
-    String getFeePaidAPIZ() {
-        return feePaidAPIZ;
+    String getFeePaidAPIS() {
+        return feePaidAPIS;
     }
 
     String getMineralUsed() {
@@ -298,17 +298,17 @@ public class TransactionReceiptData {
                 ", toMask='" + toMask + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
                 ", value='" + value + '\'' +
-                ", valueAPIZ='" + valueAPIZ + '\'' +
+                ", valueAPIS='" + valueAPIS + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
+                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
                 ", gasUsed=" + gasUsed +
                 ", fee='" + fee + '\'' +
-                ", feeAPIZ='" + feeAPIZ + '\'' +
+                ", feeAPIS='" + feeAPIS + '\'' +
                 ", mineralUsed='" + mineralUsed + '\'' +
                 ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
                 ", feePaid='" + feePaid + '\'' +
-                ", feePaidAPIZ='" + feePaidAPIZ + '\'' +
+                ", feePaidAPIS='" + feePaidAPIS + '\'' +
                 ", cumulativeGasUsed=" + cumulativeGasUsed +
                 ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
                 ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +
