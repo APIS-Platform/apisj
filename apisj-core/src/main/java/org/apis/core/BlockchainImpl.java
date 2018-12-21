@@ -1395,7 +1395,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         /* Give rewards to late participating masternodes.
                          *
                          * 늦게 참여한 마스터노드는 보상의 70%만을 가져갈 수 있다.
-                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재산에 부여된다.
+                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재단에 부여된다.
                          */
                         BigInteger remainRewardByLateNode;  // 보상의 30% 잔여분
                         remainRewardByLateNode = distributeLateMnReward(mnRewardGeneral, generalLate, track, constants, rewards);
