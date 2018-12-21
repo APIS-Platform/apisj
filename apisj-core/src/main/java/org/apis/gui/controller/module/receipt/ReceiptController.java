@@ -35,7 +35,7 @@ public class ReceiptController extends BaseViewController {
     private ReceiptAddressController beneficiaryAddressController;
     private ReceiptAddressController payerAddressController;
 
-    private ReceiptItemController maskItemController;
+    private ReceiptItemBController maskItemController;
 
     private ReceiptValueAController amountValueController;
     private ReceiptValueAController chargedAmountValueController;
@@ -238,7 +238,7 @@ public class ReceiptController extends BaseViewController {
             BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_address.fxml");
             itemList.getChildren().add(fxmlController.getNode());
             beneficiaryAddressController = (ReceiptAddressController)fxmlController.getController();
-            beneficiaryAddressController.setTitle(StringManager.getInstance().buymineral.titleLabel);
+            beneficiaryAddressController.setTitle(StringManager.getInstance().receipt.beneficiaryAddress);
             beneficiaryAddressController.setLeftPadding(leftPadding);
         } catch (IOException e) {
             e.printStackTrace();
@@ -267,9 +267,9 @@ public class ReceiptController extends BaseViewController {
         }
 
         try {
-            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_item.fxml");
+            BaseFxmlController fxmlController = new BaseFxmlController("module/receipt/receipt_item_b.fxml");
             itemList.getChildren().add(fxmlController.getNode());
-            maskItemController = (ReceiptItemController) fxmlController.getController();
+            maskItemController = (ReceiptItemBController) fxmlController.getController();
             maskItemController.setTitle(StringManager.getInstance().receipt.mask);
             maskItemController.setLeftPadding(leftPadding);
         } catch (IOException e) {
@@ -335,6 +335,7 @@ public class ReceiptController extends BaseViewController {
             itemList.getChildren().add(fxmlController.getNode());
             mineralValueController = (ReceiptValueAController) fxmlController.getController();
             mineralValueController.setTitle(StringManager.getInstance().receipt.mineral);
+            mineralValueController.setSymbol("MNR");
             mineralValueController.setLeftPadding(leftPadding);
         } catch (IOException e) {
             e.printStackTrace();

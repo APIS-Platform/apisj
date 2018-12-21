@@ -231,6 +231,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 }
 
                 initStyleIsReadMethod();
+                btnByteCodePreGasUsedController.setCompiled(false);
             }
         });
         AnchorPane.setTopAnchor(label, 0.0);

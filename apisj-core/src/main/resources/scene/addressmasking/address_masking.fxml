@@ -88,17 +88,11 @@
                 <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
-                     <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
-                     </effect>
-                      <fx:include fx:id="receipt" source="address_masking_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <AnchorPane fx:id="tab1RightPane">
+                     <fx:include fx:id="receipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   </AnchorPane>
-                  <AnchorPane fx:id="tabRightHandOverReceiptPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false">
-                     <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
-                     </effect>
-                      <fx:include fx:id="handOverReceipt" source="address_masking_hand_over_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <AnchorPane fx:id="tabRightHandOverReceiptPane" visible="false">
+                     <fx:include fx:id="handOverReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   </AnchorPane>
                </children>
             </GridPane>

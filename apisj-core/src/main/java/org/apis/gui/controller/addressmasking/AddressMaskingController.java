@@ -17,6 +17,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
 import org.apis.util.ByteUtil;
@@ -62,9 +63,8 @@ public class AddressMaskingController extends BaseViewController {
     private boolean isScrolling = false;
 
     @FXML private AddressMaskingRegisterController registerController;
-    @FXML private AddressMaskingReceiptController receiptController;
     @FXML private AddressMaskingHandOverController handOverMaskController;
-    @FXML private AddressMaskingHandOverReceiptController handOverReceiptController;
+    @FXML private ReceiptController receiptController, handOverReceiptController;
     @FXML private ImageView imgRegisterMask, imgHandOverMask, imgRegisterDomain;
 
     @Override
@@ -73,44 +73,8 @@ public class AddressMaskingController extends BaseViewController {
 
         // Multilingual Support
         languageSetting();
-
-        receiptController.setHandler(new AddressMaskingReceiptController.AddressMaskingReceiptImpl() {
-            @Override
-            public void transfer() {
-                String faceAddress = registerController.getAddress();
-                String name = registerController.getMask();
-                String domainId = registerController.getDomainId();
-
-                if(name.length() <= 0){
-                    return;
-                }
-
-                String payerAddress = registerController.getPayerAddress();
-                BigInteger value = registerController.getValue();
-                String gasLimit = registerController.getGasLimit().toString();
-                String gasPrice = registerController.getGasPrice().toString();
-
-                Object[] args = new Object[3];
-                args[0] = Hex.decode(faceAddress);   //_faceAddress
-                args[1] = name;   //_name
-                args[2] = new BigInteger(domainId);   //_domainId
-                byte[] functionCallBytes = functionRegisterMask.encode(args);
-
-                // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
-                controller.setData(payerAddress, value.toString(), gasPrice, gasLimit, addressMaskingAddress, new byte[0], functionCallBytes);
-                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
-                    @Override
-                    public void success(Transaction tx) {
-                    }
-                    @Override
-                    public void fail(Transaction tx){
-
-                    }
-                });
-            }
-        });
-
+        initializeReceipt();
+        initializeHandOverReceipt();
 
         registerController.setHandler(new AddressMaskingRegisterController.AddressMaskingRegisterImpl() {
             @Override
@@ -124,40 +88,6 @@ public class AddressMaskingController extends BaseViewController {
                 AddressMaskingController.this.settingLayoutData();
             }
         });
-        handOverReceiptController.setHandler(new AddressMaskingHandOverReceiptController.AddressMaskingHandOverReceiptImpl() {
-            @Override
-            public void transfer() {
-                String fromAddress = handOverMaskController.getHandOverFromAddress();
-                String toAddress = handOverMaskController.getHandOverToAddress();
-                Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-                BigInteger value = new BigInteger(""+values[0]);
-                BigInteger gasPrice = handOverMaskController.getGasPrice();
-                BigInteger gasLimit = handOverMaskController.getGasLimit();
-
-                System.out.println("value : "+value);
-                System.out.println("gasPrice : "+gasPrice);
-                System.out.println("gasLimit : "+gasLimit);
-
-
-                Object[] args = new Object[1];
-                args[0] = Hex.decode(toAddress);
-                byte[] functionCallBytes = functionHandOverMask.encode(args);
-
-                // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
-                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, new byte[0], functionCallBytes);
-                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
-                    @Override
-                    public void success(Transaction tx) {
-                    }
-                    @Override
-                    public void fail(Transaction tx){
-
-                    }
-                });
-            }
-        });
-        receiptController.setEnabled(false);
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -233,6 +163,137 @@ public class AddressMaskingController extends BaseViewController {
 
         backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
+
+    public void initializeReceipt(){
+
+        receiptController.setHandler(new ReceiptController.ReceiptImpl() {
+            @Override
+            public void send() {
+                String faceAddress = registerController.getAddress();
+                String name = registerController.getMask();
+                String domainId = registerController.getDomainId();
+
+                if(name.length() <= 0){
+                    return;
+                }
+
+                String payerAddress = registerController.getPayerAddress();
+                BigInteger value = registerController.getValue();
+                String gasLimit = registerController.getGasLimit().toString();
+                String gasPrice = registerController.getGasPrice().toString();
+
+                Object[] args = new Object[3];
+                args[0] = Hex.decode(faceAddress);   //_faceAddress
+                args[1] = name;   //_name
+                args[2] = new BigInteger(domainId);   //_domainId
+                byte[] functionCallBytes = functionRegisterMask.encode(args);
+
+                // 완료 팝업 띄우기
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
+                controller.setData(payerAddress, value.toString(), gasPrice, gasLimit, addressMaskingAddress, new byte[0], functionCallBytes);
+                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                    @Override
+                    public void success(Transaction tx) {
+                    }
+                    @Override
+                    public void fail(Transaction tx){
+
+                    }
+                });
+            }
+        });
+
+        receiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        receiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+
+        receiptController.addBeneficiaryAddress(0);
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addMaskAddress(0);
+        receiptController.addVSpace(16);
+        receiptController.addAmount(0);
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addPayerAddress(0);
+        receiptController.addVSpace(16);
+        receiptController.addChargedFee(0);
+        receiptController.addFee(16);
+        receiptController.addMineral(16);
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addChargedAmount(0);
+        receiptController.addVSpace(16);
+        receiptController.addLineStyleDotted();
+        receiptController.addVSpace(16);
+        receiptController.addAfterBalance(0);
+        receiptController.setSuccessed(false);
+    }
+
+    public void initializeHandOverReceipt() {
+        handOverReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
+            @Override
+            public void send() {
+                String fromAddress = handOverMaskController.getHandOverFromAddress();
+                String toAddress = handOverMaskController.getHandOverToAddress();
+                Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
+                BigInteger value = new BigInteger(""+values[0]);
+                BigInteger gasPrice = handOverMaskController.getGasPrice();
+                BigInteger gasLimit = handOverMaskController.getGasLimit();
+
+                Object[] args = new Object[1];
+                args[0] = Hex.decode(toAddress);
+                byte[] functionCallBytes = functionHandOverMask.encode(args);
+
+                // 완료 팝업 띄우기
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, new byte[0], functionCallBytes);
+                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                    @Override
+                    public void success(Transaction tx) {
+                    }
+                    @Override
+                    public void fail(Transaction tx){
+
+                    }
+                });
+            }
+        });
+
+        handOverReceiptController.setTitle(StringManager.getInstance().receipt.chargedAmount);
+        handOverReceiptController.setButtonTitle(StringManager.getInstance().receipt.transferButton);
+
+
+        handOverReceiptController.addBeneficiaryAddress(0);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addLineStyleDotted();
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addMaskAddress(0);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addAmount(0);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addLineStyleDotted();
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addPayerAddress(0);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addChargedFee(0);
+        handOverReceiptController.addFee(16);
+        handOverReceiptController.addMineral(16);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addLineStyleDotted();
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addChargedAmount(0);
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addLineStyleDotted();
+        handOverReceiptController.addVSpace(16);
+        handOverReceiptController.addAfterBalance(0);
+        handOverReceiptController.setSuccessed(false);
+    }
+
+
 
 
     @FXML
@@ -366,6 +427,9 @@ public class AddressMaskingController extends BaseViewController {
             this.tab1RightPane.setVisible(true);
             this.tabRightHandOverReceiptPane.setVisible(false);
 
+            this.receiptController.setVisible(true);
+            this.handOverReceiptController.setVisible(false);
+
         } else if(index == TAB_HAND_OVER_MASK) {
             this.cardManuPane.setVisible(false);
             this.bodyPane.setVisible(true);
@@ -377,7 +441,11 @@ public class AddressMaskingController extends BaseViewController {
             this.tab1RightPane.setVisible(false);
             this.tabRightHandOverReceiptPane.setVisible(true);
 
+            this.receiptController.setVisible(false);
+            this.handOverReceiptController.setVisible(true);
         }
+
+        settingLayoutData();
     }
 
     public void settingLayoutData() {
@@ -394,29 +462,59 @@ public class AddressMaskingController extends BaseViewController {
         String payerAddress = registerController.getPayerAddress();
         String mask = registerController.getMask();
         String domain = registerController.getDomain();
-        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-        BigInteger value = new BigInteger(""+values[0]);
 
+        BigInteger chargedFee = registerController.getChargedFee();
+        BigInteger fee = registerController.getFee();
+        BigInteger mineral = registerController.getMineral();
+        BigInteger amount = registerController.getAmount();
+        BigInteger chargedAmount = registerController.getChargedAmount();
+        BigInteger afterBalance = registerController.getAfterBalance();
 
-        receiptController.setEnabled(registerController.isEnabled());
-        receiptController.setAddress(address);
+        // charged fee
+        chargedFee = (chargedFee.compareTo(BigInteger.ZERO) >=0 ) ? chargedFee : BigInteger.ZERO;
+
+        // after balance
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        receiptController.setBeneficiaryAddress(address);
+        receiptController.setMask(mask+domain);
+        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        receiptController.setChargedFee(ApisUtil.readableApis(chargedFee, ',', true));
+        receiptController.setFee(ApisUtil.readableApis(fee, ',', true));
+        receiptController.setMineral(ApisUtil.readableApis(mineral, ',', true));
         receiptController.setPayerAddress(payerAddress);
-        receiptController.setMaskId(mask);
-        receiptController.setMaskDomain(domain);
-        receiptController.setValue(ApisUtil.readableApis(value, ',', true) + " APIS");
+        receiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount, ',', true));
+        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance, ',', true));
+        receiptController.setSuccessed(registerController.isEnabled());
     }
     public void settingLayoutDataHandOverAddress(){
         String fromAddress = handOverMaskController.getHandOverFromAddress();
         String toAddress = handOverMaskController.getHandOverToAddress();
         String mask = handOverMaskController.getHandOverFromMask();
-        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-        BigInteger value = new BigInteger(""+values[0]);
 
-        handOverReceiptController.setEnabled(handOverMaskController.isEnabled());
-        handOverReceiptController.setFromAddress(fromAddress);
-        handOverReceiptController.setToAddress(toAddress);
+        BigInteger chargedFee = handOverMaskController.getChargedFee();
+        BigInteger fee = handOverMaskController.getFee();
+        BigInteger mineral = handOverMaskController.getMineral();
+        BigInteger amount = handOverMaskController.getAmount();
+        BigInteger chargedAmount = handOverMaskController.getChargedAmount();
+        BigInteger afterBalance = handOverMaskController.getAfterBalance();
+
+        // charged fee
+        chargedFee = (chargedFee.compareTo(BigInteger.ZERO) >=0 ) ? chargedFee : BigInteger.ZERO;
+
+        // after balance
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        handOverReceiptController.setBeneficiaryAddress(toAddress);
         handOverReceiptController.setMask(mask);
-        handOverReceiptController.setValue(ApisUtil.readableApis(value, ',', true) + " APIS");
+        handOverReceiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        handOverReceiptController.setChargedFee(ApisUtil.readableApis(chargedFee, ',', true));
+        handOverReceiptController.setFee(ApisUtil.readableApis(fee, ',', true));
+        handOverReceiptController.setMineral(ApisUtil.readableApis(mineral, ',', true));
+        handOverReceiptController.setPayerAddress(fromAddress);
+        handOverReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount, ',', true));
+        handOverReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance, ',', true));
+        handOverReceiptController.setSuccessed(handOverMaskController.isEnabled());
     }
 
     public void update() {
