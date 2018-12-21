@@ -46,6 +46,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.*;
@@ -481,6 +482,34 @@ public class AppManager {
             model.setTokenAddress(ByteUtil.toHexString(record.getTokenAddress()));
             tokens.add(model);
         }
+    }
+
+    public boolean startRPC(){
+        // start server
+        try {
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            if(rpcServerManager.isAvailable()) {
+                rpcServerManager.startServer();
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean stopRPC(){
+        // stop server
+        try {
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            if(rpcServerManager.isAvailable()) {
+                rpcServerManager.stopServer();
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean isMasterNode(String address){

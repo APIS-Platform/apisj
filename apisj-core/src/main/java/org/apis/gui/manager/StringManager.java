@@ -1046,6 +1046,7 @@ public class StringManager {
         public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcIdLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcPwLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcStartLabel = new SimpleStringProperty();
         public SimpleStringProperty generalTitle = new SimpleStringProperty();
         public SimpleStringProperty startWalletWithLogInLabel = new SimpleStringProperty();
         public SimpleStringProperty enableLogEventLabel = new SimpleStringProperty();
@@ -1064,6 +1065,7 @@ public class StringManager {
             rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));
             rpcIdLabel.set(StringManager.this.getString("setting_rpc_id_label", "ID"));
             rpcPwLabel.set(StringManager.this.getString("setting_rpc_pw_label", "Password"));
+            rpcStartLabel.set(StringManager.this.getString("setting_rpc_start_label", "Start RPC"));
             generalTitle.set(StringManager.this.getString("setting_general_title", "General"));
             startWalletWithLogInLabel.set(StringManager.this.getString("setting_start_wallet_with_log_in_label", "Start APIS Wallet with system log in"));
             enableLogEventLabel.set(StringManager.this.getString("setting_enable_log_event_label", "Enable log event"));

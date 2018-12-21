@@ -21,6 +21,8 @@ import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
+import org.apis.rpc.RPCServerManager;
+import org.apis.util.ConsoleUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -37,7 +39,7 @@ public class SettingController extends BasePopupController {
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
-    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
+    @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
@@ -63,6 +65,8 @@ public class SettingController extends BasePopupController {
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "RPC Start");
+
         addGeneralItem("startWalletWithLogIn");
         //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
@@ -202,6 +206,18 @@ public class SettingController extends BasePopupController {
                 this.passwordInputController = (SettingItemInputController)loader.getController();
                 this.passwordInputController.setInput(inputFlag);
                 this.passwordInputController.setContents(StringManager.getInstance().setting.rpcPwLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(contentsId.equals("RPC Start")){
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.rpcStartInputController = (SettingItemBtnController)loader.getController();
+                this.rpcStartInputController.setContents(StringManager.getInstance().setting.rpcStartLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -419,7 +435,9 @@ public class SettingController extends BasePopupController {
                 }
             }
             prop.setProperty("in_system_log", "" + startWalletWithLogInBtnController.isSelected());
-            prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            if(enableLogEventBtnController != null) {
+                prop.setProperty("enable_event_log", "" + enableLogEventBtnController.isSelected());
+            }
             prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
@@ -435,6 +453,12 @@ public class SettingController extends BasePopupController {
                 for(int i = 0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
                     SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
                 }
+            }
+
+            if(AppManager.getInstance().startRPC()){
+                System.out.println("RPC 실행됨.");
+            }else{
+                System.out.println("RPC 실행오류.");
             }
 
             //exit();
