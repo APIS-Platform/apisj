@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -30,6 +31,9 @@ public class PopupRemoveWalletController extends BasePopupController {
     public void remove(){
         if(handler != null){
             handler.remove(this.removeWalletAddressList);
+        }
+        if(this.removeWalletAddressList != null && this.removeWalletAddressList.size() != 0) {
+            DBManager.getInstance().deleteMyAddress(this.removeWalletAddressList.get(0));
         }
         this.removeWalletAddressList.clear();
         PopupManager.getInstance().hideMainPopup(zIndex);
