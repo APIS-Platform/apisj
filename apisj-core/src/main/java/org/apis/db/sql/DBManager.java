@@ -620,6 +620,20 @@ public class DBManager {
         return false;
     }
 
+    public boolean updateMyAddressExistZero(){
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE myaddress SET `exist` = 0");
+            int updateResult = update.executeUpdate();
+            update.close();
+
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public boolean updateMyAddress( byte[] address, String alias, int exist ){
 
         try {
