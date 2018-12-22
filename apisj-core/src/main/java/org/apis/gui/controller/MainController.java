@@ -27,7 +27,6 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
-import sun.awt.image.ImageDecoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

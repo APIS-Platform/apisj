@@ -6,8 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
@@ -27,19 +29,22 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupMyAddressEditController extends BasePopupController {
-    @FXML private AnchorPane rootPane;
+    @FXML private AnchorPane rootPane, textFieldPane;
     @FXML private FlowPane groupList;
-    @FXML private TextField addressTextField, aliasTextField;
+    @FXML private TextField addressTextField, maskTextField, aliasTextField;
     @FXML private Label titleLabel, subTitleLabel, walletAddressLabel, walletNameLabel, groupLabel, noBtn, yesBtn;
 
     private ArrayList<String> selectGroupList = new ArrayList<>();      // 선택한 그룹(String)
     private ArrayList<String> textGroupList = new ArrayList<>();                       // 선택할 수 있는 그룹 리스트 (String)
     private ArrayList<ApisTagItemController> groupControllerList = new ArrayList<>();  // 선택할 수 있는 그룹 리스트 (Object)
     private MyAddressModel model;
+    private String mask;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
+
+        AppManager.settingTextFieldLineStyle(aliasTextField);
 
         List<AddressGroupRecord> groups = DBManager.getInstance().selectAddressGroups();
         for(int i=0; i<groups.size(); i++){
@@ -47,6 +52,16 @@ public class PopupMyAddressEditController extends BasePopupController {
         }
         textGroupList.add("+ "+StringManager.getInstance().myAddress.addGroup.get());
         initGroupList();
+
+        this.textFieldPane.setOnMouseEntered(event -> {
+            this.maskTextField.setVisible(false);
+            this.addressTextField.setVisible(true);
+        });
+        this.textFieldPane.setOnMouseExited(event -> {
+            this.maskTextField.setVisible(true);
+            this.addressTextField.setVisible(false);
+        });
+        this.maskTextField.setVisible(false);
     }
 
     private void languageSetting(){
@@ -167,12 +182,26 @@ public class PopupMyAddressEditController extends BasePopupController {
         this.model = (MyAddressModel)model;
 
         String address = this.model.getAddress();
-        String mask = AppManager.getInstance().getMaskWithAddress(address);
+        mask = AppManager.getInstance().getMaskWithAddress(address);
+
         if(mask != null && mask.length() > 0){
-            address = address + "("+mask+")";
+            this.addressTextField.setVisible(false);
+            this.maskTextField.setVisible(true);
+        } else {
+            this.textFieldPane.setOnMouseEntered(null);
+            this.textFieldPane.setOnMouseExited(null);
+            this.addressTextField.setVisible(true);
+            this.maskTextField.setVisible(false);
         }
+
         this.addressTextField.setText(address);
+        this.maskTextField.setText(mask);
         this.aliasTextField.setText(this.model.getAlias());
+
+        // Wallet already have
+        if(this.model.getExist() == 1) {
+            aliasTextField.setDisable(true);
+        }
 
         if(this.model.getGroupList() != null){
             this.selectGroupList = this.model.getGroupList();

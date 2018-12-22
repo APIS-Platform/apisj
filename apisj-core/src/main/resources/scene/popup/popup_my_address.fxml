@@ -146,7 +146,7 @@
                                           <Insets />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="deleteLabel" styleClass="font_semibold_12" text="Delete" GridPane.columnIndex="2">
+                                    <Label fx:id="deleteLabel" styleClass="font_semibold_12" text="Delete" visible="false" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>
