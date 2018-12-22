@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -33,7 +34,6 @@ import org.apis.db.sql.TransactionRecord;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
-import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
@@ -59,9 +59,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -467,7 +469,7 @@ public class AppManager {
         return -1;
     }
 
-    public void initTokens(){
+    public void loadDBTokens(){
         this.tokens.clear();
         TokenModel apis = new TokenModel();
         apis.setTokenName("APIS");
@@ -794,7 +796,7 @@ public class AppManager {
         }
 
         // token 불러오기
-        initTokens();
+        loadDBTokens();
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             Platform.runLater(new Runnable() {
@@ -1600,5 +1602,81 @@ public class AppManager {
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
+    }
+
+
+
+    public void createTrayIcon(final Stage stage) {
+        if(SystemTray.isSupported()) {
+            java.awt.Image image = null;
+            try {
+                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
+
+                image = ImageIO.read(url);
+                image = image.getScaledInstance(16,16,0);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(SystemTray.isSupported()) {
+                                stage.hide();
+                            } else {
+                                System.exit(0);
+                            }
+                        }
+                    });
+                }
+            });
+
+            final ActionListener closeListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    System.exit(0);
+                }
+            };
+
+            ActionListener showListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            stage.show();
+                        }
+                    });
+                }
+            };
+
+            // Create a Popup Menu
+            PopupMenu popupMenu = new PopupMenu();
+            MenuItem showItem = new MenuItem("Show");
+            MenuItem closeItem = new MenuItem("Close");
+
+            showItem.addActionListener(showListener);
+            closeItem.addActionListener(closeListener);
+
+            popupMenu.add(showItem);
+            popupMenu.add(closeItem);
+
+            // Construct a TrayIcon
+            try {
+                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
+                trayIcon.addActionListener(showListener);
+                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+                }
+                SystemTray.getSystemTray().add(trayIcon);
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

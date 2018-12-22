@@ -1,7 +1,5 @@
 package org.apis.gui.controller.popup;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -115,7 +113,7 @@ public class PopupTokenEditController extends BasePopupController {
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);
-        AppManager.getInstance().initTokens();
+        AppManager.getInstance().loadDBTokens();
 
         exit();
     }

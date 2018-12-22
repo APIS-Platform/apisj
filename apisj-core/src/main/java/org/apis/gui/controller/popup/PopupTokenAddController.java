@@ -128,7 +128,7 @@ public class PopupTokenAddController extends BasePopupController {
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);
-        AppManager.getInstance().initTokens();
+        AppManager.getInstance().loadDBTokens();
 
         exit();
         if(handler != null){

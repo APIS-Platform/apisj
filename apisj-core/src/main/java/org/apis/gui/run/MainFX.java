@@ -38,14 +38,11 @@ public class MainFX extends Application  {
         AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
         if("true".equals(AppManager.getWindowPropertiesData("minimize_to_tray"))){
             Platform.setImplicitExit(false);
-            createTrayIcon(primaryStage);
+            AppManager.getInstance().createTrayIcon(primaryStage);
         }
 
         Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Medium.otf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Regular.otf").toString(), 14 );
-
-        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Regular.ttf").toString(), 14 );
-        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-SemiBold.ttf").toString(), 14 );
 
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14 );
@@ -95,80 +92,6 @@ public class MainFX extends Application  {
     @Override
     public void stop() {
         System.exit(0);
-    }
-
-    public void createTrayIcon(final Stage stage) {
-        if(SystemTray.isSupported()) {
-            java.awt.Image image = null;
-            try {
-                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
-
-                image = ImageIO.read(url);
-                image = image.getScaledInstance(16,16,0);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(SystemTray.isSupported()) {
-                                stage.hide();
-                            } else {
-                                System.exit(0);
-                            }
-                        }
-                    });
-                }
-            });
-
-            final ActionListener closeListener = new ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    System.exit(0);
-                }
-            };
-
-            ActionListener showListener = new ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            stage.show();
-                        }
-                    });
-                }
-            };
-
-            // Create a Popup Menu
-            PopupMenu popupMenu = new PopupMenu();
-            MenuItem showItem = new MenuItem("Show");
-            MenuItem closeItem = new MenuItem("Close");
-
-            showItem.addActionListener(showListener);
-            closeItem.addActionListener(closeListener);
-
-            popupMenu.add(showItem);
-            popupMenu.add(closeItem);
-
-            // Construct a TrayIcon
-            try {
-                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
-                trayIcon.addActionListener(showListener);
-                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
-                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
-                }
-                SystemTray.getSystemTray().add(trayIcon);
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }
