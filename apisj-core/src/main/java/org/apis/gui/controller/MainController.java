@@ -4,12 +4,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
@@ -26,7 +27,12 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
+import sun.awt.image.ImageDecoder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -39,7 +45,7 @@ public class MainController extends BaseViewController {
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
-    @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting;
+    @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting, logo;
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
     @FXML private TabMenuController tabMenuController;
@@ -357,6 +363,7 @@ public class MainController extends BaseViewController {
 
         init();
         hideLayerPopup();
+
     }
     public void languageSetting() {
 

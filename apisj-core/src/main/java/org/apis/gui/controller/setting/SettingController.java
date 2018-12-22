@@ -42,7 +42,7 @@ public class SettingController extends BasePopupController {
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
-    @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
+    @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
 
@@ -65,6 +65,7 @@ public class SettingController extends BasePopupController {
         // Initiate items
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Max Connections");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "RPC Start");
@@ -136,9 +137,10 @@ public class SettingController extends BasePopupController {
 
     private void loadSettingData() {
         Properties prop = AppManager.getRPCProperties();
-        userNumLabel.setText(prop.getProperty("max_connections"));
+        userNumLabel.setText("30");
         portInputController.setTextField(prop.getProperty("port"));
         whiteListInputController.setTextField(prop.getProperty("allow_ip"));
+        maxConnectionsInputController.setTextField(prop.getProperty("max_connections"));
         idInputController.setTextField(prop.getProperty("id"));
         passwordInputController.setTextField(prop.getProperty("password"));
         rpcStartInputController.setSelected(prop.getProperty("use_rpc").equals("true"));
@@ -185,6 +187,19 @@ public class SettingController extends BasePopupController {
                 e.printStackTrace();
             }
 
+        } else if(contentsId.equals("Max Connections")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.maxConnectionsInputController = (SettingItemInputController)loader.getController();
+                this.maxConnectionsInputController.setInput(inputFlag);
+                this.maxConnectionsInputController.setContents(StringManager.getInstance().setting.rpcMaxConnectionsLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if(contentsId.equals("ID")) {
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
@@ -350,7 +365,7 @@ public class SettingController extends BasePopupController {
             prop.setProperty("port", portInputController.getTextField().trim());
             prop.setProperty("id", idInputController.getTextField().trim());
             prop.setProperty("password", passwordInputController.getTextField().trim());
-            prop.setProperty("max_connections", userNumLabel.getText());
+            prop.setProperty("max_connections", maxConnectionsInputController.getTextField().trim());
             prop.setProperty("allow_ip", whiteListInputController.getTextField().trim());
             prop.setProperty("use_rpc", "" + rpcStartInputController.isSelected());
             AppManager.saveRPCProperties();

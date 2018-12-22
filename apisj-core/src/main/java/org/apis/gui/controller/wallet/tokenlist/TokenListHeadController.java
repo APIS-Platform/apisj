@@ -133,7 +133,7 @@ public class TokenListHeadController extends BaseViewController {
                 }
                 tokenValue = AppManager.getInstance().getTotalTokenValue(tokenAddress);
                 tokenSymbol = AppManager.getInstance().getTokenSymbol(tokenAddress);
-                this.walletIcon.setImage(ImageManager.getIdenticons(tokenAddress));
+                this.walletIcon.setImage(AppManager.getInstance().getTokenIcon(tokenAddress));
                 this.name.setText(tokenName);
                 this.valueUnit1.setText(tokenSymbol);
                 this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', true));
