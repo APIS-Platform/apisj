@@ -245,21 +245,20 @@ public class WalletListHeadController extends BaseViewController {
                 this.tagLabel.setText("MASTERNODE");
                 this.tagLabel.setPrefWidth(-1);
                 GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-            } else if (!itemModel.isMasterNode()) {
+            } else {
+                this.tagLabel.setVisible(true);
                 if(itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
                     this.masternodeState.setStyle("-fx-background-color: #ffff00; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                    this.masternodeState.setVisible(true);
+                    this.tagLabel.setText("MASTERNODE");
+                    this.tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
+                } else {
+                    this.masternodeState.setVisible(false);
+                    this.tagLabel.setText("");
+                    this.tagLabel.setPrefWidth(0);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
                 }
-                this.masternodeState.setVisible(true);
-                this.tagLabel.setVisible(true);
-                this.tagLabel.setText("MASTERNODE");
-                this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-            } else {
-                this.masternodeState.setVisible(false);
-                this.tagLabel.setVisible(true);
-                this.tagLabel.setText("");
-                this.tagLabel.setPrefWidth(0);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
             }
 
             // 보안키 체크
