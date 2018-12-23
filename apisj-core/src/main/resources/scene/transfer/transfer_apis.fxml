@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -86,14 +85,7 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
                <children>
-                  <TextField fx:id="recevingTextField" focusTraversable="false" layoutY="-1.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" promptText="Write Reving Address" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
-                     <styleClass>
-                        <String fx:value="border_radius_4444" />
-                        <String fx:value="font_regular_12" />
-                     </styleClass>
-                     <padding>
-                        <Insets left="16.0" />
-                     </padding></TextField>
+                  <fx:include fx:id="recevingField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="2">
@@ -110,6 +102,9 @@
                      </image>
                   </ImageView>
                </children>
+               <GridPane.margin>
+                  <Insets top="8.0" />
+               </GridPane.margin>
             </AnchorPane>
             <AnchorPane>
                <children>

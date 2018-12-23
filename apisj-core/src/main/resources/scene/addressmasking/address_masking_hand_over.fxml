@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -126,10 +125,7 @@
             <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" GridPane.rowIndex="12">
                <children>
                   <fx:include fx:id="selectHandedTo" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <TextField fx:id="handedAddressTextField" style="-fx-border-color: #d8d8d8;" styleClass="border_radius_4444" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets left="16.0" />
-                     </padding></TextField>
+                  <fx:include fx:id="handedAddressField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" GridPane.rowIndex="4">

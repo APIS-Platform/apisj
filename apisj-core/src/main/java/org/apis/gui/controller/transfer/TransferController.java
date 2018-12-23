@@ -317,6 +317,7 @@ public class TransferController extends BaseViewController {
         tokenReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount, ',', true));
         tokenReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance, ',', true));
         tokenReceiptController.setAfterTokenBalance(ApisUtil.readableApis(afterTokenBalance, ',', true));
+        tokenReceiptController.setSuccessed(transferTokenController.isReadyTransfer());
     }
 
     private void refreshToApis(){

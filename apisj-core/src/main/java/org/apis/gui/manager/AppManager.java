@@ -762,8 +762,14 @@ public class AppManager {
         }
 
         //sort : alias asc
-        keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
-        keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+        if(keyStoreDataList.size() > 1) {
+            try {
+                keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+                keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+            }catch (Exception e){
+                // sort error
+            }
+        }
 
         return this.keyStoreDataList;
     }

@@ -17,6 +17,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
@@ -40,9 +41,10 @@ public class AddressMaskingRegisterController extends BaseViewController {
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
+    @FXML private ApisAddressFieldController addressFieldController;
     @FXML private GridPane hintAddressLabel, hintMessageLabel;
     @FXML private Label selectedDomainLabel, totalBalance;
-    @FXML private TextField addrMaskingIDTextField, addressTextField;
+    @FXML private TextField addrMaskingIDTextField;
     @FXML private ImageView domainDragDrop, idIcon, registerAddressIcon;
     @FXML private Label idIcon2, warningLabel, recipientInputBtn, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel
             , selectDomainDesc, publicDomainMsg, registerIdLabel, idMsg, idMsg2, payerLabel, totalApisLabel;
@@ -60,7 +62,6 @@ public class AddressMaskingRegisterController extends BaseViewController {
         languageSetting();
 
         AppManager.settingTextFieldStyle(addrMaskingIDTextField);
-        AppManager.settingTextFieldStyle(addressTextField);
 
         this.addrMaskingIDTextField.setText("");
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
@@ -77,21 +78,13 @@ public class AddressMaskingRegisterController extends BaseViewController {
             }
         });
 
-        this.addressTextField.textProperty().addListener(new ChangeListener<String>() {
+        addressFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!addressTextField.getText().matches("[0-9a-fA-F]*")) {
-                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
-                }
-
-                int maxlangth = 40;
-                if (addressTextField.getText().trim().length() > maxlangth) {
-                    addressTextField.setText(addressTextField.getText().trim().substring(0, maxlangth));
-                }
-
+            public void change(String address, String mask) {
                 settingLayoutData();
             }
         });
+        addressFieldController.setVisible(false);
 
         this.warningLabel.setVisible(false);
 
@@ -190,9 +183,9 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.Cffffff);
-                addressTextField.setText("");
+                addressFieldController.setText("");
                 selectAddressController.setVisible(false);
-                addressTextField.setVisible(true);
+                addressFieldController.setVisible(true);
             } else {
                 isMyAddressSelected = true;
 
@@ -200,7 +193,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 selectAddressController.setVisible(true);
-                addressTextField.setVisible(false);
+                addressFieldController.setVisible(false);
             }
 
             settingLayoutData();
@@ -239,7 +232,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         if(isMyAddressSelected){
             address = selectAddressController.getAddress().trim();
         }else{
-            address = addressTextField.getText();
+            address = addressFieldController.getAddress();
         }
 
         mask = AppManager.getInstance().getMaskWithAddress(address);
@@ -252,13 +245,13 @@ public class AddressMaskingRegisterController extends BaseViewController {
         this.selectDomainMsg3.setText(valueApis+"APIS");
 
         // 도메인 체크
-        if(address.length() < 40 || (mask != null && mask.length() > 0)){
+        if(address == null || address.length() < 40 || (mask != null && mask.length() > 0)){
             isUseAddress = false;
 
             this.registerAddressIcon.setVisible(true);
             this.registerAddressIcon.setImage(ImageManager.icErrorRed);
 
-            if(address.length() < 40) {
+            if(address == null || address.length() < 40) {
                 this.registerAddressMsg.textProperty().unbind();
                 this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg3);
             }else{
@@ -349,16 +342,13 @@ public class AddressMaskingRegisterController extends BaseViewController {
         if(isMyAddressSelected){
             return this.selectAddressController.getAddress();
         }else{
-            return this.addressTextField.getText().trim();
+            return this.addressFieldController.getAddress();
         }
     }
 
     private void esimateGasLimit(){
         String payerAddress = selectPayerController.getAddress();
-        String address = selectAddressController.getAddress();
-        if(!isMyAddressSelected){
-            address = addressTextField.getText();
-        }
+        String address = getAddress();
 
         BigInteger value = selectDomainController.getValueApisToBigInt();
         String maskingId = addrMaskingIDTextField.getText();
