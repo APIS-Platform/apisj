@@ -1160,6 +1160,15 @@ public class AppManager {
         return true;
     }
 
+    public void cancelMasternode() {
+        this.masternodeAddress = null;
+        this.recipientAddress = null;
+        AppManager.saveGeneralProperties("masternode_address", this.masternodeAddress);
+        AppManager.saveGeneralProperties("recipient_address", this.recipientAddress);
+        SystemProperties.getDefault().setMasternodePrivateKey(null);
+        SystemProperties.getDefault().setMasternodeRecipient(null);
+    }
+
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function){
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
         Object[] ret = function.decodeResult(r.getHReturn());
