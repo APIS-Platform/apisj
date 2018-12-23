@@ -1046,6 +1046,7 @@ public class StringManager {
         public SimpleStringProperty rpcTitle = new SimpleStringProperty();
         public SimpleStringProperty rpcPortLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcMaxConnectionsLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcIdLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcPwLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcStartLabel = new SimpleStringProperty();
@@ -1065,6 +1066,7 @@ public class StringManager {
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
             rpcPortLabel.set(StringManager.this.getString("setting_rpc_port_label", "Port"));
             rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));
+            rpcMaxConnectionsLabel.set(StringManager.this.getString("setting_rpc_max_connections_label", "Max Connections"));
             rpcIdLabel.set(StringManager.this.getString("setting_rpc_id_label", "ID"));
             rpcPwLabel.set(StringManager.this.getString("setting_rpc_pw_label", "Password"));
             rpcStartLabel.set(StringManager.this.getString("setting_rpc_start_label", "Start RPC"));

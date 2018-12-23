@@ -8,8 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,6 +26,10 @@ import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -39,7 +42,7 @@ public class MainController extends BaseViewController {
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
-    @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting;
+    @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting, logo;
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
     @FXML private TabMenuController tabMenuController;
@@ -357,6 +360,7 @@ public class MainController extends BaseViewController {
 
         init();
         hideLayerPopup();
+
     }
     public void languageSetting() {
 

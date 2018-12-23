@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -58,11 +59,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -72,6 +78,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class AppManager {
+    public static final String REGISTER_DOMAIN_URL = "https://goo.gl/forms/oytS76KKssTcosND3";
 
     /* ==============================================
      *  KeyStoreManager Field : private
@@ -337,10 +344,6 @@ public class AppManager {
         return df.format(num);
     }
 
-    public static String commaSpace(String number) {
-        return comma(number).replaceAll(","," ");
-    }
-
     // setting block timestamp
     public static String setBlockTimestamp(long lastBlockTimestamp, long nowBlockTimestamp){
         //Date nowDate = new Date();
@@ -466,7 +469,7 @@ public class AppManager {
         return -1;
     }
 
-    public void initTokens(){
+    public void loadDBTokens(){
         this.tokens.clear();
         TokenModel apis = new TokenModel();
         apis.setTokenName("APIS");
@@ -517,6 +520,16 @@ public class AppManager {
         }
 
         return true;
+    }
+
+    public void openBrowserRegisterDomain(){
+        try {
+            Desktop.getDesktop().browse(new URI(REGISTER_DOMAIN_URL));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isMasterNode(String address){
@@ -626,7 +639,34 @@ public class AppManager {
         }else if(tokenAddress.equals("-2")){
             return ImageManager.mineraIcon;
         }else{
-            return ImageManager.getIdenticons(tokenAddress);
+            return getTokenImage(tokenAddress);
+        }
+    }
+
+    private HashMap<String, Image> tokenIconWithUrl = new HashMap<>();
+    private Image getTokenImage(String tokenAddress){
+        Image image = null;
+        if(tokenAddress != null && tokenAddress.length() > 0){
+            String url = AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("iconUrl"))[0].toString();
+            if( isValidURL(url) ){
+                image = tokenIconWithUrl.get(url);
+                if(image == null){
+                    image = new Image(url);
+                    tokenIconWithUrl.put(url, image);
+                }
+            }else{
+                image = ImageManager.getIdenticons(tokenAddress);
+            }
+        }
+        return image;
+    }
+    private boolean isValidURL(String urlStr) {
+        try {
+            URL url = new URL(urlStr);
+            return true;
+        }
+        catch (MalformedURLException e) {
+            return false;
         }
     }
 
@@ -756,7 +796,7 @@ public class AppManager {
         }
 
         // token 불러오기
-        initTokens();
+        loadDBTokens();
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             Platform.runLater(new Runnable() {
@@ -1415,8 +1455,9 @@ public class AppManager {
             prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("max_connections", String.valueOf(1));
+            prop.setProperty("max_connections", String.valueOf(5));
             prop.setProperty("allow_ip", "127.0.0.1");
+            prop.setProperty("use_rpc", "false");
 
             try {
                 File config = new File("config");
@@ -1561,5 +1602,81 @@ public class AppManager {
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
+    }
+
+
+
+    public void createTrayIcon(final Stage stage) {
+        if(SystemTray.isSupported()) {
+            java.awt.Image image = null;
+            try {
+                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
+
+                image = ImageIO.read(url);
+                image = image.getScaledInstance(16,16,0);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(SystemTray.isSupported()) {
+                                stage.hide();
+                            } else {
+                                System.exit(0);
+                            }
+                        }
+                    });
+                }
+            });
+
+            final ActionListener closeListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    System.exit(0);
+                }
+            };
+
+            ActionListener showListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            stage.show();
+                        }
+                    });
+                }
+            };
+
+            // Create a Popup Menu
+            PopupMenu popupMenu = new PopupMenu();
+            MenuItem showItem = new MenuItem("Show");
+            MenuItem closeItem = new MenuItem("Close");
+
+            showItem.addActionListener(showListener);
+            closeItem.addActionListener(closeListener);
+
+            popupMenu.add(showItem);
+            popupMenu.add(closeItem);
+
+            // Construct a TrayIcon
+            try {
+                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
+                trayIcon.addActionListener(showListener);
+                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+                }
+                SystemTray.getSystemTray().add(trayIcon);
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

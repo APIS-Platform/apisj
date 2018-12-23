@@ -1,8 +1,10 @@
 package org.apis.gui.controller.module.selectbox;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
 import org.apis.gui.manager.AppManager;
@@ -23,6 +25,19 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
     public void initialize(URL location, ResourceBundle resources) {
         // set a clip to apply rounded border to the original image.
         AppManager.settingIdenticonStyle(icon);
+
+        addressLabel.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                addressLabel.setText(itemModel.addressProperty().get());
+            }
+        });
+        addressLabel.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                addressLabel.setText(returnMask());
+            }
+        });
     }
 
     @Override
@@ -38,7 +53,7 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
             }
             balanceLabel.setText(stringBalance);
             aliasLabel.setText(itemModel.aliasProperty().get());
-            addressLabel.setText(itemModel.addressProperty().get());
+            addressLabel.setText(returnMask());
             icon.setImage(itemModel.getIdenticon());
 
             // 보안키 체크
@@ -50,5 +65,17 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
                 icKnowledgekey.setVisible(false);
             }
         }
+    }
+
+    public String returnMask(){
+        String address = itemModel.addressProperty().get();
+        String mask;
+        if(address != null){
+            mask = AppManager.getInstance().getMaskWithAddress(address);
+            if (mask != null && mask.length() > 0) {
+                address = mask;
+            }
+        }
+        return address;
     }
 }

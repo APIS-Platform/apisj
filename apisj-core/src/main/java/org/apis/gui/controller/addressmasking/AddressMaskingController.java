@@ -32,8 +32,6 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingController extends BaseViewController {
 
-    public static final String REGISTER_DOMAIN_URL = "https://goo.gl/forms/oytS76KKssTcosND3";
-
     public static final int TAB_MENU = -1;
     public static final int TAB_REGISTER_MASK = 0;
     public static final int TAB_HAND_OVER_MASK = 1;
@@ -309,13 +307,7 @@ public class AddressMaskingController extends BaseViewController {
         }else if(id.equals("cardHandOverMask")){
             initStyleTab(TAB_HAND_OVER_MASK);
         }else if(id.equals("cardRegisterDomain")) {
-            try {
-                Desktop.getDesktop().browse(new URI(REGISTER_DOMAIN_URL));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            AppManager.getInstance().openBrowserRegisterDomain();
         }
 
     }

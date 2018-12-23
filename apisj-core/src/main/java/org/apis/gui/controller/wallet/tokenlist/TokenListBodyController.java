@@ -170,7 +170,7 @@ public class TokenListBodyController extends BaseViewController{
         if(model != null) {
             this.model.set((WalletItemModel) model);
             WalletItemModel itemModel = this.model;
-            this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
+            this.walletIcon.setImage(AppManager.getInstance().getTokenIcon(itemModel.getAddress()));
             this.walletAlias.setText(itemModel.getAlias());
             this.walletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 12));
 

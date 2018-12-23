@@ -93,7 +93,7 @@ public class PopupTokenListItemController implements Initializable {
 
         this.tokenName.setText(record.getTokenName()+" ("+record.getTokenSymbol()+")");
         this.tokenAddress.setText(ByteUtil.toHexString(record.getTokenAddress()));
-        this.addrCircleImg.setImage(IdenticonGenerator.createIcon(ByteUtil.toHexString(record.getTokenAddress())));
+        this.addrCircleImg.setImage(AppManager.getInstance().getTokenIcon(ByteUtil.toHexString(record.getTokenAddress())));
 
         if(tokenAddress != null && !tokenAddress.getText().equals("")) {
             if (AppManager.getInstance().isFrozen(tokenAddress.getText())) {

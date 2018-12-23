@@ -120,7 +120,7 @@ public class PopupTokenListController extends BasePopupController {
                 public void onClickDelete() {
                     DBManager.getInstance().deleteToken(record.getTokenAddress());
                     list.getChildren().remove(node);
-                    AppManager.getInstance().initTokens();
+                    AppManager.getInstance().loadDBTokens();
 
                     if(handler != null){
                         handler.change();

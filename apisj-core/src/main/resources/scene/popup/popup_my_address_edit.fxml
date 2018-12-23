@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressEditController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressEditController">
    <children>
       <GridPane layoutX="20.0" layoutY="20.0" prefWidth="560.0" style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -77,13 +77,18 @@
                           </rowConstraints>
                            <children>
                               <Label fx:id="walletAddressLabel" styleClass="font_semibold_12" text="Wallet Address" textFill="#2b2b2b" />
-                              <AnchorPane GridPane.rowIndex="1">
+                              <AnchorPane fx:id="textFieldPane" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="addressTextField" disable="true" editable="false" style="-fx-background-color: #ffffff;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets left="-1.0" />
                                        </padding></TextField>
-                                    <Pane prefHeight="1.0" style="-fx-background-color: #999999;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" />
+                                    <TextField fx:id="maskTextField" disable="true" editable="false" style="-fx-background-color: #ffffff;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                       <padding>
+                                          <Insets left="-1.0" />
+                                       </padding>
+                                    </TextField>
+                                    <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" />
                                  </children>
                               </AnchorPane>
                               <GridPane GridPane.rowIndex="3">
@@ -99,12 +104,11 @@
                                     <Label fx:id="walletNameLabel" styleClass="font_semibold_12" text="Wallet Name" textFill="#292929" />
                                     <AnchorPane GridPane.rowIndex="1">
                                        <children>
-                                          <TextField fx:id="aliasTextField" style="-fx-background-color: #ffffff;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                          <TextField fx:id="aliasTextField" style="-fx-background-color: #ffffff; -fx-border-width: 0 0 1 0; -fx-border-color: #999999;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
                                              <padding>
                                                 <Insets left="-1.0" />
                                              </padding>
                                           </TextField>
-                                          <Pane prefHeight="1.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
