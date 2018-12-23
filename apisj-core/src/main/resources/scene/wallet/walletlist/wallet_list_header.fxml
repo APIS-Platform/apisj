@@ -99,7 +99,7 @@
                                     <Insets />
                                  </opaqueInsets>
                               </Label>
-                              <Pane fx:id="masternodeState" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: b01e1e;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="2">
+                              <Pane fx:id="masternodeState" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #ffc12f;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="8.0" />
                                  </GridPane.margin>
