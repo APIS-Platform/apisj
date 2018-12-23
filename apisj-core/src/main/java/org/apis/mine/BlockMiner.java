@@ -5,7 +5,6 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
-import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
@@ -189,14 +188,6 @@ public class BlockMiner {
         // Get the state of the master node.
         Repository mnRepo = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
         AccountState mnState = mnRepo.getAccountState(mnKey.getAddress());
-
-        /*
-         * 마스터노드는 2단계 인증이 되어 있어야만 등록이 가능하다.
-         * Registration is possible only if 2-step authorization is applied to the address.
-         */
-        if(mnState.getProofKey() == null || FastByteComparisons.equal(mnState.getProofKey(), HashUtil.EMPTY_DATA_HASH)) {
-            return;
-        }
 
         /*
          * 잔고가 마스터노드 기준 금액과 동일해야한다.
