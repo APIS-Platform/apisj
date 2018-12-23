@@ -43,6 +43,10 @@ public class ImageManager {
     public static final Image btnRemoveWalletHover = new Image("image/btn_deletewallet_hover@2x.png");
     public static final Image btnMiningGrey = new Image("image/ic_miningwallet_grey@2x.png");
     public static final Image btnMiningRed = new Image("image/ic_miningwallet_red@2x.png");
+    public static final Image btnMiningBlack = new Image("image/ic_miningwallet_black@2x.png");
+    public static final Image btnMasternodeGrey = new Image("image/ic_masternode_grey@2x.png");
+    public static final Image btnMasternodeRed = new Image("image/ic_masternode_red@2x.png");
+    public static final Image btnMasternodeBlack = new Image("image/ic_masternode_black@2x.png");
 
     public static final Image icTransfer = new Image("image/btn_transfer_arrow@2x.png");
     public static final Image icTransferHover = new Image("image/btn_transfer_arrow_h@2x.png");
