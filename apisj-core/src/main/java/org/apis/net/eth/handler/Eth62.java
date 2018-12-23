@@ -22,22 +22,23 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
-import org.apis.config.Constants;
+import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
+import org.apis.listener.CompositeEthereumListener;
 import org.apis.mine.MinedBlockCache;
 import org.apis.net.eth.EthVersion;
-import org.apis.config.SystemProperties;
 import org.apis.net.eth.message.*;
-import org.apis.listener.CompositeEthereumListener;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.discover.NodeManager;
-import org.apis.net.submit.*;
+import org.apis.net.submit.MinedBlockExecutor;
+import org.apis.net.submit.MinedBlockTask;
 import org.apis.net.submit.TransactionExecutor;
-import org.apis.sync.SyncManager;
+import org.apis.net.submit.TransactionTask;
 import org.apis.sync.PeerState;
+import org.apis.sync.SyncManager;
 import org.apis.sync.SyncStatistics;
 import org.apis.util.*;
 import org.apis.validator.BlockHeaderRule;
@@ -55,10 +56,9 @@ import java.util.*;
 
 import static java.lang.Math.min;
 import static java.util.Collections.singletonList;
-import static org.apis.net.message.ReasonCode.USELESS_PEER;
 import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
+import static org.apis.net.message.ReasonCode.USELESS_PEER;
 import static org.apis.sync.PeerState.*;
-import static org.apis.sync.PeerState.BLOCK_RETRIEVING;
 import static org.apis.util.Utils.longToTimePeriod;
 import static org.spongycastle.util.encoders.Hex.toHexString;
 
@@ -512,7 +512,7 @@ public class Eth62 extends EthHandler {
                 return;
             }
 
-            Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+            /*Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
             // 블록들의 nonce 값이 일치하는지 확인한다.
             Repository repo = pendingState.getRepository();
@@ -540,9 +540,9 @@ public class Eth62 extends EthHandler {
                     }
                 }
 
-                /*
+                *//*
                  * 블럭에 포함된 마스터노드의 수가 저장소의 수와 일치하는지 확인한다.
-                 */
+                 *//*
                 if(constants.isMasternodeRewardBlock(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
                     Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
                     if (parentRepo != null) {
@@ -605,13 +605,13 @@ public class Eth62 extends EthHandler {
                     minedBlockCache.removeBestBlock(block);
                     return;
                 }
-            }
+            }*/
         }
 
 
 
         // 마지막 블럭에 대해서 nonce 값들을 확인힌다.
-        if(receivedBlocks.size() > 0) {
+        /*if(receivedBlocks.size() > 0) {
             Block receivedLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
             Block lastParentBlock = blockstore.getBlockByHash(receivedLastBlock.getParentHash());
             HashMap<BigInteger, byte[]> checkedSender = new HashMap<>();
@@ -631,10 +631,10 @@ public class Eth62 extends EthHandler {
                     }
                 }
             }
-        }
+        }*/
 
         // 3블록 이내에 같은 채굴자가 존재하는지 확인한다.
-        if(receivedBlocks.get(0).getNumber() > 100) {
+        if(receivedBlocks.get(0).getNumber() > 33) {
             int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getCONTINUOUS_MINING_LIMIT();
             ArrayList<byte[]> coinbaseList = new ArrayList<>();
             Block parentBlock = blockstore.getBlockByHash(receivedBlocks.get(0).getParentHash());
@@ -678,7 +678,7 @@ public class Eth62 extends EthHandler {
         }
         // 최적의 값을 전달하지 않은 상대에게 블럭을 전달한다.
         else {
-            byte[] receivedLastHash;;
+            byte[] receivedLastHash;
             if(!receivedBlocks.isEmpty()) {
                 receivedLastHash = receivedBlocks.get(receivedBlocks.size() - 1).getHash();
             } else {

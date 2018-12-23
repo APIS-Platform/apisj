@@ -352,10 +352,10 @@ public class BlockMiner {
 
         /*
          * 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
-         * 100 블록 이내에는 초기 세팅 중이므로 충분한 수의 노드가 존재하지 않을 수 있으므로 예외로 한다.
+         * 30 블록 이내에는 초기 세팅 중이므로 충분한 수의 노드가 존재하지 않을 수 있으므로 예외로 한다.
          */
         //List<ByteArrayWrapper> recentMiners = new ArrayList<>();
-        if(bestBlock.getNumber() > 100) {
+        if(bestBlock.getNumber() > 30) {
             long continuousMiningLimit = constants.getCONTINUOUS_MINING_LIMIT();
             Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
             for (int i = 0; i < continuousMiningLimit; i++) {
@@ -514,12 +514,41 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        List<Transaction> pendingTransactions = new ArrayList<>();
-        if(TimeUtils.getRealTimestamp()/1000L - bestPendingState.getTimestamp() < 20) {
-            pendingTransactions = getAllPendingTransactions();
+        List<Transaction> pendingTransactions = getAllPendingTransactions();
+        ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + pendingTransactions.size());
+
+        boolean hasInvalidTx = true;
+        Block newBlock = blockchain.createNewBlock(bestPendingState, pendingTransactions);
+
+        if(newBlock == null) {
+            return null;
         }
 
-        return blockchain.createNewBlock(bestPendingState, pendingTransactions);
+        while(hasInvalidTx) {
+            BlockSummary summary = ethereum.replayBlock(newBlock);
+
+            hasInvalidTx = false;
+            for(int i = 0; i < summary.getReceipts().size(); i++) {
+                final TransactionReceipt receipt = summary.getReceipts().get(i);
+                final TransactionExecutionSummary txSummary = summary.getSummaries().get(i);
+
+                // TransactionExecutor 내에서 init() 함수에서 실행되지 못한 경우 (Too much gas used in this block 등)
+                if(txSummary == null) {
+                    pendingTransactions.removeIf(tx -> FastByteComparisons.equal(tx.getHash(), receipt.getTransaction().getHash()));
+                    hasInvalidTx = true;
+                }
+            }
+
+            if(hasInvalidTx) {
+                // 블록 내에 실행되지 않은 트랜잭션이 포함되어 있으므로 제거되었다.
+                logger.debug("Mining block has been removed because it contains unexecuted transactions.");
+
+                // 제거된 블록을 새롭게 생성
+                newBlock = blockchain.createNewBlock(bestPendingState, pendingTransactions);
+            }
+        }
+
+        return newBlock;
     }
 
 
@@ -579,6 +608,9 @@ public class BlockMiner {
         for(int i = 0; i < 4 && parentBlock.getNumber() > 1; i++) {
             parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             minedBlocks.add(0, parentBlock);
+            if(i == 1) {
+                parentTimestamp = parentBlock.getTimestamp();
+            }
         }
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.

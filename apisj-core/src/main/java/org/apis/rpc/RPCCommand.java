@@ -69,6 +69,7 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GETTRANSACTIONBYKEYWORD = "apis_getTransactionsByKeyword";
     private static final String COMMAND_APIS_GET_RECENT_TRANSACTIONS= "apis_getRecentTransactions";
     private static final String COMMAND_APIS_GET_RECENT_BLOCKS= "apis_getRecentBlocks";
+    private static final String COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS = "apis_getTransactionCountOnBlocks";
 
     // apis only
     public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
@@ -904,6 +905,34 @@ public class RPCCommand {
                     e.printStackTrace();
                     command = createJson(id, method, null, ERROR_CONNOT_FETCH_RECENT_BLOCKS);
                 }
+                break;
+            }
+            case COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS: {
+                long fromBlock = 0;
+                long toBlock = ethereum.getBlockchain().getBestBlock().getNumber() - 1;
+
+                if(params.length > 0 && params[0] != null) {
+                    try {
+                        fromBlock = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
+                    } catch (NumberFormatException | DecoderException ignored) {}
+                }
+                if(params.length > 1 && params[1] != null) {
+                    try {
+                        long _toBlock = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                        if(_toBlock > 0) {
+                            toBlock = _toBlock;
+                        }
+                    } catch (NumberFormatException | DecoderException ignored) {}
+                }
+
+                long txCount = 0;
+                Block parentBlock = ethereum.getBlockchain().getBlockByNumber(toBlock);
+                while(parentBlock.getNumber() > fromBlock) {
+                    txCount += parentBlock.getTransactionsList().size();
+                    parentBlock = ethereum.getBlockchain().getBlockByHash(parentBlock.getParentHash());
+                }
+
+                command = createJson(id, method, new TransactionCountData(fromBlock + 1, toBlock, txCount));
                 break;
             }
 

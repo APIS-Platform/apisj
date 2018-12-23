@@ -24,11 +24,11 @@ public class TransactionData {
     private String to, toMask;
     private String contractAddress;
     private String value = "0";
-    private String valueAPIZ;
+    private String valueAPIS;
     private String gas;
     private String gasPrice;
-    private String gasPriceAPIZ;
-    private String feeLimitAPIZ;
+    private String gasPriceAPIS;
+    private String feeLimitAPIS;
     private String data;
     private String r;
     private String s;
@@ -62,11 +62,11 @@ public class TransactionData {
         }
 
         this.value = BIUtil.toBI(tx.getValue()).toString();
-        this.valueAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
+        this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
         this.gas = bytesToBigInteger(tx.getGasLimit()).toString();
         this.gasPrice = bytesToBigInteger(tx.getGasPrice()).toString();
-        this.gasPriceAPIZ = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
-        this.feeLimitAPIZ = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
+        this.gasPriceAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
+        this.feeLimitAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
         this.data = toHexString0x(tx.getData());
 
         if(tx.getSignature() != null) {
@@ -202,11 +202,11 @@ public class TransactionData {
                 ", toMask='" + toMask + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
                 ", value='" + value + '\'' +
-                ", valueAPIZ='" + valueAPIZ + '\'' +
+                ", valueAPIS='" + valueAPIS + '\'' +
                 ", gas='" + gas + '\'' +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
-                ", feeLimitAPIZ='" + feeLimitAPIZ + '\'' +
+                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", feeLimitAPIS='" + feeLimitAPIS + '\'' +
                 ", data='" + data + '\'' +
                 ", r='" + r + '\'' +
                 ", s='" + s + '\'' +

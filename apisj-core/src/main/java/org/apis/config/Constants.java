@@ -56,23 +56,23 @@ public class Constants {
     private static final long BLOCK_TIME_MS = 8_000L;
 
     /*
-     * 블록타임이 8초 일 경우 : 3일마다 이자 지급 : 43,200 Blocks
+     * 블록타임이 8초 일 경우 : 6일마다 이자 지급 : 64_800 Blocks
      * TODO 테스트 종료 후 원상 복귀할 것
      */
     private static final long MASTERNODE_REWARD_PERIOD = 100L;
 
     /** 마스터노드가 초기화되는 주기 */
     /*
-     * 블록타임이 8초 일 경우 : 90일마다 초기화 : 1,296,000 Blocks
+     * 블록타임이 8초 일 경우 : 90일마다 초기화 : 972_000 Blocks
      * TODO 테스트 종료 후 원상 복귀할 것
      */
-    private static final long MASTERNODE_RESET_PERIOD = 500L;
+    private static final long MASTERNODE_RESET_PERIOD = 1_200L;
 
     /*
-     * 블록타임이 8초일 경우 : 1일 동안 진행 : 14,400 Blocks (24*60*60*1000/BLOCK_TIME_MS)
+     * 블록타임이 8초일 경우 : 1일 동안 진행 : 10_800 Blocks (24*60*60*1000/BLOCK_TIME_MS)
      * TODO 테스트 종료 후 원상 복귀할 것
      */
-    private static final long MASTERNODE_EARLYBIRD_PERIOD = 100L;
+    private static final long MASTERNODE_EARLYBIRD_PERIOD = 400L;
 
 
     private static final long CONTINUOUS_MINING_LIMIT = 3;
@@ -105,7 +105,7 @@ public class Constants {
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
-    private static final BigInteger BLOCK_REWARD = new BigInteger("392000000000000000000"); // 392 APIS
+    private static final BigInteger BLOCK_REWARD = new BigInteger("314000000000000000000"); // 314 APIS
 
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 

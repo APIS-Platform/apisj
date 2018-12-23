@@ -1695,7 +1695,7 @@ contract AddressMasking is Owners {
         owners = _owners;
         required = _required;
 
-        defaultFee = 10*(10**18);
+        defaultFee = 1000*(10**18);
 
         foundationAccount = 0x1000000000000000000000000000000000037448;
 

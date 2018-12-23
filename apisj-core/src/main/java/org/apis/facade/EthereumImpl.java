@@ -281,11 +281,16 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         List<TransactionReceipt> receipts = new ArrayList<>();
         List<TransactionExecutionSummary> summaries = new ArrayList<>();
 
-        Block parent = worldManager.getBlockchain().getBlockByHash(block.getParentHash());
+        Block parent;
+        try {
+            parent = worldManager.getBlockchain().getBlockByHash(block.getParentHash());
+        } catch (NullPointerException e) {
+            return new BlockSummary(block, new HashMap<>(), receipts, summaries);
+        }
 
         if (parent == null) {
             logger.info("Failed to replay block #{}, its ancestor is not presented in the db", block.getNumber());
-            return new BlockSummary(block, new HashMap<byte[], BigInteger>(), receipts, summaries);
+            return new BlockSummary(block, new HashMap<>(), receipts, summaries);
         }
 
         org.apis.core.Repository track = ((org.apis.core.Repository) worldManager.getRepository())
