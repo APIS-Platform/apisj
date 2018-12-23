@@ -242,8 +242,6 @@ public class TransferApisController extends BaseViewController {
                 recevingTextField.setText(recevingTextField.getText().replaceAll("0x",""));
             }
 
-            settingLayoutData();
-
             String recevingAddress = recevingTextField.getText();
             String mask = null;
             if(recevingAddress != null && recevingAddress.indexOf("@") >= 0){
@@ -270,6 +268,8 @@ public class TransferApisController extends BaseViewController {
                 //use hex address
                 hideHintMaskAddress();
             }
+
+            settingLayoutData();
         }
     };
 
