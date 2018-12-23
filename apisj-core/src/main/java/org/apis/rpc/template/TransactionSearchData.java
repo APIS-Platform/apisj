@@ -38,7 +38,7 @@ public class TransactionSearchData {
 
 
     private String value;
-    private String valueAPIZ;
+    private String valueAPIS;
 
     /**
      * 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null
@@ -48,7 +48,7 @@ public class TransactionSearchData {
     private long gas;
 
     private String gasPrice;
-    private String gasPriceAPIZ;
+    private String gasPriceAPIS;
 
     /**
      * The amount of gas used by this specific transaction alone.
@@ -59,13 +59,13 @@ public class TransactionSearchData {
      * The amount of mineral used by this specific transaction alone.
      */
     private String fee;
-    private String feeAPIZ;
+    private String feeAPIS;
 
     private String mineralUsed;
     private String mineralUsedMNR;
 
     private String feePaid;
-    private String feePaidAPIZ;
+    private String feePaidAPIS;
 
 
     public TransactionSearchData(TransactionReceiptData txData) {
@@ -78,16 +78,16 @@ public class TransactionSearchData {
         this.to = txData.getTo();
         this.toMask = txData.getToMask();
         this.value = txData.getValue();
-        this.valueAPIZ = txData.getValueAPIZ();
+        this.valueAPIS = txData.getValueAPIS();
         this.contractAddress = txData.getContractAddress();
         this.gas = txData.getGas();
         this.gasPrice = txData.getGasPrice();
-        this.gasPriceAPIZ = txData.getGasPriceAPIZ();
+        this.gasPriceAPIS = txData.getGasPriceAPIS();
         this.gasUsed = txData.getGasUsed();
         this.fee = txData.getFee();
-        this.feeAPIZ = txData.getFeeAPIZ();
+        this.feeAPIS = txData.getFeeAPIS();
         this.feePaid = txData.getFeePaid();
-        this.feePaidAPIZ = txData.getFeePaidAPIZ();
+        this.feePaidAPIS = txData.getFeePaidAPIS();
         this.mineralUsed = txData.getMineralUsed();
         this.mineralUsedMNR = txData.getMineralUsedMNR();
     }
@@ -104,18 +104,18 @@ public class TransactionSearchData {
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
                 ", value='" + value + '\'' +
-                ", valueAPIZ='" + valueAPIZ + '\'' +
+                ", valueAPIS='" + valueAPIS + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
-                ", gasPriceAPIZ='" + gasPriceAPIZ + '\'' +
+                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
                 ", gasUsed=" + gasUsed +
                 ", fee='" + fee + '\'' +
-                ", feeAPIZ='" + feeAPIZ + '\'' +
+                ", feeAPIS='" + feeAPIS + '\'' +
                 ", mineralUsed='" + mineralUsed + '\'' +
                 ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
                 ", feePaid='" + feePaid + '\'' +
-                ", feePaidAPIZ='" + feePaidAPIZ + '\'' +
+                ", feePaidAPIS='" + feePaidAPIS + '\'' +
                 '}';
     }
 }

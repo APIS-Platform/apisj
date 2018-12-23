@@ -26,7 +26,6 @@ import org.apis.config.CommonConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
-import org.apis.contract.EstimateTransaction;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.db.*;
@@ -494,11 +493,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             listener.trace(String.format("Block chain size: [ %d ]", this.getSize()));
 
             if (ret == IMPORTED_BEST) {
-                pendingState.processBest(block, summary.getReceipts());
-
-                //TODO processBest 동작이 불려지지 않아서 스레드 밖으로 뺐음...
-                /*eventDispatchThread.invokeLater(() ->
-                        pendingState.processBest(block, summary.getReceipts()));*/
+                //pendingState.processBest(block, summary.getReceipts());
+                eventDispatchThread.invokeLater(() -> pendingState.processBest(block, summary.getReceipts()));
             }
         }
         else if(ret.equals(INVALID_BLOCK)) {
@@ -512,39 +508,20 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
         long now = TimeUtils.getRealTimestamp();
         Constants constants = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getConstants();
+        long timestamp;
 
         // 직전 블록 생성 시간에서 블록타임만큼 지나지 않았다면 새로운 블록을 생성할 시간에 도달하지 않았으므로 스킵
-        if (now - parent.getTimestamp()*1000L < constants.getBLOCK_TIME_MS()) {
+        if (now - parent.getTimestamp()*1000L < (constants.getBLOCK_TIME_MS() - 2_000L)) {
             return null;
         }
 
-        //Repository track = repository.getSnapshotTo(parent.getStateRoot());
-
-        List<Transaction> addingTxs = new ArrayList<>();
-        long blockNumber = parent.getNumber() + 1;
-
-        // 마스터노드 보상 블록이 아닐 경우에만 트랜잭션을 추가한다
-        if(!constants.isMasternodeRewardBlock(blockNumber)) {
-            final long blockGasLimit = config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getBlockGasLimit().longValue();
-            EstimateTransaction estimator = EstimateTransaction.getInstance();
-            long totalGasUsed = 0;
-
-            for(Transaction tx : txs) {
-                totalGasUsed += estimator.estimate(tx, 0, 10_000L).getGasUsed();
-
-                if(totalGasUsed < blockGasLimit) {
-                    addingTxs.add(tx);
-                } else {
-                    break;
-                }
-            }
+        if(now - parent.getTimestamp()*1000 < constants.getBLOCK_TIME_MS()*2) {
+            timestamp = parent.getTimestamp() + constants.getBLOCK_TIME();
+        } else {
+            timestamp = now / 1000L;
         }
 
-
-        long timestamp = now/1000L;
-
-        return createNewBlock(parent, addingTxs, timestamp);
-        //return createNewBlock(parent, txs, timestamp);
+        return createNewBlock(parent, txs, timestamp);
     }
 
 
@@ -822,7 +799,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
-        if(block.getNumber() > 103) {
+        if(block.getNumber() > 33) {
             long preventDuplicateMiner = constants.getCONTINUOUS_MINING_LIMIT();
             Block parent = blockStore.getBlockByHash(block.getParentHash());
             for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {
@@ -1349,6 +1326,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     mnRewardPrivate = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(countPrivateOnBlock));
                 }
 
+                ConsoleUtil.printlnPurple("Original General Reward : %s", ApisUtil.readableApis(mnRewardGeneral));
+                ConsoleUtil.printlnPurple("Original Major Reward : %s", ApisUtil.readableApis(mnRewardMajor));
+                ConsoleUtil.printlnPurple("Original Private Reward : %s", ApisUtil.readableApis(mnRewardPrivate));
+
                 BigInteger totalGeneralReward = mnRewardGeneral.multiply(BigInteger.valueOf(countGeneralOnBlock));
                 BigInteger totalMajorReward = mnRewardMajor.multiply(BigInteger.valueOf(countMajorOnBlock));
                 BigInteger totalPrivateReward = mnRewardPrivate.multiply(BigInteger.valueOf(countPrivateOnBlock));
@@ -1389,7 +1370,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         /* Give rewards to late participating masternodes.
                          *
                          * 늦게 참여한 마스터노드는 보상의 70%만을 가져갈 수 있다.
-                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재산에 부여된다.
+                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재단에 부여된다.
                          */
                         BigInteger remainRewardByLateNode;  // 보상의 30% 잔여분
                         remainRewardByLateNode = distributeLateMnReward(mnRewardGeneral, generalLate, track, constants, rewards);
@@ -1431,6 +1412,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                                 debrisRewardPrivate = rewardToOtherNodes.multiply(remainPrivateWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countPrivateNotLate));
                             }
                         }
+
+                        ConsoleUtil.printlnPurple("Debris General Reward : %s", ApisUtil.readableApis(debrisRewardGeneral));
+                        ConsoleUtil.printlnPurple("Debris Major Reward : %s", ApisUtil.readableApis(debrisRewardMajor));
+                        ConsoleUtil.printlnPurple("Debris Private Reward : %s", ApisUtil.readableApis(debrisRewardPrivate));
 
                         mnRewardGeneral = mnRewardGeneral.add(debrisRewardGeneral);
                         mnRewardMajor = mnRewardMajor.add(debrisRewardMajor);

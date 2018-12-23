@@ -779,6 +779,14 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_NORMAL(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_LATE(), constants);
 
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_NORMAL(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_LATE(), constants);
+
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_NORMAL(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_LATE(), constants);
+
             connectEarlybirdToRun(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), blockNumber);
             connectEarlybirdToRun(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), blockNumber);
             connectEarlybirdToRun(constants.getMASTERNODE_PRIVATE_BASE_EARLY(), constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), blockNumber);
