@@ -1,5 +1,6 @@
 package org.apis.gui.manager;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -92,7 +93,7 @@ public class AppManager {
     private String miningWalletAddress = "";
 
     private boolean isSyncDone = false;
-    private String miningAddress;
+    private String miningAddress, masternodeAddress, recipientAddress;
     private SimpleStringProperty searchToken = new SimpleStringProperty();
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
     private CallTransaction.Contract tokenContract = null;
@@ -1141,10 +1142,18 @@ public class AppManager {
 
     //마스터노드 실행
     public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
+        this.masternodeAddress = null;
+        this.recipientAddress = null;
         try {
+            KeyStoreData keyStoreData = new Gson().fromJson(keyStore.toLowerCase(), KeyStoreData.class);
             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(keyStore, password);
             SystemProperties.getDefault().setMasternodePrivateKey(privateKey);
             SystemProperties.getDefault().setMasternodeRecipient(recipientAddr);
+            this.masternodeAddress = keyStoreData.address;
+            this.recipientAddress = ByteUtil.toHexString(recipientAddr);
+
+            AppManager.saveGeneralProperties("masternode_address", this.masternodeAddress);
+            AppManager.saveGeneralProperties("recipient_address", this.recipientAddress);
 
             password = null;
         } catch (Exception e) {
@@ -1510,6 +1519,8 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
+            prop.setProperty("masternode_address", "");
+            prop.setProperty("recipient_address", "");
             prop.setProperty("mining_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #ffffff;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #ffffff;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -74,6 +74,7 @@
                            <columnConstraints>
                               <ColumnConstraints halignment="LEFT" maxWidth="127.0" minWidth="-Infinity" />
                               <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
@@ -98,6 +99,11 @@
                                     <Insets />
                                  </opaqueInsets>
                               </Label>
+                              <Pane fx:id="masternodeState" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: b01e1e;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="2">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" />
+                                 </GridPane.margin>
+                              </Pane>
                            </children>
                         </GridPane>
                         <GridPane GridPane.rowIndex="1">
