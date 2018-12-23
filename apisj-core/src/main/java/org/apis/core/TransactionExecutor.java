@@ -134,7 +134,8 @@ public class TransactionExecutor {
     }
 
     private void execError(String err) {
-        logger.warn(err);
+        //logger.warn(err);
+        logger.debug(err);
         execError = err;
     }
 
@@ -242,7 +243,12 @@ public class TransactionExecutor {
          * If this transaction is to update the masternode state, omit 2FA.
          * Otherwise, 2FA verification is performed.
          */
-        if(!isMnUpdateTx(senderBalance)) {
+        if(isMnUpdateTx(senderBalance)) {
+            if(currentBlock.getNumber() < config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants().getMASTERNODE_EARLYBIRD_PERIOD()) {
+                execError("The masternode join has not yet opened.");
+                return;
+            }
+        } else {
             if(execError != null && !execError.isEmpty()) {
                 return;
             }
@@ -258,11 +264,6 @@ public class TransactionExecutor {
                     execError("Transaction 2-step verification code does not match.");
                     return;
                 }
-            }
-        } else {
-            if(currentBlock.getNumber() < config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants().getMASTERNODE_EARLYBIRD_PERIOD()) {
-                execError("The masternode join has not yet opened.");
-                return;
             }
         }
 
@@ -305,12 +306,6 @@ public class TransactionExecutor {
         // The balance must be equal to the masternode's reference amount. (General: 50,000 | Major: 200,000 | Private: 500,000)
         Constants constants = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants();
         if(constants.getMASTERNODE_LIMIT(balance) == 0) {
-            return false;
-        }
-
-        // 마스터노드를 운영하려면, 2FA 인증을 등록해야만 한다.
-        if(track.getProofKey(tx.getSender()) == null || FastByteComparisons.equal(track.getProofKey(tx.getSender()), EMPTY_DATA_HASH)) {
-            execError("To become a masternode, an knowledge key must be registered.");
             return false;
         }
 
