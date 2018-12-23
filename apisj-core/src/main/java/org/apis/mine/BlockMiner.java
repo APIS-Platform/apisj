@@ -608,6 +608,9 @@ public class BlockMiner {
         for(int i = 0; i < 4 && parentBlock.getNumber() > 1; i++) {
             parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             minedBlocks.add(0, parentBlock);
+            if(i == 1) {
+                parentTimestamp = parentBlock.getTimestamp();
+            }
         }
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
