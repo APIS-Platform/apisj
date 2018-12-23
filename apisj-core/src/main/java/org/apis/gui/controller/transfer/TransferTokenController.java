@@ -18,6 +18,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.*;
@@ -39,8 +40,8 @@ public class TransferTokenController extends BaseViewController {
     private CallTransaction.Function functionTransfer = contract.getByName("transfer");
 
     @FXML private ApisWalletAndAmountController walletAndAmountController;
+    @FXML private ApisAddressFieldController recevingFieldController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private TextField recevingTextField;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
     @FXML private Label hintMaskAddressLabel, recevingAddressLabel, btnMyAddress, btnRecentAddress;
@@ -48,7 +49,6 @@ public class TransferTokenController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
-        AppManager.settingTextFieldStyle(recevingTextField);
 
         walletAndAmountController.setViewTypeApis(ApisWalletAndAmountController.ViewType.token);
         walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
@@ -90,25 +90,11 @@ public class TransferTokenController extends BaseViewController {
 
         });
 
-        recevingTextField.textProperty().addListener(new ChangeListener<String>() {
+        recevingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(recevingTextField.getText().indexOf("@") < 0 && recevingTextField.getText().indexOf("0x") >= 0){
-                    recevingTextField.setText(recevingTextField.getText().replaceAll("0x",""));
-                }
+            public void change(String address, String mask) {
 
-                settingLayoutData();
-
-                String recevingAddress = recevingTextField.getText();
-                String mask = null;
-                if(recevingAddress != null && recevingAddress.indexOf("@") >= 0){
-                    mask = recevingAddress;
-                }else if(AddressUtil.isAddress(recevingAddress)){
-                    mask = AppManager.getInstance().getMaskWithAddress(recevingAddress);
-                }
                 if(mask != null && mask.length() > 0){
-                    //use masking address
-                    String address = AppManager.getInstance().getAddressWithMask(mask);
                     if(address != null) {
                         hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
                         hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
@@ -125,6 +111,8 @@ public class TransferTokenController extends BaseViewController {
                     //use hex address
                     hideHintMaskAddress();
                 }
+
+                settingLayoutData();
             }
         });
     }
@@ -140,7 +128,6 @@ public class TransferTokenController extends BaseViewController {
 
     public void languageSetting(){
         recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
-        recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
         btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
 
@@ -168,7 +155,7 @@ public class TransferTokenController extends BaseViewController {
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
-                    recevingTextField.setText(address);
+                    recevingFieldController.setText(address);
 
                     String receveAddress = getReceveAddress();
 
@@ -189,7 +176,7 @@ public class TransferTokenController extends BaseViewController {
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
-                    recevingTextField.setText(address);
+                    recevingFieldController.setText(address);
 
                     String receveAddress = getReceveAddress();
 
@@ -231,6 +218,30 @@ public class TransferTokenController extends BaseViewController {
             gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }
 
+    }
+
+    public boolean isReadyTransfer(){
+        // 소지금체크
+        if(getBalance().compareTo(BigInteger.ZERO) <= 0){
+            return false;
+        }
+
+        // 잔액체크
+        if(getAfterBalance().compareTo(BigInteger.ZERO) < 0){
+            return false;
+        }
+
+        // 받는 사람 주소 체크
+        if(!AddressUtil.isAddress(recevingFieldController.getAddress())){
+            return false;
+        }
+
+        BigInteger gasLimit = gasCalculatorController.getGasLimit();
+        if(gasLimit.compareTo(BigInteger.ONE) <= 0){
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -335,20 +346,7 @@ public class TransferTokenController extends BaseViewController {
     }
 
     public String getReceveAddress() {
-        if(this.recevingTextField.getText() == null || this.recevingTextField.getText().length() == 0){
-            return null;
-        }
-
-        if(AddressUtil.isAddress(this.recevingTextField.getText())){
-            return this.recevingTextField.getText();
-        }else {
-            String address = AppManager.getInstance().getAddressWithMask(this.recevingTextField.getText());
-            if(address != null && address.length() > 0){
-                return address;
-            }else{
-                return null;
-            }
-        }
+        return recevingFieldController.getAddress();
     }
 
     public String getSendAddress() {
