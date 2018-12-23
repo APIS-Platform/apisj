@@ -19,6 +19,9 @@ public class ApisAddressFieldController extends BaseViewController {
     @FXML private TextField addressField;
     @FXML private ImageView icon;
 
+    private String address;
+    private String mask;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -31,16 +34,30 @@ public class ApisAddressFieldController extends BaseViewController {
     public ChangeListener<String> addressFieldListener() {
         return (observable, oldValue, newValue) -> {
 
-            String address = newValue;
-            if(newValue.indexOf("@") >= 0){
-                address = AppManager.getInstance().getAddressWithMask(newValue);
+            if(newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
+                newValue = newValue.replaceAll("0x","");
+                addressField.setText(newValue);
+                return;
+            }
+
+            if(newValue != null && newValue.indexOf("@") >= 0){
+                mask = newValue;
+            }else if(AddressUtil.isAddress(newValue)){
+                mask = AppManager.getInstance().getMaskWithAddress(newValue);
+            }
+
+            address = newValue;
+            if(mask != null && mask.length() > 0){
+                //use masking address
+                address = AppManager.getInstance().getAddressWithMask(mask);
             }
 
             icon.setImage(ImageManager.getIdenticons(address));
 
             if(handler != null){
-                handler.change(oldValue, newValue);
+                handler.change(address, mask);
             }
+
         };
     }
 

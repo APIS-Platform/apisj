@@ -46,7 +46,7 @@
                         <Label fx:id="aliasLabel" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" />
                         <GridPane GridPane.rowIndex="1">
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="200.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>

@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
+import org.apis.util.AddressUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -37,22 +38,27 @@ public class PopupTokenAddController extends BasePopupController {
         // Multilingual Support
         languageSetting();
 
-        Ellipse ellipse = new Ellipse(12, 12);
-        ellipse.setCenterX(12);
-        ellipse.setCenterY(12);
-
-        addrCircleImg.setClip(ellipse);
-
+        AppManager.settingIdenticonStyle(addrCircleImg);
         AppManager.settingTextFieldStyle(tokenAddressTextField);
         AppManager.settingTextFieldLineStyle(nameTextField);
 
-        tokenAddressTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        tokenAddressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String contractAddress = tokenAddressTextField.getText();
+                if(contractAddress.indexOf("0x") >= 0){
+                    contractAddress = contractAddress.replace("0x", "");
+                    tokenAddressTextField.setText(contractAddress);
+                }
 
-                if(oldValue){
+                int maxlangth = 40;
+                if (contractAddress.length() > maxlangth) {
+                    contractAddress = contractAddress.substring(0, maxlangth);
+                    tokenAddressTextField.setText(contractAddress);
+                }
 
-                    String contractAddress = tokenAddressTextField.getText();
+                if(AddressUtil.isAddress(contractAddress)){
+
                     String tokenName = AppManager.getInstance().getTokenName(contractAddress);
                     String tokenSymbol = AppManager.getInstance().getTokenSymbol(contractAddress);
                     BigInteger totalSupply = AppManager.getInstance().getTokenTotalSupply(contractAddress);
@@ -62,18 +68,13 @@ public class PopupTokenAddController extends BasePopupController {
                     symbolTextField.setText(tokenSymbol);
                     totalSupplyTextField.setText(totalSupply.toString());
                     decimalTextField.setText(Long.toString(decimal));
-                    addrCircleImg.setImage(AppManager.getInstance().getTokenIcon(contractAddress));
+                }else{
+                    nameTextField.setText("");
+                    symbolTextField.setText("");
+                    totalSupplyTextField.setText("");
+                    decimalTextField.setText("");
                 }
-            }
-        });
-
-        tokenAddressTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                int maxlangth = 40;
-                if (tokenAddressTextField.getText().trim().length() > maxlangth) {
-                    tokenAddressTextField.setText(tokenAddressTextField.getText().trim().substring(0, maxlangth));
-                }
+                addrCircleImg.setImage(AppManager.getInstance().getTokenIcon(contractAddress));
             }
         });
 

@@ -168,7 +168,9 @@ public class WalletListGroupController extends BaseViewController {
                 }
             }
 
-            ((WalletListBodyController)items.get(count-1).getController()).setBottomLineVisible(false);
+            if(count > 0) {
+                ((WalletListBodyController) items.get(count - 1).getController()).setBottomLineVisible(false);
+            }
         }
     }
 

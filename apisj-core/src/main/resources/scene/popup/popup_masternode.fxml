@@ -64,9 +64,6 @@
                         <RowConstraints />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="51.0" valignment="TOP" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                         <RowConstraints />
                         <RowConstraints prefHeight="8.0" />
                         <RowConstraints />
@@ -101,12 +98,7 @@
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="knowledgeKeyLabel" styleClass="font_semibold_12" text="Knowledge Key" textFill="#2b2b2b" GridPane.rowIndex="7">
-                           <GridPane.margin>
-                              <Insets bottom="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <GridPane GridPane.rowIndex="10">
+                        <GridPane GridPane.rowIndex="7">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />
@@ -135,12 +127,12 @@
                               </AnchorPane>
                            </children>
                         </GridPane>
-                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" visible="false" GridPane.rowIndex="12">
+                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" visible="false" GridPane.rowIndex="9">
                            <children>
                               <fx:include fx:id="recipientField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <GridPane GridPane.rowIndex="13">
+                        <GridPane GridPane.rowIndex="10">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" />
                            </columnConstraints>
@@ -156,7 +148,7 @@
                               <Insets left="10.0" top="9.0" />
                            </GridPane.margin>
                         </GridPane>
-                        <AnchorPane prefHeight="48.0" GridPane.rowIndex="15">
+                        <AnchorPane prefHeight="48.0" GridPane.rowIndex="12">
                            <children>
                               <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
@@ -171,14 +163,9 @@
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
                         </AnchorPane>
-                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="12">
+                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="9">
                              <fx:include fx:id="recipient" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
-                        <AnchorPane GridPane.rowIndex="8">
-                           <children>
-                              <fx:include fx:id="knowledgeKey" source="../module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
                          <AnchorPane GridPane.rowIndex="5">
                              <fx:include fx:id="password" source="../module/textfield/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
