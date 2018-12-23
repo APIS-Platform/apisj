@@ -105,7 +105,7 @@ public class Constants {
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
-    //private static final BigInteger BLOCK_REWARD = new BigInteger("392000000000000000000"); // 392 APIS
+    private static final BigInteger BLOCK_REWARD = new BigInteger("314000000000000000000"); // 314 APIS
 
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 
@@ -153,13 +153,13 @@ public class Constants {
         return BEST_NUMBER_DIFF_LIMIT;
     }
 
-    /*public BigInteger getBLOCK_REWARD(long blockNumber) {
+    public BigInteger getBLOCK_REWARD(long blockNumber) {
         return BLOCK_REWARD;
     }
 
     public BigInteger getBLOCK_REWARD() {
         return BLOCK_REWARD;
-    }*/
+    }
 
     public int getMAX_CONTRACT_SZIE() {
         //return Integer.MAX_VALUE;
