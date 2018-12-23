@@ -908,7 +908,7 @@ public class RPCCommand {
                 break;
             }
             case COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS: {
-                long fromBlock = 0;
+                long fromBlock = 1;
                 long toBlock = ethereum.getBlockchain().getBestBlock().getNumber() - 1;
 
                 if(params.length > 0 && params[0] != null) {
@@ -924,6 +924,12 @@ public class RPCCommand {
                         }
                     } catch (NumberFormatException | DecoderException ignored) {}
                 }
+                if(fromBlock < 1) {
+                    fromBlock = 1;
+                }
+                if(toBlock <= fromBlock) {
+                    toBlock = fromBlock + 1;
+                }
 
                 long txCount = 0;
                 Block parentBlock = ethereum.getBlockchain().getBlockByNumber(toBlock);
@@ -932,7 +938,7 @@ public class RPCCommand {
                     parentBlock = ethereum.getBlockchain().getBlockByHash(parentBlock.getParentHash());
                 }
 
-                command = createJson(id, method, new TransactionCountData(fromBlock + 1, toBlock, txCount));
+                command = createJson(id, method, new TransactionCountData(fromBlock, toBlock, txCount));
                 break;
             }
 
