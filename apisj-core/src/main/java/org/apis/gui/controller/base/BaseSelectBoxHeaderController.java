@@ -66,7 +66,11 @@ public class BaseSelectBoxHeaderController extends BaseViewController {
     }
     public String getApis(){
         if (this.itemModel != null) {
-            return this.itemModel.getApis();
+            if(this.itemModel.getApis() != null && this.itemModel.getApis().length() > 0){
+                return this.itemModel.getApis().replaceAll(",","");
+            }else{
+                return "0";
+            }
         } else {
             return "0";
         }

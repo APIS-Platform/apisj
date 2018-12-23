@@ -52,7 +52,7 @@ public class MainFX extends Application  {
 
         // TODO : 사용가능한 폰트 출력
         for(String fontName : javafx.scene.text.Font.getFamilies()){
-            System.out.println("fontName : "+fontName);
+            //System.out.println("fontName : "+fontName);
         }
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();

@@ -232,8 +232,6 @@ public class SmartContractDeployController extends BaseViewController {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
-            System.out.println("metadata.bin : "+metadata.bin);
-            System.out.println("metadata.abi : "+metadata.abi);
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getConstructor(); // get constructor
             CallTransaction.Param param = null;
@@ -271,6 +269,9 @@ public class SmartContractDeployController extends BaseViewController {
 
                     // Only Hex, maxlength : 40
                     textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if(newValue.indexOf("0x") >= 0){
+                            textField.setText(newValue.replaceAll("0x",""));
+                        }
                         if (!newValue.matches("[0-9a-fA-F]*")) {
                             textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                         }
@@ -392,11 +393,14 @@ public class SmartContractDeployController extends BaseViewController {
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             if(_param.type.getCanonicalName().indexOf("int") >=0){
                                 if (!textField.getText().matches("[0-9\\[],]*")) {
-                                    textField.setText(textField.getText().replaceAll("[^0-9\\[],]", ""));
+                                    textField.setText(newValue.replaceAll("[^0-9\\[],]", ""));
                                 }
                             }else if(_param.type.getCanonicalName().indexOf("address") >=0){
-                                if (!textField.getText().matches("[0-9a-fA-F\\[],]*")) {
-                                    textField.setText(textField.getText().replaceAll("[^0-9a-fA-F\\[],]", ""));
+                                if(newValue.indexOf("0x") >= 0){
+                                    textField.setText(newValue.replaceAll("0x",""));
+                                }
+                                if (!newValue.matches("[0-9a-fA-F\\[],]*")) {
+                                    textField.setText(newValue.replaceAll("[^0-9a-fA-F\\[],]", ""));
                                 }
                             }
 

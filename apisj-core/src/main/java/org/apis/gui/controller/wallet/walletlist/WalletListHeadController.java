@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
@@ -47,7 +48,7 @@ public class WalletListHeadController extends BaseViewController {
     @FXML private ImageView walletIcon;
     @FXML private ImageView btnCheckBox, icAddressMasking, icTransfer, foldIcon, icKnowledgekey;
     @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
-    @FXML private Pane leftLine;
+    @FXML private Pane leftLine, masternodeState;
     @FXML private AnchorPane miningPane;
     @FXML private Label tagLabel, btnAddressMasking, btnTransfer;
 
@@ -234,11 +235,27 @@ public class WalletListHeadController extends BaseViewController {
                 this.tagLabel.setPrefWidth(-1);
                 GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else if (itemModel.isMasterNode()) {
+                if(itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                    this.masternodeState.setStyle("-fx-background-color: #b01e1e; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                } else {
+                    this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                }
+                this.masternodeState.setVisible(true);
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("MASTERNODE");
+                this.tagLabel.setPrefWidth(-1);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
+            } else if (!itemModel.isMasterNode()) {
+                if(itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                    this.masternodeState.setStyle("-fx-background-color: #ffff00; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                }
+                this.masternodeState.setVisible(true);
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("MASTERNODE");
                 this.tagLabel.setPrefWidth(-1);
                 GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
             } else {
+                this.masternodeState.setVisible(false);
                 this.tagLabel.setVisible(true);
                 this.tagLabel.setText("");
                 this.tagLabel.setPrefWidth(0);

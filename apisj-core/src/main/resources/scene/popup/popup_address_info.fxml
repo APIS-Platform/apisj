@@ -123,12 +123,12 @@
                                     <Image url="@../../image/ic_addressinfo@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="noResultTitle" styleClass="font_semibold_14" text="There is no result" textFill="#2b2b2b" GridPane.rowIndex="1">
+                              <Label fx:id="noResultTitle" styleClass="font_semibold_14" text="There is no result" textFill="#c1c1c1" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets top="14.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="noResultSubTitle" styleClass="font_semibold_12" text="Please search by wallet address" textFill="#999999" GridPane.rowIndex="2">
+                              <Label fx:id="noResultSubTitle" styleClass="font_semibold_12" text="Please search by wallet address" textFill="#d8d8d8" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>

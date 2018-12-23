@@ -28,12 +28,12 @@ public class PopupMasternodeController extends BasePopupController {
     private WalletItemModel itemModel;
 
     @FXML private ApisSelectBoxController recipientController;
-    @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
+    @FXML private ApisTextFieldController passwordController;
     @FXML private ApisAddressFieldController recipientFieldController;
     @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
     @FXML private Label address, recipientInputBtn, startBtn;
     @FXML private ImageView addrIdentImg;
-    @FXML private Label title, walletAddrLabel, passwordLabel, knowledgeKeyLabel, recipientLabel, recipientDesc1, recipientDesc2;
+    @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
     private boolean isMyAddressSelected = true;
@@ -78,38 +78,11 @@ public class PopupMasternodeController extends BasePopupController {
 
             @Override
             public void onAction() {
-                knowledgeKeyController.requestFocus();
-            }
-
-            @Override
-            public void onKeyTab(){
-                knowledgeKeyController.requestFocus();
-            }
-        });
-
-        knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get());
-        knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
-            @Override
-            public void onFocusOut() {
-                String knowledgeKey = knowledgeKeyController.getText();
-
-                if(knowledgeKey == null || knowledgeKey.equals("")) {
-                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                } else {
-                    knowledgeKeyController.succeededForm();
-                }
-            }
-
-            @Override
-            public void change(String old_text, String new_text) { }
-
-            @Override
-            public void onAction() {
                 startMasternode();
             }
 
             @Override
-            public void onKeyTab() {
+            public void onKeyTab(){
                 passwordController.requestFocus();
             }
         });
@@ -127,14 +100,12 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
         apisTextFieldGroup.add(passwordController);
-        apisTextFieldGroup.add(knowledgeKeyController);
     }
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.masternodeTitle);
         walletAddrLabel.textProperty().bind(StringManager.getInstance().popup.masternodeWalletAddrLabel);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.masternodePasswordLabel);
-        knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().popup.masternodeKnowledgeKeyLabel);
         recipientLabel.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientLabel);
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         recipientDesc1.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc1);
@@ -191,9 +162,6 @@ public class PopupMasternodeController extends BasePopupController {
 
         String keystoreJsonData = itemModel.getKeystoreJsonData();
         String password =  passwordController.getText();
-        String knowledge = knowledgeKeyController.getText();
-        byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(itemModel.getAddress()));
-        byte[] knowledgeKey = AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText().trim());
         byte[] recipientAddr = Hex.decode(recipientController.getAddress());
         // 직접 입력한 경우
         if(!isMyAddressSelected){
@@ -201,15 +169,10 @@ public class PopupMasternodeController extends BasePopupController {
         }
 
         passwordController.succeededForm();
-        knowledgeKeyController.succeededForm();
         if (password == null || password.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
         } else if(!KeyStoreManager.matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().toCharArray())){
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-        } else if (knowledge == null || knowledge.equals("")) {
-            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-        } else if (!Arrays.equals(proofKey, knowledgeKey)) {
-            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         } else if(ByteUtil.toHexString(recipientAddr).length() != 40){
             return;
         } else{

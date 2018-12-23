@@ -501,11 +501,17 @@ public class SmartContractCallSendController extends BaseViewController {
             }else if(param.type instanceof SolidityType.AddressType){
                 // AddressType
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue.indexOf("0x") >= 0){
+                        itemController.setItemText(newValue.replaceAll("0x",""));
+                        return;
+                    }
                     if (!newValue.matches("[0-9a-fA-F]*")) {
                         itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
+                        return;
                     }
-                    if(itemController.getText().length() > 40){
-                        itemController.setItemText(itemController.getText().substring(0, 40));
+                    if(newValue.length() > 40){
+                        itemController.setItemText(newValue.substring(0, 40));
+                        return;
                     }
                 });
 
