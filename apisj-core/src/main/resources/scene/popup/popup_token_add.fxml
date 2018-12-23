@@ -66,7 +66,7 @@
                            <rowConstraints>
                               <RowConstraints />
                               <RowConstraints prefHeight="8.0" />
-                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                               <RowConstraints />
                               <RowConstraints />
@@ -96,7 +96,7 @@
                                           <String fx:value="font_regular_12" />
                                        </styleClass>
                                     </TextField>
-                                    <ImageView fx:id="addrCircleImg" fitWidth="24.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                    <ImageView fx:id="addrCircleImg" fitHeight="24.0" fitWidth="24.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                                        <image>
                                           <Image url="@../../image/ic_circle_grey@2x.png" />
                                        </image>

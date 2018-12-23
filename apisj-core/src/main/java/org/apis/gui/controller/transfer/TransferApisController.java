@@ -238,10 +238,20 @@ public class TransferApisController extends BaseViewController {
     private ChangeListener<String> recevingText = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if(recevingTextField.getText().indexOf("@") < 0 && recevingTextField.getText().indexOf("0x") >= 0){
+                recevingTextField.setText(recevingTextField.getText().replaceAll("0x",""));
+            }
+
             settingLayoutData();
 
-            String mask = recevingTextField.getText();
-            if(mask != null && mask.indexOf("@") >= 0){
+            String recevingAddress = recevingTextField.getText();
+            String mask = null;
+            if(recevingAddress != null && recevingAddress.indexOf("@") >= 0){
+                mask = recevingAddress;
+            }else if(AddressUtil.isAddress(recevingAddress)){
+                mask = AppManager.getInstance().getMaskWithAddress(recevingAddress);
+            }
+            if(mask != null && mask.length() > 0){
                 //use masking address
                 String address = AppManager.getInstance().getAddressWithMask(mask);
                 if(address != null) {
@@ -256,6 +266,7 @@ public class TransferApisController extends BaseViewController {
                 }
                 showHintMaskAddress();
             }else{
+
                 //use hex address
                 hideHintMaskAddress();
             }

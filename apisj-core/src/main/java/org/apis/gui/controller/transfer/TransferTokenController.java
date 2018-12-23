@@ -8,9 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
@@ -18,10 +20,7 @@ import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.GUIContractManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.solidity.SolidityType;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
@@ -32,6 +31,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransferTokenController extends BaseViewController {
+    private Image hintImageCheck = ImageManager.hintImageCheck;
+    private Image hintImageError = ImageManager.hintImageError;
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
@@ -92,19 +93,49 @@ public class TransferTokenController extends BaseViewController {
         recevingTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                String address = AppManager.getInstance().getAddressWithMask(recevingTextField.getText());
-                if(address != null && address.length() > 0){
-                    hintMaskAddress.setVisible(true);
-                    hintMaskAddress.setPrefHeight(-1);
-                    hintMaskAddressLabel.setText(recevingTextField.getText() + " = "+address);
-                }else{
-                    hintMaskAddress.setVisible(false);
-                    hintMaskAddress.setPrefHeight(0);
+                if(recevingTextField.getText().indexOf("@") < 0 && recevingTextField.getText().indexOf("0x") >= 0){
+                    recevingTextField.setText(recevingTextField.getText().replaceAll("0x",""));
                 }
 
                 settingLayoutData();
+
+                String recevingAddress = recevingTextField.getText();
+                String mask = null;
+                if(recevingAddress != null && recevingAddress.indexOf("@") >= 0){
+                    mask = recevingAddress;
+                }else if(AddressUtil.isAddress(recevingAddress)){
+                    mask = AppManager.getInstance().getMaskWithAddress(recevingAddress);
+                }
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    String address = AppManager.getInstance().getAddressWithMask(mask);
+                    if(address != null) {
+                        hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
+                        hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
+                        hintIcon.setImage(hintImageCheck);
+
+                    }else{
+                        hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
+                        hintMaskAddressLabel.setTextFill(Color.web("#b01e1e"));
+                        hintIcon.setImage(hintImageError);
+                    }
+                    showHintMaskAddress();
+                }else{
+
+                    //use hex address
+                    hideHintMaskAddress();
+                }
             }
         });
+    }
+
+    private void showHintMaskAddress(){
+        this.hintMaskAddress.setVisible(true);
+        this.hintMaskAddress.prefHeightProperty().setValue(-1);
+    }
+    private void hideHintMaskAddress(){
+        this.hintMaskAddress.setVisible(false);
+        this.hintMaskAddress.prefHeightProperty().setValue(0);
     }
 
     public void languageSetting(){

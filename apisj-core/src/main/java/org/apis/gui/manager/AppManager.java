@@ -631,15 +631,17 @@ public class AppManager {
 
     public Image getTokenIcon(String tokenAddress) {
         if(tokenAddress == null || tokenAddress.length() == 0){
-            return null;
+            return ImageManager.icCrcleNone;
         }
-
+        tokenAddress = tokenAddress.replace("0x", "");
         if(tokenAddress.equals("-1")){
             return ImageManager.apisIcon;
         }else if(tokenAddress.equals("-2")){
             return ImageManager.mineraIcon;
-        }else{
+        }else if(AddressUtil.isAddress(tokenAddress)){
             return getTokenImage(tokenAddress);
+        }else{
+            return ImageManager.icCrcleNone;
         }
     }
 
