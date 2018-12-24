@@ -864,8 +864,7 @@ public class RPCCommand {
                     }
 
                     command = createJson(id, method, txReceipts);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignore) {
                     command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
                 }
                 break;
