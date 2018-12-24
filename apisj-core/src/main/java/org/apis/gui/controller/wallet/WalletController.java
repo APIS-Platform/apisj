@@ -87,7 +87,8 @@ public class WalletController extends BaseViewController {
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
     private Image imageSortAsc, imageSortDesc, imageSortNone;
-    private Image imageMiningGrey, imageMiningRed;
+    private Image imageMiningGrey, imageMiningRed, imageMiningBlack;
+    private Image imageMasternodeGrey, imageMasternodeRed, imageMasternodeBlack;
 
     private String reward;
     private boolean isScrollingWalletTable;
@@ -207,6 +208,10 @@ public class WalletController extends BaseViewController {
         this.imageSortDesc = ImageManager.icSortDESC;
         this.imageMiningGrey = ImageManager.btnMiningGrey;
         this.imageMiningRed = ImageManager.btnMiningRed;
+        this.imageMiningBlack = ImageManager.btnMiningBlack;
+        this.imageMasternodeGrey = ImageManager.btnMasternodeGrey;
+        this.imageMasternodeRed = ImageManager.btnMasternodeRed;
+        this.imageMasternodeBlack = ImageManager.btnMasternodeBlack;
 
     }
 
@@ -663,9 +668,23 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnCreateWallet")){
             this.btnCreateWallet.setStyle(new JavaFXStyle(this.btnCreateWallet.getStyle()).add("-fx-background-color", "#a61c1c").toString());
         }else if(id.equals("btnMiningWallet")){
-            this.btnMiningWallet.setStyle(new JavaFXStyle(this.btnMiningWallet.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+            if(AppManager.getInstance().isMining(walletCheckList.get(0).getAddress())) {
+                StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.Cb01e1e);
+                iconMiningWallet.setImage(imageMiningRed);
+            } else {
+                StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.C2b2b2b);
+                iconMiningWallet.setImage(imageMiningBlack);
+            }
+            StyleManager.backgroundColorStyle(btnMiningWallet, StyleManager.AColor.Cd8d8d8);
         }else if(id.equals("btnMasternode")){
-            this.btnMasternode.setStyle(new JavaFXStyle(this.btnMasternode.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())){
+                StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
+                iconMasternode.setImage(imageMasternodeRed);
+            } else {
+                StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.C2b2b2b);
+                iconMasternode.setImage(imageMasternodeBlack);
+            }
+            StyleManager.backgroundColorStyle(btnMasternode, StyleManager.AColor.Cd8d8d8);
         }
         event.consume();
 
@@ -698,9 +717,23 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnCreateWallet")){
             this.btnCreateWallet.setStyle(new JavaFXStyle(this.btnCreateWallet.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         }else if(id.equals("btnMiningWallet")){
-            this.btnMiningWallet.setStyle(new JavaFXStyle(this.btnMiningWallet.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            if(AppManager.getInstance().isMining(walletCheckList.get(0).getAddress())) {
+                StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.Cb01e1e);
+                iconMiningWallet.setImage(imageMiningRed);
+            }else{
+                StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.C999999);
+                iconMiningWallet.setImage(imageMiningGrey);
+            }
+            StyleManager.backgroundColorStyle(btnMiningWallet, StyleManager.AColor.Cffffff);
         }else if(id.equals("btnMasternode")){
-            this.btnMasternode.setStyle(new JavaFXStyle(this.btnMasternode.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())){
+                StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
+                iconMasternode.setImage(imageMasternodeRed);
+            }else{
+                StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.C999999);
+                iconMasternode.setImage(imageMasternodeGrey);
+            }
+            StyleManager.backgroundColorStyle(btnMasternode, StyleManager.AColor.Cffffff);
         }
         event.consume();
 
@@ -833,7 +866,11 @@ public class WalletController extends BaseViewController {
         if(apis.equals("50000000000000000000000")
                 || apis.equals("200000000000000000000000")
                 || apis.equals("500000000000000000000000")){
-            showToolGroup(true, true);
+            if(model.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                showToolGroup(true, true);
+            } else {
+                showToolGroup(true, false);
+            }
         }else if(apis.equals("0000000000000000000") || apis.equals("0")) {
             showToolGroup(false, false);
         }else{

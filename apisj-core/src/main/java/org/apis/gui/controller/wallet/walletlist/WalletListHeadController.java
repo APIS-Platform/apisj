@@ -228,39 +228,6 @@ public class WalletListHeadController extends BaseViewController {
             this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
             setMask(itemModel.getMask());
 
-            // 마이닝 / 마스터노드 체크
-            if (itemModel.isMining()) {
-                this.tagLabel.setVisible(true);
-                this.tagLabel.setText("MINING");
-                this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-            } else if (itemModel.isMasterNode()) {
-                if(itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                    this.masternodeState.setStyle("-fx-background-color: #b01e1e; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                } else {
-                    this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                }
-                this.masternodeState.setVisible(true);
-                this.tagLabel.setVisible(true);
-                this.tagLabel.setText("MASTERNODE");
-                this.tagLabel.setPrefWidth(-1);
-                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-            } else {
-                this.tagLabel.setVisible(true);
-                if(itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                    this.masternodeState.setStyle("-fx-background-color: #ffc12f; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                    this.masternodeState.setVisible(true);
-                    this.tagLabel.setText("MASTERNODE");
-                    this.tagLabel.setPrefWidth(-1);
-                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-                } else {
-                    this.masternodeState.setVisible(false);
-                    this.tagLabel.setText("");
-                    this.tagLabel.setPrefWidth(0);
-                    GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
-                }
-            }
-
             // 보안키 체크
             if(itemModel.isUsedProofKey()){
                 StyleManager.fontColorStyle(this.labelWalletAddress, StyleManager.AColor.C2b8a3e);
@@ -272,8 +239,55 @@ public class WalletListHeadController extends BaseViewController {
                 icKnowledgekey.setFitWidth(1);
             }
 
-        }
+            // 마이닝 체크
+            if (itemModel.isMining()) {
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("MINING");
+                this.tagLabel.setPrefWidth(-1);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
 
+                // 마아닝 중 일시 마스터노드 체크 안함
+                return;
+            } else {
+                this.masternodeState.setVisible(false);
+                this.tagLabel.setText("");
+                this.tagLabel.setPrefWidth(0);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
+            }
+
+            // 마스터노드 체크
+            String apis = itemModel.getApis().toString();
+            if(apis.equals("50000000000000000000000")
+                    || apis.equals("200000000000000000000000")
+                    || apis.equals("500000000000000000000000")) {
+                if (itemModel.isMasterNode()) {
+                    if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                        this.masternodeState.setStyle("-fx-background-color: #b01e1e; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                    } else {
+                        this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                    }
+                    this.masternodeState.setVisible(true);
+                    this.tagLabel.setVisible(true);
+                    this.tagLabel.setText("MASTERNODE");
+                    this.tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
+                } else {
+                    this.tagLabel.setVisible(true);
+                    if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                        this.masternodeState.setStyle("-fx-background-color: #ffc12f; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                        this.masternodeState.setVisible(true);
+                        this.tagLabel.setText("MASTERNODE");
+                        this.tagLabel.setPrefWidth(-1);
+                        GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
+                    } else {
+                        this.masternodeState.setVisible(false);
+                        this.tagLabel.setText("");
+                        this.tagLabel.setPrefWidth(0);
+                        GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
+                    }
+                }
+            }
+        }
     }
 
     @Override
