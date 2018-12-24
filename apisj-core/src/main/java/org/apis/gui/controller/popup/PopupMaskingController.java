@@ -552,7 +552,7 @@ public class PopupMaskingController extends BasePopupController {
             public void clickPreGasUsed() {
                 nextBtn3.setDisable(false);
                 StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cb01e1e);
-                esimateGasLimit();
+                estimateGasLimit();
                 settingLayoutData();
             }
         });
@@ -595,7 +595,7 @@ public class PopupMaskingController extends BasePopupController {
         domainMsgLabel.setText(domain + " "+StringManager.getInstance().addressMasking.domainMsg2.get()+" "+apis+"APIS"+" "+StringManager.getInstance().addressMasking.domainMsg4.get());
     }
 
-    private void esimateGasLimit(){
+    private void estimateGasLimit(){
         String address = selectAddressController.getAddress();
         String maskingId = registerMaskingIdTextField.getText();
         BigInteger balance = selectPayerController.getBalance();

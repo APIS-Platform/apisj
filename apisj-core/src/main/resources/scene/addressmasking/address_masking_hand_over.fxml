@@ -50,7 +50,7 @@
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" />
+                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_estimate_gas_limit.fxml" />
                      </children>
                   </AnchorPane>
                </children>

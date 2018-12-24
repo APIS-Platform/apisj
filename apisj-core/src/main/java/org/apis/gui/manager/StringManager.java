@@ -156,7 +156,7 @@ public class StringManager {
         public SimpleStringProperty payerLabel = new SimpleStringProperty();
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty addressNotMath = new SimpleStringProperty();
-        public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
+        public SimpleStringProperty estimateGasLimitButton = new SimpleStringProperty();
         public SimpleStringProperty selectFunction = new SimpleStringProperty();
         public SimpleStringProperty contractWarning = new SimpleStringProperty();
         public SimpleStringProperty total = new SimpleStringProperty();
@@ -223,7 +223,7 @@ public class StringManager {
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
-            esimateGasLimitButton.set(StringManager.this.getString("common_estimate_gas_limit_button","Estimate gas limit"));
+            estimateGasLimitButton.set(StringManager.this.getString("common_estimate_gas_limit_button","Estimate gas limit"));
             selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
             contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));
             total.set(StringManager.this.getString("common_total","* Total : "));

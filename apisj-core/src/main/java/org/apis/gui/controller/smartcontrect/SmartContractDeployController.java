@@ -55,7 +55,7 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TabMenuController tabMenuController;
-    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController, btnStartPreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnByteCodePreGasUsedController, btnStartPreGasUsedController;
 
     private CompilationResult res;
     private CompilationResult.ContractMetadata metadata;
@@ -85,18 +85,18 @@ public class SmartContractDeployController extends BaseViewController {
         tabMenuController.selectedMenu(TAB_SOLIDITY_CONTRACT);
         setSelectedTab(TAB_SOLIDITY_CONTRACT);
 
-        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnStartPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 if(isCompiled) {
                     estimateGasLimit();
                 }
             }
         });
 
-        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 if(isCompiled) {
                     estimateGasLimit();
                 }

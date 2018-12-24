@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
@@ -40,7 +40,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
     @FXML private ApisAddressFieldController addressFieldController;
     @FXML private GridPane hintAddressLabel, hintMessageLabel;
     @FXML private Label selectedDomainLabel, totalBalance;
@@ -132,10 +132,10 @@ public class AddressMaskingRegisterController extends BaseViewController {
             }
         });
 
-        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnStartPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
-                esimateGasLimit();
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
+                estimateGasLimit();
                 isEnabled = true;
                 settingLayoutData();
             }
@@ -346,7 +346,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         }
     }
 
-    private void esimateGasLimit(){
+    private void estimateGasLimit(){
         String payerAddress = selectPayerController.getAddress();
         String address = getAddress();
 

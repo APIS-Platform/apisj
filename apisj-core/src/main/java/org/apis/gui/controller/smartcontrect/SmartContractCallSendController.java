@@ -24,7 +24,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
@@ -54,7 +54,7 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private ImageView icon, cSelectHeadImg, frozenImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnByteCodePreGasUsedController;
 
     private CallTransaction.Function selectFunction;
     private ContractModel selectContractModel;
@@ -83,9 +83,9 @@ public class SmartContractCallSendController extends BaseViewController {
         initPage();
         setWaleltInputViewVisible(true, true);
 
-        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 estimateGasLimit();
             }
         });

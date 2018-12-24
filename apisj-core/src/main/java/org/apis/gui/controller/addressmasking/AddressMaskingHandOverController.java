@@ -1,17 +1,14 @@
 package org.apis.gui.controller.addressmasking;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
@@ -38,7 +35,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
     @FXML private Label apisTotal, registerAddressLabel, selectDomainLabel, addressMsg, recipientInputBtn, registerAddressDesc, selectHandedToDesc, handedToMsg;
     @FXML private ApisSelectBoxController selectAddressController, selectHandedToController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
     @FXML private ApisAddressFieldController handedAddressFieldController;
 
     private boolean isHandToAddressSelected = true;
@@ -80,11 +77,11 @@ public class AddressMaskingHandOverController extends BaseViewController {
         });
         handedAddressFieldController.setVisible(false);
 
-        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnStartPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 isEnabled = true;
-                esimateGasLimit();
+                estimateGasLimit();
                 settingLayoutData();
             }
         });
@@ -171,7 +168,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
         }
     }
 
-    private void esimateGasLimit(){
+    private void estimateGasLimit(){
         String fromAddress = getHandOverFromAddress();
         String toAddress = getHandOverToAddress();
 
