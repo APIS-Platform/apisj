@@ -35,14 +35,14 @@ public class TransferApisController extends BaseViewController {
     @FXML private ImageView hintIcon;
     @FXML
     private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel,
-            lowLabel, recevingAddressLabel
+            lowLabel, ReceivingAddressLabel
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisAddressFieldController recevingFieldController;
+    @FXML private ApisAddressFieldController ReceivingFieldController;
 
     public void languageSetting() {
-        this.recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
+        this.ReceivingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.ReceivingAddress);
         this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
     }
@@ -51,7 +51,7 @@ public class TransferApisController extends BaseViewController {
         languageSetting();
 
         walletAndAmountController.setHandler(apisAmountImpl);
-        recevingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+        ReceivingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
             public void change(String address, String mask) {
                 if(mask != null && mask.length() > 0){
@@ -116,7 +116,7 @@ public class TransferApisController extends BaseViewController {
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
-                    recevingFieldController.setText(address);
+                    ReceivingFieldController.setText(address);
                 }
             });
         }else if(id.equals("btnMyAddress")){
@@ -124,7 +124,7 @@ public class TransferApisController extends BaseViewController {
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
-                    recevingFieldController.setText(address);
+                    ReceivingFieldController.setText(address);
                 }
             });
         }
@@ -196,7 +196,7 @@ public class TransferApisController extends BaseViewController {
     }
 
     public String getReceiveAddress() {
-        return recevingFieldController.getAddress();
+        return ReceivingFieldController.getAddress();
     }
 
     public BigInteger getFee() {
@@ -229,7 +229,7 @@ public class TransferApisController extends BaseViewController {
         }
 
         // 받는 사람 주소 체크
-        if(!AddressUtil.isAddress(recevingFieldController.getAddress())){
+        if(!AddressUtil.isAddress(ReceivingFieldController.getAddress())){
             return false;
         }
 
@@ -249,7 +249,7 @@ public class TransferApisController extends BaseViewController {
             settingLayoutData();
         }
     };
-    private ChangeListener<Boolean> recevingFocused = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> ReceivingFocused = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
