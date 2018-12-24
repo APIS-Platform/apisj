@@ -417,7 +417,7 @@ contract Domain is Owners {
     string public domainName;
 
     // @dev Maximum length of the name to the left of "@"
-    uint constant public maxNameLength = 32;
+    uint constant public MAX_DOMAIN_NAME_LENGTH = 24;
 
 
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
@@ -443,12 +443,12 @@ contract Domain is Owners {
 
 
     modifier validDomainNameCharacter(string name) {
-        require(name.toSlice().find("@".toSlice()).len() == 0);
+        require(name.toSlice().find("@".toSlice()).len() == 0 && name.toSlice().find(" ".toSlice()).len() == 0);
         _;
     }
 
-    modifier validNameLength(string name) {
-        require(bytes(name).length <= maxNameLength);
+    modifier validDomainNameLength(string domain) {
+        require(bytes(domain).length > 0 && bytes(domain).length <= MAX_DOMAIN_NAME_LENGTH);
         _;
     }
 
@@ -481,13 +481,14 @@ contract Domain is Owners {
 
 
 
-    constructor (
+    function init (
         string      _domainName,
         address[]   _domainOwners,
-        uint16        _required
+        uint16      _required
     )
     public
     validDomainNameCharacter(_domainName)
+    validDomainNameLength(_domainName)
     validRequirement(_domainOwners.length, _required)
     {
         domainName = _domainName;
@@ -1449,8 +1450,8 @@ contract AddressMasking is Owners {
 
 
 
-    // @dev Maximum length of the name to the left of "@", length by RFC 2822
-    uint constant public MAX_NAME_LENGTH = 64;
+    // @dev Maximum length of the name to the left of "@"
+    uint constant public MAX_NAME_LENGTH = 24;
 
     // @dev If the fee is free, some attacker may generate a lot of transactions and attack the network.
     uint256 public defaultFee;
@@ -1547,7 +1548,7 @@ contract AddressMasking is Owners {
 
 
     modifier validNameLength(string name) {
-        require(bytes(name).length <= MAX_NAME_LENGTH);
+        require(bytes(name).length > 0 && bytes(name).length <= MAX_NAME_LENGTH);
         _;
     }
 
@@ -1717,6 +1718,8 @@ contract AddressMasking is Owners {
         performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070013, "mn", true, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070014, "apis", true, true, 0, 0);
 
         PublicDomain(0x1000000000000000000000000000000000070001).init("me");
         PublicDomain(0x1000000000000000000000000000000000070002).init("ico");
@@ -1736,6 +1739,8 @@ contract AddressMasking is Owners {
         PublicDomain(0x1000000000000000000000000000000000070010).init("exchange");
         PublicDomain(0x1000000000000000000000000000000000070011).init("dapp");
         PublicDomain(0x1000000000000000000000000000000000070012).init("firm");
+        Domain(0x1000000000000000000000000000000000070013).init("mn", _owners, _required);
+        Domain(0x1000000000000000000000000000000000070014).init("apis", _owners, _required);
     }
 
 
