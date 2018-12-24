@@ -85,7 +85,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <Label fx:id="buyMineralSubTitleLabel" styleClass="font_regular_12" text="You can use the APIS PC WALLET more comportable." textFill="#999999" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                              <Label fx:id="buyMineralSubTitleLabel" styleClass="font_regular_12" text="You can use the APIS PC WALLET more comfortable." textFill="#999999" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets right="24.0" />
                                  </GridPane.margin>

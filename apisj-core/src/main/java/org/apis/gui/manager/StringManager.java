@@ -177,7 +177,7 @@ public class StringManager {
             privateKeyNull.set(StringManager.this.getString("common_private_key_null", "Please enter your private key."));
             privateKeyIncorrect.set(StringManager.this.getString("common_private_key_incorrect", "Incorrect private key."));
             passwordPlaceholder.set(StringManager.this.getString("common_password_placeholder", "At least 8 characters including letters, numbers, and special characters."));
-            knowledgeKeyPlaceholder.set(StringManager.this.getString("common_knowledgekey_placeholder", ""));
+            knowledgeKeyPlaceholder.set(StringManager.this.getString("common_knowledge_key_placeholder", ""));
             closeButton.set(StringManager.this.getString("common_close_button", "Close"));
             saveButton.set(StringManager.this.getString("common_save_button", "Save"));
             editButton.set(StringManager.this.getString("common_edit_button", "Edit"));
@@ -257,7 +257,7 @@ public class StringManager {
 
         @Override
         public void update(){
-            beneficiaryAddress.set(StringManager.this.getString("receipt_beneficiay_address", "Beneficiary Address"));
+            beneficiaryAddress.set(StringManager.this.getString("receipt_beneficiary_address", "Beneficiary Address"));
             chargedAmount.set(StringManager.this.getString("receipt_charged_amount", "Charged Amount"));
             transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
             amount.set(StringManager.this.getString("receipt_amount", "Amount"));
@@ -530,10 +530,10 @@ public class StringManager {
         public SimpleStringProperty selectWalletName = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
-        public SimpleStringProperty recevingAddress = new SimpleStringProperty();
+        public SimpleStringProperty ReceivingAddress = new SimpleStringProperty();
         public SimpleStringProperty myAddress = new SimpleStringProperty();
         public SimpleStringProperty recentAddress = new SimpleStringProperty();
-        public SimpleStringProperty recevingAddressPlaceHolder = new SimpleStringProperty();
+        public SimpleStringProperty ReceivingAddressPlaceHolder = new SimpleStringProperty();
         public SimpleStringProperty detailTransferAmount = new SimpleStringProperty();
         public SimpleStringProperty detailFee = new SimpleStringProperty();
         public SimpleStringProperty detailTotalWithdrawal = new SimpleStringProperty();
@@ -548,16 +548,16 @@ public class StringManager {
             selectWalletName.set(StringManager.this.getString("transfer_select_wallet_name", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("transfer_amount_to_send", "Amount to Send"));
             transferAmount.set(StringManager.this.getString("transfer_transfer_amount", "Transfer Amount"));
-            recevingAddress.set(StringManager.this.getString("transfer_receving_address", "Receving Address"));
+            ReceivingAddress.set(StringManager.this.getString("transfer_receiving_address", "Receiving Address"));
             myAddress.set(StringManager.this.getString("transfer_my_address_button", "My Address"));
             recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
-            recevingAddressPlaceHolder.set(StringManager.this.getString("transfer_receving_address_placeholder", "Write Reving Address"));
+            ReceivingAddressPlaceHolder.set(StringManager.this.getString("transfer_receiving_address_placeholder", "Write Reving Address"));
             detailTransferAmount.set(StringManager.this.getString("transfer_detail_transfer_amount", "Transfer Amount"));
             detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+)Fee"));
             detailTotalWithdrawal.set(StringManager.this.getString("transfer_detail_total_withdrawal", "Total Withdrawal"));
             detailAfterBalance.set(StringManager.this.getString("transfer_detail_after_balance", "After Balance"));
-            detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));
-            detailGaspriceComment2.set(StringManager.this.getString("transfef_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
+            detailGaspriceComment1.set(StringManager.this.getString("transfer_detail_gasprice_comment_1", "Please check the amount and the address."));
+            detailGaspriceComment2.set(StringManager.this.getString("transfer_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
             transferButton.set(StringManager.this.getString("transfer_transfer_button", "Transfer"));
         }
     }
@@ -682,7 +682,7 @@ public class StringManager {
             detailsConfirmedInUnit.set(StringManager.this.getString("transaction_details_confirmed_in_unit", " Seconds"));
             detailsContractAddrLabel.set(StringManager.this.getString("transaction_details_contract_addr_label", "Contract address"));
             detailsInternalTxLabel.set(StringManager.this.getString("transaction_details_internal_tx_label", "Internal Transaction"));
-            detailsTokenTransferedLabel.set(StringManager.this.getString("transaction_details_tokens_transfered_label", "Tokens Transfered"));
+            detailsTokenTransferedLabel.set(StringManager.this.getString("transaction_details_tokens_transferred_label", "Tokens Transferred"));
             detailsMineralLabel.set(StringManager.this.getString("transaction_details_mineral_label", "Mineral"));
             detailsChargedFeeLabel.set(StringManager.this.getString("transaction_details_charged_fee_label", "Charged fee"));
             detailsGasLabel.set(StringManager.this.getString("transaction_details_gas_label", "Gas Price / Limit / Used"));
@@ -937,7 +937,7 @@ public class StringManager {
 
             backupWalletTitle.set(StringManager.this.getString("popup_backup_wallet_title", "Backup Wallet"));
             backupWalletDownload.set(StringManager.this.getString("popup_backup_wallet_download_keystore", "Download the keystore file (wallet backup file)"));
-            backupWalletPrivateKey.set(StringManager.this.getString("popup_backup_wallet_privatekey", "Private key"));
+            backupWalletPrivateKey.set(StringManager.this.getString("popup_backup_wallet_private_key", "Private key"));
             backupWalletFooterComment.set(StringManager.this.getString("popup_backup_wallet_footer_comment", "You can load your wallet using the Keystore file or your private key. Please backup your Keystore file or private key."));
 
             backupWalletPasswordTitle.set(StringManager.this.getString("popup_backup_wallet_password_title", "Backup Wallet"));
@@ -1298,7 +1298,7 @@ public class StringManager {
             chargeLabel.set(StringManager.this.getString("buy_mineral_charge_amount_label", "Charge amount"));
             bonusLabel.set(StringManager.this.getString("buy_mineral_bonus_label", "Bonus"));
             buyMineralLabel.set(StringManager.this.getString("buy_mineral_label", "BUY MINERAL"));
-            buyMineralSubTitleLabel.set(StringManager.this.getString("buy_mineral_sub_title_label", "You can use the APIS PC WALLET more comportable."));
+            buyMineralSubTitleLabel.set(StringManager.this.getString("buy_mineral_sub_title_label", "You can use the APIS PC WALLET more comfortable."));
             mineralDetailSelectHead.set(StringManager.this.getString("buy_mineral_mineral_detail_select", "Mineral bonus payment details"));
         }
     }

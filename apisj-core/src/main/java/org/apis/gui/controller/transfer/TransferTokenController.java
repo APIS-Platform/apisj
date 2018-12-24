@@ -40,11 +40,11 @@ public class TransferTokenController extends BaseViewController {
     private CallTransaction.Function functionTransfer = contract.getByName("transfer");
 
     @FXML private ApisWalletAndAmountController walletAndAmountController;
-    @FXML private ApisAddressFieldController recevingFieldController;
+    @FXML private ApisAddressFieldController ReceivingFieldController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
-    @FXML private Label hintMaskAddressLabel, recevingAddressLabel, btnMyAddress, btnRecentAddress;
+    @FXML private Label hintMaskAddressLabel, ReceivingAddressLabel, btnMyAddress, btnRecentAddress;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -90,7 +90,7 @@ public class TransferTokenController extends BaseViewController {
 
         });
 
-        recevingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+        ReceivingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
             public void change(String address, String mask) {
 
@@ -127,7 +127,7 @@ public class TransferTokenController extends BaseViewController {
     }
 
     public void languageSetting(){
-        recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
+        ReceivingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.ReceivingAddress);
         btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
 
@@ -155,7 +155,7 @@ public class TransferTokenController extends BaseViewController {
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
-                    recevingFieldController.setText(address);
+                    ReceivingFieldController.setText(address);
 
                     String receveAddress = getReceveAddress();
 
@@ -176,7 +176,7 @@ public class TransferTokenController extends BaseViewController {
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
-                    recevingFieldController.setText(address);
+                    ReceivingFieldController.setText(address);
 
                     String receveAddress = getReceveAddress();
 
@@ -232,7 +232,7 @@ public class TransferTokenController extends BaseViewController {
         }
 
         // 받는 사람 주소 체크
-        if(!AddressUtil.isAddress(recevingFieldController.getAddress())){
+        if(!AddressUtil.isAddress(ReceivingFieldController.getAddress())){
             return false;
         }
 
@@ -346,7 +346,7 @@ public class TransferTokenController extends BaseViewController {
     }
 
     public String getReceveAddress() {
-        return recevingFieldController.getAddress();
+        return ReceivingFieldController.getAddress();
     }
 
     public String getSendAddress() {
