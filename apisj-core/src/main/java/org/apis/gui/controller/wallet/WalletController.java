@@ -862,13 +862,13 @@ public class WalletController extends BaseViewController {
     }
     public void addWalletCheckList(WalletItemModel model){
         String apis = model.getApis().toString();
+        String storedMasternodeAddr = AppManager.getGeneralPropertiesData("masternode_address");
         walletCheckList.add(model);
         if(apis.equals("50000000000000000000000")
                 || apis.equals("200000000000000000000000")
                 || apis.equals("500000000000000000000000")){
-            if(model.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                showToolGroup(true, true);
-            } else {
+            showToolGroup(true, true);
+            if(storedMasternodeAddr != null && !storedMasternodeAddr.equals("") && !model.getAddress().equals(storedMasternodeAddr)) {
                 showToolGroup(true, false);
             }
         }else if(apis.equals("0000000000000000000") || apis.equals("0")) {
