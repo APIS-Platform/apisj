@@ -54,7 +54,7 @@
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="80.0" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>

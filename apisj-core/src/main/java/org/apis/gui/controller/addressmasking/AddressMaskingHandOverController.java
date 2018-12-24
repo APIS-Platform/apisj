@@ -143,6 +143,18 @@ public class AddressMaskingHandOverController extends BaseViewController {
             StyleManager.getInstance().fontColorStyle(handedToMsg, StyleManager.AColor.C36b25b);
         }
 
+        // 잔액 여부
+        BigInteger totalFee = gasCalculatorController.getTotalFee();
+        BigInteger balace = selectAddressController.getBalance();
+        if(balace.subtract(totalFee).compareTo(getAmount()) >= 0){
+
+        }else{
+            isEnoughBalance = false;
+            registerAddressIcon.setImage(ImageManager.icErrorRed);
+            addressMsg.textProperty().unbind();
+            addressMsg.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
+            StyleManager.getInstance().fontColorStyle(addressMsg, StyleManager.AColor.C910000);
+        }
 
         // 양도할 주소에 마스크가 없는 경우
         if(fromMask == null || fromMask.length() == 0){
@@ -164,17 +176,6 @@ public class AddressMaskingHandOverController extends BaseViewController {
             isTo = true;
         }
 
-
-        // 잔액 여부
-        BigInteger totalFee = gasCalculatorController.getTotalFee();
-        BigInteger balace = selectAddressController.getBalance();
-        if(totalFee.compareTo(BigInteger.ZERO) > 0){
-            if(balace.subtract(totalFee).compareTo(value) >= 0){
-
-            }else{
-                isEnoughBalance = false;
-            }
-        }
 
         if(isFrom && isTo && isEnoughBalance){
 

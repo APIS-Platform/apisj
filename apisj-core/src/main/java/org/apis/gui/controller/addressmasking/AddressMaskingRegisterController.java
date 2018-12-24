@@ -63,6 +63,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
         AppManager.settingTextFieldStyle(addrMaskingIDTextField);
         payerMessageController.setVisible(false);
+        payerMessageController.setFailed(StringManager.getInstance().common.notEnoughBalance);
 
         this.addrMaskingIDTextField.setText("");
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
@@ -159,7 +160,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
         selectDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainDesc);
         registerIdLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerIdLabel);
-        addrMaskingIDTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerIdPlaceholder);
+        addrMaskingIDTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg4);
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         payerLabel.textProperty().bind(StringManager.getInstance().addressMasking.payer);
         totalApisLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalApis);
@@ -287,7 +288,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
                 this.idIcon2.setVisible(true);
                 this.idMsg2.setVisible(true);
-                this.idMsg2.setText(address);
+                this.idMsg2.setText("");
                 this.hintAddressLabel.setVisible(true);
                 this.hintAddressLabel.setPrefHeight(-1);
 
@@ -345,13 +346,11 @@ public class AddressMaskingRegisterController extends BaseViewController {
         payerMessageController.setVisible(false);
         BigInteger totalFee = gasCalculatorController.getTotalFee();
         BigInteger balace = selectPayerController.getBalance();
-        if(totalFee.compareTo(BigInteger.ZERO) > 0){
-            if(balace.subtract(totalFee).compareTo(selectDomainController.getValueApisToBigInt()) >= 0){
+        if(balace.subtract(totalFee).compareTo(selectDomainController.getValueApisToBigInt()) >= 0){
 
-            }else{
-                isEnoughBalance = false;
-                payerMessageController.setVisible(true);
-            }
+        }else{
+            isEnoughBalance = false;
+            payerMessageController.setVisible(true);
         }
 
 
