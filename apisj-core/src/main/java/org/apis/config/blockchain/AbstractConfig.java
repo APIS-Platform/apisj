@@ -23,23 +23,17 @@ import org.apis.config.BlockchainNetConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
-import org.apis.core.BlockHeader;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
-import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.mine.EthashMiner;
 import org.apis.mine.MinerIfc;
-import org.apis.util.BIUtil;
-import org.apis.util.RewardPointUtil;
+import org.apis.validator.BlockHeaderValidator;
 import org.apis.vm.DataWord;
 import org.apis.vm.GasCost;
 import org.apis.vm.OpCode;
 import org.apis.vm.program.Program;
-import org.apis.core.*;
-import org.apis.validator.BlockHeaderValidator;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -138,47 +132,47 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
 
     @Override
     public boolean eip161() {
-        return false;
+        return true;
     }
 
     @Override
     public Integer getChainId() {
-        return 88;
+        return 1;
     }
 
     @Override
     public boolean eip198() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip206() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip211() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip212() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip213() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip214() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean eip658() {
-        return false;
+        return true;
     }
 
     @Override
