@@ -1717,8 +1717,8 @@ contract AddressMasking is Owners {
         performDomainRegistration(0x100000000000000000000000000000000007000e, "cat", false, true, 0, 1000*(10**18));
         performDomainRegistration(0x100000000000000000000000000000000007000f, "dog", false, true, 0, 1000*(10**18));
         performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 1000*(10**18));
-        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, false, 0, 1000*(10**18));
-        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, false, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 1000*(10**18));
         performDomainRegistration(0x1000000000000000000000000000000000070013, "mn", true, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070014, "apis", true, true, 0, 0);
 
@@ -1768,6 +1768,48 @@ contract AddressMasking is Owners {
         domainConfigs[domainContractAddresses[_domainId]].foundationFee;
     }
 
+
+    function check1(uint32 id)
+    public
+    domainIdExist(id)
+    returns (bool) {
+        return true;
+    }
+
+    function check2(uint32 id)
+    public
+    domainIsOpen(id)
+    returns (bool) {
+        return true;
+    }
+
+    function check3(string name)
+    public
+    validNameLength(name)
+    returns (bool) {
+        return true;
+    }
+
+    function check4(string id)
+    public
+    validNameCharacter(id)
+    returns (bool) {
+        return true;
+    }
+
+    function check5(address id)
+    public
+    faceDoesNotExist(id)
+    returns (bool) {
+        return true;
+    }
+
+    function check6(uint32 id)
+    public
+    returns (bool) {
+        Domain domainContract = Domain(domainContractAddresses[id]);
+        return domainContract.isApprover(msg.sender);
+    }
 
     /**
      * @dev aa
@@ -1861,22 +1903,6 @@ contract AddressMasking is Owners {
     returns (bytes32 maskHash)
     {
         maskHash = masks[_faceAddress];
-    }
-
-    function getMaskName(address _faceAddress)
-    public
-    view
-    returns (string maskName)
-    {
-        maskName = maskNames[_faceAddress];
-    }
-
-
-    function sizeOfDomain()
-    public
-    view
-    returns (uint256 size) {
-        size = domainContractAddresses.length;
     }
 
 
