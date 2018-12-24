@@ -505,7 +505,7 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        List<Transaction> pendingTransactions = getAllPendingTransactions();
+        List<Transaction> pendingTransactions = new ArrayList<>(getAllPendingTransactions());
         ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + pendingTransactions.size());
 
         boolean hasInvalidTx = true;
