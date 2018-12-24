@@ -611,7 +611,7 @@ public class StringManager {
             pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
             pleaseClick3.set(StringManager.this.getString("smart_contract_please_click_3", "button"));
             updateCaution.set(StringManager.this.getString("smart_contract_update_caution", "If you execute, the code will be modified."));
-            noSelectAFunctionTitle.set(StringManager.this.getString("smart_contract_no_select_function_title", "'No Select a function'"));
+            noSelectAFunctionTitle.set(StringManager.this.getString("smart_contract_no_select_function_title", "'There is no selected function'"));
             noSelectAFunctionSubTitle.set(StringManager.this.getString("smart_contract_no_select_function_sub_title", "Please click a 'Select a function' button"));
             creatorNotMatch.set(StringManager.this.getString("smart_contract_creator_not_match", "Address of contract creator does not match."));
         }
@@ -996,7 +996,7 @@ public class StringManager {
             maskingTotalFee.set(StringManager.this.getString("popup_masking_total_fee", "Total Fee"));
             maskingPayer.set(StringManager.this.getString("popup_masking_payer", "Payer"));
             maskingPayMsg1.set(StringManager.this.getString("popup_masking_pay_msg1", "It may take one or more minutes"));
-            maskingPayMsg2.set(StringManager.this.getString("popup_masking_pay_msg2", "for the alias to be registered."));
+            maskingPayMsg2.set(StringManager.this.getString("popup_masking_pay_msg2", "for the mask to be registered."));
             maskingRegisterDomainMsg.set(StringManager.this.getString("popup_masking_register_domain_msg", "You can request a public domain registration or register a commercial domain."));
             maskingCommercialDomain.set(StringManager.this.getString("popup_masking_commercial_domain", "Commercial domain"));
             maskingCommercialDomainMsg1.set(StringManager.this.getString("popup_masking_commercial_domain_msg1", "Commercial domains can only be registered by the administrator's approval. In order to register a commercial domain"));

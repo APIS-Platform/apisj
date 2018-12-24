@@ -87,7 +87,7 @@ public class PopupMaskingController extends BasePopupController {
         idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
 
         walletAddressLabel.textProperty().bind(StringManager.getInstance().popup.maskingWalletAddress);
-        aliasLabel.textProperty().bind(StringManager.getInstance().popup.maskingAlias);
+        aliasLabel.textProperty().bind(StringManager.getInstance().receipt.mask);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().popup.maskingTotalFee);
         payerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
         reCentPayerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
