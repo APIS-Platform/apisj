@@ -1696,28 +1696,29 @@ contract AddressMasking is Owners {
         owners = _owners;
         required = _required;
 
-        defaultFee = 1000*(10**18);
+        defaultFee = 0*(10**18);
 
         foundationAccount = 0x1000000000000000000000000000000000037448;
 
-        performDomainRegistration(0x1000000000000000000000000000000000070001, "me", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070002, "ico", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070003, "shop", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070004, "com", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070005, "org", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070006, "info", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070007, "biz", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070008, "net", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070009, "edu", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000a, "team", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000b, "pro", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000c, "xxx", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000d, "xyz", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000e, "cat", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000f, "dog", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 0);
+        // (address _domainAddress, string _domainName, bool _needApproval, bool _isOpened, uint256 _domainFee, uint256 _foundationFee)
+        performDomainRegistration(0x1000000000000000000000000000000000070001, "me", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070002, "ico", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070003, "shop", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070004, "com", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070005, "org", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070006, "info", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070007, "biz", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070008, "net", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070009, "edu", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000a, "team", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000b, "pro", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000c, "xxx", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000d, "xyz", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000e, "cat", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x100000000000000000000000000000000007000f, "dog", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, false, 0, 1000*(10**18));
+        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, false, 0, 1000*(10**18));
         performDomainRegistration(0x1000000000000000000000000000000000070013, "mn", true, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070014, "apis", true, true, 0, 0);
 
@@ -1816,7 +1817,9 @@ contract AddressMasking is Owners {
         }
 
         //Send a fee to the Foundation.
-        foundationAccount.transfer(defaultFee + domainConfigs[_domainAddress].foundationFee);
+        if(defaultFee + domainConfigs[_domainAddress].foundationFee > 0) {
+            foundationAccount.transfer(defaultFee + domainConfigs[_domainAddress].foundationFee);
+        }
     }
 
     function handOverMask (address _newAddress)
