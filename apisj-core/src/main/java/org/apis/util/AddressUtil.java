@@ -52,6 +52,10 @@ public class AddressUtil {
     }
 
     public static boolean isAddress(String addressStr) {
+        if(addressStr == null){
+            return false;
+        }
+
         try {
             addressStr = addressStr.replace("0x", "");
 

@@ -16,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -36,7 +35,7 @@ public class GasCalculatorMiniController extends BaseViewController {
     @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
-    @FXML private ApisButtonEsimateGasLimitSmallController btnPreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitSmallController btnPreGasUsedController;
     @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
             ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
@@ -78,9 +77,9 @@ public class GasCalculatorMiniController extends BaseViewController {
             }
         });
 
-        btnPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitSmallController.ApisButtonEsimateGasLimitSmallImpl() {
+        btnPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitSmallController.ApisButtonestimateGasLimitSmallImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitSmallController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitSmallController controller) {
                 if(handler != null){
                     handler.clickPreGasUsed();
                 }

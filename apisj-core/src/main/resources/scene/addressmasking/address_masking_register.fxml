@@ -67,7 +67,7 @@
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" />
+                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_estimate_gas_limit.fxml" />
                      </children>
                   </AnchorPane>
                </children>
@@ -201,10 +201,7 @@
             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                <children>
                   <fx:include fx:id="selectAddress" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <TextField fx:id="addressTextField" layoutX="31.0" layoutY="7.0" style="-fx-border-color: #d8d8d8; -fx-background-color: #ffffff;" styleClass="border_radius_4444" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets left="16.0" />
-                     </padding></TextField>
+                  <fx:include fx:id="addressField" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <GridPane fx:id="hintMessageLabel" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="24">

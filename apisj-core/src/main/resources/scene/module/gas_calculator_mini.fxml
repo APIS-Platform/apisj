@@ -52,7 +52,7 @@
                   <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_10" text=")" textFill="#999999" GridPane.columnIndex="3" />
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="4">
                      <children>
-                        <fx:include fx:id="btnPreGasUsed" source="../module/apis_button_esimate_gas_limit_small.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <fx:include fx:id="btnPreGasUsed" source="../module/apis_button_estimate_gas_limit_small.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                      <GridPane.margin>
                         <Insets />

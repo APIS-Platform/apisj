@@ -28,7 +28,7 @@
                </rowConstraints>
                <children>
                   <Label fx:id="valueLabel" styleClass="font_regular_12" text="0.0" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                  <Label fx:id="symbolLabel" styleClass="font_regular_12" text="SYMBOL" textFill="#999999" GridPane.columnIndex="2">
+                  <Label fx:id="symbolLabel" styleClass="font_regular_10" text="SYMBOL" textFill="#999999" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="4.0" />
                      </GridPane.margin>

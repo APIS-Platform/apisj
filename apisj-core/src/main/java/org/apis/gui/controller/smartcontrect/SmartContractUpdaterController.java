@@ -60,7 +60,7 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
 
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
@@ -149,9 +149,9 @@ public class SmartContractUpdaterController extends BaseViewController {
             }
         });
 
-        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnStartPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 estimateGasLimit();
             }
         });

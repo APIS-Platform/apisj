@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
@@ -33,6 +34,8 @@ public class ApisAddressFieldController extends BaseViewController {
 
     public ChangeListener<String> addressFieldListener() {
         return (observable, oldValue, newValue) -> {
+            address = newValue;
+            mask = null;
 
             if(newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
                 newValue = newValue.replaceAll("0x","");
@@ -71,16 +74,10 @@ public class ApisAddressFieldController extends BaseViewController {
     }
 
     public String getAddress(){
-        String text = getText();
-
-        if(text != null && AddressUtil.isAddress(text)){
-            return text;
+        if(address == null || !AddressUtil.isAddress(address)){
+            return null;
         }else{
-            String address = AppManager.getInstance().getAddressWithMask(text);
-            if(address != null && AddressUtil.isAddress(address)){
-                return text;
-            }
-            return "";
+            return address;
         }
     }
 
@@ -92,6 +89,6 @@ public class ApisAddressFieldController extends BaseViewController {
     public ApisAddressFieldImpl handler;
     public void setHandler(ApisAddressFieldImpl handler){ this.handler = handler; }
     public interface ApisAddressFieldImpl{
-        void change(String oldValue, String newValue);
+        void change(String address, String mask);
     }
 }

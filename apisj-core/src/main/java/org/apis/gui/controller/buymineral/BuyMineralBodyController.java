@@ -1,7 +1,5 @@
 package org.apis.gui.controller.buymineral;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -17,7 +15,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
 import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
@@ -54,7 +52,7 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private ApisAddressFieldController beneficiaryTextFieldController;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
+    @FXML private ApisButtonEstimateGasLimitController btnByteCodePreGasUsedController;
     @FXML private MessageLineController payerMessageController;
 
     private boolean isBeneficiarySelected = true;
@@ -146,9 +144,9 @@ public class BuyMineralBodyController extends BaseViewController {
             }
         });
 
-        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 isSuccessed = true;
                 estimateGasLimit();
                 settingLayoutData();

@@ -537,6 +537,13 @@ public class AppManager {
         return ((Repository)mEthereum.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
     }
 
+    public boolean isMining(String address) {
+        if(SystemProperties.getDefault().getCoinbaseKey() == null) {
+            return false;
+        }
+        return ByteUtil.toHexString(SystemProperties.getDefault().getCoinbaseKey().getAddress()).equals(address);
+    }
+
     private CallTransaction.Contract getTokenContract() {
         if(tokenContract == null) {
             tokenContract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
@@ -755,8 +762,14 @@ public class AppManager {
         }
 
         //sort : alias asc
-        keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
-        keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+        if(keyStoreDataList.size() > 1) {
+            try {
+                keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+                keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+            }catch (Exception e){
+                // sort error
+            }
+        }
 
         return this.keyStoreDataList;
     }
@@ -1470,7 +1483,14 @@ public class AppManager {
         try {
             InputStream input = new FileInputStream("config/rpc.properties");
             prop.load(input);
+            if(prop.getProperty("port") == null) { prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000)); }
+            if(prop.getProperty("id") == null) { prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16))); }
+            if(prop.getProperty("password") == null) { prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16))); }
+            if(prop.getProperty("max_connections") == null) { prop.setProperty("max_connections", String.valueOf(5)); }
+            if(prop.getProperty("allow_ip") == null) { prop.setProperty("allow_ip", "127.0.0.1"); }
+            if(prop.getProperty("use_rpc") == null) { prop.setProperty("use_rpc", "false"); }
             input.close();
+
         } catch (IOException e) {
             prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
@@ -1524,7 +1544,16 @@ public class AppManager {
         try {
             InputStream input = new FileInputStream("config/general.properties");
             prop.load(input);
+            if (prop.getProperty("in_system_log") == null) { prop.setProperty("in_system_log", "false"); }
+            if (prop.getProperty("enable_event_log") == null) { prop.setProperty("enable_event_log", "false"); }
+            if (prop.getProperty("masternode_address") == null) { prop.setProperty("masternode_address", ""); }
+            if (prop.getProperty("recipient_address") == null) { prop.setProperty("recipient_address", ""); }
+            if (prop.getProperty("mining_address") == null) { prop.setProperty("mining_address", ""); }
+            if (prop.getProperty("language") == null) { prop.setProperty("language", "eng"); }
+            if (prop.getProperty("footer_total_unit") == null) { prop.setProperty("footer_total_unit", "APIS"); }
+            if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
             input.close();
+
         } catch (IOException e) {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
@@ -1579,7 +1608,9 @@ public class AppManager {
         try {
             InputStream input = new FileInputStream("config/window.properties");
             prop.load(input);
+            if(prop.getProperty("minimize_to_tray") == null) { prop.setProperty("minimize_to_tray", "false"); }
             input.close();
+
         } catch (IOException e) {
             prop.setProperty("minimize_to_tray", "false");
             try {

@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
@@ -30,7 +31,6 @@ public class TransferApisController extends BaseViewController {
     private Image hintImageCheck = ImageManager.hintImageCheck;
     private Image hintImageError = ImageManager.hintImageError;
 
-    @FXML private TextField recevingTextField;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
     @FXML
@@ -39,22 +39,43 @@ public class TransferApisController extends BaseViewController {
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private ApisAddressFieldController recevingFieldController;
 
     public void languageSetting() {
         this.recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
         this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
-        this.recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        AppManager.settingTextFieldStyle(recevingTextField);
-
         walletAndAmountController.setHandler(apisAmountImpl);
-        recevingTextField.focusedProperty().addListener(recevingFocused);
-        recevingTextField.textProperty().addListener(recevingText);
+        recevingFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+            @Override
+            public void change(String address, String mask) {
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    if(address != null) {
+                        hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
+                        hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
+                        hintIcon.setImage(hintImageCheck);
+
+                    }else{
+                        hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
+                        hintMaskAddressLabel.setTextFill(Color.web("#b01e1e"));
+                        hintIcon.setImage(hintImageError);
+                    }
+                    showHintMaskAddress();
+                }else{
+
+                    //use hex address
+                    hideHintMaskAddress();
+                }
+
+                settingLayoutData();
+            }
+        });
 
         gasCalculatorController.setGasLimit("200000");
 
@@ -95,7 +116,7 @@ public class TransferApisController extends BaseViewController {
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
-                    recevingTextField.setText(address);
+                    recevingFieldController.setText(address);
                 }
             });
         }else if(id.equals("btnMyAddress")){
@@ -103,7 +124,7 @@ public class TransferApisController extends BaseViewController {
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
-                    recevingTextField.setText(address);
+                    recevingFieldController.setText(address);
                 }
             });
         }
@@ -175,12 +196,7 @@ public class TransferApisController extends BaseViewController {
     }
 
     public String getReceiveAddress() {
-        String address = (recevingTextField.getText() != null) ? recevingTextField.getText().trim() : "";
-        if(address.length() > 0 && !AddressUtil.isAddress(address)){
-            return AppManager.getInstance().getAddressWithMask(address);
-        }else{
-            return address;
-        }
+        return recevingFieldController.getAddress();
     }
 
     public BigInteger getFee() {
@@ -212,6 +228,11 @@ public class TransferApisController extends BaseViewController {
             return false;
         }
 
+        // 받는 사람 주소 체크
+        if(!AddressUtil.isAddress(recevingFieldController.getAddress())){
+            return false;
+        }
+
         BigInteger gasLimit = gasCalculatorController.getGasLimit();
         if(gasLimit.compareTo(BigInteger.ONE) <= 0){
             return false;
@@ -231,43 +252,6 @@ public class TransferApisController extends BaseViewController {
     private ChangeListener<Boolean> recevingFocused = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-            settingLayoutData();
-        }
-    };
-    private ChangeListener<String> recevingText = new ChangeListener<String>() {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if(recevingTextField.getText().indexOf("@") < 0 && recevingTextField.getText().indexOf("0x") >= 0){
-                recevingTextField.setText(recevingTextField.getText().replaceAll("0x",""));
-            }
-
-            String recevingAddress = recevingTextField.getText();
-            String mask = null;
-            if(recevingAddress != null && recevingAddress.indexOf("@") >= 0){
-                mask = recevingAddress;
-            }else if(AddressUtil.isAddress(recevingAddress)){
-                mask = AppManager.getInstance().getMaskWithAddress(recevingAddress);
-            }
-            if(mask != null && mask.length() > 0){
-                //use masking address
-                String address = AppManager.getInstance().getAddressWithMask(mask);
-                if(address != null) {
-                    hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
-                    hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
-                    hintIcon.setImage(hintImageCheck);
-
-                }else{
-                    hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
-                    hintMaskAddressLabel.setTextFill(Color.web("#b01e1e"));
-                    hintIcon.setImage(hintImageError);
-                }
-                showHintMaskAddress();
-            }else{
-
-                //use hex address
-                hideHintMaskAddress();
-            }
 
             settingLayoutData();
         }

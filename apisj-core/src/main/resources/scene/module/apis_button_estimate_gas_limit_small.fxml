@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisButtonEsimateGasLimitController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisButtonEstimateGasLimitSmallController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -21,16 +21,16 @@
           <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="label" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #999999; -fx-border-color: #999999;" text="Esimate gas limit" textFill="WHITE">
+            <Label fx:id="label" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #999999; -fx-border-color: #999999;" text="estimate gas limit" textFill="WHITE">
                <graphic>
-                  <ImageView fx:id="icon" fitHeight="17.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" translateX="-6.0">
+                  <ImageView fx:id="icon" fitHeight="14.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                      <image>
                         <Image url="@../../image/ic_estimate_gaslimit_hover@2x.png" />
                      </image>
                   </ImageView>
                </graphic>
                <padding>
-                  <Insets bottom="7.0" left="16.0" right="10.0" top="7.0" />
+                  <Insets bottom="2.0" left="8.0" right="6.0" top="2.0" />
                </padding>
                <styleClass>
                   <String fx:value="font_semibold_12" />

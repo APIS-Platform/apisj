@@ -1,19 +1,17 @@
 package org.apis.gui.controller.addressmasking;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
+import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
@@ -37,8 +35,8 @@ public class AddressMaskingHandOverController extends BaseViewController {
     @FXML private Label apisTotal, registerAddressLabel, selectDomainLabel, addressMsg, recipientInputBtn, registerAddressDesc, selectHandedToDesc, handedToMsg;
     @FXML private ApisSelectBoxController selectAddressController, selectHandedToController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
-    @FXML private TextField handedAddressTextField;
+    @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
+    @FXML private ApisAddressFieldController handedAddressFieldController;
 
     private boolean isHandToAddressSelected = true;
     private boolean isEnabled = false;
@@ -47,8 +45,6 @@ public class AddressMaskingHandOverController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
 
         languageSetting();
-
-        AppManager.settingTextFieldStyle(handedAddressTextField);
 
         selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
@@ -73,27 +69,19 @@ public class AddressMaskingHandOverController extends BaseViewController {
             }
         });
 
-        handedAddressTextField.textProperty().addListener(new ChangeListener<String>() {
+        handedAddressFieldController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!handedAddressTextField.getText().matches("[0-9a-fA-F]*")) {
-                    handedAddressTextField.setText(handedAddressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
-                }
-                int maxlength = 40;
-                if(handedAddressTextField.getText().length() > maxlength){
-                    handedAddressTextField.setText(handedAddressTextField.getText().substring(0, maxlength));
-                }
-
+            public void change(String address, String mask) {
                 settingLayoutData();
-
             }
         });
+        handedAddressFieldController.setVisible(false);
 
-        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+        btnStartPreGasUsedController.setHandler(new ApisButtonEstimateGasLimitController.ApisButtonestimateGasLimitImpl() {
             @Override
-            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEstimateGasLimitController controller) {
                 isEnabled = true;
-                esimateGasLimit();
+                estimateGasLimit();
                 settingLayoutData();
             }
         });
@@ -180,7 +168,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
         }
     }
 
-    private void esimateGasLimit(){
+    private void estimateGasLimit(){
         String fromAddress = getHandOverFromAddress();
         String toAddress = getHandOverToAddress();
 
@@ -204,7 +192,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
         if(isHandToAddressSelected){
             return selectHandedToController.getAddress();
         }else{
-            return handedAddressTextField.getText();
+            return handedAddressFieldController.getAddress();
         }
     }
     public String getHandOverFromMask() {
@@ -256,8 +244,8 @@ public class AddressMaskingHandOverController extends BaseViewController {
                 StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.Cffffff);
-                handedAddressTextField.setText("");
-                handedAddressTextField.setVisible(true);
+                handedAddressFieldController.setText("");
+                handedAddressFieldController.setVisible(true);
                 selectHandedToController.setVisible(false);
 
 
@@ -268,7 +256,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 selectHandedToController.setVisible(true);
-                handedAddressTextField.setVisible(false);
+                handedAddressFieldController.setVisible(false);
             }
 
             settingLayoutData();
