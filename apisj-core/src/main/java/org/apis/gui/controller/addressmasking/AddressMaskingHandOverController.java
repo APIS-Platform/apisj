@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingHandOverController extends BaseViewController {
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
-    private byte[] addressMaskingAddress = Hex.decode("1000000000000000000000000000000000037449");
+    private byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");
     private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
@@ -99,11 +99,17 @@ public class AddressMaskingHandOverController extends BaseViewController {
     }
 
     public void settingLayoutData(){
+        boolean isFrom = false;
+        boolean isTo = false;
+        boolean isEnoughBalance = true;
+
         String fromAddress = getHandOverFromAddress();
         String fromMask = AppManager.getInstance().getMaskWithAddress(fromAddress);
 
         String toAddress = getHandOverToAddress();
         String toMask = AppManager.getInstance().getMaskWithAddress(toAddress);
+
+        BigInteger value = getAmount();
 
         btnStartPreGasUsedController.setCompiled(true);
         gasCalculatorController.setDisable(false);
@@ -143,7 +149,9 @@ public class AddressMaskingHandOverController extends BaseViewController {
             btnStartPreGasUsedController.setCompiled(false);
             gasCalculatorController.setDisable(true);
             gasCalculatorController.setGasLimit("0");
-            isEnabled = false;
+            isFrom = false;
+        }else{
+            isFrom = true;
         }
 
         // 양도받을 주소에 마스크가 있는 경우
@@ -151,9 +159,30 @@ public class AddressMaskingHandOverController extends BaseViewController {
             btnStartPreGasUsedController.setCompiled(false);
             gasCalculatorController.setDisable(true);
             gasCalculatorController.setGasLimit("0");
-            isEnabled = false;
+            isTo = false;
+        }else{
+            isTo = true;
         }
 
+
+        // 잔액 여부
+        BigInteger totalFee = gasCalculatorController.getTotalFee();
+        BigInteger balace = selectAddressController.getBalance();
+        if(totalFee.compareTo(BigInteger.ZERO) > 0){
+            if(balace.subtract(totalFee).compareTo(value) >= 0){
+
+            }else{
+                isEnoughBalance = false;
+            }
+        }
+
+        if(isFrom && isTo && isEnoughBalance){
+
+        }else{
+            this.isEnabled = false;
+        }
+
+        btnStartPreGasUsedController.setCompiled((isFrom && isTo && isEnoughBalance));
 
 
         BigInteger balance = selectAddressController.getBalance();
@@ -172,8 +201,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
         String fromAddress = getHandOverFromAddress();
         String toAddress = getHandOverToAddress();
 
-        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-        BigInteger value = new BigInteger(""+values[0]);
+        BigInteger value = getAmount();
 
         long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(fromAddress), addressMaskingAddress, value, functionHandOverMask.name, toAddress);
         if(checkGas > 0) {
@@ -214,17 +242,6 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
         @Override
         public void onSelectItem() {
-
-            String fromAddress = getHandOverFromAddress();
-            String fromMask = AppManager.getInstance().getMaskWithAddress(fromAddress);
-
-            String toAddress = getHandOverToAddress();
-            String toMask = AppManager.getInstance().getMaskWithAddress(toAddress);
-
-            Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-            BigInteger value = new BigInteger(""+values[0]);
-
-
 
             settingLayoutData();
         }

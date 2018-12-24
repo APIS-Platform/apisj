@@ -49,7 +49,8 @@
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="CENTER" />
             <RowConstraints fillHeight="false" valignment="TOP" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" />
@@ -57,7 +58,7 @@
             <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <GridPane GridPane.rowIndex="30">
+            <GridPane GridPane.rowIndex="31">
                <columnConstraints>
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -67,7 +68,7 @@
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_estimate_gas_limit.fxml" />
+                        <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_estimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
@@ -236,7 +237,7 @@
                   <Label fx:id="idMsg2" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
                </children>
             </GridPane>
-            <GridPane GridPane.rowIndex="33">
+            <GridPane GridPane.rowIndex="34">
                <columnConstraints>
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -251,7 +252,12 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane GridPane.rowIndex="32">
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="30">
+               <children>
+                  <fx:include fx:id="payerMessage" source="../module/message_line.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="33">
                <children>
                   <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>

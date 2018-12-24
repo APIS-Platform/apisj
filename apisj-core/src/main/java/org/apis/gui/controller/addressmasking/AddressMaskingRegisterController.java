@@ -15,6 +15,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
+import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
@@ -36,12 +37,12 @@ public class AddressMaskingRegisterController extends BaseViewController {
     private byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterMask = contract.getByName("registerMask");
-    private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
     @FXML private ApisAddressFieldController addressFieldController;
+    @FXML private MessageLineController payerMessageController;
     @FXML private GridPane hintAddressLabel, hintMessageLabel;
     @FXML private Label selectedDomainLabel, totalBalance;
     @FXML private TextField addrMaskingIDTextField;
@@ -52,7 +53,6 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
     private Image domainDragDropGrey = new Image("image/bg_domain_dragdrop_grey@2x.png");
     private Image domainDragDropColor = new Image("image/bg_domain_dragdrop_color@2x.png");
-    private Image domainDragDropCheck = new Image("image/bg_domain_dragdrop_check@2x.png");
     private boolean isMyAddressSelected = true;
 
     private boolean isEnabled = false;
@@ -62,17 +62,13 @@ public class AddressMaskingRegisterController extends BaseViewController {
         languageSetting();
 
         AppManager.settingTextFieldStyle(addrMaskingIDTextField);
+        payerMessageController.setVisible(false);
 
         this.addrMaskingIDTextField.setText("");
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 addrMaskingIDTextField.setText(addrMaskingIDTextField.getText().replaceAll("@",""));
-
-                if(newValue.length() > 8){
-                    addrMaskingIDTextField.setText(oldValue);
-                }
-
                 settingLayoutData();
 
             }
@@ -221,6 +217,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
     public void settingLayoutData(){
         boolean isUseAddress = false;
         boolean isUseMaskingId = false;
+        boolean isEnoughBalance = true;
 
         String domain = selectDomainController.getDomain();
         String maskingId = addrMaskingIDTextField.getText().trim();
@@ -243,6 +240,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         this.selectedDomainLabel.setText(domain);
         this.selectDomainMsg1.setText(domain);
         this.selectDomainMsg3.setText(valueApis+"APIS");
+
 
         // 도메인 체크
         if(address == null || address.length() < 40 || (mask != null && mask.length() > 0)){
@@ -273,8 +271,27 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
         if(maskingId != null && maskingId.length() > 0){
 
+
             String addressUsed = AppManager.getInstance().getAddressWithMask(maskingId+domain);
-            if(addressUsed != null){
+            if(maskingId.getBytes().length > 24) {
+                isUseMaskingId = false;
+
+                //
+                this.idIcon.setVisible(true);
+                this.idIcon.setImage(ImageManager.icErrorRed);
+                this.idMsg.setVisible(true);
+                this.idMsg.setTextFill(Color.web("#910000"));
+                this.idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.registerAddressMsg4.get()+"("+maskingId.getBytes().length+"/24)");
+                this.hintMessageLabel.setVisible(true);
+                this.hintMessageLabel.setPrefHeight(-1);
+
+                this.idIcon2.setVisible(true);
+                this.idMsg2.setVisible(true);
+                this.idMsg2.setText(address);
+                this.hintAddressLabel.setVisible(true);
+                this.hintAddressLabel.setPrefHeight(-1);
+
+            }else if(addressUsed != null){
                 isUseMaskingId = false;
 
                 // used
@@ -324,13 +341,27 @@ public class AddressMaskingRegisterController extends BaseViewController {
         }
 
 
-        if(isUseAddress && isUseMaskingId){
+        // 잔액 여부
+        payerMessageController.setVisible(false);
+        BigInteger totalFee = gasCalculatorController.getTotalFee();
+        BigInteger balace = selectPayerController.getBalance();
+        if(totalFee.compareTo(BigInteger.ZERO) > 0){
+            if(balace.subtract(totalFee).compareTo(selectDomainController.getValueApisToBigInt()) >= 0){
+
+            }else{
+                isEnoughBalance = false;
+                payerMessageController.setVisible(true);
+            }
+        }
+
+
+        if(isUseAddress && isUseMaskingId && isEnoughBalance){
 
         }else{
             this.isEnabled = false;
         }
 
-        btnStartPreGasUsedController.setCompiled((isUseAddress && isUseMaskingId));
+        btnStartPreGasUsedController.setCompiled((isUseAddress && isUseMaskingId && isEnoughBalance));
 
 
         if(handler != null){
@@ -384,9 +415,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
     }
 
     public BigInteger getAmount() {
-        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
-        BigInteger value = new BigInteger(""+values[0]);
-        return value;
+        return selectDomainController.getValueApisToBigInt();
     }
 
     public BigInteger getChargedAmount(){
