@@ -126,7 +126,7 @@ public class ApisSelectBoxController extends BaseViewController {
                 byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
                 CallTransaction.Contract contract = new CallTransaction.Contract(abi);
                 CallTransaction.Function functionGetRegistrationFee = contract.getByName("getRegistrationFee");
-                CallTransaction.Function functionGetDomainInfo = contract.getByName("getDomainInfo"); //[2]:domainName
+                CallTransaction.Function functionGetDomainInfo = contract.getByName("getDomainInfo"); //[2]:domainName, [5]needApproval, [6]isOpened
                 Object[] cntResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName("domainCount"));
 
                 // 도메인 리스트 등록
@@ -141,13 +141,15 @@ public class ApisSelectBoxController extends BaseViewController {
                     params.add(new SimpleStringProperty(""+i));
                     Object[] nameArgs = GUIContractManager.getContractArgs(functionGetDomainInfo.inputs, params);
                     Object[] nameResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName(functionGetDomainInfo.name), nameArgs);
-                    domainName.add(nameResult[2].toString());
 
-                    Object[] feeArgs = GUIContractManager.getContractArgs(functionGetRegistrationFee.inputs, params);
-                    Object[] feeResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName(functionGetRegistrationFee.name), feeArgs);
-                    domainFee.add(ApisUtil.readableApis(new BigInteger(feeResult[0].toString()), ',', true));
+                    if(!(Boolean) nameResult[5] && (Boolean) nameResult[6]){
+                        domainName.add(nameResult[2].toString());
+                        Object[] feeArgs = GUIContractManager.getContractArgs(functionGetRegistrationFee.inputs, params);
+                        Object[] feeResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName(functionGetRegistrationFee.name), feeArgs);
+                        domainFee.add(ApisUtil.readableApis(new BigInteger(feeResult[0].toString()), ',', true));
+                    }
                 }
-                for(int i=0; i<domainCount ; i++){
+                for(int i=0; i<domainName.size() ; i++){
                     SelectBoxItemModel model = new SelectBoxItemModel().setDomainId(""+i).setDomain("@"+domainName.get(i)).setApis(domainFee.get(i));
                     // 가지고 있는 모델일 경우 업데이트
                     // 가지고 있지 않는 모델일 경우 추가
