@@ -262,6 +262,10 @@ public class AppManager {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
                                     AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
                                 }
+                            } else {
+                                if(SystemProperties.getDefault().getMasternodeKey() == null) {
+                                    cancelMasternode();
+                                }
                             }
 
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {

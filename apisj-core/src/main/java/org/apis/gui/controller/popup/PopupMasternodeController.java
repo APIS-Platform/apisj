@@ -34,7 +34,7 @@ public class PopupMasternodeController extends BasePopupController {
     @FXML private ApisAddressFieldController recipientFieldController;
     @FXML private GridPane cancelChangeGrid;
     @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
-    @FXML private Label address, recipientInputBtn, startBtn, cancelRqBtn, cancelMnBtn, changeRecipientBtn;
+    @FXML private Label address, recipientInputBtn, startBtn, cancelRqBtn, cancelMnBtn, changeRecipientBtn, errMsg;
     @FXML private ImageView addrIdentImg;
     @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
@@ -104,6 +104,8 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
         apisTextFieldGroup.add(passwordController);
+        StyleManager.backgroundColorStyle(cancelRqBtn, StyleManager.AColor.Cb01e1e);
+        errMsg.setVisible(false);
         btnSetting();
     }
 
@@ -116,6 +118,10 @@ public class PopupMasternodeController extends BasePopupController {
         recipientDesc1.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc1);
         recipientDesc2.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc2);
         startBtn.textProperty().bind(StringManager.getInstance().popup.masternodeStartMasternode);
+        cancelRqBtn.textProperty().bind(StringManager.getInstance().popup.masternodeCancelRequest);
+        cancelMnBtn.textProperty().bind(StringManager.getInstance().popup.masternodeCancelMasternode);
+        changeRecipientBtn.textProperty().bind(StringManager.getInstance().popup.masternodeChageRecipient);
+        errMsg.textProperty().bind(StringManager.getInstance().popup.masternodeErrorMessage);
     }
 
     private void btnSetting() {
@@ -207,6 +213,7 @@ public class PopupMasternodeController extends BasePopupController {
 
         String keystoreJsonData = itemModel.getKeystoreJsonData();
         String password =  passwordController.getText();
+        String oldRecipient = AppManager.getGeneralPropertiesData("recipient_address");
         byte[] recipientAddr = Hex.decode(recipientController.getAddress());
         // 직접 입력한 경우
         if(!isMyAddressSelected){
@@ -233,20 +240,29 @@ public class PopupMasternodeController extends BasePopupController {
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
 
             } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
-                passwordController.succeededForm();
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
-
                 switch(btnFlag) {
                     case 0 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
+                    // Show error message when masternode state already activate
                     case 1 :
-                        AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
-                        AppManager.getInstance().cancelMasternode();
-                        SystemProperties.getDefault().setMasternodePrivateKey(null);
-                        SystemProperties.getDefault().setMasternodeRecipient(null);
+                        if(AppManager.getInstance().isMasterNode(itemModel.getAddress())) {
+                            AppManager.saveGeneralProperties("recipient_address", oldRecipient);
+                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.MASTERNODE.num));
+                            StyleManager.backgroundColorStyle(cancelRqBtn, StyleManager.AColor.Cd8d8d8);
+                            errMsg.setVisible(true);
+                            return;
+                        } else {
+                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
+                            AppManager.getInstance().cancelMasternode();
+                            SystemProperties.getDefault().setMasternodePrivateKey(null);
+                            SystemProperties.getDefault().setMasternodeRecipient(null);
+                        }
                         break;
                     case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
                     default : break;
                 }
+
+                passwordController.succeededForm();
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             }
