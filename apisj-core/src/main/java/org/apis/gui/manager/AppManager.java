@@ -241,29 +241,31 @@ public class AppManager {
                 }
 
                 // Check & Change Masternode State
-                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
-                    String address = keyExp.address;
+                if(AppManager.this.keyStoreDataExpList != null && AppManager.this.keyStoreDataExpList.size() != 0) {
+                    for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                        String address = keyExp.address;
 
-                    if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
-                        if(isMasterNode(address)) {
-                            if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                        if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
+                            if (isMasterNode(address)) {
+                                if (address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
+                                }
+                            }
+
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.REQUEST_MASTERNODE.num))) {
+                            if (isMasterNode(address)) {
                                 AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
                             }
-                        }
 
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.REQUEST_MASTERNODE.num))) {
-                        if(isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
-                        }
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
+                            if (!isMasterNode(address)) {
+                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                            }
 
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
-                        if(!isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
-                        }
-
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
-                        if(!isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
+                            if (!isMasterNode(address)) {
+                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                            }
                         }
                     }
                 }

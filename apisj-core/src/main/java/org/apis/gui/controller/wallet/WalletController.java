@@ -878,12 +878,15 @@ public class WalletController extends BaseViewController {
         if(apis.equals("50000000000000000000000")
                 || apis.equals("200000000000000000000000")
                 || apis.equals("500000000000000000000000")){
+            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             showToolGroup(true, true);
             if(masternodeStatus != null && !masternodeStatus.equals("")) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 if(masternodeStatus.equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
 
                 } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
                     if(!model.getAddress().equals(masternodeAddress)) {
+                        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                         showToolGroup(true, false);
                     }
 
