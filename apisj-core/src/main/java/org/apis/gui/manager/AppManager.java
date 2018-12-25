@@ -262,12 +262,14 @@ public class AppManager {
 
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
                             if (!isMasterNode(address)) {
-                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+
                             }
 
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
                             if (!isMasterNode(address)) {
-                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                                if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                    cancelMasternode();
+                                }
                             }
                         }
                     }

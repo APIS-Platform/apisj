@@ -221,7 +221,7 @@ public class PopupMasternodeController extends BasePopupController {
             return;
         } else{
             if(btnFlag == 2) {
-                AppManager.getInstance().cancelMasternode();
+                AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
                 passwordController.succeededForm();
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
