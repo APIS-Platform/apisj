@@ -216,7 +216,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         //ConsoleUtil.printlnRed(String.format("RepositoryImpl AddMineral value{%d} blockNumber{%d}", value, blockNumber));
 
         AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withMineralIncrement(value).withLastBlock(BigInteger.valueOf(blockNumber)));
+        accountStateCache.put(addr, accountState.withMineralIncrement(value, blockNumber).withLastBlock(BigInteger.valueOf(blockNumber)));
         return accountState.getMineral(blockNumber);
     }
 
