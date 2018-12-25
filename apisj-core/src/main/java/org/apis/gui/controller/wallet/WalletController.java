@@ -862,7 +862,7 @@ public class WalletController extends BaseViewController {
     }
     public void addWalletCheckList(WalletItemModel model){
         String apis = model.getApis().toString();
-        String masternodeStatus = AppManager.getGeneralPropertiesData("masternode_status");
+        String masternodeStatus = AppManager.getGeneralPropertiesData("masternode_state");
         String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
         walletCheckList.add(model);
 
