@@ -61,8 +61,6 @@ public class PopupMasternodeController extends BasePopupController {
 
         addrIdentImg.setClip(ellipse);
 
-        btnSetting();
-
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             // Focus Out Event
@@ -105,7 +103,7 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
         apisTextFieldGroup.add(passwordController);
-        showStartBtn();
+        btnSetting();
     }
 
     public void languageSetting() {
@@ -155,7 +153,6 @@ public class PopupMasternodeController extends BasePopupController {
 
         address.textProperty().setValue(this.itemModel.getAddress());
         addrIdentImg.setImage(ImageManager.getIdenticons(this.itemModel.getAddress()));
-
     }
 
     @FXML
@@ -224,7 +221,11 @@ public class PopupMasternodeController extends BasePopupController {
             return;
         } else{
             if(btnFlag == 2) {
-                AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
+                AppManager.getInstance().cancelMasternode();
+                passwordController.succeededForm();
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
+
+                AppManager.getInstance().guiFx.getWallet().updateTableList();
 
             } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
                 passwordController.succeededForm();

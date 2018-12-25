@@ -1230,8 +1230,10 @@ public class AppManager {
     }
 
     public void cancelMasternode() {
+        this.masternodeState = Integer.toString(MnState.CANCEL_MASTERNODE.num);
         this.masternodeAddress = null;
         this.recipientAddress = null;
+        AppManager.saveGeneralProperties("masternode_state", this.masternodeState);
         AppManager.saveGeneralProperties("masternode_address", this.masternodeAddress);
         AppManager.saveGeneralProperties("recipient_address", this.recipientAddress);
         SystemProperties.getDefault().setMasternodePrivateKey(null);
