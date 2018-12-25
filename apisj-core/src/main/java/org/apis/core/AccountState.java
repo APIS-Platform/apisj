@@ -392,8 +392,9 @@ public class AccountState {
         return new AccountState(nonce, balance, value, lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
     }
 
-    public AccountState withMineralIncrement(BigInteger value) {
-        return new AccountState(nonce, balance, mineral.add(value), lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
+    public AccountState withMineralIncrement(BigInteger value, long blockNumber) {
+        BigInteger beforeMNR = getMineral(blockNumber);
+        return new AccountState(nonce, balance, beforeMNR.add(value), lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
     }
 
     public byte[] getEncoded() {
