@@ -9,6 +9,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
+import org.apis.config.SystemProperties;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
@@ -221,7 +222,11 @@ public class PopupMasternodeController extends BasePopupController {
             return;
         } else{
             if(btnFlag == 2) {
+                // Wait for cancel masternode
                 AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
+                SystemProperties.getDefault().setMasternodePrivateKey(null);
+                SystemProperties.getDefault().setMasternodeRecipient(null);
+
                 passwordController.succeededForm();
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
