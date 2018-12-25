@@ -93,7 +93,7 @@ public class AppManager {
     private String miningWalletAddress = "";
 
     private boolean isSyncDone = false;
-    private String miningAddress, masternodeAddress, recipientAddress;
+    private String miningAddress, masternodeAddress, recipientAddress, masternodeState;
     private SimpleStringProperty searchToken = new SimpleStringProperty();
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
     private CallTransaction.Contract tokenContract = null;
@@ -237,6 +237,34 @@ public class AppManager {
                             totalTokenValue = totalTokenValue.add(AppManager.this.getTokenValue(token.getTokenAddress(), AppManager.this.keyStoreDataExpList.get(i).address));
                         }
                         AppManager.this.setTotalTokenValue(token.getTokenAddress(), totalTokenValue);
+                    }
+                }
+
+                // Check & Change Masternode State
+                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                    String address = keyExp.address;
+
+                    if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.EMPTY_MASTERNODE.toString())) {
+                        if(isMasterNode(address)) {
+                            if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                AppManager.saveGeneralProperties("masternode_state", MnState.MASTERNODE.toString());
+                            }
+                        }
+
+                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.REQUEST_MASTERNODE.toString())) {
+                        if(isMasterNode(address)) {
+                            AppManager.saveGeneralProperties("masternode_state", MnState.MASTERNODE.toString());
+                        }
+
+                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.MASTERNODE.toString())) {
+                        if(!isMasterNode(address)) {
+                            AppManager.saveGeneralProperties("masternode_state", MnState.EMPTY_MASTERNODE.toString());
+                        }
+
+                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.CANCEL_MASTERNODE.toString())) {
+                        if(!isMasterNode(address)) {
+                            AppManager.saveGeneralProperties("masternode_state", MnState.EMPTY_MASTERNODE.toString());
+                        }
                     }
                 }
             }
@@ -1176,6 +1204,7 @@ public class AppManager {
 
     //마스터노드 실행
     public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
+        this.masternodeState = MnState.EMPTY_MASTERNODE.toString();
         this.masternodeAddress = null;
         this.recipientAddress = null;
         try {
@@ -1183,9 +1212,11 @@ public class AppManager {
             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(keyStore, password);
             SystemProperties.getDefault().setMasternodePrivateKey(privateKey);
             SystemProperties.getDefault().setMasternodeRecipient(recipientAddr);
+            this.masternodeState = MnState.REQUEST_MASTERNODE.toString();
             this.masternodeAddress = keyStoreData.address;
             this.recipientAddress = ByteUtil.toHexString(recipientAddr);
 
+            AppManager.saveGeneralProperties("masternode_state", this.masternodeState);
             AppManager.saveGeneralProperties("masternode_address", this.masternodeAddress);
             AppManager.saveGeneralProperties("recipient_address", this.recipientAddress);
 
@@ -1573,6 +1604,7 @@ public class AppManager {
             prop.load(input);
             if (prop.getProperty("in_system_log") == null) { prop.setProperty("in_system_log", "false"); }
             if (prop.getProperty("enable_event_log") == null) { prop.setProperty("enable_event_log", "false"); }
+            if (prop.getProperty("masternode_state") == null) { prop.setProperty("masternode_state", MnState.EMPTY_MASTERNODE.toString()); }
             if (prop.getProperty("masternode_address") == null) { prop.setProperty("masternode_address", ""); }
             if (prop.getProperty("recipient_address") == null) { prop.setProperty("recipient_address", ""); }
             if (prop.getProperty("mining_address") == null) { prop.setProperty("mining_address", ""); }
@@ -1584,6 +1616,7 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
+            prop.setProperty("masternode_state", MnState.EMPTY_MASTERNODE.toString());
             prop.setProperty("masternode_address", "");
             prop.setProperty("recipient_address", "");
             prop.setProperty("mining_address","");
@@ -1757,6 +1790,17 @@ public class AppManager {
             } catch (AWTException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public enum MnState {
+        EMPTY_MASTERNODE(0),
+        REQUEST_MASTERNODE(1),
+        MASTERNODE(2),
+        CANCEL_MASTERNODE(3);
+        int num;
+        MnState(int num) {
+            this.num = num;
         }
     }
 }

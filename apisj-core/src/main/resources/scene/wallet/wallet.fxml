@@ -839,7 +839,7 @@
                                     <String fx:value="font_semibold_11" />
                                  </styleClass>
                               </Label>
-                              <ImageView fx:id="iconMasternode" fitWidth="13.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="7.0">
+                              <ImageView fx:id="iconMasternode" fitWidth="13.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="10.0">
                                  <image>
                                     <Image url="@../../image/ic_masternode_grey@2x.png" />
                                  </image>
