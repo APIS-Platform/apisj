@@ -46,10 +46,10 @@
                   </ImageView>
                   <Label fx:id="label" styleClass="font_semibold_18" text="Program is Starting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
-                        <Insets top="10.0" />
+                        <Insets top="4.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="label1" styleClass="font_semibold_18" text="Please  wait..." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label fx:id="label1" styleClass="font_regular_16" text="Please  wait..." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin>

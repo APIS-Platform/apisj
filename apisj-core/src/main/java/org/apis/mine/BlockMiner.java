@@ -505,11 +505,15 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        List<Transaction> pendingTransactions = new ArrayList<>(getAllPendingTransactions());
-        ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + pendingTransactions.size());
+        List<Transaction> newPendingTxs = new ArrayList<>();
+        List<Transaction> pendingTxs = getAllPendingTransactions();
+        for(Transaction tx : pendingTxs) {
+            newPendingTxs.add(new Transaction(tx.getEncoded()));
+        }
+        ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + newPendingTxs.size());
 
         boolean hasInvalidTx = true;
-        Block newBlock = blockchain.createNewBlock(bestPendingState, pendingTransactions);
+        Block newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
 
         if(newBlock == null) {
             return null;
@@ -525,7 +529,7 @@ public class BlockMiner {
 
                 // TransactionExecutor 내에서 init() 함수에서 실행되지 못한 경우 (Too much gas used in this block 등)
                 if(txSummary == null) {
-                    pendingTransactions.removeIf(tx -> FastByteComparisons.equal(tx.getHash(), receipt.getTransaction().getHash()));
+                    newPendingTxs.removeIf(tx -> FastByteComparisons.equal(tx.getHash(), receipt.getTransaction().getHash()));
                     hasInvalidTx = true;
                 }
             }
@@ -535,7 +539,7 @@ public class BlockMiner {
                 logger.debug("Mining block has been removed because it contains unexecuted transactions.");
 
                 // 제거된 블록을 새롭게 생성
-                newBlock = blockchain.createNewBlock(bestPendingState, pendingTransactions);
+                newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
             }
         }
 

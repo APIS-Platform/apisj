@@ -32,7 +32,6 @@ import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.Utils;
-import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
 import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.Program;
@@ -169,15 +168,6 @@ public class TransactionExecutor {
             }
         }
 
-        // 받는 사람이 마스터노드 일 경우, APIS가 송금되면 안된다.
-        if(tx.getReceiveAddress() != null) {
-            BigInteger value = ByteUtil.bytesToBigInteger(tx.getValue());
-            if (track.getMnStartBlock(tx.getReceiveAddress()) > 0 && value.compareTo(BigInteger.ZERO) > 0) {
-                execError(String.format("Can not send APIS to MasterNode. (Value) %sAPIS", ApisUtil.readableApis(value)));
-                return;
-            }
-        }
-
 
         BigInteger txGasLimit = new BigInteger(1, tx.getGasLimit());
         BigInteger curBlockGasLimit = new BigInteger(1, currentBlock.getGasLimit());
@@ -249,8 +239,6 @@ public class TransactionExecutor {
                 return;
             }
 
-            // 마스터노드 갯수가 가득차있으면 신청할 수 없다.
-
             AccountState senderState = track.getAccountState(tx.getSender());
             if(senderState.getMnStartBlock().longValue() > 0) {
                 /* 마스터노드를 업데이트하는 경우 ::
@@ -263,21 +251,14 @@ public class TransactionExecutor {
                     return;
                 }
             } else {
-                // 새로 등록
+                /* 마스터노드를 새로 등록하는 경우 ::
+                 * 마스터노드 갯수에 여유가 있는지 확인한다.
+                 */
                 if(track.getMasternodeSize(senderBalance) >= config.getBlockchainConfig().getCommonConstants().getMASTERNODE_LIMIT(senderBalance)) {
                     execError("Masternode list is full.");
                     return;
                 }
-
-                // 이자 받는 지갑은 마스터노드가 될 수 없다
-                if(track.isRecipientOfMasternode(tx.getSender())) {
-                    execError("The sender who receives reward from the masternode can not be the masternode.");
-                    return;
-                }
             }
-
-
-
         } else {
             if(execError != null && !execError.isEmpty()) {
                 return;
@@ -332,25 +313,23 @@ public class TransactionExecutor {
             return false;
         }
 
-        // 보내는 주소의 잔고가 마스터노드 기준 금액과 일치하는지 확인한다.
+        // 마스터노드를 신청하는 경우, 보내는 주소의 잔고가 마스터노드 기준 금액과 일치하는지 확인한다.
         // The balance must be equal to the masternode's reference amount. (General: 50,000 | Major: 200,000 | Private: 500,000)
         Constants constants = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants();
-        if(constants.getMASTERNODE_LIMIT(balance) == 0) {
-            return false;
+        if(track.getMnStartBalance(tx.getSender()).compareTo(BigInteger.ZERO) == 0) {
+            if(constants.getMASTERNODE_LIMIT(balance) == 0) {
+                return false;
+            }
         }
 
         /*
          * 트랜잭션의 data를 확인한다.
          * 1. sender가 마스터노드가 아닌 경우, tx.data는 주소 형식이어야 한다. (이자 수령 주소 등록)
          * 2. sender가 마스터노드로 등록되어 있는 경우, tx.data는 null(유지) 또는 주소 형식(변경)이어야 한다.
-         * 3. Sender 주소와 이자 수령 주소는 같을 수 없다.
-         * 4. 다른 마스터노드를 이자 수령 주소로 등록할 수 없다.
          *
          * Check the data of the transaction.
          * 1. If the sender is not the masternode, the tx.data must be in address format. (To register a recipient)
          * 2. If the sender is the master, the data should be null (retainer of recipients) or address format (change of recipient).
-         * 3. The sender and the recipient can not be the same.
-         * 4. The sender can not register another masternode's address as a recipient address.
          */
         byte[] recipient = track.getMnRecipient(tx.getSender());
         byte[] txData = tx.getData();
@@ -364,21 +343,6 @@ public class TransactionExecutor {
                 execError("tx.data(recipient) must be in address format");
                 return false;
             }
-        }
-
-        // Sender 주소와 이자 수령 주소는 같을 수 없다.
-        // The masternode's address and the recipient's address can not be the same.
-        if(txData != null && FastByteComparisons.equal(tx.getSender(), txData)) {
-            execError("The masternode's address and the recipient's address can not be the same.");
-            return false;
-        }
-
-        // 다른 마스터노드를 이자 수령 주소로 등록할 수 없다.
-        // Do not register another masternode's address as a recipient address.
-        AccountState otherMN = track.getAccountState(txData);
-        if(txData != null && otherMN != null && otherMN.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-            execError("You can not register another masternode's address as a recipient address.");
-            return false;
         }
 
         return true;
@@ -691,19 +655,6 @@ public class TransactionExecutor {
             } else {
                 mineralUsed = fee;
                 mineralRefund = m_usedMineral.subtract(fee);
-            }
-
-            // 인터널 트랜잭션의 대상자에 마스터노드는 포함될 수 없다
-            List<InternalTransaction> itxs = result.getInternalTransactions();
-            for(InternalTransaction itx : itxs) {
-                byte[] to = itx.getReceiveAddress();
-                AccountState toState = track.getAccountState(to);
-                if(toState.getMnStartBalance().compareTo(BigInteger.ZERO) > 0) {
-                    String err = "Can not designate a receiver as a masternode in an internal transaction.";
-                    result.setException(new NotEnoughMineralException(err));
-                    execError(err);
-                    break;
-                }
             }
 
 
