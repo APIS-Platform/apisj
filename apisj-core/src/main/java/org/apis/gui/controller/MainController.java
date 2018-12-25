@@ -112,6 +112,8 @@ public class MainController extends BaseViewController {
 
             }
         });
+
+        AppManager.getInstance().guiFx.hideLoadingStage();
     }
     public void selectedHeader(MainTab index){
         this.selectedIndex = index;
