@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
@@ -30,13 +31,15 @@ public class PopupMasternodeController extends BasePopupController {
     @FXML private ApisSelectBoxController recipientController;
     @FXML private ApisTextFieldController passwordController;
     @FXML private ApisAddressFieldController recipientFieldController;
+    @FXML private GridPane cancelChangeGrid;
     @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
-    @FXML private Label address, recipientInputBtn, startBtn;
+    @FXML private Label address, recipientInputBtn, startBtn, cancelRqBtn, cancelMnBtn, changeRecipientBtn;
     @FXML private ImageView addrIdentImg;
     @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
     private boolean isMyAddressSelected = true;
+    private int btnFlag = 0;
 
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
@@ -58,6 +61,8 @@ public class PopupMasternodeController extends BasePopupController {
 
         addrIdentImg.setClip(ellipse);
 
+        btnSetting();
+
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             // Focus Out Event
@@ -78,7 +83,7 @@ public class PopupMasternodeController extends BasePopupController {
 
             @Override
             public void onAction() {
-                startMasternode();
+                startMasternode(btnFlag);
             }
 
             @Override
@@ -100,6 +105,7 @@ public class PopupMasternodeController extends BasePopupController {
         });
 
         apisTextFieldGroup.add(passwordController);
+        showStartBtn();
     }
 
     public void languageSetting() {
@@ -111,6 +117,36 @@ public class PopupMasternodeController extends BasePopupController {
         recipientDesc1.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc1);
         recipientDesc2.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc2);
         startBtn.textProperty().bind(StringManager.getInstance().popup.masternodeStartMasternode);
+    }
+
+    private void btnSetting() {
+        String propState = AppManager.getGeneralPropertiesData("masternode_status");
+
+        if(propState.equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
+            showStartBtn();
+        } else if(propState.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
+            showCancelRqBtn();
+        } else if(propState.equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
+            showCancelChangeGrid();
+        }
+    }
+
+    private void showStartBtn() {
+        startBtn.setVisible(true);
+        cancelRqBtn.setVisible(false);
+        cancelChangeGrid.setVisible(false);
+    }
+
+    private void showCancelRqBtn() {
+        startBtn.setVisible(false);
+        cancelRqBtn.setVisible(true);
+        cancelChangeGrid.setVisible(false);
+    }
+
+    private void showCancelChangeGrid() {
+        startBtn.setVisible(false);
+        cancelRqBtn.setVisible(false);
+        cancelChangeGrid.setVisible(true);
     }
 
     @Override
@@ -151,11 +187,22 @@ public class PopupMasternodeController extends BasePopupController {
 
             isMyAddressSelected = !isMyAddressSelected;
         } else if(fxid.equals("startBtn")) {
-            startMasternode();
+            startMasternode(0);
+
+        } else if(fxid.equals("cancelRqBtn")) {
+            startMasternode(1);
+
+        } else if(fxid.equals("cancelMnBtn")) {
+            startMasternode(2);
+
+        } else if(fxid.equals("changeRecipientBtn")) {
+            startMasternode(3);
         }
     }
 
-    public void startMasternode(){
+    public void startMasternode(int btnFlag){
+        this.btnFlag = btnFlag;
+
         if (passwordController.getCheckBtnEnteredFlag()) {
             passwordController.setText("");
         }
@@ -176,11 +223,19 @@ public class PopupMasternodeController extends BasePopupController {
         } else if(ByteUtil.toHexString(recipientAddr).length() != 40){
             return;
         } else{
+            if(btnFlag == 2) {
+                AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
 
-            if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
-
+            } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
                 passwordController.succeededForm();
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
+
+                switch(btnFlag) {
+                    case 0 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
+                    case 1 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num)); break;
+                    case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
+                    default : break;
+                }
 
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             }
