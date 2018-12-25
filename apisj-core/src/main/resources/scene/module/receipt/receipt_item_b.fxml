@@ -35,7 +35,7 @@
       <GridPane GridPane.rowIndex="2">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints maxWidth="250.0" minWidth="-Infinity" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />

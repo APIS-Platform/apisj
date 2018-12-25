@@ -93,6 +93,7 @@ public class PopupMaskingController extends BasePopupController {
         reCentPayerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
         payMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg1);
         payMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg2);
+        registerMaskingIdTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg4);
 
         backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
         backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
@@ -168,7 +169,32 @@ public class PopupMaskingController extends BasePopupController {
             hintMessageLabel.setVisible(true);
             hintMessageLabel.setPrefHeight(-1);
 
-            if(maskingAddress == null){
+            if(maskingId.getBytes().length > 24) {
+                nextBtn3.setDisable(true);
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                gasCalculatorMiniController.setDisable(true);
+
+                idIcon.setImage(ImageManager.icErrorRed);
+                idMsg.setTextFill(Color.web("#910000"));
+                idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.registerAddressMsg4.get()+"("+maskingId.getBytes().length+"/24)");
+
+                hintAddressLabel.setVisible(true);
+                hintAddressLabel.setPrefHeight(-1);
+                idMsg2.setText(maskingAddress);
+
+            }else if(maskingAddress != null){
+                nextBtn3.setDisable(true);
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                gasCalculatorMiniController.setDisable(true);
+
+                idIcon.setImage(ImageManager.icErrorRed);
+                idMsg.setTextFill(Color.web("#910000"));
+                idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
+
+                hintAddressLabel.setVisible(true);
+                hintAddressLabel.setPrefHeight(-1);
+                idMsg2.setText(maskingAddress);
+            }else{
                 gasCalculatorMiniController.setDisable(false);
 
                 idIcon.setImage(ImageManager.icCheckGreen);
@@ -177,18 +203,6 @@ public class PopupMaskingController extends BasePopupController {
 
                 hintAddressLabel.setVisible(false);
                 hintAddressLabel.setPrefHeight(0);
-            }else{
-                nextBtn3.setDisable(true);
-                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
-                gasCalculatorMiniController.setDisable(true);
-
-                idIcon.setImage(ImageManager.icErrorRed);
-                idMsg.setTextFill(Color.web("#b01e1e"));
-                idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
-
-                hintAddressLabel.setVisible(true);
-                hintAddressLabel.setPrefHeight(-1);
-                idMsg2.setText(maskingAddress);
             }
         }
 

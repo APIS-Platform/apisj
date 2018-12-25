@@ -479,6 +479,27 @@ public class AppManager {
         }
     }
 
+    public long getDomainIndex(String domainName){
+        String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
+        byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
+        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+        CallTransaction.Function functionDomainCount = contract.getByName("domainCount");
+        CallTransaction.Function functionGetDomainInfo = contract.getByName("getDomainInfo"); //[2]:domainName, [5]needApproval, [6]isOpened
+
+        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDomainCount);
+        long count = Long.parseLong(""+values[0]);
+
+        Object[] args = new Object[1];
+        for(int i=0; i<count; i++){
+            args[0] = i;
+            values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionGetDomainInfo, args);
+            if((""+values[2]).equals(domainName)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public String getAliasWithAddress(String address){
         for(int i=0; i<getKeystoreExpList().size(); i++){
             if(getKeystoreExpList().get(i).address.equals(address)){
