@@ -28,7 +28,7 @@ public class TransactionData {
     private String gas;
     private String gasPrice;
     private String gasPriceAPIS;
-    private String feeLimitAPIS;
+    private String feePaidAPIS;
     private String data;
     private String r;
     private String s;
@@ -66,7 +66,7 @@ public class TransactionData {
         this.gas = bytesToBigInteger(tx.getGasLimit()).toString();
         this.gasPrice = bytesToBigInteger(tx.getGasPrice()).toString();
         this.gasPriceAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
-        this.feeLimitAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
+        this.feePaidAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
         this.data = toHexString0x(tx.getData());
 
         if(tx.getSignature() != null) {
@@ -206,7 +206,7 @@ public class TransactionData {
                 ", gas='" + gas + '\'' +
                 ", gasPrice='" + gasPrice + '\'' +
                 ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
-                ", feeLimitAPIS='" + feeLimitAPIS + '\'' +
+                ", feePaidAPIS='" + feePaidAPIS + '\'' +
                 ", data='" + data + '\'' +
                 ", r='" + r + '\'' +
                 ", s='" + s + '\'' +
