@@ -698,7 +698,7 @@ public class RPCCommand {
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
 
-                    BlockData blockData = new BlockData(block, isFull, coinbaseMask, ethereum);
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -734,7 +734,7 @@ public class RPCCommand {
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
 
-                    BlockData blockData = new BlockData(block, isFull, coinbaseMask, ethereum);
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -894,7 +894,7 @@ public class RPCCommand {
 
                     List<BlockData> blocks = new ArrayList<>();
                     for(int i = 0; i < rowCount && currentBlock.getNumber() > 1; i++) {
-                        blocks.add(new BlockData(currentBlock, false, ethereum));
+                        blocks.add(new BlockData(currentBlock, false));
                         currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
