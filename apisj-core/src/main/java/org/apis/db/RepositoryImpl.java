@@ -582,31 +582,34 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          * //------------//------------------//--------------------//
          *          End-->|--> Masternode Start
          */
-        // 마스터노드의 잔고가 기준 값(General, Major, Private)과 정확히 일치하는지 확인한다.
-        BigInteger collateral = accountState.getBalance();
-        byte[] baseEarlyNode    = constants.getMASTERNODE_BASE_EARLY_RUN(collateral);
-        byte[] baseNormalNode   = constants.getMASTERNODE_BASE_NORMAL(collateral);
-        byte[] baseLateNode     = constants.getMASTERNODE_BASE_LATE(collateral);
-        boolean isNormalPeriod  = constants.isMasternodeNormalPeriod(blockNumber);
-        long mnLimit            = constants.getMASTERNODE_LIMIT(collateral);
 
-        if(baseEarlyNode == null || baseNormalNode == null || baseLateNode == null) {
-            return;
-        }
+        // 마스터노드를 신청하는 경우, 잔고가 기준 담보금액과 일치해야한다.
+        if(accountState.getMnStartBlock().longValue() == 0) {
+            BigInteger collateral = accountState.getBalance();
 
+            byte[] baseEarlyNode    = constants.getMASTERNODE_BASE_EARLY_RUN(collateral);
+            byte[] baseNormalNode   = constants.getMASTERNODE_BASE_NORMAL(collateral);
+            byte[] baseLateNode     = constants.getMASTERNODE_BASE_LATE(collateral);
 
-        // 얼리버드, 나머지 마스터노드에서 신청된 갯수를 확인한다.
-        long sizeofEarlyNode = sizeofMasterNode(baseEarlyNode).getSize();
-        MasternodeSize mnNormalSize = sizeofMasterNode(baseNormalNode);
-        long sizeofNormalNode = mnNormalSize.getSize();
-        MasternodeSize mnLateSize = sizeofMasterNode(baseLateNode);
-        long sizeofLateNode = mnLateSize.getSize();
+            // base 주소가 null로 반환된 것은 잔고가 담보금액과 일치하지 않는 다는 의미
+            if(baseEarlyNode == null || baseNormalNode == null || baseLateNode == null) {
+                return;
+            }
 
-        // 마스터노드 정보가 없으면 새로 추가하도록 한다.
-        if(accountState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
+            // 얼리버드, 나머지 마스터노드에서 신청된 갯수를 확인한다.
+            MasternodeSize mnNormalSize = sizeofMasterNode(baseNormalNode);
+            MasternodeSize mnLateSize   = sizeofMasterNode(baseLateNode);
+
+            long sizeofEarlyNode    = sizeofMasterNode(baseEarlyNode).getSize();
+            long sizeofNormalNode   = mnNormalSize.getSize();
+            long sizeofLateNode     = mnLateSize.getSize();
+
+            // 전달된 담보금액에 해당하는 마스터노드의 최대 갯수
+            long mnLimit = constants.getMASTERNODE_LIMIT(collateral);
 
             // 마스터노드 시작하고 하루 이내일 경우에는 NormalNode, 늦으면 LateNode
             if (sizeofEarlyNode + sizeofNormalNode + sizeofLateNode < mnLimit) {
+                boolean isNormalPeriod  = constants.isMasternodeNormalPeriod(blockNumber);
                 if (isNormalPeriod) {
                     insertMnState(mnNormalSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
                 }
@@ -615,13 +618,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                     insertMnState(mnLateSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
                 }
             }
-        }
-
-        // 마스터노드 정보가 있으면, 업데이트를 한다.
-        else {
+        } else {
+            // 트랜잭션 데이터에 이자 수령 주소가 포함된 경우, 업데이트한다.
             if(Utils.isValidAddress(tx.getData())) {
                 setMnRecipient(tx.getSender(), tx.getData());
             }
+
+            // 마지막으로 마스터노드 정보가 업데이트 된 블록 번호를 반영한다.
             setMnLastBlock(tx.getSender(), blockNumber);
         }
     }
