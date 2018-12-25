@@ -564,6 +564,35 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
     }
 
+    @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        List<byte[]> mnList = new ArrayList<>();
+
+        byte[] prevMn = baseNode;
+        while(true) {
+            AccountState currentState = getAccountState(prevMn);
+            byte[] currentMn = currentState.getMnNextNode();
+
+            if(currentMn == null) {
+                return mnList;
+            }
+            else {
+                if(baseNode == constants.getMASTERNODE_GENERAL_BASE_LATE()
+                        || baseNode == constants.getMASTERNODE_MAJOR_BASE_LATE()
+                        || baseNode == constants.getMASTERNODE_PRIVATE_BASE_LATE()) {
+
+                    if(blockNumber - currentState.getMnStartBlock().longValue() >= constants.getMASTERNODE_REWARD_PERIOD()) {
+                        mnList.add(currentMn);
+                    }
+                } else {
+                    mnList.add(currentMn);
+                }
+                prevMn = currentMn;
+            }
+        }
+    }
+
 
     /**
      * 마스터노드를 새롭게 등록하거나 정보를 갱신한다.

@@ -258,6 +258,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode, long blockNumber) {
+        return repository.getMasterNodeList(baseNode, blockNumber);
+    }
+
+    @Override
     public long getMasternodeSize(BigInteger collateral) {
         return repository.getMasternodeSize(collateral);
     }
