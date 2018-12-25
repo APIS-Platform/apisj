@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" prefHeight="470.0" prefWidth="375.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptController">
+<AnchorPane fx:id="rootPane" prefHeight="470.0" prefWidth="375.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.receipt.ReceiptController">
    <children>
       <GridPane fx:id="receipt" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
