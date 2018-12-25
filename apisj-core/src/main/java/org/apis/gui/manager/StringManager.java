@@ -707,6 +707,7 @@ public class StringManager {
         public SimpleStringProperty registerAddressMsg1 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg3 = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressMsg4 = new SimpleStringProperty();
         public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
         public SimpleStringProperty selectHandedToDesc = new SimpleStringProperty();
@@ -764,6 +765,7 @@ public class StringManager {
             registerAddressMsg1.set(StringManager.this.getString("address_masking_register_address_msg1", "This address is unavailable"));
             registerAddressMsg2.set(StringManager.this.getString("address_masking_register_address_msg2", "This address is already in use"));
             registerAddressMsg3.set(StringManager.this.getString("address_masking_register_address_msg3", "Please enter a valid address"));
+            registerAddressMsg4.set(StringManager.this.getString("address_masking_register_address_msg4", "Mask must be 24 bytes or less."));
             selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
             selectHandedToDesc.set(StringManager.this.getString("address_masking_select_hand_to_desc", "Please enter your address to receive the mask."));

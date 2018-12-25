@@ -862,15 +862,28 @@ public class WalletController extends BaseViewController {
     }
     public void addWalletCheckList(WalletItemModel model){
         String apis = model.getApis().toString();
-        String storedMasternodeAddr = AppManager.getGeneralPropertiesData("masternode_address");
+        String masternodeStatus = AppManager.getGeneralPropertiesData("masternode_status");
+        String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
         walletCheckList.add(model);
         if(apis.equals("50000000000000000000000")
                 || apis.equals("200000000000000000000000")
                 || apis.equals("500000000000000000000000")){
             showToolGroup(true, true);
-            if(storedMasternodeAddr != null && !storedMasternodeAddr.equals("") && !model.getAddress().equals(storedMasternodeAddr)) {
-                showToolGroup(true, false);
+            if(masternodeStatus != null && !masternodeStatus.equals("")) {
+                if(masternodeStatus.equals(AppManager.MnState.EMPTY_MASTERNODE.toString())) {
+                    if(!model.getAddress().equals(masternodeAddress)) {
+                        showToolGroup(true, false);
+                    }
+
+                } else if(masternodeStatus.equals(AppManager.MnState.REQUEST_MASTERNODE.toString())) {
+
+                } else if(masternodeStatus.equals(AppManager.MnState.MASTERNODE.toString())) {
+
+                } else if(masternodeStatus.equals(AppManager.MnState.CANCEL_MASTERNODE.toString())) {
+
+                }
             }
+
         }else if(apis.equals("0000000000000000000") || apis.equals("0")) {
             showToolGroup(false, false);
         }else{

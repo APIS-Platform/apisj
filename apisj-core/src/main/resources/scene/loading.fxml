@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: rgba(0,0,0,0);" styleClass="border_radius_10_10_10_10" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.LoadingController">
+<AnchorPane fx:id="rootPane" maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: rgba(0,0,0,0);" styleClass="border_radius_10_10_10_10" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.LoadingController">
    <children>
       <ImageView fitHeight="280.0" fitWidth="560.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-32.0" AnchorPane.topAnchor="0.0">
          <image>
@@ -35,7 +35,8 @@
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="TOP" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                </rowConstraints>
                <children>
                   <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
@@ -43,7 +44,12 @@
                         <Image url="@../image/logo_white@2x.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="label" styleClass="font_semibold_18" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label fx:id="label" styleClass="font_semibold_18" text="Program is Starting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="10.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="label1" styleClass="font_semibold_18" text="Please  wait..." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin>
