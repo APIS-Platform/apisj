@@ -239,7 +239,15 @@ public class TransactionExecutor {
                 return;
             }
 
-            AccountState senderState = track.getAccountState(tx.getSender());
+
+            // 미네랄이 충분한지 확인한다.
+            if(txGasCost.compareTo(senderMNR) > 0) {
+                execError("There is not enough minerals to register the masternode.");
+                return;
+            }
+
+
+                AccountState senderState = track.getAccountState(tx.getSender());
             if(senderState.getMnStartBlock().longValue() > 0) {
                 /* 마스터노드를 업데이트하는 경우 ::
                  * 이자를 수령하는 주소를 변경하는 내용이 아닐 경우, 최소 1000 블록이 지나야만 업데이트할 수 있도록 한다.
