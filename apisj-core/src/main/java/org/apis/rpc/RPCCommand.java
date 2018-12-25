@@ -1007,10 +1007,7 @@ public class RPCCommand {
                     }
                     else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-
-                        String errStr = txInfo.getReceipt().getError();
-                        if (errStr.equals("")) { errStr = null; }
-                        command = createJson(id, method, txReceiptData, errStr);
+                        command = createJson(id, method, txReceiptData);
                     }
 
                 } catch (Exception e) {
