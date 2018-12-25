@@ -258,6 +258,16 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public long getMasternodeSize(BigInteger collateral) {
+        return repository.getMasternodeSize(collateral);
+    }
+
+    @Override
+    public boolean isRecipientOfMasternode(byte[] address) {
+        return repository.isRecipientOfMasternode(address);
+    }
+
+    @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         repository.updateAddressMask(receipt);
     }

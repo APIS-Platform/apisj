@@ -262,6 +262,16 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public long getMasternodeSize(BigInteger collateral) {
+        return blockchain.getRepository().getMasternodeSize(collateral);
+    }
+
+    @Override
+    public boolean isRecipientOfMasternode(byte[] address) {
+        return blockchain.getRepository().isRecipientOfMasternode(address);
+    }
+
+    @Override
     public byte[] setProofKey(byte[] addr, byte[] proofKey) {
         return blockchain.getRepository().setProofKey(addr, proofKey);
     }

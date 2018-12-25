@@ -1446,6 +1446,7 @@ public class AppManager {
      * ============================================== */
     public class APISWalletFxGUI{
         private Stage primaryStage;
+        private Stage loadingStage;
         private IntroController intro;
         private MainController main;
         private WalletController wallet;
@@ -1485,6 +1486,11 @@ public class AppManager {
 
         public Stage getPrimaryStage() { return primaryStage; }
         public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+        public void setLoadingStage(Stage loadingStage){this.loadingStage = loadingStage;}
+        public void hideLoadingStage(){
+            this.loadingStage.hide();
+        }
 
         public IntroController getIntro(){ return this.intro; }
         public void setIntro(IntroController intro){this.intro = intro;}
