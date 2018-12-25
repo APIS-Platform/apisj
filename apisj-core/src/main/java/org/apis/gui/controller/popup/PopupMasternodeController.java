@@ -120,7 +120,7 @@ public class PopupMasternodeController extends BasePopupController {
     }
 
     private void btnSetting() {
-        String propState = AppManager.getGeneralPropertiesData("masternode_status");
+        String propState = AppManager.getGeneralPropertiesData("masternode_state");
 
         if(propState.equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
             showStartBtn();
