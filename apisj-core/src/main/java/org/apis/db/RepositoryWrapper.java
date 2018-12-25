@@ -262,6 +262,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode, long blockNumber) {
+        return blockchain.getRepository().getMasterNodeList(baseNode, blockNumber);
+    }
+
+    @Override
     public long getMasternodeSize(BigInteger collateral) {
         return blockchain.getRepository().getMasternodeSize(collateral);
     }

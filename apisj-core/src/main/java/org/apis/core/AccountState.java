@@ -350,6 +350,13 @@ public class AccountState {
             collectRate = ApisUtil.convert(10_000, ApisUtil.Unit.nAPIS);
         }
 
+        if(mnStartBlock.longValue() > 0) {
+            BigInteger mnCollectRate = ApisUtil.convert(3_000L, ApisUtil.Unit.nAPIS);
+            if(collectRate.compareTo(mnCollectRate) < 0) {
+                collectRate = mnCollectRate;
+            }
+        }
+
         return countCollected.multiply(collectRate);
     }
 
@@ -385,8 +392,9 @@ public class AccountState {
         return new AccountState(nonce, balance, value, lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
     }
 
-    public AccountState withMineralIncrement(BigInteger value) {
-        return new AccountState(nonce, balance, mineral.add(value), lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
+    public AccountState withMineralIncrement(BigInteger value, long blockNumber) {
+        BigInteger beforeMNR = getMineral(blockNumber);
+        return new AccountState(nonce, balance, beforeMNR.add(value), lastBlock, stateRoot, codeHash, addressMask, proofKey, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance, mnPrevNode, mnNextNode, totalReward);
     }
 
     public byte[] getEncoded() {
