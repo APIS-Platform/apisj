@@ -99,6 +99,8 @@ public class AppManager {
     private CallTransaction.Contract tokenContract = null;
     private ArrayList<TokenModel> tokens = new ArrayList<>();
 
+    private TrayIcon trayIcon;
+
     // totalBalance
     private Map<String, BigInteger> totalValue = new HashMap<>();
 
@@ -1731,7 +1733,9 @@ public class AppManager {
     }
 
 
-
+    public TrayIcon getTrayIcon (){
+        return this.trayIcon;
+    }
     public void createTrayIcon(final Stage stage) {
         if(SystemTray.isSupported()) {
             java.awt.Image image = null;
@@ -1794,7 +1798,7 @@ public class AppManager {
 
             // Construct a TrayIcon
             try {
-                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
+                trayIcon = new TrayIcon(image, "APIS", popupMenu);
                 trayIcon.addActionListener(showListener);
                 for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
                     SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);

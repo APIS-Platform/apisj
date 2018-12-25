@@ -233,6 +233,7 @@ public interface Repository extends org.apis.facade.Repository {
 
 
     List<byte[]> getMasterNodeList(byte[] baseNode);
+    List<byte[]> getMasterNodeList(byte[] baseNode, long blockNumber);
 
     long getMasternodeSize(BigInteger collateral);
 

@@ -470,16 +470,22 @@ public class SettingController extends BasePopupController {
             prop.setProperty("minimize_to_tray", ""+minimizeToTrayBtnController.isSelected());
             AppManager.saveWindowProperties();
 
+
             if("true".equals(prop.getProperty("minimize_to_tray"))){
                 Platform.setImplicitExit(false);
-                createTrayIcon(AppManager.getInstance().guiFx.getPrimaryStage());
+                AppManager.getInstance().createTrayIcon(AppManager.getInstance().guiFx.getPrimaryStage());
             }else{
                 Platform.setImplicitExit(true);
-                for(int i = 0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
-                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+
+                if(OSInfo.getOs() != OSInfo.OS.MAC){
+                    for(int i = 0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                        if(SystemTray.getSystemTray().getTrayIcons()[i].getImage().equals(AppManager.getInstance().getTrayIcon().getImage())){
+                            SystemTray.getSystemTray().remove(AppManager.getInstance().getTrayIcon());
+                            break;
+                        }
+                    }
                 }
             }
-
             //exit();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
         }
@@ -513,80 +519,7 @@ public class SettingController extends BasePopupController {
         }
     }
 
-    public void createTrayIcon(final Stage stage) {
-        if(SystemTray.isSupported()) {
-            java.awt.Image image = null;
-            try {
-                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
 
-                image = ImageIO.read(url);
-                image = image.getScaledInstance(16,16,0);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(SystemTray.isSupported()) {
-                                stage.hide();
-//                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("APIS", "apis-core", TrayIcon.MessageType.INFO);
-                            } else {
-                                System.exit(0);
-                            }
-                        }
-                    });
-                }
-            });
-
-            final ActionListener closeListener = new ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    System.exit(0);
-                }
-            };
-
-            ActionListener showListener = new ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            stage.show();
-                        }
-                    });
-                }
-            };
-
-            // Create a Popup Menu
-            PopupMenu popupMenu = new PopupMenu();
-            MenuItem showItem = new MenuItem("Show");
-            MenuItem closeItem = new MenuItem("Close");
-
-            showItem.addActionListener(showListener);
-            closeItem.addActionListener(closeListener);
-
-            popupMenu.add(showItem);
-            popupMenu.add(closeItem);
-
-            // Construct a TrayIcon
-            try {
-                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
-                trayIcon.addActionListener(showListener);
-                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
-                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
-                }
-                SystemTray.getSystemTray().add(trayIcon);
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void openRpc() {
         rpcBtnIcon.setImage(upGrayIcon);

@@ -61,7 +61,7 @@ public class TabMenuItemController extends BaseViewController {
         rootPane.setOpacity(1.0);
 
         StyleManager.fontColorStyle(title, StyleManager.AColor.Cb01e1e);
-        StyleManager.fontStyle(title, StyleManager.Barlow.SemiBold);
+        StyleManager.fontStyle(title, StyleManager.Standard.SemiBold);
         this.line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         this.line.setVisible(true);
         isActive = true;
@@ -70,7 +70,7 @@ public class TabMenuItemController extends BaseViewController {
     public void stateDefault(){
         rootPane.setOpacity(1.0);
         StyleManager.fontColorStyle(title, StyleManager.AColor.C999999);
-        StyleManager.fontStyle(title, StyleManager.Barlow.Regular);
+        StyleManager.fontStyle(title, StyleManager.Standard.Regular);
         this.line.setVisible(false);
         isActive = false;
     }

@@ -221,7 +221,7 @@ public class BlockMiner {
          * Check whether the current masternode exists in the updating target list, and update if it exists.
          */
         else {
-            List<byte[]> updatingList = mnRepo.getUpdatingMnList(blockNumber);
+            List<byte[]> updatingList = mnRepo.getNodeListToCheckExpiration(blockNumber);
             for(byte[] mn : updatingList) {
                 if(FastByteComparisons.equal(mn, mnKey.getAddress())) {
                     updateMano(mnKey, blockNumber);

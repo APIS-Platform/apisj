@@ -216,7 +216,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         //ConsoleUtil.printlnRed(String.format("RepositoryImpl AddMineral value{%d} blockNumber{%d}", value, blockNumber));
 
         AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withMineralIncrement(value).withLastBlock(BigInteger.valueOf(blockNumber)));
+        accountStateCache.put(addr, accountState.withMineralIncrement(value, blockNumber).withLastBlock(BigInteger.valueOf(blockNumber)));
         return accountState.getMineral(blockNumber);
     }
 
@@ -340,6 +340,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      */
     @Override
     public List<byte[]> getUpdatingMnList(long blockNumber) {
+
         if(blockNumber %10 != 0) {
             return new ArrayList<>();
         }
@@ -465,8 +466,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-        int firstCheckNodeNumber = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL()) - 20;
-
         List<byte[]> allNodes = new ArrayList<>();
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
@@ -474,18 +473,15 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
         allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
+        int allNodeSize = allNodes.size();
 
-        if(firstCheckNodeNumber < 0) {
-            firstCheckNodeNumber = (int) (constants.getMASTERNODE_LIMIT_TOTAL() + firstCheckNodeNumber);
-        }
+        int firstCheckNodeNumber = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL());
 
-        if(firstCheckNodeNumber >= allNodes.size()) {
-            return new ArrayList<>();
-        }
-
-        for(int i = 0; i < 10; i++) {
-            int index = (firstCheckNodeNumber + i) % allNodes.size();
-            expiringList.add(allNodes.get(index));
+        for(int i = 0; i < 20; i++) {
+            int index = (int) ((firstCheckNodeNumber + i) % constants.getMASTERNODE_LIMIT_TOTAL());
+            if(index < allNodeSize) {
+                expiringList.add(allNodes.get(index));
+            }
         }
 
         return expiringList;
@@ -552,13 +548,43 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         byte[] prevMn = baseNode;
         while(true) {
-            byte[] currentMn = getAccountState(prevMn).getMnNextNode();
+            AccountState currentState = getAccountState(prevMn);
+            byte[] currentMn = currentState.getMnNextNode();
 
             if(currentMn == null) {
                 return mnList;
             }
             else {
                 mnList.add(currentMn);
+                prevMn = currentMn;
+            }
+        }
+    }
+
+    @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        List<byte[]> mnList = new ArrayList<>();
+
+        byte[] prevMn = baseNode;
+        while(true) {
+            AccountState currentState = getAccountState(prevMn);
+            byte[] currentMn = currentState.getMnNextNode();
+
+            if(currentMn == null) {
+                return mnList;
+            }
+            else {
+                if(baseNode == constants.getMASTERNODE_GENERAL_BASE_LATE()
+                        || baseNode == constants.getMASTERNODE_MAJOR_BASE_LATE()
+                        || baseNode == constants.getMASTERNODE_PRIVATE_BASE_LATE()) {
+
+                    if(blockNumber - currentState.getMnStartBlock().longValue() >= constants.getMASTERNODE_REWARD_PERIOD()) {
+                        mnList.add(currentMn);
+                    }
+                } else {
+                    mnList.add(currentMn);
+                }
                 prevMn = currentMn;
             }
         }
@@ -888,11 +914,18 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          */
         List<byte[]> checkingNodeList = getNodeListToCheckExpiration(blockNumber);
 
+        //TODO 테스트용.. 반드시 제거해야함
+        if(blockNumber % 20 == 0) {
+            finishMasterNodes(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
+            finishMasterNodes(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
+        }
+
         for(byte[] mn : checkingNodeList) {
             AccountState mnState = getAccountState(mn);
-            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_LIMIT_TOTAL()*2) {
-                expiredList.add(mn);
+            if(blockNumber - mnState.getMnLastBlock().longValue() < constants.getMASTERNODE_LIMIT_TOTAL() + 10L) {
+                continue;
             }
+            expiredList.add(mn);
         }
 
         finishMasterNodes(expiredList);

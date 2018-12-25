@@ -573,18 +573,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // Start distributing reward to the MNs======================================================================
         if(constants.isMasternodeRewardBlock(blockNumber)) {
 
-            // 각 마스터노드 갯수를 구한다.
+            // 각 이자받는 마스터노드 갯수를 구한다.
             List<byte[]> generalEarlybird   = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
             List<byte[]> generalNormal      = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
-            List<byte[]> generalLate        = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
+            List<byte[]> generalLate        = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE(), blockNumber);
 
             List<byte[]> majorEarlybird     = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
             List<byte[]> majorNormal        = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
-            List<byte[]> majorLate          = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
+            List<byte[]> majorLate          = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE(), blockNumber);
 
             List<byte[]> privateEarlybird   = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
             List<byte[]> privateNormal      = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
-            List<byte[]> privateLate        = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
+            List<byte[]> privateLate        = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE(), blockNumber);
 
             List<byte[]> allGeneral = new ArrayList<>();
             allGeneral.addAll(generalEarlybird);
@@ -1340,27 +1340,15 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     // 레포지토리에 저장된 마스터노드 갯수를 구한다.
                     List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
                     List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
-                    List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
+                    List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE(), block.getNumber());
 
                     List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
                     List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
-                    List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE());
+                    List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE(), block.getNumber());
 
                     List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
                     List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
-                    List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
-
-                    /*List<byte[]> allGeneral = new ArrayList<>(generalEarly);
-                    allGeneral.addAll(generalNormal);
-                    allGeneral.addAll(generalLate);
-
-                    List<byte[]> allMajor = new ArrayList<>(majorEarly);
-                    allMajor.addAll(majorNormal);
-                    allMajor.addAll(majorLate);
-
-                    List<byte[]> allPrivate = new ArrayList<>(privateEarly);
-                    allPrivate.addAll(privateNormal);
-                    allPrivate.addAll(privateLate);*/
+                    List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE(), block.getNumber());
 
                     byte[] repoMnHash = calcMnHash(generalEarly, generalNormal, generalLate, majorEarly, majorNormal, majorLate, privateEarly, privateNormal, privateLate);
 
