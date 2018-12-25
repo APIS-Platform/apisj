@@ -370,6 +370,90 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return updatingList;
     }
 
+    @Override
+    public long getMasternodeSize(BigInteger collateral) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        List<byte[]> allNodes = new ArrayList<>();
+
+        if(collateral.equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
+            allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
+        } else {
+            return 0;
+        }
+        return allNodes.size();
+    }
+
+    /**
+     * 입력된 주소가 마스터노드 이자를 받는 지갑으로 설정되어있는지 확인한다.
+     *
+     * @param address 이자를 받는 지갑인지 확인하려는 주소
+     * @return TRUE : 하나 이상의 마스터노드로부터 이자를 받는 경우
+     */
+    public boolean isRecipientOfMasternode (byte[] address) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        List<byte[]> generalLates = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
+        if(compareRecipient(generalLates, address)) {
+            return true;
+        }
+        List<byte[]> majorLates = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
+        if(compareRecipient(majorLates, address)) {
+            return true;
+        }
+        List<byte[]> privateLates = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
+        if(compareRecipient(privateLates, address)) {
+            return true;
+        }
+
+        List<byte[]> generalNormals = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
+        if(compareRecipient(generalNormals, address)) {
+            return true;
+        }
+        List<byte[]> majorNormals = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL()));
+        if(compareRecipient(majorNormals, address)) {
+            return true;
+        }
+        List<byte[]> privateNormals = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
+        if(compareRecipient(privateNormals, address)) {
+            return true;
+        }
+
+        List<byte[]> generalEarlys = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));
+        if(compareRecipient(generalEarlys, address)) {
+            return true;
+        }
+        List<byte[]> majorEarlys = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN()));
+        if(compareRecipient(majorEarlys, address)) {
+            return true;
+        }
+        List<byte[]> privateEarlys = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN()));
+        if(compareRecipient(privateEarlys, address)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean compareRecipient(List<byte[]> mnList, byte[] addr) {
+        for(byte[] mn : mnList) {
+            AccountState mnState = getAccountState(mn);
+            if(FastByteComparisons.equal(mnState.getMnRecipient(), addr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 현재 블록에서 마스터노드의 상태를 만료시킬 것인지 확인 대상이 되는 주소들의 리스트를 반환한다.
      * @param blockNumber 현재 블록 번호

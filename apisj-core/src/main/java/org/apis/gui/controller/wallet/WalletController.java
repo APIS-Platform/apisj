@@ -865,22 +865,35 @@ public class WalletController extends BaseViewController {
         String masternodeStatus = AppManager.getGeneralPropertiesData("masternode_status");
         String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
         walletCheckList.add(model);
+
+        // Check masternode change button img & color
+        if(AppManager.getInstance().isMasterNode(model.getAddress())) {
+            StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
+            iconMasternode.setImage(imageMasternodeRed);
+        }else{
+            StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.C999999);
+            iconMasternode.setImage(imageMasternodeGrey);
+        }
+
         if(apis.equals("50000000000000000000000")
                 || apis.equals("200000000000000000000000")
                 || apis.equals("500000000000000000000000")){
             showToolGroup(true, true);
             if(masternodeStatus != null && !masternodeStatus.equals("")) {
-                if(masternodeStatus.equals(AppManager.MnState.EMPTY_MASTERNODE.toString())) {
+                if(masternodeStatus.equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
+
+                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
                     if(!model.getAddress().equals(masternodeAddress)) {
                         showToolGroup(true, false);
                     }
 
-                } else if(masternodeStatus.equals(AppManager.MnState.REQUEST_MASTERNODE.toString())) {
+                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
+                    if(!model.getAddress().equals(masternodeAddress)) {
+                        showToolGroup(true, false);
+                    }
 
-                } else if(masternodeStatus.equals(AppManager.MnState.MASTERNODE.toString())) {
-
-                } else if(masternodeStatus.equals(AppManager.MnState.CANCEL_MASTERNODE.toString())) {
-
+                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
+                    showToolGroup(true, false);
                 }
             }
 
