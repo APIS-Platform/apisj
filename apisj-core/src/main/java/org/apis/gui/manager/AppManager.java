@@ -202,7 +202,9 @@ public class AppManager {
                 BigInteger totalReward = BigInteger.ZERO;
                 BigInteger totalTokenValue = BigInteger.ZERO;
                 AppManager.getInstance().keystoreFileReadAll();
-                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                    KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
+
                     BigInteger balance = keyExp.balance;
                     BigInteger mineral = keyExp.mineral;
                     BigInteger reward = keyExp.rewards;
@@ -242,7 +244,8 @@ public class AppManager {
 
                 // Check & Change Masternode State
                 if(AppManager.this.keyStoreDataExpList != null && AppManager.this.keyStoreDataExpList.size() != 0) {
-                    for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                    for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                        KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
                         String address = keyExp.address;
 
                         if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
