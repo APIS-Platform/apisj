@@ -234,6 +234,10 @@ public interface Repository extends org.apis.facade.Repository {
 
     List<byte[]> getMasterNodeList(byte[] baseNode);
 
+    long getMasternodeSize(BigInteger collateral);
+
+    boolean isRecipientOfMasternode(byte[] address);
+
     /**
      * @return Returns set of all the account addresses
      */

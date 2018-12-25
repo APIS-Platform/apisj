@@ -248,6 +248,36 @@ public class TransactionExecutor {
                 execError("The masternode join has not yet opened.");
                 return;
             }
+
+            // 마스터노드 갯수가 가득차있으면 신청할 수 없다.
+
+            AccountState senderState = track.getAccountState(tx.getSender());
+            if(senderState.getMnStartBlock().longValue() > 0) {
+                /* 마스터노드를 업데이트하는 경우 ::
+                 * 이자를 수령하는 주소를 변경하는 내용이 아닐 경우, 최소 1000 블록이 지나야만 업데이트할 수 있도록 한다.
+                 * 마스터노드 업데이트하는 트랜잭션이 과도하게 집중되는 현상을 방지하기 위함
+                 */
+                long lastUpdateDiff = currentBlock.getNumber() - senderState.getMnLastBlock().longValue();
+                if(lastUpdateDiff < 1_000L && FastByteComparisons.equal(senderState.getMnRecipient(), tx.getData())) {
+                    execError("The next update can be made after 1,000 blocks since the last update.");
+                    return;
+                }
+            } else {
+                // 새로 등록
+                if(track.getMasternodeSize(senderBalance) >= config.getBlockchainConfig().getCommonConstants().getMASTERNODE_LIMIT(senderBalance)) {
+                    execError("Masternode list is full.");
+                    return;
+                }
+
+                // 이자 받는 지갑은 마스터노드가 될 수 없다
+                if(track.isRecipientOfMasternode(tx.getSender())) {
+                    execError("The sender who receives reward from the masternode can not be the masternode.");
+                    return;
+                }
+            }
+
+
+
         } else {
             if(execError != null && !execError.isEmpty()) {
                 return;
@@ -671,6 +701,7 @@ public class TransactionExecutor {
                 if(toState.getMnStartBalance().compareTo(BigInteger.ZERO) > 0) {
                     String err = "Can not designate a receiver as a masternode in an internal transaction.";
                     result.setException(new NotEnoughMineralException(err));
+                    execError(err);
                     break;
                 }
             }
