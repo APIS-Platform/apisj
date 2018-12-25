@@ -2,7 +2,6 @@ package org.apis.rpc.template;
 
 import org.apis.core.Block;
 import org.apis.core.Transaction;
-import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -46,7 +45,7 @@ public class BlockData {
     public String nonce;
 
     public long txSize;
-    public List<TransactionInBlockData> transactions;
+    public List<String> transactions;
 
     public String logsBloom;
 
@@ -62,14 +61,14 @@ public class BlockData {
     public long size;
 
 
-    public BlockData(Block block, boolean isContainFullTx, String coinbaseMask, Ethereum ethereum) {
-        this(block, isContainFullTx, ethereum);
+    public BlockData(Block block, boolean isContainFullTx, String coinbaseMask) {
+        this(block, isContainFullTx);
         if(coinbaseMask != null) {
             this.coinbaseMask = coinbaseMask;
         }
     }
 
-    public BlockData(Block block, boolean isContainFullTx, Ethereum ethereum) {
+    public BlockData(Block block, boolean isContainFullTx) {
         this.number = block.getNumber();
         this.hash = ByteUtil.toHexString0x(block.getHash());
         this.parentHash = ByteUtil.toHexString0x(block.getParentHash());
@@ -118,11 +117,13 @@ public class BlockData {
 
         for(Transaction tx : block.getTransactionsList()) {
             if(isContainFullTx) {
-                this.transactions.add(new TransactionInBlockData(ethereum.getTransactionInfo(tx.getHash())));
+                this.transactions.add(new TransactionData(tx, block).getJson());
             } else {
-                this.transactions.add(new TransactionInBlockData(tx.getHash()));
+                this.transactions.add(ByteUtil.toHexString0x(tx.getHash()));
             }
         }
+
+
 
         this.size = block.getEncoded().length;
     }
