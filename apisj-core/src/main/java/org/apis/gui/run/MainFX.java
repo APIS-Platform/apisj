@@ -1,11 +1,14 @@
 package org.apis.gui.run;
 
+import de.codecentric.centerdevice.MenuToolkit;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -138,6 +141,18 @@ public class MainFX extends Application  {
             URL iconURL = getClass().getClassLoader().getResource("image/favicon_128.png");
             java.awt.Image image = new ImageIcon(iconURL).getImage();
             try {
+
+                // Get the toolkit
+                MenuToolkit tk = MenuToolkit.toolkit();
+
+                Menu defaultApplicationMenu = tk.createDefaultApplicationMenu("apis-core");
+                tk.setApplicationMenu(defaultApplicationMenu);
+                defaultApplicationMenu.getItems().get(1).setText("Hide all the otters");
+                // Create a new menu bar
+                MenuBar bar = new MenuBar();
+                bar.getMenus().add(tk.createDefaultApplicationMenu("apis-core"));
+                tk.setGlobalMenuBar(bar);
+
                 // className = "demon.model.MailList"
                 Class clsMailList = Class.forName("com.apple.eawt.Application"); // 클래스로딩
                 Object obj = clsMailList.newInstance(); // 인스턴스 생성
