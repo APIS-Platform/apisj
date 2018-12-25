@@ -867,7 +867,8 @@ public class WalletController extends BaseViewController {
         walletCheckList.add(model);
 
         // Check masternode change button img & color
-        if(AppManager.getInstance().isMasterNode(model.getAddress())) {
+        if(AppManager.getInstance().isMasterNode(model.getAddress())
+                && AppManager.getGeneralPropertiesData("masternode_address").equals(model.getAddress())) {
             StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
             iconMasternode.setImage(imageMasternodeRed);
         }else{
