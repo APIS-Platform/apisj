@@ -106,14 +106,18 @@ public class MainFX extends Application  {
                     if (fileUrl != null) {
                         setIcon(primaryStage);
                         try {
+                            int width = 1280, height = 800;
+
                             Parent root = FXMLLoader.load(fileUrl);
                             primaryStage.setTitle("APIS Core Wallet");
                             primaryStage.setScene(new Scene(root));
                             primaryStage.setResizable(false);
-                            primaryStage.setMinWidth(1280);
-                            primaryStage.setMinHeight(720);
-                            primaryStage.setWidth(1280);
-                            primaryStage.setHeight(720);
+                            primaryStage.setMaxWidth(width);
+                            primaryStage.setMaxHeight(height);
+                            primaryStage.setMinWidth(width);
+                            primaryStage.setMinHeight(height);
+                            primaryStage.setWidth(width);
+                            primaryStage.setHeight(height);
                             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
                             primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
                             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
