@@ -241,29 +241,31 @@ public class AppManager {
                 }
 
                 // Check & Change Masternode State
-                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
-                    String address = keyExp.address;
+                if(AppManager.this.keyStoreDataExpList != null && AppManager.this.keyStoreDataExpList.size() != 0) {
+                    for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                        String address = keyExp.address;
 
-                    if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.EMPTY_MASTERNODE.toString())) {
-                        if(isMasterNode(address)) {
-                            if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                                AppManager.saveGeneralProperties("masternode_state", MnState.MASTERNODE.toString());
+                        if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
+                            if (isMasterNode(address)) {
+                                if (address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
+                                }
                             }
-                        }
 
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.REQUEST_MASTERNODE.toString())) {
-                        if(isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", MnState.MASTERNODE.toString());
-                        }
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.REQUEST_MASTERNODE.num))) {
+                            if (isMasterNode(address)) {
+                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
+                            }
 
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.MASTERNODE.toString())) {
-                        if(!isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", MnState.EMPTY_MASTERNODE.toString());
-                        }
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
+                            if (!isMasterNode(address)) {
+                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                            }
 
-                    } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(MnState.CANCEL_MASTERNODE.toString())) {
-                        if(!isMasterNode(address)) {
-                            AppManager.saveGeneralProperties("masternode_state", MnState.EMPTY_MASTERNODE.toString());
+                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
+                            if (!isMasterNode(address)) {
+                                AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
+                            }
                         }
                     }
                 }
@@ -1204,7 +1206,7 @@ public class AppManager {
 
     //마스터노드 실행
     public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
-        this.masternodeState = MnState.EMPTY_MASTERNODE.toString();
+        this.masternodeState = Integer.toString(MnState.EMPTY_MASTERNODE.num);
         this.masternodeAddress = null;
         this.recipientAddress = null;
         try {
@@ -1212,7 +1214,7 @@ public class AppManager {
             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(keyStore, password);
             SystemProperties.getDefault().setMasternodePrivateKey(privateKey);
             SystemProperties.getDefault().setMasternodeRecipient(recipientAddr);
-            this.masternodeState = MnState.REQUEST_MASTERNODE.toString();
+            this.masternodeState = Integer.toString(MnState.REQUEST_MASTERNODE.num);
             this.masternodeAddress = keyStoreData.address;
             this.recipientAddress = ByteUtil.toHexString(recipientAddr);
 
@@ -1604,7 +1606,7 @@ public class AppManager {
             prop.load(input);
             if (prop.getProperty("in_system_log") == null) { prop.setProperty("in_system_log", "false"); }
             if (prop.getProperty("enable_event_log") == null) { prop.setProperty("enable_event_log", "false"); }
-            if (prop.getProperty("masternode_state") == null) { prop.setProperty("masternode_state", MnState.EMPTY_MASTERNODE.toString()); }
+            if (prop.getProperty("masternode_state") == null) { prop.setProperty("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num)); }
             if (prop.getProperty("masternode_address") == null) { prop.setProperty("masternode_address", ""); }
             if (prop.getProperty("recipient_address") == null) { prop.setProperty("recipient_address", ""); }
             if (prop.getProperty("mining_address") == null) { prop.setProperty("mining_address", ""); }
@@ -1616,7 +1618,7 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
-            prop.setProperty("masternode_state", MnState.EMPTY_MASTERNODE.toString());
+            prop.setProperty("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
             prop.setProperty("masternode_address", "");
             prop.setProperty("recipient_address", "");
             prop.setProperty("mining_address","");
@@ -1798,7 +1800,7 @@ public class AppManager {
         REQUEST_MASTERNODE(1),
         MASTERNODE(2),
         CANCEL_MASTERNODE(3);
-        int num;
+        public int num;
         MnState(int num) {
             this.num = num;
         }

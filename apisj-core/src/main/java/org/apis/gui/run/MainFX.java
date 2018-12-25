@@ -66,7 +66,7 @@ public class MainFX extends Application  {
         public void run() {
 
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -157,7 +157,6 @@ public class MainFX extends Application  {
             } catch (InstantiationException e) {
                 e.printStackTrace();
             }
-            //com.apple.eawt.Application.getApplication().setDockIconImage(image);
         } else {
             stage.getIcons().add(new Image("image/ic_favicon@2x.png"));
         }
