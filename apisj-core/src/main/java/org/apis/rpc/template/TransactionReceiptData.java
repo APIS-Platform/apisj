@@ -118,6 +118,8 @@ public class TransactionReceiptData {
 
     private String data;
 
+    private String error;
+
     public TransactionReceiptData(TransactionInfo info, Block block) {
         this(info.getReceipt());
 
@@ -202,6 +204,10 @@ public class TransactionReceiptData {
         this.status = toHexString0x(receipt.getPostTxState());
 
         this.data = ByteUtil.toHexString0x(tx.getData());
+
+        if(receipt.getError() != null && !receipt.getError().isEmpty()) {
+            this.error = receipt.getError();
+        }
     }
 
     public String getStatus() {
@@ -303,6 +309,7 @@ public class TransactionReceiptData {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", value='" + value + '\'' +
                 ", valueAPIS='" + valueAPIS + '\'' +
+                ", nonce=" + nonce +
                 ", gas=" + gas +
                 ", gasPrice='" + gasPrice + '\'' +
                 ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
@@ -320,6 +327,7 @@ public class TransactionReceiptData {
                 ", internalTransactions=" + internalTransactions +
                 ", logsBloom='" + logsBloom + '\'' +
                 ", data='" + data + '\'' +
+                ", error='" + error + '\'' +
                 '}';
     }
 }
