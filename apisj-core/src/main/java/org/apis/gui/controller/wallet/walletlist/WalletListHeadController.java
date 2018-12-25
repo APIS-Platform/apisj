@@ -257,43 +257,43 @@ public class WalletListHeadController extends BaseViewController {
 
             // 마스터노드 체크
             String apis = itemModel.getApis().toString();
-            if(apis.equals("50000000000000000000000")
-                    || apis.equals("200000000000000000000000")
-                    || apis.equals("500000000000000000000000")) {
-                if (itemModel.isMasterNode()) {
-                    if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                        this.masternodeState.setStyle("-fx-background-color: #b01e1e; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                        if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
-                            this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                        }
-                    } else {
+            if (itemModel.isMasterNode()) {
+                if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                    this.masternodeState.setStyle("-fx-background-color: #b01e1e; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                    if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
                         this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
                     }
+                } else {
+                    this.masternodeState.setStyle("-fx-background-color: #2b2b2b; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+                }
+                this.masternodeState.setVisible(true);
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("MASTERNODE");
+                this.tagLabel.setPrefWidth(-1);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
+
+            } else {
+                this.tagLabel.setVisible(true);
+                if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))
+                        && AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))
+                        && (apis.equals("50000000000000000000000")
+                            || apis.equals("200000000000000000000000")
+                            || apis.equals("500000000000000000000000"))) {
+                    this.masternodeState.setStyle("-fx-background-color: #ffc12f; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
                     this.masternodeState.setVisible(true);
-                    this.tagLabel.setVisible(true);
                     this.tagLabel.setText("MASTERNODE");
                     this.tagLabel.setPrefWidth(-1);
                     GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
 
                 } else {
-                    this.tagLabel.setVisible(true);
-                    if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address")) &&
-                            AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
-                        this.masternodeState.setStyle("-fx-background-color: #ffc12f; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-                        this.masternodeState.setVisible(true);
-                        this.tagLabel.setText("MASTERNODE");
-                        this.tagLabel.setPrefWidth(-1);
-                        GridPane.setMargin(this.tagLabel, new Insets(0, 4, 2, 0));
-
-                    } else {
-                        this.masternodeState.setVisible(false);
-                        this.tagLabel.setText("");
-                        this.tagLabel.setPrefWidth(0);
-                        GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
-                    }
+                    this.masternodeState.setVisible(false);
+                    this.tagLabel.setText("");
+                    this.tagLabel.setPrefWidth(0);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
                 }
             }
-        }
+
+        } // if(model != null)
     }
 
     @Override

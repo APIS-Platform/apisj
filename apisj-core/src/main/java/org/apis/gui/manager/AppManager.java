@@ -264,7 +264,11 @@ public class AppManager {
 
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
                             if (!isMasterNode(address)) {
-
+                                if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                    SystemProperties.getDefault().setMasternodePrivateKey(null);
+                                    SystemProperties.getDefault().setMasternodeRecipient(null);
+                                    cancelMasternode();
+                                }
                             }
 
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {

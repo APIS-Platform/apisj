@@ -238,7 +238,12 @@ public class PopupMasternodeController extends BasePopupController {
 
                 switch(btnFlag) {
                     case 0 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
-                    case 1 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num)); break;
+                    case 1 :
+                        AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
+                        AppManager.getInstance().cancelMasternode();
+                        SystemProperties.getDefault().setMasternodePrivateKey(null);
+                        SystemProperties.getDefault().setMasternodeRecipient(null);
+                        break;
                     case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
                     default : break;
                 }
