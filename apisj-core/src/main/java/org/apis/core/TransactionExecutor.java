@@ -676,10 +676,10 @@ public class TransactionExecutor {
                 wink = ContractLoader.parseWink(log);
 
                 if(wink != null &&
+                        wink.getAddress() != null &&
                         wink.getBeneficiary() != null &&
-                        wink.getWinker() != null &&
-                        FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary()) &&
-                        FastByteComparisons.equal(tx.getReceiveAddress(), wink.getWinker())) {
+                        FastByteComparisons.equal(tx.getReceiveAddress(), wink.getAddress()) &&
+                        FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary())) {
                     hasWink = true;
                     break;
                 }

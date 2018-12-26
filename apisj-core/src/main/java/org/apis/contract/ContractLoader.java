@@ -202,7 +202,7 @@ public class ContractLoader {
         }
         CallTransaction.Invocation event = winkContract.parseEvent(info);
         if(event != null && event.function != null && event.function.name != null && event.function.name.equals("Wink")) {
-            return new Wink(winkContract.parseEvent(info));
+            return new Wink(info.getAddress(), winkContract.parseEvent(info));
         } else {
             return null;
         }
