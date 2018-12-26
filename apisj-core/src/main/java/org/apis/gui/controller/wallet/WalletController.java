@@ -935,7 +935,7 @@ public class WalletController extends BaseViewController {
 
         // Check mining and change button img & color
         if(model.getAddress().equals(AppManager.getInstance().getMiningWalletAddress())) {
-            btnMiningWallet.setTextFill(Color.web("#b01e1e"));
+            StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.Cb01e1e);
             iconMiningWallet.setImage(imageMiningRed);
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -947,7 +947,7 @@ public class WalletController extends BaseViewController {
                 }
             });
         } else {
-            btnMiningWallet.setTextFill(Color.web("#999999"));
+            StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.C999999);
             iconMiningWallet.setImage(imageMiningGrey);
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override

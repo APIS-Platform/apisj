@@ -253,10 +253,12 @@ public class AppManager {
 
                         // Empty state
                         if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
-                            // Do nothing
+                            // Do nothing when the address is in pool
                             if(isMasterNode(address)) {
-                                if(SystemProperties.getDefault().getMasternodeKey() == null) {
-
+                            // Clear properties when the address is not in pool
+                            } else {
+                                if(AppManager.getGeneralPropertiesData("masternode_address").equals(address)) {
+                                    cancelMasternode();
                                 }
                             }
 
