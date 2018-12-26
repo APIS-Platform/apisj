@@ -505,45 +505,55 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        List<Transaction> newPendingTxs = new ArrayList<>();
-        List<Transaction> pendingTxs = getAllPendingTransactions();
-        for(Transaction tx : pendingTxs) {
-            newPendingTxs.add(new Transaction(tx.getEncoded()));
-        }
-        ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + newPendingTxs.size());
-
-        boolean hasInvalidTx = true;
-        Block newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
-
-        if(newBlock == null) {
-            return null;
+        // 마스터노드 보상 블록인 경우에, 트랜잭션을 탑재하지 않아야 하므로..
+        if(config.getBlockchainConfig().getCommonConstants().isMasternodeRewardBlock(bestPendingState.getNumber() + 1)) {
+            return blockchain.createNewBlock(bestPendingState, new ArrayList<>());
         }
 
-        while(hasInvalidTx) {
-            BlockSummary summary = ethereum.replayBlock(newBlock);
+        // 일반 블록에는 트랜잭션이 같이 탑재되어야 한다.
+        else {
 
-            hasInvalidTx = false;
-            for(int i = 0; i < summary.getReceipts().size(); i++) {
-                final TransactionReceipt receipt = summary.getReceipts().get(i);
-                final TransactionExecutionSummary txSummary = summary.getSummaries().get(i);
+            List<Transaction> pendingTxs = getAllPendingTransactions();
+            List<Transaction> newPendingTxs = new ArrayList<>();
 
-                // TransactionExecutor 내에서 init() 함수에서 실행되지 못한 경우 (Too much gas used in this block 등)
-                if(txSummary == null) {
-                    newPendingTxs.removeIf(tx -> FastByteComparisons.equal(tx.getHash(), receipt.getTransaction().getHash()));
-                    hasInvalidTx = true;
+            for (Transaction tx : pendingTxs) {
+                newPendingTxs.add(new Transaction(tx.getEncoded()));
+            }
+            ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + newPendingTxs.size());
+
+            boolean hasInvalidTx = true;
+            Block newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
+
+            if (newBlock == null) {
+                return null;
+            }
+
+            while (hasInvalidTx) {
+                BlockSummary summary = ethereum.replayBlock(newBlock);
+
+                hasInvalidTx = false;
+                for (int i = 0; i < summary.getReceipts().size(); i++) {
+                    final TransactionReceipt receipt = summary.getReceipts().get(i);
+                    final TransactionExecutionSummary txSummary = summary.getSummaries().get(i);
+
+                    // TransactionExecutor 내에서 init() 함수에서 실행되지 못한 경우 (Too much gas used in this block 등)
+                    if (txSummary == null) {
+                        newPendingTxs.removeIf(tx -> FastByteComparisons.equal(tx.getHash(), receipt.getTransaction().getHash()));
+                        hasInvalidTx = true;
+                    }
+                }
+
+                if (hasInvalidTx) {
+                    // 블록 내에 실행되지 않은 트랜잭션이 포함되어 있으므로 제거되었다.
+                    logger.debug("Mining block has been removed because it contains unexecuted transactions.");
+
+                    // 제거된 블록을 새롭게 생성
+                    newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
                 }
             }
 
-            if(hasInvalidTx) {
-                // 블록 내에 실행되지 않은 트랜잭션이 포함되어 있으므로 제거되었다.
-                logger.debug("Mining block has been removed because it contains unexecuted transactions.");
-
-                // 제거된 블록을 새롭게 생성
-                newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
-            }
+            return newBlock;
         }
-
-        return newBlock;
     }
 
 
