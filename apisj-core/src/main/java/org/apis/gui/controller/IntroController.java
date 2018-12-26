@@ -663,6 +663,8 @@ public class IntroController extends BaseViewController {
         apisTextFieldGroup.add(loadWalletPhaseFourTypePkNmController);
         apisTextFieldGroup.add(loadWalletPhaseFourTypePkPwController);
         apisTextFieldGroup.add(loadWalletPhaseFourTypePkCfController);
+
+        AppManager.getInstance().guiFx.hideLoadingStage();
     }
 
     public void languageSetting(){

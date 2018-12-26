@@ -249,39 +249,56 @@ public class AppManager {
                     for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                         KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
                         String address = keyExp.address;
+                        String apis = keyExp.balance.toString();
 
-                        if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
-                            if (isMasterNode(address)) {
+                        // Empty state
+                        if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
+                            // Change to activated state when the address is in pool
+                            if(isMasterNode(address)) {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
                                     AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
                                 }
                             }
 
+                        // Request state
                         } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.REQUEST_MASTERNODE.num))) {
-                            if (isMasterNode(address)) {
+                            // Change to activated state when the address is in pool
+                            if(isMasterNode(address)) {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
                                     AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
                                 }
+                            // Change to empty state when cancel the request
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
                                     cancelMasternode();
                                 }
                             }
 
-                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
+                        // Activated state
+                        } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
                             if(!isMasterNode(address)) {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                                    SystemProperties.getDefault().setMasternodePrivateKey(null);
-                                    SystemProperties.getDefault().setMasternodeRecipient(null);
-                                    cancelMasternode();
+                                    // Request again when pool is refreshing
+                                    if(apis.equals("50000000000000000000000")
+                                        || apis.equals("200000000000000000000000")
+                                        || apis.equals("500000000000000000000000")) {
+                                    // Change to empty state when the balance under the limit
+                                    } else {
+                                        SystemProperties.getDefault().setMasternodePrivateKey(null);
+                                        SystemProperties.getDefault().setMasternodeRecipient(null);
+                                        cancelMasternode();
+                                    }
                                 }
+                            // Change to cancel state when the system restarted
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
                                     saveGeneralProperties("masternode_state", Integer.toString(MnState.CANCEL_MASTERNODE.num));
                                 }
                             }
 
-                        } else if (AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
+                        // Cancel state
+                        } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.CANCEL_MASTERNODE.num))) {
+                            // Change to empty state when the address is not in pool anymore
                             if (!isMasterNode(address)) {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
                                     cancelMasternode();
