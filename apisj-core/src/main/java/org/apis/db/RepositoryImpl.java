@@ -914,12 +914,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          */
         List<byte[]> checkingNodeList = getNodeListToCheckExpiration(blockNumber);
 
-        //TODO 테스트용.. 반드시 제거해야함
-        if(blockNumber % 20 == 0) {
-            finishMasterNodes(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
-            finishMasterNodes(getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
-        }
-
         for(byte[] mn : checkingNodeList) {
             AccountState mnState = getAccountState(mn);
             if(blockNumber - mnState.getMnLastBlock().longValue() < constants.getMASTERNODE_LIMIT_TOTAL() + 10L) {
