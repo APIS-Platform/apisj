@@ -258,6 +258,7 @@ public class KeyStoreManager {
 
     public void deleteKeystore(byte[] address){
         deleteKeystore(address, config.keystoreDir());
+        System.out.println("삭제 완료");
     }
 
     public void deleteKeystore(byte[] address, String path){
@@ -338,26 +339,31 @@ public class KeyStoreManager {
     public boolean updateWalletPassword(String address, char[] currentPassword, char[] newPassword) {
         List<KeyStoreData> fileList = loadKeyStoreFiles();
         KeyStoreData changeData = null;
-        for(KeyStoreData data : fileList){
-            if (data.address.equals(address)) {
-                changeData = data;
-                //파일삭제
-                deleteKeystore(Hex.decode(address));
-                break;
-            }
-        }
 
         if(changeData != null){
             try {
                 byte[] privateKey = KeyStoreUtil.decryptPrivateKey(changeData.toString(), String.valueOf(currentPassword));
-                System.out.println("privateKey : "+ByteUtil.toHexString(privateKey));
+
+                for(KeyStoreData data : fileList){
+                    if (data.address.equals(address)) {
+                        changeData = data;
+                        //파일삭제
+                        deleteKeystore(Hex.decode(address));
+                        break;
+                    }
+                }
+
                 savePrivateKeyStore(privateKey, changeData.alias, newPassword);
 
                 return true;
             } catch (KeystoreVersionException e) {
+                e.printStackTrace();
             } catch (NotSupportKdfException e) {
+                e.printStackTrace();
             } catch (NotSupportCipherException e) {
+                e.printStackTrace();
             } catch (InvalidPasswordException e) {
+                e.printStackTrace();
             }
         }
 
