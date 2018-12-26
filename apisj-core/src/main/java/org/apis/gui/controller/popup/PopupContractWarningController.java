@@ -232,6 +232,8 @@ public class PopupContractWarningController extends BasePopupController {
         this.gasLimit = gasLimit;
         this.toAddress = toAddress;
         this.toMask = toMask;
+
+
         this.data = data;
 
         // 보안키 여부 체크

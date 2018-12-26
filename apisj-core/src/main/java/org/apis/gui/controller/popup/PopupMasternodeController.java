@@ -82,9 +82,9 @@ public class PopupMasternodeController extends BasePopupController {
 
             @Override
             public void onAction() {
-                if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
+                if(startBtn.isVisible()) {
                     startMasternode(0);
-                } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
+                } else if(cancelRqBtn.isVisible()) {
                     startMasternode(1);
                 }
             }
@@ -233,6 +233,8 @@ public class PopupMasternodeController extends BasePopupController {
         } else if(ByteUtil.toHexString(recipientAddr).length() != 40){
             return;
         } else{
+            passwordController.succeededForm();
+
             if(btnFlag == 1) {
                 // Show error message when masternode state already activate
                 if(AppManager.getInstance().isMasterNode(itemModel.getAddress())) {
@@ -242,16 +244,14 @@ public class PopupMasternodeController extends BasePopupController {
                     errMsg.setVisible(true);
                     return;
                 } else {
-                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
-                    SystemProperties.getDefault().setMasternodePrivateKey(null);
-                    SystemProperties.getDefault().setMasternodeRecipient(null);
+                    PopupCautionController controller = (PopupCautionController)PopupManager.getInstance().showMainPopup(rootPane, "popup_caution.fxml",zIndex + 1);
+                    controller.initMessageCancel();
                 }
 
             } else if(btnFlag == 2) {
                 // Wait for cancel masternode
-                AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
-                SystemProperties.getDefault().setMasternodePrivateKey(null);
-                SystemProperties.getDefault().setMasternodeRecipient(null);
+                PopupCautionController controller = (PopupCautionController)PopupManager.getInstance().showMainPopup(rootPane, "popup_caution.fxml",zIndex + 1);
+                controller.initMessageComplete();
 
             } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
                 switch(btnFlag) {
@@ -259,10 +259,8 @@ public class PopupMasternodeController extends BasePopupController {
                     case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
                     default : break;
                 }
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
             }
-
-            passwordController.succeededForm();
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
             AppManager.getInstance().guiFx.getWallet().updateTableList();
         }

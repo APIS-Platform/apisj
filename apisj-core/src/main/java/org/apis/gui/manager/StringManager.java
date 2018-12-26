@@ -928,6 +928,12 @@ public class StringManager {
         public SimpleStringProperty copyMaskTitle = new SimpleStringProperty();
         public SimpleStringProperty copyMaskSubTitle = new SimpleStringProperty();
 
+        public SimpleStringProperty cautionTitle = new SimpleStringProperty();
+        public SimpleStringProperty cancelWaiting = new SimpleStringProperty();
+        public SimpleStringProperty completeCancel = new SimpleStringProperty();
+        public SimpleStringProperty yesBtn = new SimpleStringProperty();
+        public SimpleStringProperty noBtn = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1045,6 +1051,12 @@ public class StringManager {
             copyTxHashSubTitle.set(StringManager.this.getString("popup_copy_tx_hash_sub_title", "You can paste that TRANSACTION HASH"));
             copyMaskTitle.set(StringManager.this.getString("popup_copy_mask_title", "COPY Address Mask!"));
             copyMaskSubTitle.set(StringManager.this.getString("popup_copy_mask_sub_title", "You can paste that ADDRESS MASK"));
+
+            cautionTitle.set(StringManager.this.getString("popup_caution_title", "Caution!"));
+            cancelWaiting.set(StringManager.this.getString("popup_cancel_waiting", "Once the masternode is started, you can't cancel waiting. Would you like to proceed?"));
+            completeCancel.set(StringManager.this.getString("popup_complete_cancel", "Cancellation can take up to 24 hours from request. Would you like to proceed?"));
+            yesBtn.set(StringManager.this.getString("popup_yes_btn", "Yes"));
+            noBtn.set(StringManager.this.getString("popup_no_btn", "No"));
         }
     }
 

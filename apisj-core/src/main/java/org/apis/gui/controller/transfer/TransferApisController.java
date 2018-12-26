@@ -198,6 +198,9 @@ public class TransferApisController extends BaseViewController {
     public String getReceiveAddress() {
         return ReceivingFieldController.getAddress();
     }
+    public String getReceiveText(){
+        return ReceivingFieldController.getText();
+    }
 
     public BigInteger getFee() {
         BigInteger fee = getGasPrice().multiply(getGasLimit()).subtract(getMineral());
