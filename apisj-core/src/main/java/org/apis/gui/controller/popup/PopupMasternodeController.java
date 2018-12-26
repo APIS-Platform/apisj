@@ -82,7 +82,11 @@ public class PopupMasternodeController extends BasePopupController {
 
             @Override
             public void onAction() {
-                startMasternode(btnFlag);
+                if(startBtn.isVisible()) {
+                    startMasternode(0);
+                } else if(cancelRqBtn.isVisible()) {
+                    startMasternode(1);
+                }
             }
 
             @Override

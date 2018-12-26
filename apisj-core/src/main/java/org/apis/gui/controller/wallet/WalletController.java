@@ -886,22 +886,35 @@ public class WalletController extends BaseViewController {
                 } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
                     if(!model.getAddress().equals(masternodeAddress)) {
                         showToolGroup(true, false);
+                    } else {
+                        showToolGroup(false, true);
                     }
 
                 } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
                     if(!model.getAddress().equals(masternodeAddress)) {
                         showToolGroup(true, false);
+                    } else {
+                        showToolGroup(false, true);
                     }
 
                 } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
-                    showToolGroup(true, false);
+                    if(!model.getAddress().equals(masternodeAddress)) {
+                        showToolGroup(true, false);
+                    } else {
+                        showToolGroup(false, false);
+                    }
                 }
             }
 
         }else if(apis.equals("0000000000000000000") || apis.equals("0")) {
             showToolGroup(false, false);
+
         }else{
-            showToolGroup(true, false);
+            if(AppManager.getInstance().isMasterNode(model.getAddress())) {
+                showToolGroup(false, false);
+            } else {
+                showToolGroup(true, false);
+            }
         }
 
         // Check knowledge key used
