@@ -45,11 +45,11 @@ public class PopupRestartController extends BasePopupController {
 
         languageSetting();
 
-        rootPane.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            if(event.getCode() == KeyCode.ENTER) {
-                miningRestart();
-            }
-        });
+//        rootPane.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+//            if(event.getCode() == KeyCode.ENTER) {
+//                miningRestart();
+//            }
+//        });
     }
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().restart.title);
