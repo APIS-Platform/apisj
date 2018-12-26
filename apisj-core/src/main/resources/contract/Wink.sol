@@ -18,7 +18,7 @@ contract WinkTest {
     {
         foo += 1;
 
-        emit Wink(msg.sender, address(this));
+        emit Wink(msg.sender);
     }
 
     function testNoWink()
@@ -26,6 +26,6 @@ contract WinkTest {
     {
         foo += 1;
 
-        emit Text(msg.sender, address(this));
+        emit Text(msg.sender);
     }
 }
