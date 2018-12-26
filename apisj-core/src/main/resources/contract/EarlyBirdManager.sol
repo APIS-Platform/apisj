@@ -747,7 +747,7 @@ contract EarlyBirdManager is Owners {
 
         _worker = worker;
 
-        foundationAccount = 0x1000000000000000000000000000000000037448;
+        foundationAccount = 0x3affc7a364d5c725ce33be33aff9673a7dfeab64;
     }
 
 

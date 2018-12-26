@@ -542,7 +542,7 @@ contract BuyMineral is Owners {
         owners = _owners;
         required = _required;
 
-        foundationAccount = 0x1000000000000000000000000000000000037448;
+        foundationAccount = 0x3affc7a364d5c725ce33be33aff9673a7dfeab64;
 
 
         apisUpperLimits.push(uint256(10).mul(1000000000000000000));
