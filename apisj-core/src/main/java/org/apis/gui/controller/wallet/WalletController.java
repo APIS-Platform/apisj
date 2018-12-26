@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
+import org.apis.config.SystemProperties;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseViewController;
@@ -677,7 +678,9 @@ public class WalletController extends BaseViewController {
             }
             StyleManager.backgroundColorStyle(btnMiningWallet, StyleManager.AColor.Cd8d8d8);
         }else if(id.equals("btnMasternode")){
-            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())){
+            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())
+                && SystemProperties.getDefault().getMasternodeKey() != null
+                && AppManager.getGeneralPropertiesData("masternode_address").equals(walletCheckList.get(0).getAddress())){
                 StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
                 iconMasternode.setImage(imageMasternodeRed);
             } else {
@@ -726,7 +729,9 @@ public class WalletController extends BaseViewController {
             }
             StyleManager.backgroundColorStyle(btnMiningWallet, StyleManager.AColor.Cffffff);
         }else if(id.equals("btnMasternode")){
-            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())){
+            if(AppManager.getInstance().isMasterNode(walletCheckList.get(0).getAddress())
+                && SystemProperties.getDefault().getMasternodeKey() != null
+                && AppManager.getGeneralPropertiesData("masternode_address").equals(walletCheckList.get(0).getAddress())){
                 StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
                 iconMasternode.setImage(imageMasternodeRed);
             }else{
@@ -862,13 +867,14 @@ public class WalletController extends BaseViewController {
     }
     public void addWalletCheckList(WalletItemModel model){
         String apis = model.getApis().toString();
-        String masternodeStatus = AppManager.getGeneralPropertiesData("masternode_state");
+        String masternodeState = AppManager.getGeneralPropertiesData("masternode_state");
         String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
         walletCheckList.add(model);
 
-        // Check masternode change button img & color
+        // Change masternode button img & color
         if(AppManager.getInstance().isMasterNode(model.getAddress())
-                && AppManager.getGeneralPropertiesData("masternode_address").equals(model.getAddress())) {
+            && SystemProperties.getDefault().getMasternodeKey() != null
+            && AppManager.getGeneralPropertiesData("masternode_address").equals(model.getAddress())) {
             StyleManager.fontColorStyle(btnMasternode, StyleManager.AColor.Cb01e1e);
             iconMasternode.setImage(imageMasternodeRed);
         }else{
@@ -876,45 +882,46 @@ public class WalletController extends BaseViewController {
             iconMasternode.setImage(imageMasternodeGrey);
         }
 
-        if(apis.equals("50000000000000000000000")
-                || apis.equals("200000000000000000000000")
-                || apis.equals("500000000000000000000000")){
-            showToolGroup(true, true);
-            if(masternodeStatus != null && !masternodeStatus.equals("")) {
-                if(masternodeStatus.equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
+        // Show or hide mining & masternode button
+        if(apis.equals("0000000000000000000") || apis.equals("0")) {
+            showToolGroup(false, false);
 
-                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
-                    if(!model.getAddress().equals(masternodeAddress)) {
-                        showToolGroup(true, false);
-                    } else {
-                        showToolGroup(false, true);
-                    }
+        } else {
+            boolean isPossibleMining = true;
+            boolean isPossibleMasternode = false;
 
-                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
-                    if(!model.getAddress().equals(masternodeAddress)) {
-                        showToolGroup(true, false);
-                    } else {
-                        showToolGroup(false, true);
-                    }
+            // Set mining condition
+            if(AppManager.getInstance().isMasterNode(model.getAddress())) {
+                isPossibleMining = false;
+            } else if(masternodeState.equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
+                if(model.getAddress().equals(masternodeAddress)) {
+                    isPossibleMining = false;
+                }
+            }
 
-                } else if(masternodeStatus.equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
-                    if(!model.getAddress().equals(masternodeAddress)) {
-                        showToolGroup(true, false);
+            // Set masternode condition
+            if(AppManager.getInstance().isMining(model.getAddress())) {
+                isPossibleMasternode = false;
+            } else {
+                if (masternodeState != null && !masternodeState.equals("")) {
+                    if(masternodeAddress == null || masternodeAddress.equals("")) {
+                        if(apis.equals("50000000000000000000000")
+                                || apis.equals("200000000000000000000000")
+                                || apis.equals("500000000000000000000000")) {
+                            isPossibleMasternode = true;
+                        }
+
                     } else {
-                        showToolGroup(false, false);
+                        if(masternodeAddress.equals(model.getAddress())) {
+                            if(!masternodeState.equals(Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num))) {
+                                isPossibleMasternode = true;
+                            }
+                        }
                     }
                 }
             }
 
-        }else if(apis.equals("0000000000000000000") || apis.equals("0")) {
-            showToolGroup(false, false);
-
-        }else{
-            if(AppManager.getInstance().isMasterNode(model.getAddress())) {
-                showToolGroup(false, false);
-            } else {
-                showToolGroup(true, false);
-            }
+            showToolGroup(isPossibleMining, isPossibleMasternode);
         }
 
         // Check knowledge key used
@@ -928,7 +935,7 @@ public class WalletController extends BaseViewController {
 
         // Check mining and change button img & color
         if(model.getAddress().equals(AppManager.getInstance().getMiningWalletAddress())) {
-            btnMiningWallet.setTextFill(Color.web("#b01e1e"));
+            StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.Cb01e1e);
             iconMiningWallet.setImage(imageMiningRed);
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -940,7 +947,7 @@ public class WalletController extends BaseViewController {
                 }
             });
         } else {
-            btnMiningWallet.setTextFill(Color.web("#999999"));
+            StyleManager.fontColorStyle(btnMiningWallet, StyleManager.AColor.C999999);
             iconMiningWallet.setImage(imageMiningGrey);
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
