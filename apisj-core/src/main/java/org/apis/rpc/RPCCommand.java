@@ -38,27 +38,28 @@ public class RPCCommand {
     static final String COMMAND_RPC_VERSION = "2.0";
 
     // method
-    static final String COMMAND_NET_VERSION = "net_version";
-    static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
+    private static final String COMMAND_NET_VERSION = "net_version";
+    private static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
 
-    static final String COMMAND_APIS_PROTOCOLVERSION = "apis_protocolVersion";
-    static final String COMMAND_APIS_SYNCING = "apis_syncing";
-    static final String COMMAND_APIS_COINBASE = "apis_coinbase";
-    static final String COMMAND_APIS_MINING = "apis_mining";
-    static final String COMMAND_APIS_ACCOUNTS = "apis_accounts";
-    static final String COMMAND_APIS_BLOCKNUMBER = "apis_blockNumber";
-    static final String COMMAND_APIS_GETBALANCE = "apis_getBalance";
+    private static final String COMMAND_APIS_PROTOCOLVERSION = "apis_protocolVersion";
+    private static final String COMMAND_APIS_SYNCING = "apis_syncing";
+    private static final String COMMAND_APIS_COINBASE = "apis_coinbase";
+    private static final String COMMAND_APIS_MINING = "apis_mining";
+    private static final String COMMAND_APIS_ACCOUNTS = "apis_accounts";
+    private static final String COMMAND_APIS_BLOCKNUMBER = "apis_blockNumber";
+    private static final String COMMAND_APIS_GETBALANCE = "apis_getBalance";
+    private static final String COMMAND_TOTAL_COINS = "apis_totalCoins";
 
-    static final String COMMAND_APIS_GETTRANSACTIONCOUNT = "apis_getTransactionCount";
-    static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH = "apis_getBlockTransactionCountByHash";
-    static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER = "apis_getBlockTransactionCountByNumber";
-    static final String COMMAND_APIS_GETCODE = "apis_getCode";
-    static final String COMMAND_APIS_SIGN = "apis_sign";
-    static final String COMMAND_APIS_SENDTRANSACTION = "apis_sendTransaction";
-    static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
-    static final String COMMAND_APIS_CALL = "apis_call";
-    static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
-    static final String COMMAND_APIS_GAS_PRICE = "apis_gasPrice";
+    private static final String COMMAND_APIS_GETTRANSACTIONCOUNT = "apis_getTransactionCount";
+    private static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH = "apis_getBlockTransactionCountByHash";
+    private static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER = "apis_getBlockTransactionCountByNumber";
+    private static final String COMMAND_APIS_GETCODE = "apis_getCode";
+    private static final String COMMAND_APIS_SIGN = "apis_sign";
+    private static final String COMMAND_APIS_SENDTRANSACTION = "apis_sendTransaction";
+    private static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
+    private static final String COMMAND_APIS_CALL = "apis_call";
+    private static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
+    private static final String COMMAND_APIS_GAS_PRICE = "apis_gasPrice";
 
     private static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
     private static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
@@ -311,6 +312,13 @@ public class RPCCommand {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                 String blockNumberHexString = objectToHexString(blockNumber);
                 command = createJson(id, method, blockNumberHexString);
+                break;
+            }
+
+            case COMMAND_TOTAL_COINS: {
+                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                SystemProperties.getDefault().getBlockchainConfig().getCommonConstants().getTotalAPIS(blockNumber);
+                command = createJson(id, method, blockNumber);
                 break;
             }
 
