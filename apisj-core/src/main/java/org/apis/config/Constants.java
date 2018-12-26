@@ -17,7 +17,7 @@
  */
 package org.apis.config;
 
-import org.spongycastle.util.encoders.Hex;
+import org.apis.util.ByteUtil;
 
 import java.math.BigInteger;
 
@@ -79,27 +79,28 @@ public class Constants {
 
 
 
-    private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
-    private static final byte[] ADDRESS_MASKING = Hex.decode("1000000000000000000000000000000000037449");
-    private static final byte[] SMART_CONTRACT_CODE_CHANGER = Hex.decode("1000000000000000000000000000000000037450");
-    private static final byte[] SMART_CONTRACT_CODE_FREEZER = Hex.decode("1000000000000000000000000000000000037451");
-    private static final byte[] PROOF_OF_KNOWLEDGE = Hex.decode("1000000000000000000000000000000000037452");
-    private static final byte[] BUY_MINERAL = Hex.decode("1000000000000000000000000000000000037453");
+    private static final byte[] FOUNDATION_STORAGE = ByteUtil.hexStringToBytes("3affc7a364d5c725ce33be33aff9673a7dfeab64");
+    private static final byte[] ADDRESS_MASKING = ByteUtil.hexStringToBytes("8aae7a8b8a34ce5a9f386ea5eed33071b3729371");
+    private static final byte[] SMART_CONTRACT_CODE_CHANGER = ByteUtil.hexStringToBytes("02f5f9019447efc5ec4a19c0731481e68fc674aa");
+    private static final byte[] SMART_CONTRACT_CODE_FREEZER = ByteUtil.hexStringToBytes("766810d7e2c69fe619b771d0a388eb40770feaf0");
+    private static final byte[] PROOF_OF_KNOWLEDGE = ByteUtil.hexStringToBytes("17660edd98a8044f87c572e5f211cc365fc2bd04");
+    private static final byte[] BUY_MINERAL = ByteUtil.hexStringToBytes("becf13e64aebf8b0637be18bcea7a892fe48e498");
 
-    private static final byte[] MASTERNODE_PLATFORM = Hex.decode("1000000000000000000000000000000000037454");
-    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777770");
-    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777771");
-    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777772");
-    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY = Hex.decode("7777777777777777777777777777777777777773");
-    private static final byte[] MASTERNODE_GENERAL_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777774");
-    private static final byte[] MASTERNODE_MAJOR_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777775");
-    private static final byte[] MASTERNODE_PRIVATE_BASE_NORMAL = Hex.decode("7777777777777777777777777777777777777776");
-    private static final byte[] MASTERNODE_GENERAL_BASE_LATE = Hex.decode("7777777777777777777777777777777777777777");
-    private static final byte[] MASTERNODE_MAJOR_BASE_LATE = Hex.decode("7777777777777777777777777777777777777778");
-    private static final byte[] MASTERNODE_PRIVATE_BASE_LATE = Hex.decode("7777777777777777777777777777777777777779");
-    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777a");
-    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777b");
-    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY_RUN = Hex.decode("777777777777777777777777777777777777777c");
+    private static final byte[] MASTERNODE_PLATFORM = ByteUtil.hexStringToBytes("866962b19d403a712f2c6bca390f9f295ba2dfe9");
+    
+    private static final byte[] MASTERNODE_STORAGE = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777770");
+    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777771");
+    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777772");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777773");
+    private static final byte[] MASTERNODE_GENERAL_BASE_NORMAL = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777774");
+    private static final byte[] MASTERNODE_MAJOR_BASE_NORMAL = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777775");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_NORMAL = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777776");
+    private static final byte[] MASTERNODE_GENERAL_BASE_LATE = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777777");
+    private static final byte[] MASTERNODE_MAJOR_BASE_LATE = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777778");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_LATE = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777779");
+    private static final byte[] MASTERNODE_GENERAL_BASE_EARLY_RUN = ByteUtil.hexStringToBytes("777777777777777777777777777777777777777a");
+    private static final byte[] MASTERNODE_MAJOR_BASE_EARLY_RUN = ByteUtil.hexStringToBytes("777777777777777777777777777777777777777b");
+    private static final byte[] MASTERNODE_PRIVATE_BASE_EARLY_RUN = ByteUtil.hexStringToBytes("777777777777777777777777777777777777777c");
 
 
 
@@ -110,7 +111,7 @@ public class Constants {
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 
     public int getDURATION_LIMIT() {
-        return 10;
+        return 8;
     }
 
     public BigInteger getInitialNonce() {
