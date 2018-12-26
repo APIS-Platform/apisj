@@ -253,10 +253,10 @@ public class AppManager {
 
                         // Empty state
                         if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
-                            // Change to activated state when the address is in pool
+                            // Do nothing
                             if(isMasterNode(address)) {
-                                if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
+                                if(SystemProperties.getDefault().getMasternodeKey() == null) {
+
                                 }
                             }
 
@@ -292,7 +292,7 @@ public class AppManager {
                             // Change to cancel state when the system restarted
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
-                                    saveGeneralProperties("masternode_state", Integer.toString(MnState.CANCEL_MASTERNODE.num));
+                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
                                 }
                             }
 
