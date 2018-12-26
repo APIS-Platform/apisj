@@ -19,31 +19,31 @@
 
 <AnchorPane fx:id="rootPane" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
-      <TabPane fx:id="tabPane" focusTraversable="false" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <TabPane fx:id="tabPane" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
-                <fx:include source="wallet/wallet.fxml" />
+              <AnchorPane fx:id="tabWalletPane" minHeight="0.0" minWidth="0.0" />
             </content>
           </Tab>
           <Tab text="Untitled Tab 2">
             <content>
-               <fx:include source="transfer/transfer.fxml" />
+              <AnchorPane fx:id="tabTransferPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
             <Tab text="Untitled Tab">
               <content>
-                 <fx:include source="smartcontrect/smart_contract.fxml" />
+                <AnchorPane fx:id="tabSmartContractPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
             <Tab text="Untitled Tab">
               <content>
-                 <fx:include source="addressmasking/address_masking.fxml" />
+                <AnchorPane fx:id="tabAddressMaskingPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
             <Tab text="Untitled Tab">
               <content>
-                 <fx:include source="transaction/transaction_native.fxml" />
+                <AnchorPane fx:id="tabTransactionPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
         </tabs>

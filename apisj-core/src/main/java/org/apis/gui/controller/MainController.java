@@ -17,10 +17,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
+import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
+import org.apis.gui.controller.smartcontrect.SmartContractController;
+import org.apis.gui.controller.transaction.TransactionNativeController;
+import org.apis.gui.controller.transfer.TransferController;
+import org.apis.gui.controller.wallet.WalletController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
@@ -39,6 +44,7 @@ public class MainController extends BaseViewController {
     private boolean isShowLayerPopup = false;
 
     @FXML private TabPane tabPane;
+    @FXML private AnchorPane tabWalletPane, tabTransferPane, tabSmartContractPane, tabAddressMaskingPane, tabTransactionPane;
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
@@ -123,14 +129,95 @@ public class MainController extends BaseViewController {
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
         selectionModel.select(this.selectedIndex.num);
         switch (this.selectedIndex){
-            case WALLET : AppManager.getInstance().guiFx.getWallet().update(); break;
-            case TRANSFER : AppManager.getInstance().guiFx.getTransfer().update(); break;
-            case SMART_CONTRECT : AppManager.getInstance().guiFx.getSmartContract().update(); break;
+            case WALLET :
+                if(AppManager.getInstance().guiFx.getWallet() == null){
+                    try {
+                        BaseFxmlController fxmlController = new BaseFxmlController("wallet/wallet.fxml");
+                        Node node = fxmlController.getNode();
+                        AppManager.getInstance().guiFx.setWallet((WalletController)fxmlController.getController());
+                        tabWalletPane.getChildren().clear();
+                        tabWalletPane.getChildren().add(node);
+                        AnchorPane.setTopAnchor(node, 0.0);
+                        AnchorPane.setRightAnchor(node, 0.0);
+                        AnchorPane.setBottomAnchor(node, 0.0);
+                        AnchorPane.setLeftAnchor(node, 0.0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                AppManager.getInstance().guiFx.getWallet().update();
+                break;
+            case TRANSFER :
+                if(AppManager.getInstance().guiFx.getTransfer() == null){
+                    try {
+                        BaseFxmlController fxmlController = new BaseFxmlController("transfer/transfer.fxml");
+                        Node node = fxmlController.getNode();
+                        AppManager.getInstance().guiFx.setTransfer((TransferController)fxmlController.getController());
+                        tabTransferPane.getChildren().clear();
+                        tabTransferPane.getChildren().add(node);
+                        AnchorPane.setTopAnchor(node, 0.0);
+                        AnchorPane.setRightAnchor(node, 0.0);
+                        AnchorPane.setBottomAnchor(node, 0.0);
+                        AnchorPane.setLeftAnchor(node, 0.0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                AppManager.getInstance().guiFx.getTransfer().update();
+                break;
+            case SMART_CONTRECT :
+                if(AppManager.getInstance().guiFx.getSmartContract() == null){
+                    try {
+                        BaseFxmlController fxmlController = new BaseFxmlController("smartcontrect/smart_contract.fxml");
+                        Node node = fxmlController.getNode();
+                        AppManager.getInstance().guiFx.setSmartContract((SmartContractController)fxmlController.getController());
+                        tabSmartContractPane.getChildren().clear();
+                        tabSmartContractPane.getChildren().add(node);
+                        AnchorPane.setTopAnchor(node, 0.0);
+                        AnchorPane.setRightAnchor(node, 0.0);
+                        AnchorPane.setBottomAnchor(node, 0.0);
+                        AnchorPane.setLeftAnchor(node, 0.0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                AppManager.getInstance().guiFx.getSmartContract().update();
+                break;
             case ADDRESS_MASKING :
+                if(AppManager.getInstance().guiFx.getAddressMasking() == null){
+                    try {
+                        BaseFxmlController fxmlController = new BaseFxmlController("addressmasking/address_masking.fxml");
+                        Node node = fxmlController.getNode();
+                        AppManager.getInstance().guiFx.setAddressMasking((AddressMaskingController) fxmlController.getController());
+                        tabAddressMaskingPane.getChildren().clear();
+                        tabAddressMaskingPane.getChildren().add(node);
+                        AnchorPane.setTopAnchor(node, 0.0);
+                        AnchorPane.setRightAnchor(node, 0.0);
+                        AnchorPane.setBottomAnchor(node, 0.0);
+                        AnchorPane.setLeftAnchor(node, 0.0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 AppManager.getInstance().guiFx.getAddressMasking().update();
                 AppManager.getInstance().guiFx.getAddressMasking().initStyleTab(AddressMaskingController.TAB_MENU);
                 break;
             case TRANSACTION :
+                if(AppManager.getInstance().guiFx.getTransactionNative() == null){
+                    try {
+                        BaseFxmlController fxmlController = new BaseFxmlController("transaction/transaction_native.fxml");
+                        Node node = fxmlController.getNode();
+                        AppManager.getInstance().guiFx.setTransactionNative((TransactionNativeController) fxmlController.getController());
+                        tabTransactionPane.getChildren().clear();
+                        tabTransactionPane.getChildren().add(node);
+                        AnchorPane.setTopAnchor(node, 0.0);
+                        AnchorPane.setRightAnchor(node, 0.0);
+                        AnchorPane.setBottomAnchor(node, 0.0);
+                        AnchorPane.setLeftAnchor(node, 0.0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 AppManager.getInstance().guiFx.getTransactionNative().hideDetail();
                 AppManager.getInstance().guiFx.getTransactionNative().update();
                 break;

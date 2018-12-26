@@ -43,7 +43,7 @@ import java.util.TimeZone;
 
 public class PopupProofOfKnowledgeEditController extends BasePopupController {
     private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE);
-    private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037452");
+    private byte[] contractAddress = AppManager.getInstance().constants.getPROOF_OF_KNOWLEDGE();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterProofKey = contract.getByName("registerProofKey");
     private CallTransaction.Function functionRemoveProofKey = contract.getByName("removeProofKey");
