@@ -425,15 +425,15 @@ public class SmartContractDeployController extends BaseViewController {
     private void estimateGasLimit(){
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
             if(metadata != null) {
-                byte[] address = Hex.decode(walletAndAmountController.getAddress());
-                byte[] data = Hex.decode(metadata.bin);
+                byte[] address = ByteUtil.hexStringToBytes(walletAndAmountController.getAddress());
+                byte[] data = ByteUtil.hexStringToBytes(metadata.bin);
                 if (selectFunction != null) {
                     Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
                     if (contractParams.size() > 0) {
-                        data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+                        data = ByteUtil.merge(ByteUtil.hexStringToBytes(metadata.bin), selectFunction.encodeArguments(args));
                     }
                 } else if (metadata.bin != null) {
-                    data = Hex.decode(metadata.bin);
+                    data = ByteUtil.hexStringToBytes(metadata.bin);
                 } else {
                     data = new byte[0];
                 }
@@ -443,8 +443,8 @@ public class SmartContractDeployController extends BaseViewController {
         }else{
             if(byteCodeTextArea.getText().length() > 0) {
                 try {
-                    byte[] address = Hex.decode(walletAndAmountController.getAddress());
-                    byte[] data = Hex.decode(byteCodeTextArea.getText());
+                    byte[] address = ByteUtil.hexStringToBytes(walletAndAmountController.getAddress());
+                    byte[] data = ByteUtil.hexStringToBytes(byteCodeTextArea.getText());
                     long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
                     gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
                 }catch (Exception e){
@@ -604,18 +604,18 @@ public class SmartContractDeployController extends BaseViewController {
             if(selectFunction != null) {
                 Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
                 if (contractParams.size() > 0) {
-                    data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+                    data = ByteUtil.merge(ByteUtil.hexStringToBytes(metadata.bin), selectFunction.encodeArguments(args));
                 } else {
-                    data = Hex.decode(metadata.bin);
+                    data = ByteUtil.hexStringToBytes(metadata.bin);
                 }
             }else if(metadata.bin != null){
-                data = Hex.decode(metadata.bin);
+                data = ByteUtil.hexStringToBytes(metadata.bin);
             }else{
                 data = new byte[0];
             }
         } else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
             String byteCode = byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","");
-            data = Hex.decode(byteCode);
+            data = ByteUtil.hexStringToBytes(byteCode);
         }
         return data;
     }

@@ -253,10 +253,12 @@ public class AppManager {
 
                         // Empty state
                         if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
-                            // Change to activated state when the address is in pool
+                            // Do nothing when the address is in pool
                             if(isMasterNode(address)) {
-                                if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.MASTERNODE.num));
+                            // Clear properties when the address is not in pool
+                            } else {
+                                if(AppManager.getGeneralPropertiesData("masternode_address").equals(address)) {
+                                    cancelMasternode();
                                 }
                             }
 
@@ -292,7 +294,7 @@ public class AppManager {
                             // Change to cancel state when the system restarted
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
-                                    saveGeneralProperties("masternode_state", Integer.toString(MnState.CANCEL_MASTERNODE.num));
+                                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.EMPTY_MASTERNODE.num));
                                 }
                             }
 
@@ -493,7 +495,7 @@ public class AppManager {
         return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
     }
     public BigInteger getTxNonce(String address){
-        return ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
+        return ((Repository)mEthereum.getRepository()).getNonce(ByteUtil.hexStringToBytes(address));
     }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
@@ -510,7 +512,7 @@ public class AppManager {
             return null;
         }
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
-        String mask = repository.getMaskByAddress(Hex.decode(address));
+        String mask = repository.getMaskByAddress(ByteUtil.hexStringToBytes(address));
 
         if(mask != null){
             return mask;
@@ -714,7 +716,7 @@ public class AppManager {
         if(tokenAddress == null || tokenAddress.length() < 40){
             return BigInteger.ZERO;
         }
-        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("balanceOf"), Hex.decode(address))[0].toString());
+        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("balanceOf"), ByteUtil.hexStringToBytes(address))[0].toString());
     }
 
     public BigInteger getTokenTotalValue(String tokenAddress) {
@@ -770,7 +772,7 @@ public class AppManager {
     }
 
     public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, char[] password, char[] knowledgeKey, Object[] args){
-        byte[] toAddress = Hex.decode(tokenAddress);
+        byte[] toAddress = ByteUtil.hexStringToBytes(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
         Transaction tx = AppManager.getInstance().generateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, new byte[0], functionCallBytes,  password, knowledgeKey);
         AppManager.getInstance().ethereumSendTransactions(tx);
@@ -828,7 +830,7 @@ public class AppManager {
             }
 
             if(!isExist) {
-                removeAddressList.add(Hex.decode(listKey.address));
+                removeAddressList.add(ByteUtil.hexStringToBytes(listKey.address));
             }
         }
 
@@ -843,10 +845,10 @@ public class AppManager {
             for(int i=0; i<keyStoreDataExpList.size(); i++){
                 keyExp = keyStoreDataExpList.get(i);
                 keyExp.mask = getMaskWithAddress(keyExp.address);
-                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address));
-                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
-                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address));
-                keyExp.isUsedProofkey = isUsedProofKey(Hex.decode(keyExp.address));
+                keyExp.balance = mEthereum.getRepository().getBalance(ByteUtil.hexStringToBytes(keyExp.address));
+                keyExp.mineral = mEthereum.getRepository().getMineral(ByteUtil.hexStringToBytes(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
+                keyExp.rewards = mEthereum.getRepository().getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
             }
         }
 
@@ -933,17 +935,17 @@ public class AppManager {
 
 
     public BigInteger getBalance(String address){
-        return mEthereum.getRepository().getBalance(Hex.decode(address));
+        return mEthereum.getRepository().getBalance(ByteUtil.hexStringToBytes(address));
     }
     public BigInteger getMineral(String address){
-        return mEthereum.getRepository().getMineral(Hex.decode(address), mEthereum.getBlockchain().getBestBlock().getNumber());
+        return mEthereum.getRepository().getMineral(ByteUtil.hexStringToBytes(address), mEthereum.getBlockchain().getBestBlock().getNumber());
     }
 
     private ECKey getSenderKey(String json, String passwd ){
         ECKey senderKey = null;
         try {
             String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
-            senderKey = ECKey.fromPrivate(Hex.decode(decryptPrivateKey));
+            senderKey = ECKey.fromPrivate(ByteUtil.hexStringToBytes(decryptPrivateKey));
             passwd = null;
         } catch (KeystoreVersionException e) {
             System.out.println("KeystoreVersionException : ");
@@ -1042,7 +1044,7 @@ public class AppManager {
 
     public byte[] getGasUsed(String txHash){
         try {
-            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
             byte[] gasUsed = txReceipt.getGasUsed();
             if (gasUsed != null) {
@@ -1062,7 +1064,7 @@ public class AppManager {
 
     public ArrayList<Object[]> getTokenTransfer(String txHash) {
             ArrayList<Object[]> tokenTransferList = new  ArrayList<Object[]>();
-            TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
 
             if (txReceipt == null) {
@@ -1090,7 +1092,7 @@ public class AppManager {
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -1106,7 +1108,7 @@ public class AppManager {
     }
 
     public List<InternalTransaction> getInternalTransactions(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -1204,7 +1206,7 @@ public class AppManager {
     }
 
     public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
-        BigInteger nonce = this.mEthereum.getPendingState().getNonce(Hex.decode(addr));
+        BigInteger nonce = this.mEthereum.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
         return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
     }
 
@@ -1648,7 +1650,7 @@ public class AppManager {
             if (prop.getProperty("masternode_address") == null) { prop.setProperty("masternode_address", ""); }
             if (prop.getProperty("recipient_address") == null) { prop.setProperty("recipient_address", ""); }
             if (prop.getProperty("mining_address") == null) { prop.setProperty("mining_address", ""); }
-            if (prop.getProperty("language") == null) { prop.setProperty("language", "eng"); }
+            if (prop.getProperty("language") == null) { prop.setProperty("language", "ENG"); }
             if (prop.getProperty("footer_total_unit") == null) { prop.setProperty("footer_total_unit", "APIS"); }
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
             input.close();
@@ -1660,7 +1662,7 @@ public class AppManager {
             prop.setProperty("masternode_address", "");
             prop.setProperty("recipient_address", "");
             prop.setProperty("mining_address","");
-            prop.setProperty("language","eng");
+            prop.setProperty("language","ENG");
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
             File config = new File("config");

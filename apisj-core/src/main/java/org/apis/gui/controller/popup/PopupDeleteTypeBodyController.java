@@ -18,6 +18,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -153,7 +154,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
     }
 
     private void preGasUsed() {
-        byte[] sender = Hex.decode(model.getAddress());
+        byte[] sender = ByteUtil.hexStringToBytes(model.getAddress());
         BigInteger value = BigInteger.ZERO;
         String functionName = functionRemoveProofKey.name;
 
@@ -195,7 +196,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
 
             char[] password = passwordController.getText().toCharArray();
             char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
-            byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(this.model.getAddress()));
+            byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(this.model.getAddress()));
             byte[] pk = KeyStoreManager.getPrivateKey(this.model.getKeystoreJsonData(), passwordController.getText());
             if(pk == null){
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());

@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupPrintPrivatekeyController;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
@@ -146,7 +147,7 @@ public class ApisTextFieldPkController extends BaseViewController {
             rootPrint = loader.load();
             PopupPrintPrivatekeyController controller = (PopupPrintPrivatekeyController)loader.getController();
 
-            controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText().trim()));
+            controller.init(ByteUtil.hexStringToBytes(this.address), ByteUtil.hexStringToBytes(passwordField.getText().trim()));
             printStage.initModality(Modality.APPLICATION_MODAL);
             printStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             printStage.setTitle("Print Private Key");

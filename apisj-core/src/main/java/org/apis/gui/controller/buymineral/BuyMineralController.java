@@ -16,6 +16,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -65,7 +66,7 @@ public class BuyMineralController extends BasePopupController {
                 BigInteger gasLimit = bodyController.getGasLimit();
 
                 Object[] args = new Object[1];
-                args[0] = Hex.decode(beneficiaryAddress);
+                args[0] = ByteUtil.hexStringToBytes(beneficiaryAddress);
                 byte[] functionCallBytes = functionBuyMNR.encode(args);
 
                 // 완료 팝업 띄우기

@@ -58,7 +58,7 @@ public class SettingController extends BasePopupController {
         downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
 
-        openRpc();
+        closeRpc();
         openGeneral();
         openWindow();
 

@@ -181,7 +181,7 @@ public class AddressMaskingController extends BaseViewController {
                 String gasPrice = registerController.getGasPrice().toString();
 
                 Object[] args = new Object[3];
-                args[0] = Hex.decode(faceAddress);   //_faceAddress
+                args[0] = ByteUtil.hexStringToBytes(faceAddress);   //_faceAddress
                 args[1] = name;   //_name
                 args[2] = new BigInteger(domainId);   //_domainId
                 byte[] functionCallBytes = functionRegisterMask.encode(args);
@@ -243,7 +243,7 @@ public class AddressMaskingController extends BaseViewController {
                 BigInteger gasLimit = handOverMaskController.getGasLimit();
 
                 Object[] args = new Object[1];
-                args[0] = Hex.decode(toAddress);
+                args[0] = ByteUtil.hexStringToBytes(toAddress);
                 byte[] functionCallBytes = functionHandOverMask.encode(args);
 
                 // 완료 팝업 띄우기

@@ -505,9 +505,9 @@ public class TransactionNativeController extends BaseViewController {
 //
 //                    String mask = AppManager.getInstance().getAddressWithMask(searchTextField.getText());
 //                    if(mask != null){
-//                        address = Hex.decode(mask);
+//                        address = ByteUtil.hexStringToBytes(mask);
 //                    }else{
-//                        address = Hex.decode(searchTextField.getText());
+//                        address = ByteUtil.hexStringToBytes(searchTextField.getText());
 //                    }
 //                }
 //            }catch (DecoderException e){

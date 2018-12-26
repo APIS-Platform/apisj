@@ -4,6 +4,7 @@ import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ContractModel extends BaseModel {
     }
 
     public byte[] getAddressByte(){
-        return Hex.decode(address);
+        return ByteUtil.hexStringToBytes(address);
     }
 
     public void setAddress(String address) {

@@ -109,7 +109,7 @@ public class PopupTokenEditController extends BasePopupController {
         String tokenDecimal = decimalTextField.getText();
         String totalSupply = totalSupplyTextField.getText();
 
-        byte[] addr = Hex.decode(tokenAddress);
+        byte[] addr = ByteUtil.hexStringToBytes(tokenAddress);
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);

@@ -150,6 +150,10 @@ public class AddressInfoController extends BaseViewController {
     }
 
     public void searchAddress(String addressAndMask){
+        if(addressAndMask.indexOf("0x") == 0 && addressAndMask.indexOf("@") == -1){
+            addressAndMask = addressAndMask.replaceAll("0x","");
+        }
+
         list.getChildren().clear();
 
         String address = "", mask = "";
@@ -173,6 +177,8 @@ public class AddressInfoController extends BaseViewController {
             addItem("Transaction", txNonce + " txns", ITEM_TYPE_READONLY_TEXT);
             addItem("APIS", ApisUtil.readableApis(apis, ',', true) + " APIS", ITEM_TYPE_READONLY_TEXT);
             addItem("MNR", ApisUtil.readableApis(mineral, ',', true) + " MNR", ITEM_TYPE_READONLY_TEXT);
+            addItem("MasterNode", ""+AppManager.getInstance().isMasterNode(address), ITEM_TYPE_READONLY_TEXT);
+
             for (int i = 0; i < tokenRecordList.size(); i++) {
                 tokenValue = AppManager.getInstance().getTokenValue(ByteUtil.toHexString(tokenRecordList.get(i).getTokenAddress()), address);
                 addItem(tokenRecordList.get(i).getTokenName(), ApisUtil.readableApis(tokenValue, ',', true) + " " + tokenRecordList.get(i).getTokenSymbol(), ITEM_TYPE_READONLY_TEXT);

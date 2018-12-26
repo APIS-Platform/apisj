@@ -888,7 +888,7 @@ public class IntroController extends BaseViewController {
 
                     try {
                         privateKey = KeyStoreUtil.decryptPrivateKey(keyStoreData.toString(), wPasswd);
-                        address = Hex.decode(keyStoreData.address);
+                        address = ByteUtil.hexStringToBytes(keyStoreData.address);
                     } catch (KeystoreVersionException e) {
                     } catch (NotSupportKdfException e) {
                     } catch (NotSupportCipherException e) {
@@ -1267,7 +1267,7 @@ public class IntroController extends BaseViewController {
                 if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
                     String wName = loadWalletPhaseFourTypePkNmController.getText();
                     String wPasswd = loadWalletPhaseFourTypePkPwController.getText();
-                    KeyStoreManager.getInstance().savePrivateKeyStore(Hex.decode(loadWalletPrivateKeyController.getText()), wName, wPasswd.toCharArray());
+                    KeyStoreManager.getInstance().savePrivateKeyStore(ByteUtil.hexStringToBytes(loadWalletPrivateKeyController.getText()), wName, wPasswd.toCharArray());
 
                     this.introLoadWalletPhaseFourTypePk.setVisible(false);
                     this.introPhaseOne.setVisible(true);

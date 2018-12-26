@@ -13,6 +13,7 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -82,7 +83,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
 
     private void toggleMining(){
         if(miningType == MINING_TYPE_START) {
-            if (AppManager.getInstance().startMining(Hex.decode(this.itemModel.getAddress()), passwordFieldController.getText().toCharArray())) {
+            if (AppManager.getInstance().startMining(ByteUtil.hexStringToBytes(this.itemModel.getAddress()), passwordFieldController.getText().toCharArray())) {
                 AppManager.getInstance().setMiningWalletAddress(this.itemModel.getAddress());
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
                 AppManager.getInstance().guiFx.getWallet().updateTableList();

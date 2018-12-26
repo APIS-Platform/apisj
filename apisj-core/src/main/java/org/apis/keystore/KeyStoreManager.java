@@ -115,7 +115,7 @@ public class KeyStoreManager {
         }
 
         // 기존 파일을 삭제한다.
-        deleteKeystore(Hex.decode(data.address));
+        deleteKeystore( ByteUtil.hexStringToBytes(data.address));
 
         // 파일을 저장한다.
         PrintWriter writer;
@@ -132,7 +132,6 @@ public class KeyStoreManager {
     }
 
     public KeyStoreData savePrivateKeyStore(String keystoreJsonData, String path){
-        System.out.println("keystoreJsonData : "+keystoreJsonData);
 
         KeyStoreData data = new GsonBuilder().create().fromJson(keystoreJsonData, KeyStoreData.class);
         if(data == null) {
@@ -140,7 +139,7 @@ public class KeyStoreManager {
         }
 
         // 기존 파일을 삭제한다.
-        deleteKeystore(Hex.decode(data.address), path);
+        deleteKeystore(ByteUtil.hexStringToBytes(data.address), path);
 
         // 파일을 저장한다.
         PrintWriter writer;
@@ -163,7 +162,7 @@ public class KeyStoreManager {
         }
 
         // 기존 파일을 삭제한다.
-        deleteKeystore(Hex.decode(data.address));
+        deleteKeystore(ByteUtil.hexStringToBytes(data.address));
         String keystoreStr =  data.toString();
         // 파일을 저장한다.
         PrintWriter writer;
@@ -258,7 +257,6 @@ public class KeyStoreManager {
 
     public void deleteKeystore(byte[] address){
         deleteKeystore(address, config.keystoreDir());
-        System.out.println("삭제 완료");
     }
 
     public void deleteKeystore(byte[] address, String path){
@@ -280,7 +278,6 @@ public class KeyStoreManager {
         // check delete file list
         List<File> deleteFiles = new ArrayList<>();
         if(keyList != null) {
-            System.out.println("keyList : "+keyList.length);
             for (File file : keyList) {
                 if (file.isFile()) {
                     if(file.length() < 10240) {
@@ -314,7 +311,7 @@ public class KeyStoreManager {
             if (data.address.equals(address)) {
                 changeData = data;
                 //파일삭제
-                deleteKeystore(Hex.decode(address));
+                deleteKeystore(ByteUtil.hexStringToBytes(address));
                 break;
             }
         }
@@ -339,7 +336,12 @@ public class KeyStoreManager {
     public boolean updateWalletPassword(String address, char[] currentPassword, char[] newPassword) {
         List<KeyStoreData> fileList = loadKeyStoreFiles();
         KeyStoreData changeData = null;
-
+        for(KeyStoreData data : fileList){
+            if (data.address.equals(address)) {
+                changeData = data;
+                break;
+            }
+        }
         if(changeData != null){
             try {
                 byte[] privateKey = KeyStoreUtil.decryptPrivateKey(changeData.toString(), String.valueOf(currentPassword));
@@ -348,7 +350,7 @@ public class KeyStoreManager {
                     if (data.address.equals(address)) {
                         changeData = data;
                         //파일삭제
-                        deleteKeystore(Hex.decode(address));
+                        deleteKeystore(ByteUtil.hexStringToBytes(address));
                         break;
                     }
                 }
@@ -363,6 +365,8 @@ public class KeyStoreManager {
             } catch (NotSupportCipherException e) {
                 e.printStackTrace();
             } catch (InvalidPasswordException e) {
+                e.printStackTrace();
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }

@@ -668,8 +668,8 @@ public class SmartContractCallSendController extends BaseViewController {
         } //for function.inputs
 
         String functionName = function.name;
-        byte[] address = Hex.decode(walletAndAmountController.getAddress());
-        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
+        byte[] address = ByteUtil.hexStringToBytes(walletAndAmountController.getAddress());
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, ByteUtil.hexStringToBytes(contractAddress), value, functionName, args);
         if(preGasUsed < 0){
             warningLabel.setVisible(true);
         }else{

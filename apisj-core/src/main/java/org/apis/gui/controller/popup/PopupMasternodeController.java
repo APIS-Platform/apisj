@@ -82,9 +82,9 @@ public class PopupMasternodeController extends BasePopupController {
 
             @Override
             public void onAction() {
-                if(startBtn.isVisible()) {
+                if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
                     startMasternode(0);
-                } else if(cancelRqBtn.isVisible()) {
+                } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))) {
                     startMasternode(1);
                 }
             }
@@ -97,6 +97,7 @@ public class PopupMasternodeController extends BasePopupController {
 
 
         recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, true);
+        recipientController.selectedItemWithAddress(AppManager.getGeneralPropertiesData("recipient_address"));
         recipientController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -218,10 +219,10 @@ public class PopupMasternodeController extends BasePopupController {
         String keystoreJsonData = itemModel.getKeystoreJsonData();
         String password =  passwordController.getText();
         String oldRecipient = AppManager.getGeneralPropertiesData("recipient_address");
-        byte[] recipientAddr = Hex.decode(recipientController.getAddress());
+        byte[] recipientAddr = ByteUtil.hexStringToBytes(recipientController.getAddress());
         // 직접 입력한 경우
         if(!isMyAddressSelected){
-            recipientAddr = Hex.decode(recipientFieldController.getAddress());
+            recipientAddr = ByteUtil.hexStringToBytes(recipientFieldController.getAddress());
         }
 
         passwordController.succeededForm();
@@ -232,44 +233,38 @@ public class PopupMasternodeController extends BasePopupController {
         } else if(ByteUtil.toHexString(recipientAddr).length() != 40){
             return;
         } else{
-            if(btnFlag == 2) {
+            if(btnFlag == 1) {
+                // Show error message when masternode state already activate
+                if(AppManager.getInstance().isMasterNode(itemModel.getAddress())) {
+                    AppManager.saveGeneralProperties("recipient_address", oldRecipient);
+                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.MASTERNODE.num));
+                    StyleManager.backgroundColorStyle(cancelRqBtn, StyleManager.AColor.Cd8d8d8);
+                    errMsg.setVisible(true);
+                    return;
+                } else {
+                    AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
+                    SystemProperties.getDefault().setMasternodePrivateKey(null);
+                    SystemProperties.getDefault().setMasternodeRecipient(null);
+                }
+
+            } else if(btnFlag == 2) {
                 // Wait for cancel masternode
                 AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.CANCEL_MASTERNODE.num));
                 SystemProperties.getDefault().setMasternodePrivateKey(null);
                 SystemProperties.getDefault().setMasternodeRecipient(null);
 
-                passwordController.succeededForm();
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
-
-                AppManager.getInstance().guiFx.getWallet().updateTableList();
-
             } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
                 switch(btnFlag) {
                     case 0 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
-                    // Show error message when masternode state already activate
-                    case 1 :
-                        if(AppManager.getInstance().isMasterNode(itemModel.getAddress())) {
-                            AppManager.saveGeneralProperties("recipient_address", oldRecipient);
-                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.MASTERNODE.num));
-                            StyleManager.backgroundColorStyle(cancelRqBtn, StyleManager.AColor.Cd8d8d8);
-                            errMsg.setVisible(true);
-                            return;
-                        } else {
-                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num));
-                            AppManager.getInstance().cancelMasternode();
-                            SystemProperties.getDefault().setMasternodePrivateKey(null);
-                            SystemProperties.getDefault().setMasternodeRecipient(null);
-                        }
-                        break;
                     case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
                     default : break;
                 }
-
-                passwordController.succeededForm();
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
-
-                AppManager.getInstance().guiFx.getWallet().updateTableList();
             }
+
+            passwordController.succeededForm();
+            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
+
+            AppManager.getInstance().guiFx.getWallet().updateTableList();
         }
     }
 

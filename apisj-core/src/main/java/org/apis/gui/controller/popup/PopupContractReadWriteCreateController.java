@@ -17,6 +17,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -106,7 +107,7 @@ public class PopupContractReadWriteCreateController extends BasePopupController 
         String name = contractNameTextField.getText().trim();
         String abi = this.abiTextarea.getText().trim();
 
-        DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
+        DBManager.getInstance().updateContract(ByteUtil.hexStringToBytes(address), name,null, abi, null);
         exit();
         PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
