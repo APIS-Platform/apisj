@@ -11,6 +11,7 @@ import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -50,7 +51,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
                     }
                 }
             });
-            controller.remove(Hex.decode(model.getAddress()));
+            controller.remove(ByteUtil.hexStringToBytes(model.getAddress()));
         }
     }
 

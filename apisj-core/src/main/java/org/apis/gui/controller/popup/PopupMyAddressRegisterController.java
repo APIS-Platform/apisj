@@ -18,6 +18,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -130,7 +131,7 @@ public class PopupMyAddressRegisterController extends BasePopupController {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("yesBtn")){
-            byte[] address = Hex.decode(addressTextField.getText().trim());
+            byte[] address = ByteUtil.hexStringToBytes(addressTextField.getText().trim());
             String alias = aliasTextField.getText().trim();
 
             // 지갑 저장

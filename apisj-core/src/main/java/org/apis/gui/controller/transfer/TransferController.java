@@ -126,11 +126,11 @@ public class TransferController extends BaseViewController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
-                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), toMask, null);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), ByteUtil.hexStringToBytes(toAddress), toMask, null);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
-                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferApisController.getReceiveAddress()) , AppManager.getInstance().getAliasWithAddress(transferApisController.getReceiveAddress() ));
+                        DBManager.getInstance().updateRecentAddress(tx.getHash(), ByteUtil.hexStringToBytes(transferApisController.getReceiveAddress()) , AppManager.getInstance().getAliasWithAddress(transferApisController.getReceiveAddress() ));
                     }
                     @Override
                     public void fail(Transaction tx){
@@ -200,11 +200,11 @@ public class TransferController extends BaseViewController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
-                controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(tokenAddress), new byte[0], functionCallBytes);
+                controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), ByteUtil.hexStringToBytes(tokenAddress), new byte[0], functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
-                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferTokenController.getReceveAddress()) , AppManager.getInstance().getAliasWithAddress(transferTokenController.getReceveAddress() ));
+                        DBManager.getInstance().updateRecentAddress(tx.getHash(), ByteUtil.hexStringToBytes(transferTokenController.getReceveAddress()) , AppManager.getInstance().getAliasWithAddress(transferTokenController.getReceveAddress() ));
                     }
                     @Override
                     public void fail(Transaction tx){
@@ -380,18 +380,18 @@ public class TransferController extends BaseViewController {
             if (sToAddress.indexOf("@") >= 0) {
                 toMask = AppManager.getInstance().getMaskWithAddress(sToAddress).getBytes(Charset.forName("UTF-8"));
             }
-            tx = AppManager.getInstance().generateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), toMask, new byte[0], password, knowledgeKey);
+            tx = AppManager.getInstance().generateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, ByteUtil.hexStringToBytes(sToAddress), toMask, new byte[0], password, knowledgeKey);
 
             if(tx != null) {
                 byte[] txHash = tx.getHash();
                 byte[] address = null;
                 String mask = null, alias = null;
                 if(sToAddress.indexOf("@") > 0){
-                    address = Hex.decode(AppManager.getInstance().getAddressWithMask(sToAddress));
+                    address = ByteUtil.hexStringToBytes(AppManager.getInstance().getAddressWithMask(sToAddress));
                     mask = sToAddress;
                     alias = AppManager.getInstance().getAliasWithAddress(ByteUtil.toHexString(address));
                 }else{
-                    address = Hex.decode(sToAddress);
+                    address = ByteUtil.hexStringToBytes(sToAddress);
                     mask = AppManager.getInstance().getMaskWithAddress(sToAddress);
                     alias = AppManager.getInstance().getAliasWithAddress(sToAddress);
                 }
@@ -420,7 +420,7 @@ public class TransferController extends BaseViewController {
         args[0] = transferTokenController.getReceveAddress(); // to address
         args[1] = transferTokenController.getTokenAmount(); // token amount
 
-        byte[] toAddress = Hex.decode(tokenAddress);
+        byte[] toAddress = ByteUtil.hexStringToBytes(tokenAddress);
         byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
         Transaction tx = AppManager.getInstance().generateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, new byte[0], functionCallBytes,  password, knowledgeKey);
 

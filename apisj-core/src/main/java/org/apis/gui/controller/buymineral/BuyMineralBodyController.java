@@ -220,10 +220,10 @@ public class BuyMineralBodyController extends BaseViewController {
     public void estimateGasLimit(){
         BigInteger value = getAmount();
         String functionName = "buyMNR";
-        byte[] from = Hex.decode(payerController.getAddress());
+        byte[] from = ByteUtil.hexStringToBytes(payerController.getAddress());
         byte[] to = buyMineralAddress;
         Object[] args = new Object[1];
-        args[0] = Hex.decode(beneficiaryController.getAddress());
+        args[0] = ByteUtil.hexStringToBytes(beneficiaryController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasUsed(abi, from, to, value, functionName, args);
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }

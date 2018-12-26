@@ -647,7 +647,7 @@ public class WalletController extends BaseViewController {
             tooltip2Controller.showTooltip();
         }else if(id.equals("toolKnowledgekey")) {
             // Check knowledge key used
-            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+            if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(walletCheckList.get(0).getAddress()))){
                 StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
                 iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
             }else{
@@ -698,7 +698,7 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnChangePasswordWallet")) {
             btnChangePasswordWallet.setImage(imageChangePassword);
         }else if(id.equals("toolKnowledgekey")) {
-            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+            if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(walletCheckList.get(0).getAddress()))){
                 StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
                 iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
             }else{
@@ -820,7 +820,7 @@ public class WalletController extends BaseViewController {
         String id = ((Node) event.getSource()).getId();
         if (id.equals("toolKnowledgekey")) {
 
-            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+            if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(walletCheckList.get(0).getAddress()))){
                 PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
                 controller.setModel(walletCheckList.get(0));
                 controller.requestFocus();
@@ -918,7 +918,7 @@ public class WalletController extends BaseViewController {
         }
 
         // Check knowledge key used
-        if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+        if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(walletCheckList.get(0).getAddress()))){
             StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
             iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
         }else{

@@ -204,7 +204,7 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
         BigInteger value = getAmount();
 
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(fromAddress), addressMaskingAddress, value, functionHandOverMask.name, toAddress);
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, ByteUtil.hexStringToBytes(fromAddress), addressMaskingAddress, value, functionHandOverMask.name, toAddress);
         if(checkGas > 0) {
             String preGasUsed = Long.toString(checkGas);
             gasCalculatorController.setGasLimit(preGasUsed);

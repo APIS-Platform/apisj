@@ -383,11 +383,11 @@ public class AddressMaskingRegisterController extends BaseViewController {
         BigInteger value = selectDomainController.getValueApisToBigInt();
         String maskingId = addrMaskingIDTextField.getText();
         Object[] args = new Object[3];
-        args[0] = Hex.decode(address);   //_faceAddress
+        args[0] = ByteUtil.hexStringToBytes(address);   //_faceAddress
         args[1] = maskingId;   //_name
         args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
 
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(payerAddress), addressMaskingAddress, value, functionRegisterMask.name, args);
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, ByteUtil.hexStringToBytes(payerAddress), addressMaskingAddress, value, functionRegisterMask.name, args);
 
         if(checkGas > 0) {
             String preGasUsed = Long.toString(checkGas);

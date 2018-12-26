@@ -175,7 +175,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         apisTotal.setText(ApisUtil.readableApis(selectWalletController.getBalance(), ',', true));
         gasCalculatorController.setMineral(selectWalletController.getMineral());
 
-        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] address = ByteUtil.hexStringToBytes(selectWalletController.getAddress());
         byte[] contractAddress = getContractAddress();
         long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
         nonceTextField.setText(Long.toString(nonce));
@@ -612,7 +612,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     }
 
     public void estimateGasLimit(){
-        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] address = ByteUtil.hexStringToBytes(selectWalletController.getAddress());
         byte[] contractAddress = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
         byte[] data = getContractByteCode();
         long preGasUsed = 0;
@@ -666,9 +666,9 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     private byte[]  getContractAddress(){
         if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT){
-            return Hex.decode(this.contractAddressLabel.getText().trim());
+            return ByteUtil.hexStringToBytes(this.contractAddressLabel.getText().trim());
         }else if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT){
-            return Hex.decode(this.contractAddressTextField.getText().trim());
+            return ByteUtil.hexStringToBytes(this.contractAddressTextField.getText().trim());
         }
         return null;
     }

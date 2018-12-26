@@ -18,6 +18,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
             // 주소가 변경될 경우 기존 데이터 삭제
             DBManager.getInstance().deleteContract(this.model.getAddressByte());
         }
-        DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
+        DBManager.getInstance().updateContract(ByteUtil.hexStringToBytes(address), name,null, abi, null);
         PopupManager.getInstance().hideMainPopup(1);
         PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);

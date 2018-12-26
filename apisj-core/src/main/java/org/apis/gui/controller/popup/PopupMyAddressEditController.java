@@ -20,6 +20,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -132,7 +133,7 @@ public class PopupMyAddressEditController extends BasePopupController {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("yesBtn")){
             System.out.println("model.getAddress() : "+model.getAddress());
-            byte[] address = Hex.decode(model.getAddress());
+            byte[] address = ByteUtil.hexStringToBytes(model.getAddress());
             String alias = aliasTextField.getText().trim();
 
             // 지갑 저장
@@ -158,7 +159,7 @@ public class PopupMyAddressEditController extends BasePopupController {
     private void init(String address) {
         String alias = DBManager.getInstance().selectMyAddressSearch(address).get(0).getAlias();
         ArrayList<String> textList = new ArrayList<>();
-        List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(Hex.decode(address));
+        List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(ByteUtil.hexStringToBytes(address));
         for(int i=0; i<list.size(); i++){
             textList.add(list.get(i).getGroupName());
         }
@@ -215,7 +216,7 @@ public class PopupMyAddressEditController extends BasePopupController {
             }
         }else{
             ArrayList<String> textList = new ArrayList<>();
-            List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(Hex.decode(this.model.getAddress()));
+            List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(ByteUtil.hexStringToBytes(this.model.getAddress()));
             for(int i=0; i<list.size(); i++){
                 textList.add(list.get(i).getGroupName());
             }

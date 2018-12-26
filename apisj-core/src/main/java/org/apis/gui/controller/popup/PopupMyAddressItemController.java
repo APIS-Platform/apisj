@@ -23,6 +23,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -88,7 +89,7 @@ public class PopupMyAddressItemController extends BaseViewController {
 
             event.consume();
         }else if(id.equals("btnDelete")){
-            DBManager.getInstance().deleteMyAddress(Hex.decode(address));
+            DBManager.getInstance().deleteMyAddress(ByteUtil.hexStringToBytes(address));
             PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address.fxml", 0);
             myAddressController.setHandler(myAddressHandler);
             event.consume();
@@ -237,7 +238,7 @@ public class PopupMyAddressItemController extends BaseViewController {
     public void settingGroup(String address){
         ArrayList<String> tempTextList = new ArrayList<>();
 
-        List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(Hex.decode(address));
+        List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(ByteUtil.hexStringToBytes(address));
         for(int i=0; i<list.size(); i++){
             tempTextList.add(list.get(i).getGroupName());
         }

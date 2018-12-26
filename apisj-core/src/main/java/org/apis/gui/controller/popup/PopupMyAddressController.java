@@ -56,7 +56,7 @@ public class PopupMyAddressController extends BasePopupController {
         ArrayList<KeyStoreDataExp> mylist = AppManager.getInstance().getKeystoreExpList();
         DBManager.getInstance().updateMyAddressExistZero();
         for(int i=0; i<mylist.size(); i++) {
-            DBManager.getInstance().updateMyAddress(Hex.decode(mylist.get(i).address), mylist.get(i).alias, 1);
+            DBManager.getInstance().updateMyAddress(ByteUtil.hexStringToBytes(mylist.get(i).address), mylist.get(i).alias, 1);
         }
     }
 

@@ -29,6 +29,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -203,7 +204,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
     }
 
     private void preGasUsed(){
-        byte[] sender = Hex.decode(model.getAddress());
+        byte[] sender = ByteUtil.hexStringToBytes(model.getAddress());
         BigInteger value = BigInteger.ZERO;
         String functionName = functionRegisterProofKey.name;
         Object[] args = new Object[1];
