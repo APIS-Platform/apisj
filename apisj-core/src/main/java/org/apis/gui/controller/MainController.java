@@ -130,94 +130,94 @@ public class MainController extends BaseViewController {
         selectionModel.select(this.selectedIndex.num);
         switch (this.selectedIndex){
             case WALLET :
-                if(AppManager.getInstance().guiFx.getWallet() == null){
-                    try {
-                        BaseFxmlController fxmlController = new BaseFxmlController("wallet/wallet.fxml");
-                        Node node = fxmlController.getNode();
-                        AppManager.getInstance().guiFx.setWallet((WalletController)fxmlController.getController());
-                        tabWalletPane.getChildren().clear();
-                        tabWalletPane.getChildren().add(node);
-                        AnchorPane.setTopAnchor(node, 0.0);
-                        AnchorPane.setRightAnchor(node, 0.0);
-                        AnchorPane.setBottomAnchor(node, 0.0);
-                        AnchorPane.setLeftAnchor(node, 0.0);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(AppManager.getInstance().guiFx.getWallet() == null){
+//                    try {
+//                        BaseFxmlController fxmlController = new BaseFxmlController("wallet/wallet.fxml");
+//                        Node node = fxmlController.getNode();
+//                        AppManager.getInstance().guiFx.setWallet((WalletController)fxmlController.getController());
+//                        tabWalletPane.getChildren().clear();
+//                        tabWalletPane.getChildren().add(node);
+//                        AnchorPane.setTopAnchor(node, 0.0);
+//                        AnchorPane.setRightAnchor(node, 0.0);
+//                        AnchorPane.setBottomAnchor(node, 0.0);
+//                        AnchorPane.setLeftAnchor(node, 0.0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 AppManager.getInstance().guiFx.getWallet().update();
                 break;
             case TRANSFER :
-                if(AppManager.getInstance().guiFx.getTransfer() == null){
-                    try {
-                        BaseFxmlController fxmlController = new BaseFxmlController("transfer/transfer.fxml");
-                        Node node = fxmlController.getNode();
-                        AppManager.getInstance().guiFx.setTransfer((TransferController)fxmlController.getController());
-                        tabTransferPane.getChildren().clear();
-                        tabTransferPane.getChildren().add(node);
-                        AnchorPane.setTopAnchor(node, 0.0);
-                        AnchorPane.setRightAnchor(node, 0.0);
-                        AnchorPane.setBottomAnchor(node, 0.0);
-                        AnchorPane.setLeftAnchor(node, 0.0);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(AppManager.getInstance().guiFx.getTransfer() == null){
+//                    try {
+//                        BaseFxmlController fxmlController = new BaseFxmlController("transfer/transfer.fxml");
+//                        Node node = fxmlController.getNode();
+//                        AppManager.getInstance().guiFx.setTransfer((TransferController)fxmlController.getController());
+//                        tabTransferPane.getChildren().clear();
+//                        tabTransferPane.getChildren().add(node);
+//                        AnchorPane.setTopAnchor(node, 0.0);
+//                        AnchorPane.setRightAnchor(node, 0.0);
+//                        AnchorPane.setBottomAnchor(node, 0.0);
+//                        AnchorPane.setLeftAnchor(node, 0.0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 AppManager.getInstance().guiFx.getTransfer().update();
                 break;
             case SMART_CONTRECT :
-                if(AppManager.getInstance().guiFx.getSmartContract() == null){
-                    try {
-                        BaseFxmlController fxmlController = new BaseFxmlController("smartcontrect/smart_contract.fxml");
-                        Node node = fxmlController.getNode();
-                        AppManager.getInstance().guiFx.setSmartContract((SmartContractController)fxmlController.getController());
-                        tabSmartContractPane.getChildren().clear();
-                        tabSmartContractPane.getChildren().add(node);
-                        AnchorPane.setTopAnchor(node, 0.0);
-                        AnchorPane.setRightAnchor(node, 0.0);
-                        AnchorPane.setBottomAnchor(node, 0.0);
-                        AnchorPane.setLeftAnchor(node, 0.0);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(AppManager.getInstance().guiFx.getSmartContract() == null){
+//                    try {
+//                        BaseFxmlController fxmlController = new BaseFxmlController("smartcontrect/smart_contract.fxml");
+//                        Node node = fxmlController.getNode();
+//                        AppManager.getInstance().guiFx.setSmartContract((SmartContractController)fxmlController.getController());
+//                        tabSmartContractPane.getChildren().clear();
+//                        tabSmartContractPane.getChildren().add(node);
+//                        AnchorPane.setTopAnchor(node, 0.0);
+//                        AnchorPane.setRightAnchor(node, 0.0);
+//                        AnchorPane.setBottomAnchor(node, 0.0);
+//                        AnchorPane.setLeftAnchor(node, 0.0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 AppManager.getInstance().guiFx.getSmartContract().update();
                 break;
             case ADDRESS_MASKING :
-                if(AppManager.getInstance().guiFx.getAddressMasking() == null){
-                    try {
-                        BaseFxmlController fxmlController = new BaseFxmlController("addressmasking/address_masking.fxml");
-                        Node node = fxmlController.getNode();
-                        AppManager.getInstance().guiFx.setAddressMasking((AddressMaskingController) fxmlController.getController());
-                        tabAddressMaskingPane.getChildren().clear();
-                        tabAddressMaskingPane.getChildren().add(node);
-                        AnchorPane.setTopAnchor(node, 0.0);
-                        AnchorPane.setRightAnchor(node, 0.0);
-                        AnchorPane.setBottomAnchor(node, 0.0);
-                        AnchorPane.setLeftAnchor(node, 0.0);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(AppManager.getInstance().guiFx.getAddressMasking() == null){
+//                    try {
+//                        BaseFxmlController fxmlController = new BaseFxmlController("addressmasking/address_masking.fxml");
+//                        Node node = fxmlController.getNode();
+//                        AppManager.getInstance().guiFx.setAddressMasking((AddressMaskingController) fxmlController.getController());
+//                        tabAddressMaskingPane.getChildren().clear();
+//                        tabAddressMaskingPane.getChildren().add(node);
+//                        AnchorPane.setTopAnchor(node, 0.0);
+//                        AnchorPane.setRightAnchor(node, 0.0);
+//                        AnchorPane.setBottomAnchor(node, 0.0);
+//                        AnchorPane.setLeftAnchor(node, 0.0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 AppManager.getInstance().guiFx.getAddressMasking().update();
                 AppManager.getInstance().guiFx.getAddressMasking().initStyleTab(AddressMaskingController.TAB_MENU);
                 break;
             case TRANSACTION :
-                if(AppManager.getInstance().guiFx.getTransactionNative() == null){
-                    try {
-                        BaseFxmlController fxmlController = new BaseFxmlController("transaction/transaction_native.fxml");
-                        Node node = fxmlController.getNode();
-                        AppManager.getInstance().guiFx.setTransactionNative((TransactionNativeController) fxmlController.getController());
-                        tabTransactionPane.getChildren().clear();
-                        tabTransactionPane.getChildren().add(node);
-                        AnchorPane.setTopAnchor(node, 0.0);
-                        AnchorPane.setRightAnchor(node, 0.0);
-                        AnchorPane.setBottomAnchor(node, 0.0);
-                        AnchorPane.setLeftAnchor(node, 0.0);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                if(AppManager.getInstance().guiFx.getTransactionNative() == null){
+//                    try {
+//                        BaseFxmlController fxmlController = new BaseFxmlController("transaction/transaction_native.fxml");
+//                        Node node = fxmlController.getNode();
+//                        AppManager.getInstance().guiFx.setTransactionNative((TransactionNativeController) fxmlController.getController());
+//                        tabTransactionPane.getChildren().clear();
+//                        tabTransactionPane.getChildren().add(node);
+//                        AnchorPane.setTopAnchor(node, 0.0);
+//                        AnchorPane.setRightAnchor(node, 0.0);
+//                        AnchorPane.setBottomAnchor(node, 0.0);
+//                        AnchorPane.setLeftAnchor(node, 0.0);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 AppManager.getInstance().guiFx.getTransactionNative().hideDetail();
                 AppManager.getInstance().guiFx.getTransactionNative().update();
                 break;

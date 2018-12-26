@@ -23,6 +23,7 @@ import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -368,7 +369,7 @@ public class PopupMaskingController extends BasePopupController {
             String gasPrice = gasCalculatorMiniController.getGasPrice().toString().trim();
 
             Object[] args = new Object[3];
-            args[0] = Hex.decode(faceAddress);   //_faceAddress
+            args[0] = ByteUtil.hexStringToBytes(faceAddress);   //_faceAddress
             args[1] = name;   //_name
             args[2] = new BigInteger(domainId);   //_domainId
 
@@ -616,11 +617,11 @@ public class PopupMaskingController extends BasePopupController {
         BigInteger value = selectDomainController.getValueApisToBigInt();
 
         Object[] args = new Object[3];
-        args[0] = Hex.decode(address);   //_faceAddress
+        args[0] = ByteUtil.hexStringToBytes(address);   //_faceAddress
         args[1] = maskingId;   //_name
         args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
 
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, ByteUtil.hexStringToBytes(address), contractAddress, value, setterFunction.name, args);
         String preGasUsed = Long.toString(checkGas);
         if(checkGas < 0){
             preGasUsed = "0";

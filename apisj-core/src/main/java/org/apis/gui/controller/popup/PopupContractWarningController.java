@@ -20,6 +20,7 @@ import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -78,7 +79,7 @@ public class PopupContractWarningController extends BasePopupController {
             @Override
             public void onAction() {
                 // 보안키 여부 체크
-                if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+                if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))){
                     knowledgeKeyController.requestFocus();
                 }else{
                     generateTx();
@@ -88,7 +89,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void onKeyTab(){
-                if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+                if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))){
                     knowledgeKeyController.requestFocus();
                 }
             }
@@ -156,8 +157,8 @@ public class PopupContractWarningController extends BasePopupController {
         tx = null;
         rawTxArea.setText("");
 
-        if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
-            byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
+        if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
+            byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(address));
             if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
                 knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 return;
@@ -234,7 +235,7 @@ public class PopupContractWarningController extends BasePopupController {
         this.data = data;
 
         // 보안키 여부 체크
-        if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+        if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))){
             this.knowledgeKeyPane.setVisible(true);
             this.knowledgeKeyPane.setPrefHeight(-1);
         }else{

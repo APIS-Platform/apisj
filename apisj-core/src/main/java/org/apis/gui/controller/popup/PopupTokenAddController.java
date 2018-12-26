@@ -19,6 +19,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -125,7 +126,7 @@ public class PopupTokenAddController extends BasePopupController {
         String tokenDecimal = decimalTextField.getText();
         String totalSupply = totalSupplyTextField.getText();
 
-        byte[] addr = Hex.decode(tokenAddress);
+        byte[] addr = ByteUtil.hexStringToBytes(tokenAddress);
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);

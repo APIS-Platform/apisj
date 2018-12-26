@@ -999,9 +999,30 @@ public class DBManager {
 
 
 
-    private boolean isExistBlock(byte[] blockHash) {
+    private boolean isExistBlock(Block block) {
+        byte[] blockHash = block.getHash();
         PreparedStatement state = null;
         ResultSet result = null;
+
+        // 같은 번호인데, 해시가 다른 블록을 조사한다.
+        // 그 경우는 re-branch 된 것일 수 있으므로 기존 블록 정보와 트랜잭션 정보를 삭제한다.
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM blocks WHERE blockNumber = ? AND hash != ?");
+            state.setLong(1, block.getNumber());
+            state.setBytes(2, block.getHash());
+            result = state.executeQuery();
+
+            while(result.next()) {
+                deleteBlock(result.getBytes("hash"));
+                deleteTxInBlock(result.getLong("uid"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
 
         try {
             state = this.connection.prepareStatement("SELECT * FROM blocks WHERE hash = ?");
@@ -1026,16 +1047,16 @@ public class DBManager {
         try {
             connection.setAutoCommit(false);
 
-            PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
-            PreparedStatement insertTx = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
-            PreparedStatement insertEvent = connection.prepareStatement("INSERT OR REPLACE INTO events (tx_hash, address, topic) VALUES (?, ?, ?)");
-            PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
-            ResultSet blockInsertResult = null;
+            PreparedStatement insertBlock   = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
+            PreparedStatement insertTx      = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
+            PreparedStatement insertEvent   = connection.prepareStatement("INSERT OR REPLACE INTO events (tx_hash, address, topic) VALUES (?, ?, ?)");
+            PreparedStatement updateSync    = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+            ResultSet blockInsertResult     = null;
 
             // block이 존재하면 패스
             try {
                 for (Block block : blocks) {
-                    if (isExistBlock(block.getHash())) {
+                    if (isExistBlock(block)) {
                         continue;
                     }
 
@@ -1097,5 +1118,29 @@ public class DBManager {
         } catch(SQLException e){
             e.printStackTrace();
         }
+    }
+
+    private void deleteBlock(byte[] hash) {
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM blocks WHERE hash = ?");
+            state.setBytes(1, hash);
+            boolean deleteResult = state.execute();
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void deleteTxInBlock(long blockUid) {
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE blockUid = ?");
+            state.setLong(1, blockUid);
+            boolean deleteResult = state.execute();
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

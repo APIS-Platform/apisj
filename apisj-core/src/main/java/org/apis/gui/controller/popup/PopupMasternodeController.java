@@ -219,10 +219,10 @@ public class PopupMasternodeController extends BasePopupController {
         String keystoreJsonData = itemModel.getKeystoreJsonData();
         String password =  passwordController.getText();
         String oldRecipient = AppManager.getGeneralPropertiesData("recipient_address");
-        byte[] recipientAddr = Hex.decode(recipientController.getAddress());
+        byte[] recipientAddr = ByteUtil.hexStringToBytes(recipientController.getAddress());
         // 직접 입력한 경우
         if(!isMyAddressSelected){
-            recipientAddr = Hex.decode(recipientFieldController.getAddress());
+            recipientAddr = ByteUtil.hexStringToBytes(recipientFieldController.getAddress());
         }
 
         passwordController.succeededForm();

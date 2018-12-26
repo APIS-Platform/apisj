@@ -110,17 +110,17 @@ public class GUIContractManager {
             }else if(params[i].type instanceof SolidityType.BytesType){
                 SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
                 if(property.get().length() == 0){
-                    args[i] = Hex.decode("0");
+                    args[i] = ByteUtil.hexStringToBytes("0");
                 }else{
-                    args[i] = Hex.decode(property.get());
+                    args[i] = ByteUtil.hexStringToBytes(property.get());
                 }
-                args[i] = Hex.decode(property.get());
+                args[i] = ByteUtil.hexStringToBytes(property.get());
             }else if(params[i].type instanceof SolidityType.AddressType){
                 SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
                 if(property.get().length() == 0){
-                    args[i] = Hex.decode("0000000000000000000000000000000000000000");
+                    args[i] = ByteUtil.hexStringToBytes("0000000000000000000000000000000000000000");
                 }else{
-                    args[i] = Hex.decode(property.get());
+                    args[i] = ByteUtil.hexStringToBytes(property.get());
                 }
             }else if(params[i].type instanceof SolidityType.IntType){
                 SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
@@ -129,11 +129,11 @@ public class GUIContractManager {
             }else if(params[i].type instanceof SolidityType.Bytes32Type){
                 SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
                 if(property.get().length() == 0){
-                    args[i] = Hex.decode("0");
+                    args[i] = ByteUtil.hexStringToBytes("0");
                 }else{
-                    args[i] = Hex.decode(property.get());
+                    args[i] = ByteUtil.hexStringToBytes(property.get());
                 }
-                args[i] = Hex.decode(property.get());
+                args[i] = ByteUtil.hexStringToBytes(property.get());
             }
         }
         return args;
