@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.textfield.ApisTextFieldPkController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
@@ -70,7 +71,10 @@ public class PopupBackupWalletController extends BasePopupController {
 
     public void download(){
         if(this.model != null) {
-            //KeyStoreManager.getInstance().backupKeystoreWith(this.model.getId());
+            String path = AppManager.getInstance().openDirectoryReader();
+            if(path != null){
+                KeyStoreManager.getInstance().savePrivateKeyStore(this.model.getKeystoreJsonData(), path);
+            }
         }
     }
 }

@@ -104,7 +104,7 @@ public class TransferController extends BaseViewController {
                 BigInteger totalAmount = value.add(fee);
 
                 String fromAddress = transferApisController.getAddress();
-                String toAddress = transferApisController.getReceiveAddress();
+                String toAddress = transferApisController.getReceiveText();
                 byte[] toMask = new byte[0];
 
                 if(fromAddress == null || fromAddress.length() == 0
@@ -118,7 +118,10 @@ public class TransferController extends BaseViewController {
                     if(address != null && toAddress.length() > 0){
                         toMask = toAddress.getBytes(Charset.forName("UTF-8"));
                         toAddress = address;
+                    }else{
                     }
+                }else{
+
                 }
 
                 BigInteger gasPrice = transferApisController.getGasPrice();

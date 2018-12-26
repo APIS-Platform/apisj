@@ -18,6 +18,7 @@
 package org.apis.config;
 
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 
@@ -54,6 +55,8 @@ public class Constants {
     private static final long MASTERNODE_UPDATING_LIMIT = 10_000L;
 
     private static final long BLOCK_TIME_MS = 8_000L;
+
+    private static final BigInteger GENESIS_APIS = ApisUtil.convert(9_520_000_000L, ApisUtil.Unit.APIS);
 
     /*
      * 블록타임이 8초 일 경우 : 6일마다 이자 지급 : 64_800 Blocks
@@ -160,6 +163,14 @@ public class Constants {
 
     public BigInteger getBLOCK_REWARD() {
         return BLOCK_REWARD;
+    }
+
+    public BigInteger getGENESIS_APIS() {
+        return GENESIS_APIS;
+    }
+
+    public BigInteger getTotalAPIS(long blockNumber) {
+        return GENESIS_APIS;
     }
 
     public int getMAX_CONTRACT_SZIE() {

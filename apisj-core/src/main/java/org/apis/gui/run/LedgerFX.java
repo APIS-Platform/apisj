@@ -1,6 +1,7 @@
 package org.apis.gui.run;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,5 +24,10 @@ public class LedgerFX extends Application {
         stage.setMinWidth(560);
         stage.setMinHeight(560);
         stage.show();
+
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 }

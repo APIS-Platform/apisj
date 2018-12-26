@@ -47,6 +47,27 @@ public class OsirisConfig extends AbstractConfig {
         }
 
 
+        @Override
+        public BigInteger getTotalAPIS(long blockNumber) {
+            BigInteger totalAmount = BigInteger.ZERO;
+
+            for(int i = 1; i < blockNumbers.length; i++) {
+                long upper = blockNumbers[i];
+                long lower = blockNumbers[i - 1];
+
+                BigInteger rewardYear;
+                if(blockNumber > upper) {
+                    rewardYear = blockRewards[i].multiply(BigInteger.valueOf(BLOCKS_IN_YEAR));
+                } else {
+                    rewardYear = blockRewards[i - 1].multiply(BigInteger.valueOf(blockNumber - lower));
+                }
+
+                totalAmount = totalAmount.add(rewardYear);
+            }
+
+            return totalAmount;
+        }
+
 
         /**
          * @return 다음 블록이 생성될 때까지 소요되는 시간, 난이도 결정에 이용된다

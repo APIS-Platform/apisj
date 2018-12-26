@@ -44,7 +44,7 @@
                         <Image url="@../image/logo_white@2x.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="label" styleClass="font_semibold_18" text="Program is Starting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Label fx:id="label" styleClass="font_semibold_18" text="Apis Core is Starting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="4.0" />
                      </GridPane.margin>
