@@ -70,6 +70,7 @@ public class MainController extends BaseViewController {
 
     // 이전 마이닝/마스터노드 참여(혹은 시도) 하던 지갑주소
     String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
+    String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
 
     public MainController(){ }
 
@@ -498,6 +499,14 @@ public class MainController extends BaseViewController {
                     this.miningAddress = null;
                     AppManager.saveGeneralProperties("mining_address","");
 
+                }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
+                    if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))
+                        || AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
+                        masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                        masterNodeAddress = this.masternodeAddress;
+                    }
+
+                    this.masternodeAddress = null;
                 }
             }
 

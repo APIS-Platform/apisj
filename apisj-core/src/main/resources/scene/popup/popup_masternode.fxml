@@ -172,7 +172,7 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Label>
-                              <Label fx:id="cancelRqBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Cancel Requesting" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="cancelRqBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Cancel Waiting" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="font_semibold_14" />
                                     <String fx:value="border_radius_24_24_24_24" />
