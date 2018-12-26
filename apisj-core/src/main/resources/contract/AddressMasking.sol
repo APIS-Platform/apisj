@@ -423,7 +423,7 @@ contract Domain is Owners {
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
     address public approvalDelegator;
 
-    address addressMaksingAddress = 0x1000000000000000000000000000000000037449;
+    address addressMaksingAddress = 0x8aae7a8b8a34ce5a9f386ea5eed33071b3729371;
 
     // Multisig
     mapping(uint => Withdrawal) public withdrawals;
@@ -1698,50 +1698,48 @@ contract AddressMasking is Owners {
 
         defaultFee = 1000*(10**18);
 
-        foundationAccount = 0x1000000000000000000000000000000000037448;
+        foundationAccount = 0x3affc7a364d5c725ce33be33aff9673a7dfeab64;
 
         // (address _domainAddress, string _domainName, bool _needApproval, bool _isOpened, uint256 _domainFee, uint256 _foundationFee)
-        performDomainRegistration(0x1000000000000000000000000000000000070001, "me", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070002, "ico", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070003, "shop", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070004, "com", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070005, "org", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070006, "info", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070007, "biz", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070008, "net", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070009, "edu", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000a, "team", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000b, "pro", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000c, "xxx", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000d, "xyz", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000e, "cat", false, true, 0, 0);
-        performDomainRegistration(0x100000000000000000000000000000000007000f, "dog", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070013, "mn", true, true, 0, 0);
-        performDomainRegistration(0x1000000000000000000000000000000000070014, "apis", true, true, 0, 0);
+        performDomainRegistration(0xd923247964f7196ebd49075dc4029dc969c72175, "me", false, true, 0, 0);
+        performDomainRegistration(0x23f7a27e2ce66dec36ad9e925b843c2630bbb7cc, "ico", false, true, 0, 0);
+        performDomainRegistration(0x45d814d98860055bf33e3d116738def26cc8a69a, "shop", false, true, 0, 0);
+        performDomainRegistration(0x92eff56aecb884c42b6e4c7f792b4116f0a5cf1a, "com", false, true, 0, 0);
+        performDomainRegistration(0x4477f897e90326f747232a663aecd3eeef067e91, "org", false, true, 0, 0);
+        performDomainRegistration(0x408c417a1e2464103766e0d456c801a3e844febc, "info", false, true, 0, 0);
+        performDomainRegistration(0x0a177b319cf136e2580c68e4aab79a418ff9fe29, "biz", false, true, 0, 0);
+        performDomainRegistration(0x1abe67e648e12977905172fe86d9ce1aa2b4f9cb, "net", false, true, 0, 0);
+        performDomainRegistration(0x09f740207686a809e871fd179ce42b48b73111c6, "edu", false, true, 0, 0);
+        performDomainRegistration(0x767ac149fd0145d621374d49bc72493390355936, "team", false, true, 0, 0);
+        performDomainRegistration(0x86f3055ce94a9f2d1c301ae3260dfd2b9b960fb1, "pro", false, true, 0, 0);
+        performDomainRegistration(0xe5fd99dc0519386d380532cc11b73705015f6c27, "xxx", false, true, 0, 0);
+        performDomainRegistration(0xdb4708ae22ce73693b5f24e1a87778c568795860, "xyz", false, true, 0, 0);
+        performDomainRegistration(0x73a95164ffb7ef91d7b2c1efd6480eca8751a6ed, "token", false, true, 0, 0);
+        performDomainRegistration(0x53a0fd0f71ecf88b5e16dde0b8affa02aadbd0c4, "exchange", false, true, 0, 0);
+        performDomainRegistration(0xb567719332cf902b3d38938ef7eb0d058c4b3093, "dapp", false, true, 0, 0);
+        performDomainRegistration(0x726b09393e26e1d6a483fc62eebf14733d04084e, "firm", false, true, 0, 0);
+        performDomainRegistration(0xbf14b3fe1c5db137af0d6238c33539db69db5545, "mn", true, true, 0, 0);
+        performDomainRegistration(0xa588435a8ed731311e7a64edf0e032b821f5b7f5, "apis", true, true, 0, 0);
 
-        PublicDomain(0x1000000000000000000000000000000000070001).init("me");
-        PublicDomain(0x1000000000000000000000000000000000070002).init("ico");
-        PublicDomain(0x1000000000000000000000000000000000070003).init("shop");
-        PublicDomain(0x1000000000000000000000000000000000070004).init("com");
-        PublicDomain(0x1000000000000000000000000000000000070005).init("org");
-        PublicDomain(0x1000000000000000000000000000000000070006).init("info");
-        PublicDomain(0x1000000000000000000000000000000000070007).init("biz");
-        PublicDomain(0x1000000000000000000000000000000000070008).init("net");
-        PublicDomain(0x1000000000000000000000000000000000070009).init("edu");
-        PublicDomain(0x100000000000000000000000000000000007000a).init("team");
-        PublicDomain(0x100000000000000000000000000000000007000b).init("pro");
-        PublicDomain(0x100000000000000000000000000000000007000c).init("xxx");
-        PublicDomain(0x100000000000000000000000000000000007000d).init("xyz");
-        PublicDomain(0x100000000000000000000000000000000007000e).init("cat");
-        PublicDomain(0x100000000000000000000000000000000007000f).init("dog");
-        PublicDomain(0x1000000000000000000000000000000000070010).init("exchange");
-        PublicDomain(0x1000000000000000000000000000000000070011).init("dapp");
-        PublicDomain(0x1000000000000000000000000000000000070012).init("firm");
-        Domain(0x1000000000000000000000000000000000070013).init("mn", _owners, _required);
-        Domain(0x1000000000000000000000000000000000070014).init("apis", _owners, _required);
+        PublicDomain(0xd923247964f7196ebd49075dc4029dc969c72175).init("me");
+        PublicDomain(0x23f7a27e2ce66dec36ad9e925b843c2630bbb7cc).init("ico");
+        PublicDomain(0x45d814d98860055bf33e3d116738def26cc8a69a).init("shop");
+        PublicDomain(0x92eff56aecb884c42b6e4c7f792b4116f0a5cf1a).init("com");
+        PublicDomain(0x4477f897e90326f747232a663aecd3eeef067e91).init("org");
+        PublicDomain(0x408c417a1e2464103766e0d456c801a3e844febc).init("info");
+        PublicDomain(0x0a177b319cf136e2580c68e4aab79a418ff9fe29).init("biz");
+        PublicDomain(0x1abe67e648e12977905172fe86d9ce1aa2b4f9cb).init("net");
+        PublicDomain(0x09f740207686a809e871fd179ce42b48b73111c6).init("edu");
+        PublicDomain(0x767ac149fd0145d621374d49bc72493390355936).init("team");
+        PublicDomain(0x86f3055ce94a9f2d1c301ae3260dfd2b9b960fb1).init("pro");
+        PublicDomain(0xe5fd99dc0519386d380532cc11b73705015f6c27).init("xxx");
+        PublicDomain(0xdb4708ae22ce73693b5f24e1a87778c568795860).init("xyz");
+        PublicDomain(0x73a95164ffb7ef91d7b2c1efd6480eca8751a6ed).init("token");
+        PublicDomain(0x53a0fd0f71ecf88b5e16dde0b8affa02aadbd0c4).init("exchange");
+        PublicDomain(0xb567719332cf902b3d38938ef7eb0d058c4b3093).init("dapp");
+        PublicDomain(0x726b09393e26e1d6a483fc62eebf14733d04084e).init("firm");
+        Domain(0xbf14b3fe1c5db137af0d6238c33539db69db5545).init("mn", _owners, _required);
+        Domain(0xa588435a8ed731311e7a64edf0e032b821f5b7f5).init("apis", _owners, _required);
     }
 
 

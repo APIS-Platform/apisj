@@ -149,7 +149,7 @@ public class TransactionExecutor {
      * 가 설정된다.
      */
     public void init() {
-        basicTxCost = tx.transactionCost(config.getBlockchainConfig(), currentBlock);   // 21000
+        basicTxCost = tx.transactionCost(config.getBlockchainConfig(), currentBlock);   // 200000
 
         if (localCall) {
             readyToExecute = true;
@@ -240,14 +240,14 @@ public class TransactionExecutor {
             }
 
 
-            // 미네랄이 충분한지 확인한다.
+            // 마스터노드는 미네랄을 이용해서만 참여해야하므로(부족하면 수수료로 인해 담보금액이 부족해질 수 있다.) 미네랄이 충분한지 확인해야한다.
             if(txGasCost.compareTo(senderMNR) > 0) {
                 execError("There is not enough minerals to register the masternode.");
                 return;
             }
 
 
-                AccountState senderState = track.getAccountState(tx.getSender());
+            AccountState senderState = track.getAccountState(tx.getSender());
             if(senderState.getMnStartBlock().longValue() > 0) {
                 /* 마스터노드를 업데이트하는 경우 ::
                  * 이자를 수령하는 주소를 변경하는 내용이 아닐 경우, 최소 1000 블록이 지나야만 업데이트할 수 있도록 한다.
@@ -286,12 +286,10 @@ public class TransactionExecutor {
             }
         }
 
-        // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
-        if(tx.getReceiveAddress() != null) {
-            if (FastByteComparisons.equal(tx.getReceiveAddress(), blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
-                execError("The 'SmartContract Code Updater' account can not receive APIS.");
-                return;
-            }
+        // 존재할 수 없는 경우의 수이지만, 마스터노드 보상을 보관하는 주소에서는 출금이 안되도록 막는다.
+        if(FastByteComparisons.equal(tx.getSender(), blockchainConfig.getConstants().getMASTERNODE_STORAGE())) {
+            execError("You can not transfer APIS from the address where the masternode's rewards are stored.");
+            return;
         }
 
 
@@ -676,10 +674,10 @@ public class TransactionExecutor {
                 wink = ContractLoader.parseWink(log);
 
                 if(wink != null &&
+                        wink.getAddress() != null &&
                         wink.getBeneficiary() != null &&
-                        wink.getWinker() != null &&
-                        FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary()) &&
-                        FastByteComparisons.equal(tx.getReceiveAddress(), wink.getWinker())) {
+                        FastByteComparisons.equal(tx.getReceiveAddress(), wink.getAddress()) &&
+                        FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary())) {
                     hasWink = true;
                     break;
                 }
