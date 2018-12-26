@@ -859,6 +859,10 @@ public class StringManager {
         public SimpleStringProperty masternodeRecipientDesc1 = new SimpleStringProperty();
         public SimpleStringProperty masternodeRecipientDesc2 = new SimpleStringProperty();
         public SimpleStringProperty masternodeStartMasternode = new SimpleStringProperty();
+        public SimpleStringProperty masternodeCancelRequest = new SimpleStringProperty();
+        public SimpleStringProperty masternodeCancelMasternode = new SimpleStringProperty();
+        public SimpleStringProperty masternodeChageRecipient = new SimpleStringProperty();
+        public SimpleStringProperty masternodeErrorMessage = new SimpleStringProperty();
 
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
@@ -973,6 +977,10 @@ public class StringManager {
             masternodeRecipientDesc1.set(StringManager.this.getString("popup_masternode_recipient_desc_1", "To be a masternode,"));
             masternodeRecipientDesc2.set(StringManager.this.getString("popup_masternode_recipient_desc_2", "please set your balance to exact 50,000, 200,000, 500,000 APIS."));
             masternodeStartMasternode.set(StringManager.this.getString("popup_masternode_start_masternode", "Start Masternode"));
+            masternodeCancelRequest.set(StringManager.this.getString("popup_masternode_cancel_request", "Cancel Requesting"));
+            masternodeCancelMasternode.set(StringManager.this.getString("popup_masternode_cancel_masternode", "Cancel Masternode"));
+            masternodeChageRecipient.set(StringManager.this.getString("popup_masternode_change_recipient", "Change Recipient"));
+            masternodeErrorMessage.set(StringManager.this.getString("popup_masternode_error_message", "* Masternode already started. Please try again."));
 
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
