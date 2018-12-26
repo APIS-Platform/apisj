@@ -4,7 +4,6 @@ package org.apis.hid;
 import org.apis.config.SystemProperties;
 import org.apis.core.Transaction;
 import org.apis.crypto.ECKey;
-import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
@@ -13,8 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
-import java.io.Console;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;

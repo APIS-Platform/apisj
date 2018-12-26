@@ -3,8 +3,6 @@ package org.apis.hid;
 
 
 import org.apis.hid.template.DeviceData;
-import org.apis.util.ConsoleUtil;
-import org.usb4java.Device;
 
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
