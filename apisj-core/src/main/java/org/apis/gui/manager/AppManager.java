@@ -1648,7 +1648,7 @@ public class AppManager {
             if (prop.getProperty("masternode_address") == null) { prop.setProperty("masternode_address", ""); }
             if (prop.getProperty("recipient_address") == null) { prop.setProperty("recipient_address", ""); }
             if (prop.getProperty("mining_address") == null) { prop.setProperty("mining_address", ""); }
-            if (prop.getProperty("language") == null) { prop.setProperty("language", "eng"); }
+            if (prop.getProperty("language") == null) { prop.setProperty("language", "ENG"); }
             if (prop.getProperty("footer_total_unit") == null) { prop.setProperty("footer_total_unit", "APIS"); }
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
             input.close();
@@ -1660,7 +1660,7 @@ public class AppManager {
             prop.setProperty("masternode_address", "");
             prop.setProperty("recipient_address", "");
             prop.setProperty("mining_address","");
-            prop.setProperty("language","eng");
+            prop.setProperty("language","ENG");
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
             File config = new File("config");
