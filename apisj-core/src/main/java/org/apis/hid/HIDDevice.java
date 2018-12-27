@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -233,7 +234,7 @@ public class HIDDevice {
             }
         }
 
-        Transaction signedTx = new Transaction(tx.getNonce(), tx.getGasPrice(), tx.getGasLimit(), tx.getReceiveAddress(), tx.getValue(), tx.getData(), sig.r.toByteArray(), sig.s.toByteArray(), sig.v, SystemProperties.getDefault().networkId());
+        Transaction signedTx = new Transaction(tx.getNonce(), tx.getGasPrice(), tx.getGasLimit(), tx.getReceiveAddress(), new String(tx.getReceiveMask(), Charset.forName("UTF-8")), tx.getValue(), tx.getData(), sig.r.toByteArray(), sig.s.toByteArray(), sig.v, SystemProperties.getDefault().networkId());
 
         return signedTx.getEncoded();
     }

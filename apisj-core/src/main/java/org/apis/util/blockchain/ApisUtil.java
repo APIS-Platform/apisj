@@ -18,7 +18,6 @@
 package org.apis.util.blockchain;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apis.util.BIUtil;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -78,7 +77,11 @@ public class ApisUtil {
         return readableApis(attoApis, ',', false);
     }
 
-    public static String readableApis(BigInteger attoApis, char separator, boolean removeEndZeros) {
+    public static String readableApis(BigInteger attoApis, boolean removeEndZeros) {
+        return readableApis(attoApis, null, removeEndZeros);
+    }
+
+    public static String readableApis(BigInteger attoApis, Character separator, boolean removeEndZeros) {
         String attoString = attoApis.toString();
 
         if(attoString.length() > 18) {
@@ -86,12 +89,14 @@ public class ApisUtil {
             String right = attoString.substring(attoString.length() - 18, attoString.length());
 
             BigInteger leftNumber = new BigInteger(left);
-            String pattern = "###,###";
-            DecimalFormatSymbols symbol = new DecimalFormatSymbols(Locale.US);
-            symbol.setDecimalSeparator('.');
-            symbol.setGroupingSeparator(separator);
-            NumberFormat formatter = new DecimalFormat(pattern, symbol);
-            left = formatter.format(leftNumber);
+            if(separator != null) {
+                String pattern = "###,###";
+                DecimalFormatSymbols symbol = new DecimalFormatSymbols(Locale.US);
+                symbol.setDecimalSeparator('.');
+                symbol.setGroupingSeparator(separator);
+                NumberFormat formatter = new DecimalFormat(pattern, symbol);
+                left = formatter.format(leftNumber);
+            }
 
             if(removeEndZeros) {
                 right = StringUtils.stripEnd(right, "0");
