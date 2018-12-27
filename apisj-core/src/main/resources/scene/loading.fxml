@@ -44,12 +44,12 @@
                         <Image url="@../image/logo_white@2x.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="label" styleClass="font_semibold_18" text="APIS Core is Starting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Label fx:id="label" styleClass="font_semibold_18" text="APIS Core is Starting" textFill="WHITE" translateY="-25.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="4.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="label1" styleClass="font_regular_16" text="Please  wait..." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label fx:id="label1" styleClass="font_regular_16" text="Please  wait..." textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin>

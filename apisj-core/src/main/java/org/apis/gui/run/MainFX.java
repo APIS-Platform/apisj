@@ -109,7 +109,7 @@ public class MainFX extends Application  {
                     if (fileUrl != null) {
                         setIcon(primaryStage);
                         try {
-                            int width = 1280, height = 800;
+                            int width = 1280, height = 760;
 
                             Parent root = FXMLLoader.load(fileUrl);
                             primaryStage.setTitle("APIS Core Wallet");
