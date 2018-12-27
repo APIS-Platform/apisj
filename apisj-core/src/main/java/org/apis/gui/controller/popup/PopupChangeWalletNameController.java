@@ -11,13 +11,9 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
-import org.apis.util.ByteUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupChangeWalletNameController extends BasePopupController {
