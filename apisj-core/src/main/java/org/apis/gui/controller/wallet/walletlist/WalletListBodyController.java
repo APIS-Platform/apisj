@@ -82,17 +82,17 @@ public class WalletListBodyController extends BaseViewController{
             this.model.set((WalletItemModel) model);
             WalletItemModel itemModel =  this.model;
             if(itemModel.getTokenAddress().equals("-1")){
-                this.tokenValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',',false));
+                this.tokenValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',',true));
                 this.tokenIcon.setImage(ImageManager.apisIcon);
                 this.tokenName.setText("APIS");
                 this.tokenSymbol.setText("APIS");
             }else if(itemModel.getTokenAddress().equals("-2")){
-                this.tokenValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',',false));
+                this.tokenValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',',true));
                 this.tokenIcon.setImage(ImageManager.mineraIcon);
                 this.tokenName.setText("MNR");
                 this.tokenSymbol.setText("MNR");
             }else {
-                this.tokenValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress()), ',', false));
+                this.tokenValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress()), ',', true));
                 this.tokenIcon.setImage(AppManager.getInstance().getTokenIcon(itemModel.getTokenAddress()));
                 this.tokenSymbol.setText(AppManager.getInstance().getTokenSymbol(itemModel.getTokenAddress()));
 

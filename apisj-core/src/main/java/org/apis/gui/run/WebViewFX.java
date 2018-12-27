@@ -1,5 +1,4 @@
 package org.apis.gui.run;
-import com.mohamnag.fxwebview_debugger.DevToolsDebuggerServer;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
 import javafx.scene.Scene;
@@ -51,7 +50,6 @@ public class WebViewFX extends Application {
             }
         });
 
-        DevToolsDebuggerServer.startDebugServer(webEngine.impl_getDebugger(), 51742);
         /*Class webEngineClazz = WebEngine.class;
 
         Field debuggerField = webEngineClazz.getDeclaredField("debugger");

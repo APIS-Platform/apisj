@@ -48,7 +48,7 @@ public class RPCCommand {
     private static final String COMMAND_APIS_ACCOUNTS = "apis_accounts";
     private static final String COMMAND_APIS_BLOCKNUMBER = "apis_blockNumber";
     private static final String COMMAND_APIS_GETBALANCE = "apis_getBalance";
-    private static final String COMMAND_TOTAL_COINS = "apis_totalCoins";
+    private static final String COMMAND_TOTAL_COINS = "apis_getTotalCoins";
 
     private static final String COMMAND_APIS_GETTRANSACTIONCOUNT = "apis_getTransactionCount";
     private static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH = "apis_getBlockTransactionCountByHash";
@@ -317,8 +317,8 @@ public class RPCCommand {
 
             case COMMAND_TOTAL_COINS: {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                SystemProperties.getDefault().getBlockchainConfig().getCommonConstants().getTotalAPIS(blockNumber);
-                command = createJson(id, method, blockNumber);
+                BigInteger totalCoins = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getTotalAPIS(blockNumber);
+                command = createJson(id, method, ApisUtil.readableApis(totalCoins, true));
                 break;
             }
 

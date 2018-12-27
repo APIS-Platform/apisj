@@ -31,7 +31,7 @@ public class AddressUtil {
             return "";
         } else {
             String addr = Hex.toHexString(address);
-            return addr.substring(0, length) + ".." + addr.substring(addr.length() - length, addr.length());
+            return addr.substring(0, length) + "..." + addr.substring(addr.length() - length, addr.length());
         }
     }
 

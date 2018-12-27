@@ -21,6 +21,7 @@ import org.apis.hid.template.DeviceData;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 
 import javax.usb.UsbException;
 import java.net.URL;
@@ -76,11 +77,12 @@ public class LedgerController implements Initializable {
                 String rawTx = rawDataTextArea.getText();
                 byte[] raw = ByteUtil.hexStringToBytes(rawTx);
                 unsingedTx = new Transaction(raw);
+                ConsoleUtil.printlnPurple(unsingedTx.toString());
 
-                HIDDevice hidDevice;
                 try {
                     signedTx = new Transaction(ledger.signTransaction(senderPath, unsingedTx, senderAddress));
-                    signedTextArea.setText(String.format("%s\n------\n%s", ByteUtil.toHexString(signedTx.getEncoded()), signedTx.toString().replaceAll(" ", "\n")));
+                    Transaction newTx = new Transaction(signedTx.getEncoded());
+                    signedTextArea.setText(String.format("%s\n------\n%s\n------\n%s", ByteUtil.toHexString(signedTx.getEncoded()), signedTx.toString().replaceAll(" ", "\n"), newTx.toString().replaceAll(" ", "\n")));
                 } catch (Exception e) {
                     signedTextArea.setText(e.getMessage());
                 }

@@ -49,7 +49,7 @@ public class OsirisConfig extends AbstractConfig {
 
         @Override
         public BigInteger getTotalAPIS(long blockNumber) {
-            BigInteger totalAmount = BigInteger.ZERO;
+            BigInteger totalAmount = getGENESIS_APIS();
 
             for(int i = 1; i < blockNumbers.length; i++) {
                 long upper = blockNumbers[i];
@@ -58,7 +58,11 @@ public class OsirisConfig extends AbstractConfig {
                 BigInteger rewardYear;
                 if(blockNumber > upper) {
                     rewardYear = blockRewards[i].multiply(BigInteger.valueOf(BLOCKS_IN_YEAR));
-                } else {
+                }
+                else if(blockNumber < lower) {
+                    break;
+                }
+                else {
                     rewardYear = blockRewards[i - 1].multiply(BigInteger.valueOf(blockNumber - lower));
                 }
 

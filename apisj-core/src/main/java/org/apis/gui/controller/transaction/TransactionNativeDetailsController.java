@@ -6,32 +6,22 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
-import org.apis.gui.manager.StyleManager;
-import org.apis.util.AddressUtil;
-
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import org.apis.gui.manager.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsController extends BaseViewController {
@@ -40,10 +30,11 @@ public class TransactionNativeDetailsController extends BaseViewController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private AnchorPane bodyScrollPaneContentPane;
     @FXML private GridPane hashPane;
+    @FXML private ImageView backIcon;
 
     // Multilingual Support Label
     @FXML
-    private Label hashLabel, back;
+    private Label hashLabel, backButton;
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, inputData, eventLogs, errorValue;
@@ -109,6 +100,26 @@ public class TransactionNativeDetailsController extends BaseViewController {
             }
         });
 
+        backButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Ca61c1c);
+                StyleManager.borderColorStyle(backButton, StyleManager.AColor.Ca61c1c);
+                StyleManager.fontColorStyle(backButton, StyleManager.AColor.Cffffff);
+                backIcon.setImage(ImageManager.icBackWhite);
+            }
+        });
+        backButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
+                backIcon.setImage(ImageManager.icBackBlack);
+            }
+        });
+
+
         this.init();
     }
 
@@ -121,7 +132,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.detailsHashLabel);
         blockConfirmUnit.bind(StringManager.getInstance().transaction.detailsBlockConfirmLabel);
         confirmedInUnit.bind(StringManager.getInstance().transaction.detailsConfirmedInUnit);
-        back.textProperty().bind(StringManager.getInstance().common.backButton);
+        backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     public void setDetailsList() {
@@ -366,7 +377,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("back")) {
+        if(fxid.equals("backButton")) {
             if(handler != null) {
                 handler.hideDetails();
             }

@@ -340,6 +340,7 @@ public class SmartContractController extends BaseViewController {
         updaterReceiptController.setMineral(ApisUtil.readableApis(mineral,',',true));
         updaterReceiptController.setChargedAmount(ApisUtil.readableApis(chargedAmount,',',true));
         updaterReceiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        updaterReceiptController.setSuccessed(smartContractUpdaterController.isReadyTransfer());
 
     }
     public void settingLayoutDataCanvas(){
