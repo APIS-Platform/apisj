@@ -31,6 +31,11 @@ public class CLIStart {
         };
 
         try {
+            File configDir = new File("config");
+            if(!configDir.exists()) {
+                configDir.mkdirs();
+            }
+
             InputStream input = new FileInputStream("config/daemon.properties");
             daemonProp.load(input);
         } catch (IOException e) {
@@ -44,9 +49,7 @@ public class CLIStart {
                 output = new FileOutputStream("config/daemon.properties");
                 daemonProp.store(output, null);
                 output.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            } catch (IOException ignored) {}
         }
     }
 
