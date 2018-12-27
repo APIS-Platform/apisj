@@ -63,7 +63,7 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingHandOverController handOverMaskController;
     @FXML private ReceiptController receiptController, handOverReceiptController;
-    @FXML private ImageView imgRegisterMask, imgHandOverMask, imgRegisterDomain;
+    @FXML private ImageView backIcon, imgRegisterMask, imgHandOverMask, imgRegisterDomain;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -318,9 +318,10 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            //StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            //StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            //StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
+            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Ca61c1c);
+            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Ca61c1c);
+            StyleManager.fontColorStyle(backButton, StyleManager.AColor.Cffffff);
+            backIcon.setImage(ImageManager.icBackWhite);
         }
 
         else if(id.equals("cardRegisterMask")){
@@ -363,9 +364,10 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            //StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
-            //StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            //StyleManager.fontColorStyle(backButton, StyleManager.AColor.C999999);
+            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
+            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
+            backIcon.setImage(ImageManager.icBackBlack);
         }
 
 

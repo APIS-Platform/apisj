@@ -61,13 +61,13 @@ public class PopupMyAddressItemController extends BaseViewController {
         icon.setClip(clip);
 
         addressLabel.setOnMouseEntered(event -> {
-            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 6));
         });
         addressLabel.setOnMouseExited(event -> {
             if(this.strAddressMask != null && this.strAddressMask.length() > 0){
                 this.addressLabel.setText(strAddressMask);
             }else{
-                this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+                this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 6));
             }
         });
     }
@@ -225,7 +225,7 @@ public class PopupMyAddressItemController extends BaseViewController {
         if(this.strAddressMask != null && this.strAddressMask.length() > 0){
             this.addressLabel.setText(strAddressMask);
         }else{
-            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 6));
         }
 
         settingGroup(address);

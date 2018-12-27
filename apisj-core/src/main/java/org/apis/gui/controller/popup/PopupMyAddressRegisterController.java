@@ -16,6 +16,7 @@ import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.util.ByteUtil;
@@ -60,8 +61,19 @@ public class PopupMyAddressRegisterController extends BasePopupController {
                 if(addressTextField.getText().length() > maxlength){
                     addressTextField.setText(addressTextField.getText().substring(0, maxlength));
                 }
+
+                settingLayoutData();
             }
         });
+
+        aliasTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                settingLayoutData();
+            }
+        });
+
+        settingLayoutData();
     }
 
     private void languageSetting(){
@@ -127,6 +139,18 @@ public class PopupMyAddressRegisterController extends BasePopupController {
         }
     }
 
+    public void settingLayoutData(){
+        String address = addressTextField.getText();
+        String name = aliasTextField.getText();
+
+        if(address != null && address.length() > 0 && name != null && name.length() > 0){
+            StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cb01e1e);
+        }else{
+            StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cd8d8d8);
+        }
+    }
+
+
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
@@ -134,17 +158,20 @@ public class PopupMyAddressRegisterController extends BasePopupController {
             byte[] address = ByteUtil.hexStringToBytes(addressTextField.getText().trim());
             String alias = aliasTextField.getText().trim();
 
-            // 지갑 저장
-            DBManager.getInstance().updateMyAddress(address, alias, 0);
+            if(address != null && address.length > 0 && alias != null && alias.length() > 0) {
+                // 지갑 저장
+                DBManager.getInstance().updateMyAddress(address, alias, 0);
 
-            // 지갑과 그룹 연결 저장
-            for(int i=0; i<selectGroupList.size(); i++){
-                DBManager.getInstance().updateConnectAddressGroup(address, selectGroupList.get(i));
+                // 지갑과 그룹 연결 저장
+                for(int i=0; i<selectGroupList.size(); i++){
+                    DBManager.getInstance().updateConnectAddressGroup(address, selectGroupList.get(i));
+                }
+
+                PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address.fxml", 0);
+                controller.setHandler(this.myAddressHandler);
+                exit();
             }
 
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address.fxml", 0);
-            controller.setHandler(this.myAddressHandler);
-            exit();
         }else if(id.equals("noBtn")){
 
             PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address.fxml", 0);

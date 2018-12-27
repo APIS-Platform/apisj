@@ -39,13 +39,13 @@ public class PopupRecentAddressItemController implements Initializable {
         icon.setClip(clip);
 
         address.setOnMouseEntered(event -> {
-            this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
+            this.address.setText(AddressUtil.getShortAddress(strAddress, 6));
         });
         address.setOnMouseExited(event -> {
             if(this.strAddressMask != null && this.strAddressMask.length() > 0){
                 this.address.setText(strAddressMask);
             }else{
-                this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
+                this.address.setText(AddressUtil.getShortAddress(strAddress, 6));
             }
         });
     }
@@ -87,7 +87,7 @@ public class PopupRecentAddressItemController implements Initializable {
         if(this.strAddressMask != null && this.strAddressMask.length() > 0){
             this.address.setText(strAddressMask);
         }else{
-            this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
+            this.address.setText(AddressUtil.getShortAddress(strAddress, 6));
         }
     }
 

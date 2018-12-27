@@ -42,15 +42,15 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeController extends BaseViewController {
+    @FXML private TransactionNativeDetailsController detailsController;
+    @FXML private TransactionNativeBlockInfoController blockInfoController;
+    @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
     @FXML private AnchorPane txDetailsAnchor, blockInfoAnchor, txAnchor;
     @FXML private VBox txList;
     @FXML private HBox pageList;
     @FXML private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
     @FXML private Label currentPageNum, totalPageNum, transactionLabel, assetSearchAddressLabel;
-    @FXML private TransactionNativeDetailsController detailsController;
-    @FXML private TransactionNativeBlockInfoController blockInfoController;
     @FXML private TextField searchTextField;
-    @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
     @FXML private GridPane bgBannerPane;
     @FXML private ImageView iconDownDown;
     @FXML private VBox bannerDetailList;

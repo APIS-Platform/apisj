@@ -172,16 +172,16 @@ public class TokenListBodyController extends BaseViewController{
             WalletItemModel itemModel = this.model;
             this.walletIcon.setImage(AppManager.getInstance().getTokenIcon(itemModel.getAddress()));
             this.walletAlias.setText(itemModel.getAlias());
-            this.walletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 12));
+            this.walletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 6));
 
             if(this.tokenAddress.equals("-1")){
-                this.walletValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
+                this.walletValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
                 this.tokenSymbol.setText("APIS");
             }else if(this.tokenAddress.equals("-2")){
-                this.walletValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',', false));
+                this.walletValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',', true));
                 this.tokenSymbol.setText("MNR");
             }else{
-                this.walletValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, itemModel.getAddress()), ',', false));
+                this.walletValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, itemModel.getAddress()), ',', true));
                 this.tokenSymbol.setText(AppManager.getInstance().getTokenSymbol(this.tokenAddress));
             }
 

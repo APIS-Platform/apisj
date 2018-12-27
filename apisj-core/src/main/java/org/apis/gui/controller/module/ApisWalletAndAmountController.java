@@ -24,13 +24,13 @@ import java.util.ResourceBundle;
 
 public class ApisWalletAndAmountController extends BaseViewController {
 
+    @FXML private ApisSelectBoxUnitController selectApisUnitController;
+    @FXML private ApisSelectBoxPercentController selectPercentController;
+    @FXML private ApisSelectBoxController selectWalletController;
     @FXML private AnchorPane rootPane, selectApisUnitPane, errorMessagePane;
     @FXML private GridPane tokenTotalPane;
     @FXML private Label selectWalletLabel, amountToSendLabel, apisTotalBalance, apisTotalLabel, tokenTotalLabel, tokenTotalBalance, tokenSymbol, errorMessage;
     @FXML private TextField amountTextField;
-    @FXML private ApisSelectBoxUnitController selectApisUnitController;
-    @FXML private ApisSelectBoxPercentController selectPercentController;
-    @FXML private ApisSelectBoxController selectWalletController;
 
     private ViewType viewType;
     private String tokenAddress;
@@ -380,6 +380,8 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public void setTokenAddress(String tokenAddress){
         this.tokenAddress = tokenAddress;
+
+        this.selectWalletController.setTokenAddress(this.tokenAddress);
     }
 
     public void setTokenSymbol(String symbol) {
