@@ -1,4 +1,3 @@
-
 package org.apis.hid;
 
 import org.apis.config.SystemProperties;
@@ -25,8 +24,7 @@ public class HIDDevice {
     private UsbEndpoint in;
     private UsbEndpoint out;
     private byte transferBuffer[];
-    private boolean debug = true;
-    private boolean ledger;
+    private boolean debug = false;
 
 
 
@@ -87,7 +85,6 @@ public class HIDDevice {
             while ((responseData = LedgerHelper.unwrapResponseAPDU(LEDGER_DEFAULT_CHANNEL, response.toByteArray(), HID_BUFFER_SIZE)) == null) {
                 byte[] readData = new byte[HID_BUFFER_SIZE];
                 pipeRead.syncSubmit(readData);
-                ConsoleUtil.printlnPurple(ByteUtil.toHexString0x(readData));
                 response.write(readData, 0, HID_BUFFER_SIZE);
             }
 
@@ -116,10 +113,7 @@ public class HIDDevice {
         request.write((byte)data.length);
         request.write(data);
 
-        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(request.toByteArray()));
-
         byte[] response = exchange(request.toByteArray());
-        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(response));
 
         int sw = ByteUtil.byteArrayToInt(Arrays.copyOfRange(response, response.length - 2, response.length));
 
@@ -154,8 +148,6 @@ public class HIDDevice {
             e.printStackTrace();
         }
 
-        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(result));
-
         if(result == null) {
             return null;
         }
@@ -168,11 +160,12 @@ public class HIDDevice {
         byte[] publicKey = Arrays.copyOfRange(data, 1, 1 + publicKeyLength);
         byte[] address = Arrays.copyOfRange(data, 1 + publicKeyLength + 1, 1 + publicKeyLength + 1 + addressLength);
 
-        ConsoleUtil.printlnGreen("PUBL : " + publicKeyLength);
-        ConsoleUtil.printlnGreen("ADDL : " + addressLength);
-        ConsoleUtil.printlnGreen("PUB  : " + ByteUtil.toHexString0x(publicKey));
-        ConsoleUtil.printlnGreen("ADDR : " + ByteUtil.toHexString0x(address));
-        ConsoleUtil.printlnGreen("ADDR : " + new String(address));
+
+        if(debug) {
+            String log = "Received PublicKey : " + ByteUtil.toHexString0x(publicKey) + "\n";
+            log += "Received Address : " + ByteUtil.toHexString(address);
+            ConsoleUtil.printlnGreen(log);
+        }
         return new String(address);
     }
 
@@ -181,13 +174,23 @@ public class HIDDevice {
         List<Integer> paths = splitPath(path);
 
         byte[] encodedRaw = tx.getEncodedRaw();
+
         int offset = 0;
         List<byte[]> toSend = new ArrayList<>();
         while(offset != encodedRaw.length) {
-            int maxChunkSize = offset == 0 ? 150 - 1 - paths.size()*4 : 150;
-            int chunkSize = offset + maxChunkSize > encodedRaw.length ? encodedRaw.length - offset : maxChunkSize;
+            int maxChunkSize =
+                    offset == 0
+                            ? 150 - 1 - paths.size()*4
+                            : 150;
+            int chunkSize =
+                    offset + maxChunkSize > encodedRaw.length
+                            ? encodedRaw.length - offset
+                            : maxChunkSize;
 
-            byte[] buffer = new byte[offset == 0 ? 1 + paths.size()*4 + chunkSize : chunkSize];
+            byte[] buffer = new byte[
+                    offset == 0
+                            ? 1 + paths.size()*4 + chunkSize
+                            : chunkSize];
 
             if(offset == 0) {
                 buffer[0] = (byte) paths.size();
@@ -214,8 +217,7 @@ public class HIDDevice {
         byte[] response = null;
         for(int i = 0; i < toSend.size(); i++) {
             byte[] data = toSend.get(i);
-            ConsoleUtil.printlnCyan(ByteUtil.toHexString0x(data));
-             response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
+            response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
         }
         if(response == null || response.length == 0) {
             return null;
