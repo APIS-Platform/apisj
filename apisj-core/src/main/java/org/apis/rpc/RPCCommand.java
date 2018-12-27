@@ -48,7 +48,7 @@ public class RPCCommand {
     private static final String COMMAND_APIS_ACCOUNTS = "apis_accounts";
     private static final String COMMAND_APIS_BLOCKNUMBER = "apis_blockNumber";
     private static final String COMMAND_APIS_GETBALANCE = "apis_getBalance";
-    private static final String COMMAND_TOTAL_COINS = "apis_totalCoins";
+    private static final String COMMAND_TOTAL_COINS = "apis_getTotalCoins";
 
     private static final String COMMAND_APIS_GETTRANSACTIONCOUNT = "apis_getTransactionCount";
     private static final String COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH = "apis_getBlockTransactionCountByHash";
