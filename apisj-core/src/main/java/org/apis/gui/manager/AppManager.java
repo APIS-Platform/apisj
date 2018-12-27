@@ -280,15 +280,20 @@ public class AppManager {
                         } else if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.MASTERNODE.num))) {
                             if(!isMasterNode(address)) {
                                 if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
-                                    // Request again when pool is refreshing
-                                    if(apis.equals("50000000000000000000000")
-                                        || apis.equals("200000000000000000000000")
-                                        || apis.equals("500000000000000000000000")) {
-                                    // Change to empty state when the balance under the limit
-                                    } else {
-                                        SystemProperties.getDefault().setMasternodePrivateKey(null);
-                                        SystemProperties.getDefault().setMasternodeRecipient(null);
+                                    // Change to empty state when the system restarted
+                                    if(SystemProperties.getDefault().getMasternodeKey() == null) {
                                         cancelMasternode();
+                                    } else {
+                                        // Request again when pool is refreshing
+                                        if (apis.equals("50000000000000000000000")
+                                            || apis.equals("200000000000000000000000")
+                                            || apis.equals("500000000000000000000000")) {
+                                        // Change to empty state when the balance under the limit
+                                        } else {
+                                            SystemProperties.getDefault().setMasternodePrivateKey(null);
+                                            SystemProperties.getDefault().setMasternodeRecipient(null);
+                                            cancelMasternode();
+                                        }
                                     }
                                 }
                             // Change to cancel state when the system restarted

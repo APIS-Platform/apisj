@@ -276,10 +276,10 @@ public class WalletListHeadController extends BaseViewController {
             } else {
                 this.tagLabel.setVisible(true);
                 if (itemModel.getAddress().equals(AppManager.getGeneralPropertiesData("masternode_address"))
-                        && AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))
-                        && (apis.equals("50000000000000000000000")
-                            || apis.equals("200000000000000000000000")
-                            || apis.equals("500000000000000000000000"))) {
+                    && AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))
+                    && (apis.equals("50000000000000000000000")
+                        || apis.equals("200000000000000000000000")
+                        || apis.equals("500000000000000000000000"))) {
                     this.masternodeState.setStyle("-fx-background-color: #ffc12f; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
                     this.masternodeState.setVisible(true);
                     this.tagLabel.setText("MASTERNODE");

@@ -486,12 +486,14 @@ public class MainController extends BaseViewController {
     }
 
     public void succesSync(){
-        if((this.miningAddress != null && this.miningAddress.length() > 0)){
+        if((this.miningAddress != null && this.miningAddress.length() > 0) || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
             String masterNodeAlias = "";
             String masterNodeAddress = "";
             String miningAlias = "";
             String miningAddress = "";
+
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+                String apis = AppManager.getInstance().getKeystoreExpList().get(i).balance.toString();
                 if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.miningAddress)){
                     miningAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
                     miningAddress = this.miningAddress;
@@ -501,9 +503,19 @@ public class MainController extends BaseViewController {
 
                 }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
                     if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num))
-                        || AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.MASTERNODE.num))) {
-                        masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                        masterNodeAddress = this.masternodeAddress;
+                        || AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.MASTERNODE.num))
+                        || AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(AppManager.MnState.EMPTY_MASTERNODE.num))) {
+                        if(AppManager.getInstance().isMasterNode(this.masternodeAddress)) {
+                            masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                            masterNodeAddress = this.masternodeAddress;
+                        } else {
+                            if (apis.equals("50000000000000000000000")
+                                || apis.equals("200000000000000000000000")
+                                || apis.equals("500000000000000000000000")) {
+                                masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                                masterNodeAddress = this.masternodeAddress;
+                            }
+                        }
                     }
 
                     this.masternodeAddress = null;
