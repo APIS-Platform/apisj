@@ -132,6 +132,7 @@ public class RPCCommand {
 
     static final String ERROR_MESSAGE_UNKNOWN = "unknown message.";
     static final String ERROR_MESSAGE_UNKNOWN_ADDRESS = "unknown Address.";
+    static final String ERROR_MESSAGE_INVALID_ADDRESS = "Invalid Address format.";
     static final String ERROR_MESSAGE_UNKNOWN_HASH = "unknown Hash.";
     static final String ERROR_MESSAGE_UNKNOWN_BLOCKDATA= "unknown block data.";
     static final String ERROR_MESSAGE_NULL_BLOCKDATA = "there is no block data.";
@@ -1054,7 +1055,13 @@ public class RPCCommand {
                         return;
                     }
                 } else {
-                    address = ByteUtil.hexStringToBytes(paramAddr);
+                    try {
+                        address = ByteUtil.hexStringToBytes(paramAddr);
+                    } catch (DecoderException e) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_INVALID_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
                 }
 
                 if(address == null || address.length == 0) {
