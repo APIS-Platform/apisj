@@ -11,8 +11,13 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
+import org.apis.util.ByteUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupChangeWalletNameController extends BasePopupController {
@@ -87,12 +92,18 @@ public class PopupChangeWalletNameController extends BasePopupController {
 
     public void change(){
         if(isChangeable){
-            KeyStoreManager.getInstance().updateWalletAlias(this.model.getAddress(), textFieldController.getText());
-            AppManager.getInstance().keystoreFileReadAll();
-            AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
-            AppManager.getInstance().guiFx.getWallet().update();
-            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
-            controller.requestFocusYesButton();
+            try {
+                String name = URLDecoder.decode(textFieldController.getText(), "UTF-8");
+
+                KeyStoreManager.getInstance().updateWalletAlias(this.model.getAddress(), name);
+                AppManager.getInstance().keystoreFileReadAll();
+                AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
+                AppManager.getInstance().guiFx.getWallet().update();
+                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+                controller.requestFocusYesButton();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
