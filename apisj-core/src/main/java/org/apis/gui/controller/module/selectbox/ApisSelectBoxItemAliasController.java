@@ -22,8 +22,10 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
     private SelectBoxItemModel model = new SelectBoxItemModel();
 
     @FXML private AnchorPane rootPane;
-    @FXML private Label aliasLabel, addressLabel, balanceLabel;
+    @FXML private Label aliasLabel, addressLabel, balanceLabel, symbolLabel;
     @FXML private ImageView icon, icKnowledgekey;
+
+    private String tokenAddress;
 
 
 
@@ -55,11 +57,19 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
         SelectBoxItemModel itemModel = this.model;
 
         if(model != null) {
-            String stringBalance = "0 APIS";
-            if(isReadableApisKMBT) {
-                stringBalance = ApisUtil.readableApisKMBT(itemModel.getBalance());
-            }else {
-                stringBalance = ApisUtil.readableApis(itemModel.getBalance(),',',true).replaceAll(",","").split("\\.")[0];
+            String stringBalance = "0";
+            if(tokenAddress == null) {
+                if (isReadableApisKMBT) {
+                    stringBalance = ApisUtil.readableApisKMBT(itemModel.getBalance());
+                } else {
+                    stringBalance = ApisUtil.readableApis(itemModel.getBalance(), ',', true).replaceAll(",", "").split("\\.")[0];
+                }
+            }else{
+                if (isReadableApisKMBT) {
+                    stringBalance = ApisUtil.readableApisKMBT(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()));
+                } else {
+                    stringBalance = ApisUtil.readableApis(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()), ',', true).replaceAll(",", "").split("\\.")[0];
+                }
             }
             balanceLabel.setText(stringBalance);
             aliasLabel.setText(itemModel.aliasProperty().get());
@@ -76,6 +86,28 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
             }
 
         }
+    }
+
+    public void setTokenAddress(String address){
+        this.tokenAddress = address;
+        this.symbolLabel.setText("APIS");
+
+        String symbol = AppManager.getInstance().getTokenSymbol(address);
+        if(address != null && symbol != null && symbol.length() > 0){
+        }else{
+            symbol = "APIS";
+        }
+        this.symbolLabel.setText(symbol);
+
+        String stringBalance = "0";
+        if(model != null) {
+            if (isReadableApisKMBT) {
+                stringBalance = ApisUtil.readableApisKMBT(AppManager.getInstance().getTokenValue(tokenAddress, model.getAddress()));
+            } else {
+                stringBalance = ApisUtil.readableApis(AppManager.getInstance().getTokenValue(tokenAddress, model.getAddress()), ',', true).replaceAll(",", "").split("\\.")[0];
+            }
+        }
+        balanceLabel.setText(stringBalance);
     }
 
     public String returnMask(){

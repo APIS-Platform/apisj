@@ -257,7 +257,8 @@ public class AppManager {
                             if(isMasterNode(address)) {
                             // Clear properties when the address is not in pool
                             } else {
-                                if(AppManager.getGeneralPropertiesData("masternode_address").equals(address)) {
+                                if(AppManager.getGeneralPropertiesData("masternode_address") != null
+                                    && AppManager.getGeneralPropertiesData("masternode_address").equals(address)) {
                                     cancelMasternode();
                                 }
                             }

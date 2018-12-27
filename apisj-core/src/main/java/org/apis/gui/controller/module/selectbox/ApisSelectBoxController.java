@@ -313,6 +313,19 @@ public class ApisSelectBoxController extends BaseViewController {
         }
     }
 
+    public void setTokenAddress(String tokenAddress) {
+        if(selectBoxType == SELECT_BOX_TYPE_ALIAS){
+            ApisSelectBoxHeadAliasController header = (ApisSelectBoxHeadAliasController)headerFxml.getController();
+            header.setTokenAddress(tokenAddress);
+
+            for(int i=0; i<itemFxmlList.size(); i++){
+                ApisSelectBoxItemAliasController item = (ApisSelectBoxItemAliasController)itemFxmlList.get(i).getController();
+                item.setTokenAddress(tokenAddress);
+            }
+        }
+    }
+
+
     public void setVisibleItemList(boolean isVisible){
 
         if(isVisible == true){
@@ -405,7 +418,6 @@ public class ApisSelectBoxController extends BaseViewController {
 
     private ApisSelectBoxImpl handler;
     public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
-
     public interface ApisSelectBoxImpl{
         void onMouseClick();
         void onSelectItem();

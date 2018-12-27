@@ -49,7 +49,7 @@ public abstract class BlockHeaderRule extends AbstractValidationRule {
     public boolean validateAndLog(BlockHeader header, Logger logger) {
         ValidationResult result = validate(header);
         if (!result.success && logger.isErrorEnabled()) {
-            logger.warn("{} invalid {}", getEntityClass(), result.error);
+            logger.warn("{} : invalid : {}", getEntityClass(), result.error);
         }
         return result.success;
     }

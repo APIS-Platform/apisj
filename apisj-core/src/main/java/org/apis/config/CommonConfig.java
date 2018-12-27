@@ -296,7 +296,8 @@ public class CommonConfig {
                 new ProofOfStakeRule(),
                 new GasLimitRule(systemProperties()),
                 new BlockHashRule(systemProperties()),
-                new BlockSignRule()
+                new BlockSignRule(),
+                new MasternodeRewardRule()
         ));
 
         return new BlockHeaderValidator(rules);

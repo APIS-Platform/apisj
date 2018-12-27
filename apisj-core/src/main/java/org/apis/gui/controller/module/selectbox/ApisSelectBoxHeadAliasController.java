@@ -18,8 +18,10 @@ import java.util.ResourceBundle;
 
 public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderController{
 
-    @FXML private Label aliasLabel, addressLabel, balanceLabel;
+    @FXML private Label aliasLabel, addressLabel, balanceLabel, symbolLabel;
     @FXML private ImageView icon, icKnowledgekey;
+
+    private String tokenAddress;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,11 +47,19 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
         this.itemModel = (SelectBoxItemModel)model;
 
         if(model != null) {
-            String stringBalance = "0 APIS";
-            if(isReadableApisKMBT) {
-                stringBalance = ApisUtil.readableApisKMBT(itemModel.getBalance());
-            }else {
-                stringBalance = ApisUtil.readableApis(itemModel.getBalance(),',',true).replaceAll(",","").split("\\.")[0];
+            String stringBalance = "0";
+            if(tokenAddress == null) {
+                if (isReadableApisKMBT) {
+                    stringBalance = ApisUtil.readableApisKMBT(itemModel.getBalance());
+                } else {
+                    stringBalance = ApisUtil.readableApis(itemModel.getBalance(), ',', true).replaceAll(",", "").split("\\.")[0];
+                }
+            }else{
+                if (isReadableApisKMBT) {
+                    stringBalance = ApisUtil.readableApisKMBT(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()));
+                } else {
+                    stringBalance = ApisUtil.readableApis(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()), ',', true).replaceAll(",", "").split("\\.")[0];
+                }
             }
             balanceLabel.setText(stringBalance);
             aliasLabel.setText(itemModel.aliasProperty().get());
@@ -66,6 +76,30 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
             }
         }
     }
+
+
+    public void setTokenAddress(String address){
+        this.tokenAddress = address;
+        this.symbolLabel.setText("APIS");
+
+        String symbol = AppManager.getInstance().getTokenSymbol(address);
+        if(address != null && symbol != null && symbol.length() > 0){
+        }else{
+            symbol = "APIS";
+        }
+        this.symbolLabel.setText(symbol);
+
+        String stringBalance = "0";
+        if(itemModel != null) {
+            if (isReadableApisKMBT) {
+                stringBalance = ApisUtil.readableApisKMBT(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()));
+            } else {
+                stringBalance = ApisUtil.readableApis(AppManager.getInstance().getTokenValue(tokenAddress, itemModel.getAddress()), ',', true).replaceAll(",", "").split("\\.")[0];
+            }
+        }
+        balanceLabel.setText(stringBalance);
+    }
+
 
     public String returnMask(){
         String address = itemModel.addressProperty().get();
