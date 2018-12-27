@@ -317,8 +317,8 @@ public class RPCCommand {
 
             case COMMAND_TOTAL_COINS: {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                SystemProperties.getDefault().getBlockchainConfig().getCommonConstants().getTotalAPIS(blockNumber);
-                command = createJson(id, method, blockNumber);
+                BigInteger totalCoins = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getTotalAPIS(blockNumber);
+                command = createJson(id, method, ApisUtil.readableApis(totalCoins, true));
                 break;
             }
 
