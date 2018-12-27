@@ -313,7 +313,7 @@ public class BlockHeader {
         hashCache = null;
     }
 
-    BigInteger getMineralUsed() {
+    public BigInteger getMineralUsed() {
         return mineralUsed;
     }
 
