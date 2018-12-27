@@ -28,11 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Manages embedded CPU mining and allows to use external miners.
- *
- * Created by Anton Nashatyrev on 10.12.2015.
- */
 @Component
 public class BlockMiner {
     private static final Logger logger = LoggerFactory.getLogger("mine");
@@ -505,11 +500,13 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
+        //-------------------------------------------------------------------
         // 마스터노드 보상 블록인 경우에, 트랜잭션을 탑재하지 않아야 하므로..
         if(config.getBlockchainConfig().getCommonConstants().isMasternodeRewardBlock(bestPendingState.getNumber() + 1)) {
             return blockchain.createNewBlock(bestPendingState, new ArrayList<>());
         }
 
+        //-------------------------------------------------------------------
         // 일반 블록에는 트랜잭션이 같이 탑재되어야 한다.
         else {
 
