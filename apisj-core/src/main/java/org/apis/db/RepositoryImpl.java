@@ -575,6 +575,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 return mnList;
             }
             else {
+                currentState = getAccountState(currentMn);
+
                 if(baseNode == constants.getMASTERNODE_GENERAL_BASE_LATE()
                         || baseNode == constants.getMASTERNODE_MAJOR_BASE_LATE()
                         || baseNode == constants.getMASTERNODE_PRIVATE_BASE_LATE()) {
