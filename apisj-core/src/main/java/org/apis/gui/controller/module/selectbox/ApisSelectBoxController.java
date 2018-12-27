@@ -108,6 +108,7 @@ public class ApisSelectBoxController extends BaseViewController {
                         if(((SelectBoxItemModel)itemFxmlList.get(j).getController().getModel()).getAddress().equals(model.getAddress())){
                             updateItem(j, model);
                             hasModel = true;
+                            break;
                         }
                     }
                     if(!hasModel){
@@ -115,6 +116,24 @@ public class ApisSelectBoxController extends BaseViewController {
                     }
 
                 }
+
+                // 가지고 있는 모델 중 지갑에 없는 모델 삭제
+                for(int i=0; i<itemFxmlList.size(); i++){
+                    boolean delete = true;
+                    for (int j = 0; j < AppManager.getInstance().getKeystoreExpList().size(); j++) {
+                        KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(j);
+                        if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getAddress().equals(dataExp.address)){
+                            delete = false;
+                            break;
+                        }
+                    }
+
+                    if(delete){
+                        itemFxmlList.remove(i);
+                        i--;
+                    }
+                }
+
                 if(selectedItemModel == null){
                     selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel();
                 }
@@ -165,12 +184,32 @@ public class ApisSelectBoxController extends BaseViewController {
                     }
                 }
 
+                // 가지고 있는 모델 중 지갑에 없는 모델 삭제
+                for(int i=0; i<itemFxmlList.size(); i++){
+                    boolean delete = true;
+
+                    for(int j=0; i<domainName.size() ; j++){
+                        SelectBoxItemModel model = new SelectBoxItemModel().setDomainId(""+i).setDomain("@"+domainName.get(j)).setApis(domainFee.get(j));
+                        if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getDomain().equals(model.getDomain())){
+                            delete = false;
+                            break;
+                        }
+                    }
+
+                    if(delete){
+                        itemFxmlList.remove(i);
+                        i--;
+                    }
+                }
+
                 if(selectedItemModel == null && itemFxmlList.size() > 0){
                     selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel();
                 }
                 setHeader(this.selectBoxType, selectedItemModel);
                 break;
         }
+
+        drawItemList();
 
     }
 
@@ -267,7 +306,6 @@ public class ApisSelectBoxController extends BaseViewController {
                     header.requestFocus();
                 }
             });
-            itemList.getChildren().add(itemFxml.getNode());
             itemFxmlList.add(itemFxml);
 
         } catch (IOException e){
@@ -313,6 +351,13 @@ public class ApisSelectBoxController extends BaseViewController {
         headerFxml.getController().setModel(selectedItemModel);
         if(handler != null){
             handler.onSelectItem();
+        }
+    }
+
+    private void drawItemList(){
+        itemList.getChildren().clear();
+        for(int i=0; i<itemFxmlList.size(); i++){
+            itemList.getChildren().add(itemFxmlList.get(i).getNode());
         }
     }
 
