@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxHeadAliasController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" styleClass="border_radius_4444" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.selectbox.ApisSelectBoxHeadAliasController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -80,7 +80,7 @@
                <GridPane.margin>
                   <Insets left="8.0" />
                </GridPane.margin></Label>
-            <Label styleClass="font_regular_12" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3">
+            <Label fx:id="symbolLabel" styleClass="font_regular_12" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3">
                <padding>
                   <Insets left="2.0" />
                </padding>

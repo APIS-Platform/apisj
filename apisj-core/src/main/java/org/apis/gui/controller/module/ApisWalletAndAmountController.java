@@ -380,6 +380,8 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public void setTokenAddress(String tokenAddress){
         this.tokenAddress = tokenAddress;
+
+        this.selectWalletController.setTokenAddress(this.tokenAddress);
     }
 
     public void setTokenSymbol(String symbol) {
