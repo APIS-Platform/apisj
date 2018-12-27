@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeListController extends BaseViewController {
+    private final int SHORT_LENGTH = 6;
+
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -61,26 +63,26 @@ public class TransactionNativeListController extends BaseViewController {
 
         from.setOnMouseEntered(event -> {
             from.setUnderline(true);
-            this.from.setText(AddressUtil.getShortAddress(strFrom, 8));
+            this.from.setText(AddressUtil.getShortAddress(strFrom, SHORT_LENGTH));
         });
         from.setOnMouseExited(event -> {
             from.setUnderline(false);
             if(this.strFromMask != null && this.strFromMask.length() > 0){
                 this.from.setText(strFromMask);
             }else{
-                this.from.setText(AddressUtil.getShortAddress(strFrom, 8));
+                this.from.setText(AddressUtil.getShortAddress(strFrom, SHORT_LENGTH));
             }
         });
         to.setOnMouseEntered(event -> {
             to.setUnderline(true);
-            this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+            this.to.setText(AddressUtil.getShortAddress(strTo, SHORT_LENGTH));
         });
         to.setOnMouseExited(event -> {
             to.setUnderline(false);
             if(this.strToMask != null && this.strToMask.length() > 0){
                 this.to.setText(strToMask);
             }else{
-                this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+                this.to.setText(AddressUtil.getShortAddress(strTo, SHORT_LENGTH));
             }
         });
 
@@ -225,7 +227,7 @@ public class TransactionNativeListController extends BaseViewController {
 
     public void setHash(String hash) {
         this.strHash = hash;
-        this.hash.setText(AddressUtil.getShortAddress(hash, 6));
+        this.hash.setText(AddressUtil.getShortAddress(hash, SHORT_LENGTH));
     }
 
     public String getFrom() {
@@ -238,7 +240,7 @@ public class TransactionNativeListController extends BaseViewController {
         if(this.strFromMask != null && this.strFromMask.length() > 0){
             this.from.setText(strFromMask);
         }else{
-            this.from.setText(AddressUtil.getShortAddress(from, 8));
+            this.from.setText(AddressUtil.getShortAddress(from, SHORT_LENGTH));
         }
 
         if(from != null && !from.equals("")) {
@@ -264,7 +266,7 @@ public class TransactionNativeListController extends BaseViewController {
         if(this.strToMask != null && this.strToMask.length() > 0){
             this.to.setText(strToMask);
         }else{
-            this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+            this.to.setText(AddressUtil.getShortAddress(strTo, SHORT_LENGTH));
         }
 
         if(to != null && !to.equals("")) {

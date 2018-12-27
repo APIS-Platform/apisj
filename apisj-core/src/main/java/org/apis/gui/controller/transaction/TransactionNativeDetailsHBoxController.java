@@ -40,8 +40,8 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
 
         fromMask = AppManager.getInstance().getMaskWithAddress(from);
         toMask = AppManager.getInstance().getMaskWithAddress(to);
-        shortFrom = AddressUtil.getShortAddress(from);
-        shortTo = AddressUtil.getShortAddress(to);
+        shortFrom = AddressUtil.getShortAddress(from, 6);
+        shortTo = AddressUtil.getShortAddress(to, 6);
 
         if (fromMask != null && fromMask.length() > 0) {
             shortFrom = shortFrom + " (" + fromMask + ")";

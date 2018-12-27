@@ -10,17 +10,17 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
    <children>
       <GridPane styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="8.5" />
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="12.7" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="14.2" />
             <ColumnConstraints hgrow="SOMETIMES" percentWidth="6.9" />
             <ColumnConstraints hgrow="SOMETIMES" percentWidth="13.8" />
             <ColumnConstraints hgrow="SOMETIMES" percentWidth="4.4" />
             <ColumnConstraints hgrow="SOMETIMES" percentWidth="13.8" />
-            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" percentWidth="19.0" />
+            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" percentWidth="17.7" />
             <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" percentWidth="14.9" />
             <ColumnConstraints hgrow="SOMETIMES" percentWidth="14.5" />
          </columnConstraints>
@@ -28,7 +28,7 @@
             <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label fx:id="hash" maxWidth="108.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#b01e1e" GridPane.columnIndex="1">
+            <Label fx:id="hash" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#b01e1e" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -53,7 +53,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#b01e1e">
+                  <Label fx:id="from" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#b01e1e">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -85,7 +85,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#b01e1e">
+                  <Label fx:id="to" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#b01e1e">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -105,8 +105,8 @@
                   <Insets />
                </GridPane.margin>
                <columnConstraints>
-                  <ColumnConstraints maxWidth="155.0" />
-                  <ColumnConstraints />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints vgrow="SOMETIMES" />
@@ -118,8 +118,8 @@
             </GridPane>
             <GridPane layoutX="570.0" layoutY="23.0" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
                <columnConstraints>
-                  <ColumnConstraints maxWidth="120.0" />
-                  <ColumnConstraints />
+                  <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints vgrow="SOMETIMES" />

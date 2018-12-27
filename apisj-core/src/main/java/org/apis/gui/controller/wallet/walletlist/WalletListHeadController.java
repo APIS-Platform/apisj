@@ -224,7 +224,7 @@ public class WalletListHeadController extends BaseViewController {
 
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
             this.labelWalletAlias.setText(itemModel.getAlias());
-            this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 8));
+            this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 6));
             this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
             setMask(itemModel.getMask());
 
