@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apis.cli.CLIStart;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.manager.AppManager;
@@ -34,6 +35,9 @@ public class MainFX extends Application  {
 
     @Override
     public void start(Stage primaryStage){
+
+        // init config file
+        new CLIStart();
 
         try {
             BaseFxmlController fxmlController = new BaseFxmlController("loading.fxml");
