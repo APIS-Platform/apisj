@@ -81,7 +81,7 @@ public class Start {
             logger.debug(ConsoleUtil.colorBBlue("OnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
 
             // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.
-            if(synced) {
+            if(synced && isRunRpc) {
                 // DB Sync Start
                 DBSyncManager.getInstance(mApis).syncThreadStart();
             }
