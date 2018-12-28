@@ -23,7 +23,7 @@ public class CLIStart {
     private String dirDaemon;
     private String dirRpc;
 
-    public CLIStart() {
+    public CLIStart() throws IOException {
         config = SystemProperties.getDefault();
 
         if(config == null) {
@@ -49,6 +49,22 @@ public class CLIStart {
 
             InputStream input = new FileInputStream(dirDaemon);
             daemonProp.load(input);
+
+            String coinbase = daemonProp.getProperty("coinbase");
+            if(coinbase != null && !coinbase.isEmpty()) {
+                config.setCoinbasePrivateKey(Hex.decode(coinbase));
+            }
+
+            String masternode = daemonProp.getProperty("masternode");
+            if(masternode != null && !masternode.isEmpty()) {
+                config.setMasternodePrivateKey(Hex.decode(masternode));
+            }
+
+            String recipient = daemonProp.getProperty("recipient");
+            if(recipient != null && !recipient.isEmpty()) {
+                config.setMasternodeRecipient(Hex.decode(recipient));
+            }
+
         } catch (IOException e) {
             daemonProp.setProperty("coinbase", ""); //
             daemonProp.setProperty("masternode", "");
@@ -61,6 +77,32 @@ public class CLIStart {
                 daemonProp.store(output, null);
                 output.close();
             } catch (IOException ignored) {}
+        }
+
+        Properties prop = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+        try {
+            InputStream input = new FileInputStream(dirRpc);
+            prop.load(input);
+        } catch (IOException e) {
+            prop.setProperty("use_rpc", String.valueOf(false));
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
+            prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("max_connections", String.valueOf(1));
+            prop.setProperty("allow_ip", "127.0.0.1");
+
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
+            OutputStream output = new FileOutputStream(dirRpc);
+            prop.store(output, null);
+            output.close();
         }
     }
 
@@ -413,25 +455,7 @@ public class CLIStart {
             }
         };
 
-        try {
-            InputStream input = new FileInputStream(dirRpc);
-            prop.load(input);
-        } catch (IOException e) {
-            prop.setProperty("use_rpc", String.valueOf(false));
-            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
-            prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("max_connections", String.valueOf(1));
-            prop.setProperty("allow_ip", "127.0.0.1");
 
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
-            OutputStream output = new FileOutputStream(dirRpc);
-            prop.store(output, null);
-            output.close();
-        }
 
         while(true) {
             ConsoleUtil.printlnBlue("The current setting is as follows.\n");
