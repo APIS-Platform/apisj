@@ -849,16 +849,20 @@ public class AppManager {
         if(mApis != null) {
             Block bestBlock = mApis.getBlockchain().getBestBlock();
             Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
-            Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
 
-            KeyStoreDataExp keyExp = null;
-            for(int i=0; i<keyStoreDataExpList.size(); i++){
-                keyExp = keyStoreDataExpList.get(i);
-                keyExp.mask = getMaskWithAddress(keyExp.address);
-                keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
-                keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
-                keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
-                keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
+            if(bestBlock.getNumber() >= 10) {
+
+                Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+
+                KeyStoreDataExp keyExp = null;
+                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    keyExp = keyStoreDataExpList.get(i);
+                    keyExp.mask = getMaskWithAddress(keyExp.address);
+                    keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
+                    keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
+                    keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                    keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
+                }
             }
         }
 
