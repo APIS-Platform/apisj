@@ -252,7 +252,7 @@ public class AppManager {
                         String apis = keyExp.balance.toString();
 
                         // Empty state
-                        if(AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
+                        if(AppManager.getGeneralPropertiesData("masternode_state") != null && AppManager.getGeneralPropertiesData("masternode_state").equals(Integer.toString(MnState.EMPTY_MASTERNODE.num))) {
                             // Do nothing when the address is in pool
                             if(isMasterNode(address)) {
                             // Clear properties when the address is not in pool
@@ -847,13 +847,17 @@ public class AppManager {
 
         // 목록에 있는 데이터들의 값을 갱신한다.
         if(mEthereum != null) {
+            Block bestBlock = mEthereum.getBlockchain().getBestBlock();
+            Block parentBlock = mEthereum.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+            Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+
             KeyStoreDataExp keyExp = null;
             for(int i=0; i<keyStoreDataExpList.size(); i++){
                 keyExp = keyStoreDataExpList.get(i);
                 keyExp.mask = getMaskWithAddress(keyExp.address);
-                keyExp.balance = mEthereum.getRepository().getBalance(ByteUtil.hexStringToBytes(keyExp.address));
-                keyExp.mineral = mEthereum.getRepository().getMineral(ByteUtil.hexStringToBytes(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
-                keyExp.rewards = mEthereum.getRepository().getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
+                keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
+                keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
                 keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
             }
         }
