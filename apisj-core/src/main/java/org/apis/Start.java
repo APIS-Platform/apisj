@@ -1,6 +1,6 @@
 package org.apis;
 
-import org.apis.cli.CLIStart;
+import org.apis.cli.CLIInterface;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
@@ -30,14 +30,8 @@ public class Start {
     private static boolean synced = false;
     protected static Logger logger = LoggerFactory.getLogger("start");
 
-    public static void main(String args[]) throws Exception {
-        CLIStart cliStart = new CLIStart();
-
-        cliStart.startKeystoreCheck();
-
-        cliStart.startRpcServerCheck();
-
-
+    public static void main(String args[]) {
+        CLIInterface.call(args);
 
         final SystemProperties config = SystemProperties.getDefault();
         if(config == null) {
@@ -94,8 +88,6 @@ public class Start {
 
             Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
-            logger.debug(ConsoleUtil.colorYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE()))));
-
             List<byte[]> generalEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY());
             List<byte[]> generalEarlyRunRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
             List<byte[]> generalRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
@@ -111,11 +103,6 @@ public class Start {
             List<byte[]> privateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
             List<byte[]> privateLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-            logger.debug(ConsoleUtil.colorYellow("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
-            logger.debug(ConsoleUtil.colorYellow("REPO EARUN  G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size()));
-            logger.debug(ConsoleUtil.colorYellow("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size()));
-            logger.debug(ConsoleUtil.colorYellow("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size()));
-
             generalEarlyRunRepo.addAll(generalRepo);
             generalEarlyRunRepo.addAll(generalLateRepo);
             majorEarlyRunRepo.addAll(majorRepo);
@@ -123,7 +110,14 @@ public class Start {
             privateEarlyRunRepo.addAll(privateRepo);
             privateEarlyRunRepo.addAll(privateLateRepo);
 
-            logger.debug(ConsoleUtil.colorGreen("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size()));
+            String debugMsg = ConsoleUtil.colorYellow("\nMASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE())));
+            debugMsg += ConsoleUtil.colorYellow("\nREPO EARLY G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
+            debugMsg += ConsoleUtil.colorYellow("\nREPO EARUN G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size());
+            debugMsg += ConsoleUtil.colorYellow("\nREPO NORMA G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size());
+            debugMsg += ConsoleUtil.colorYellow("\nREPO LATE  G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size());
+            debugMsg += ConsoleUtil.colorGreen( "\nREPO ALL   G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size());
+            logger.debug(debugMsg);
+
 
             if(constants.isMasternodeRewardBlock(block.getNumber())) {
                 logger.debug(ConsoleUtil.colorCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size()));

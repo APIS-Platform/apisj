@@ -23,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,11 +42,17 @@ public class CLIInterface {
     public static void call(String[] args) {
         try {
             Map<String, Object> cliOptions = new HashMap<>();
-
+            processRpc("");
             for (int i = 0; i < args.length; ++i) {
                 String arg = args[i];
 
                 processHelp(arg);
+
+                processMiningStart(arg);
+
+                processMasternodeStart(arg);
+
+                processRpc(arg);
 
                 // process simple option
                 if (processConnectOnly(arg, cliOptions))
@@ -62,16 +65,13 @@ public class CLIInterface {
                 // process options with additional parameter
                 if (processDbDirectory(arg, args[i + 1], cliOptions))
                     continue;
-                if (processListenPort(arg, args[i + 1], cliOptions))
-                    continue;
-                if (processConnect(arg, args[i + 1], cliOptions))
-                    continue;
                 if (processDbReset(arg, args[i + 1], cliOptions))
                     continue;
+
             }
 
             if (cliOptions.size() > 0) {
-                logger.info("Overriding config file with CLI options: {}", cliOptions);
+                logger.debug("Overriding config file with CLI options: {}", cliOptions);
             }
 
             SystemProperties.getDefault().overrideParams(cliOptions);
@@ -112,20 +112,38 @@ public class CLIInterface {
         return true;
     }
 
-    // override the listen port directory
-    private static boolean processListenPort(String arg, String port, Map<String, Object> cliOptions) {
-        if (!"-listen".equals(arg))
-            return false;
+    private static void processMiningStart(String arg) throws IOException {
+        if(!"-mining".equals(arg))
+            return;
 
-        logger.info("Listen port set to [{}]", port);
+        CLIStart cliStart = new CLIStart();
+        cliStart.startKeystoreCheck();
 
-        cliOptions.put(SystemProperties.PROPERTY_LISTEN_PORT, port);
+        System.exit(1);
+    }
 
-        return true;
+    private static void processMasternodeStart(String arg) throws IOException {
+        if(!"-masternode".equals(arg))
+            return;
+
+        CLIStart cliStart = new CLIStart();
+        cliStart.startMasternodeSetting();
+
+        System.exit(1);
+    }
+
+    private static void processRpc(String arg) throws IOException {
+        /*if(!"-rpc".equals(arg))
+            return;*/
+
+        CLIStart cliStart = new CLIStart();
+        cliStart.startRpcServerCheck();
+
+        System.exit(1);
     }
 
     // override the connect host:port directory
-    private static boolean processConnect(String arg, String connectStr, Map<String, Object> cliOptions) throws URISyntaxException {
+    /*private static boolean processConnect(String arg, String connectStr, Map<String, Object> cliOptions) throws URISyntaxException {
         if (!arg.startsWith("-connect"))
             return false;
 
@@ -140,7 +158,7 @@ public class CLIInterface {
         cliOptions.put(SystemProperties.PROPERTY_PEER_ACTIVE, peerActiveList);
 
         return true;
-    }
+    }*/
 
     // process database reset
     private static boolean processDbReset(String arg, String reset, Map<String, Object> cliOptions) {
@@ -166,13 +184,14 @@ public class CLIInterface {
     private static void printHelp() {
 
         System.out.println("--help                -- this help message ");
+        System.out.println("-mining               -- to setup the path for the database directory ");
+        System.out.println("-masternode           -- to setup the path for the database directory ");
+        System.out.println("-rpc                  -- to setup the path for the database directory ");
         System.out.println("-reset <yes/no>       -- reset yes/no the all database ");
         System.out.println("-db <db>              -- to setup the path for the database directory ");
-        System.out.println("-listen  <port>       -- port to listen on for incoming connections ");
-        System.out.println("-connect <enode://pubKey@host:port>  -- address actively connect to  ");
         System.out.println("-connectOnly <enode://pubKey@host:port>  -- like 'connect', but will not attempt to connect to other peers  ");
         System.out.println();
-        System.out.println("e.g: cli -reset no -db db-1 -listen 20202 -connect enode://0be5b4@poc-7.ethdev.com:30300 ");
+        System.out.println("e.g: cli -reset no -db db-1");
         System.out.println();
 
     }
