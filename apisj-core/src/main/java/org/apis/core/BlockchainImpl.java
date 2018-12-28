@@ -38,6 +38,7 @@ import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
 import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
+import org.apis.util.blockchain.MasternodeRewardData;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
 import org.apis.vm.LogInfo;
@@ -1431,6 +1432,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
                     }
                 }
+
+                MasternodeRewardData data = MasternodeRewardUtil.calcRewards(constants, block.getMnReward(), block.getMnGeneralList().size(), block.getMnGeneralLateList().size(), block.getMnMajorList().size(), block.getMnMajorLateList().size(), block.getMnPrivateList().size(), block.getMnPrivateLateList().size());
+                ConsoleUtil.printlnGreen(data.toString());
             }
         }
 
