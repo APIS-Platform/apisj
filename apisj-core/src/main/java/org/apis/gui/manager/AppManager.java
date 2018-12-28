@@ -1593,7 +1593,7 @@ public class AppManager {
         prop.clear();
 
         try {
-            InputStream input = new FileInputStream("config/rpc.properties");
+            InputStream input = new FileInputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
             prop.load(input);
             if(prop.getProperty("port") == null) { prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000)); }
             if(prop.getProperty("id") == null) { prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16))); }
@@ -1616,7 +1616,7 @@ public class AppManager {
                 if(!config.exists()) {
                     config.mkdirs();
                 }
-                OutputStream output = new FileOutputStream("config/rpc.properties");
+                OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
                 prop.store(output, null);
                 output.close();
             }catch (IOException err){
@@ -1637,7 +1637,7 @@ public class AppManager {
             if(!config.exists()) {
                 config.mkdirs();
             }
-            OutputStream output = new FileOutputStream("config/rpc.properties");
+            OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
             prop.store(output, null);
             output.close();
         }catch (IOException e){

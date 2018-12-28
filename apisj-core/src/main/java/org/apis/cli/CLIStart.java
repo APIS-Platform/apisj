@@ -20,9 +20,19 @@ import java.util.*;
 public class CLIStart {
     private SystemProperties config;
     private Properties daemonProp;
+    private String dirDaemon;
+    private String dirRpc;
 
     public CLIStart() {
         config = SystemProperties.getDefault();
+
+        if(config == null) {
+            System.out.println("Failed to load config");
+            System.exit(0);
+        }
+
+        dirDaemon = config.configDir() + "/daemon.properties";
+        dirRpc = config.configDir() + "/rpc.properties";
 
         daemonProp = new Properties() {
             @Override
@@ -37,7 +47,7 @@ public class CLIStart {
                 configDir.mkdirs();
             }
 
-            InputStream input = new FileInputStream(config.configDir() + "/daemon.properties");
+            InputStream input = new FileInputStream(dirDaemon);
             daemonProp.load(input);
         } catch (IOException e) {
             daemonProp.setProperty("coinbase", ""); //
@@ -47,7 +57,7 @@ public class CLIStart {
 
             OutputStream output = null;
             try {
-                output = new FileOutputStream("config/daemon.properties");
+                output = new FileOutputStream(dirDaemon);
                 daemonProp.store(output, null);
                 output.close();
             } catch (IOException ignored) {}
@@ -373,7 +383,7 @@ public class CLIStart {
 
     private void storeDaemonConfig() throws IOException {
         daemonProp.setProperty("autoStart", "true");
-        OutputStream daemonOutput = new FileOutputStream("config/daemon.properties");
+        OutputStream daemonOutput = new FileOutputStream(dirDaemon);
         daemonProp.store(daemonOutput, null);
         daemonOutput.close();
     }
@@ -404,9 +414,10 @@ public class CLIStart {
         };
 
         try {
-            InputStream input = new FileInputStream("config/rpc.properties");
+            InputStream input = new FileInputStream(dirRpc);
             prop.load(input);
         } catch (IOException e) {
+            prop.setProperty("use_rpc", String.valueOf(false));
             prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
@@ -417,7 +428,7 @@ public class CLIStart {
             if(!config.exists()) {
                 config.mkdirs();
             }
-            OutputStream output = new FileOutputStream("config/rpc.properties");
+            OutputStream output = new FileOutputStream(dirRpc);
             prop.store(output, null);
             output.close();
         }

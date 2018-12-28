@@ -1,5 +1,6 @@
 package org.apis.rpc;
 
+import org.apis.config.SystemProperties;
 import org.apis.facade.Apis;
 
 import java.io.*;
@@ -22,7 +23,7 @@ public class RPCServerManager {
     private int maxConnection;
     private String whitelist;
 
-    private final String PATH_PROPERTIES = "config/rpc.properties";
+    private String PATH_PROPERTIES = "config/rpc.properties";
 
     private final String KEY_PORT = "port";
     private final String KEY_ID = "id";
@@ -55,7 +56,7 @@ public class RPCServerManager {
             }
         };
 
-        InputStream input = new FileInputStream(PATH_PROPERTIES);
+        InputStream input = new FileInputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
         prop.load(input);
 
         try {
@@ -80,7 +81,7 @@ public class RPCServerManager {
      * @throws IOException 설정 저장에 실패했을 경우
      */
     public void saveProperties() throws IOException {
-        OutputStream output = new FileOutputStream(PATH_PROPERTIES);
+        OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
         this.prop.store(output, null);
         output.close();
     }
