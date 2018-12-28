@@ -105,19 +105,15 @@ public class Start {
             List<byte[]> privateRepo = ((Repository) mApis.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
             List<byte[]> privateLateRepo = ((Repository) mApis.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-            generalEarlyRunRepo.addAll(generalRepo);
-            generalEarlyRunRepo.addAll(generalLateRepo);
-            majorEarlyRunRepo.addAll(majorRepo);
-            majorEarlyRunRepo.addAll(majorLateRepo);
-            privateEarlyRunRepo.addAll(privateRepo);
-            privateEarlyRunRepo.addAll(privateLateRepo);
-
             String debugMsg = ConsoleUtil.colorYellow("\nMASTERNODE REWARD : " + ApisUtil.readableApis(mApis.getRepository().getBalance(constants.getMASTERNODE_STORAGE())));
-            debugMsg += ConsoleUtil.colorYellow("\nREPO EARLY G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
+            debugMsg += ConsoleUtil.colorBBlue("\nREPO EARLY G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
             debugMsg += ConsoleUtil.colorYellow("\nREPO EARUN G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size());
             debugMsg += ConsoleUtil.colorYellow("\nREPO NORMA G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size());
             debugMsg += ConsoleUtil.colorYellow("\nREPO LATE  G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size());
-            debugMsg += ConsoleUtil.colorGreen( "\nREPO ALL   G:%d\t M:%d\t P:%d", generalEarlyRunRepo.size(), majorEarlyRunRepo.size(), privateEarlyRunRepo.size());
+            debugMsg += ConsoleUtil.colorGreen( "\nREPO ALL   G:%d\t M:%d\t P:%d",
+                    generalEarlyRunRepo.size() + generalRepo.size() + generalLateRepo.size(),
+                    majorEarlyRunRepo.size() + majorRepo.size() + majorLateRepo.size(),
+                    privateEarlyRunRepo.size() + privateRepo.size() + privateLateRepo.size());
             logger.debug(debugMsg);
 
 
