@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
@@ -208,8 +209,16 @@ public class SmartContractUpdaterController extends BaseViewController {
             String value = getAmount().toString();
             String gasPrice = this.gasCalculatorController.getGasPrice().toString();
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
+
+            String contractSource = solidityTextArea.getText();
+            String contractName = getContractName();
+
+            byte[] contractAddr = getContractAddress();
+            byte[] nonce = ByteUtil.longToBytes(Long.parseLong(nonceTextField.getText()));
             byte[] to = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
-            byte[] functionCallBytes = getContractByteCode();
+
+            EstimateTransactionResult byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
+            byte[] functionCallBytes = ByteUtil.merge(contractAddr, nonce, byteCode.getDeployBytes());
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
@@ -612,21 +621,11 @@ public class SmartContractUpdaterController extends BaseViewController {
     }
 
     public void estimateGasLimit(){
-        byte[] address = ByteUtil.hexStringToBytes(selectWalletController.getAddress());
-        byte[] contractAddress = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
-        byte[] data = getContractByteCode();
-        long preGasUsed = 0;
-        if(data.length > 0 && address.length > 0 && contractAddress.length > 0) {
-            try {
-                preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
-                if(preGasUsed < 0){
-                    preGasUsed = 0;
-                }
-            }catch (Exception e){
-                preGasUsed = 0;
-            }
-        }
-        gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+        String from = selectWalletController.getAddress();
+        String contractSource = solidityTextArea.getText();
+        String contractName = getContractName();
+        EstimateTransactionResult byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
+        gasCalculatorController.setGasLimit(Long.toString(byteCode.getGasUsed()));
     }
 
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
@@ -671,23 +670,6 @@ public class SmartContractUpdaterController extends BaseViewController {
             return ByteUtil.hexStringToBytes(this.contractAddressTextField.getText().trim());
         }
         return null;
-    }
-    private byte[] getContractByteCode(){
-        String from = selectWalletController.getAddress();
-        String contractSource = solidityTextArea.getText();
-        String contractName = getContractName();
-
-        if(from == null || from.length() == 0
-                || contractSource == null || contractSource.length() == 0
-                || contractName == null || contractName.length() == 0 ){
-            return new byte[0];
-        }
-        byte[] contractAddr = getContractAddress();
-        byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
-        byte[] byteCode = new byte[0];
-
-        byteCode = AppManager.getInstance().getContractCreationCode(from, ByteUtil.byteArrayToLong(nonce), contractSource, contractName);
-        return ByteUtil.merge(contractAddr, nonce, byteCode);
     }
 
     public String getAbi(){
