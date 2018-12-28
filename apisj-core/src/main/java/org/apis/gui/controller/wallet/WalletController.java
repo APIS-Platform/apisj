@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -14,17 +15,23 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
 import org.apis.config.SystemProperties;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TokenRecord;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.MainController;
+import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.*;
+import org.apis.gui.controller.transaction.TransactionNativeBannerDetailController;
 import org.apis.gui.controller.wallet.tokenlist.TokenListController;
 import org.apis.gui.controller.wallet.walletlist.WalletListController;
+import org.apis.gui.controller.wallet.walletlist.WalletListGroupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
@@ -33,11 +40,11 @@ import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class WalletController extends BaseViewController {
     private final int TAB_TOP_TYPE_APIS = 0;
@@ -49,14 +56,21 @@ public class WalletController extends BaseViewController {
     private int tabListType = TAB_LIST_TYPE_WALLET ;
 
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
-    @FXML private Label rewarded;
+    @FXML private Label rewarded, rewarded1;
     @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
     @FXML private Label btnKnowledgeKey;
     @FXML private AnchorPane toolKnowledgekey, toolMiningWallet, toolMasternode, stakingPane;
-    @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconKnowledgeKey, iconMiningWallet, iconMasternode, btnSearch;
+    @FXML private AnchorPane stakingPane1;
+    @FXML private ImageView iconDownDown, iconDownDown1, btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconKnowledgeKey, iconMiningWallet, iconMasternode, btnSearch;
     @FXML private TextField searchApisAndTokens;
     @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltip3Controller, tooltip4Controller;
     @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltip3Pane, tooltip4Pane, topTransferPane;
+
+    // reward detail
+    @FXML private ScrollPane rewardDetailScroll;
+    @FXML private AnchorPane rewardDetailRoot, rewardDetailRoot1, rewardDetailScrollContent;
+    @FXML private VBox rewardDetailList;
+    @FXML private GridPane rewordDetailPane;
 
     // tab wallet
     @FXML private GridPane walletTable;
@@ -74,13 +88,15 @@ public class WalletController extends BaseViewController {
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
-    @FXML Label totalAssetLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel, headerTokenTransfer;
-    @FXML Label rewardEng1, rewardEng2, rewardEng3, rewardEng4, rewardKor1, rewardKor2, rewardKor3, rewardKor4, rewardKor5;
-    @FXML AnchorPane rewardTooltip;
+    @FXML private Label totalAssetLabel, myRewardsLabel, rewardedLabel, rewardedLabel1, nowStakingLabel, howApisLabel1, headerTokenTransfer;
+    @FXML private Label myRewardsLabel1, nowStakingLabel1;
+    @FXML private Label rewardEng11, rewardEng21, rewardEng31, rewardEng41, rewardKor11, rewardKor21, rewardKor31, rewardKor41, rewardKor51;
+    @FXML private AnchorPane rewardTooltip1;
 
     @FXML private AnchorPane createWalletPane;
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
     private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
+    private ArrayList<BaseFxmlController> rewardDetails = new ArrayList<>();
 
     private Image imageChangeName, imageChangeNameHover;
     private Image imageChangePassword, imageChangePasswordHover;
@@ -112,7 +128,8 @@ public class WalletController extends BaseViewController {
         this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.totalAsset);
         this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.myRewards);
         this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
-        this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
+        this.nowStakingLabel1.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
+        this.howApisLabel1.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
         this.btnKnowledgeKey.textProperty().bind(StringManager.getInstance().wallet.knowledgeKeyButton);
         this.btnMiningWallet.textProperty().bind(StringManager.getInstance().wallet.miningButton);
         this.btnMasternode.textProperty().bind(StringManager.getInstance().wallet.masternodeButton);
@@ -133,15 +150,15 @@ public class WalletController extends BaseViewController {
         this.tooltip3Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.backupWallet);
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
 
-        this.rewardEng1.textProperty().bind(StringManager.getInstance().wallet.rewardEng1);
-        this.rewardEng2.textProperty().bind(StringManager.getInstance().wallet.rewardEng2);
-        this.rewardEng3.textProperty().bind(StringManager.getInstance().wallet.rewardEng3);
-        this.rewardEng4.textProperty().bind(StringManager.getInstance().wallet.rewardEng4);
-        this.rewardKor1.textProperty().bind(StringManager.getInstance().wallet.rewardKor1);
-        this.rewardKor2.textProperty().bind(StringManager.getInstance().wallet.rewardKor2);
-        this.rewardKor3.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
-        this.rewardKor4.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
-        this.rewardKor5.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
+        this.rewardEng11.textProperty().bind(StringManager.getInstance().wallet.rewardEng1);
+        this.rewardEng21.textProperty().bind(StringManager.getInstance().wallet.rewardEng2);
+        this.rewardEng31.textProperty().bind(StringManager.getInstance().wallet.rewardEng3);
+        this.rewardEng41.textProperty().bind(StringManager.getInstance().wallet.rewardEng4);
+        this.rewardKor11.textProperty().bind(StringManager.getInstance().wallet.rewardKor1);
+        this.rewardKor21.textProperty().bind(StringManager.getInstance().wallet.rewardKor2);
+        this.rewardKor31.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
+        this.rewardKor41.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
+        this.rewardKor51.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
 
         StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold12);
 
@@ -156,6 +173,7 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(totalSubUnitLabel, StyleManager.Barlow.Regular12);
         StyleManager.fontStyle(totalSubTitle, StyleManager.Barlow.Regular12);
         StyleManager.fontStyle(rewardedLabel, StyleManager.Barlow.SemiBold12);
+        StyleManager.fontStyle(rewardedLabel1, StyleManager.Barlow.SemiBold12);
 
         StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold12);
@@ -168,25 +186,25 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(rewarded, StyleManager.Barlow.Regular32);
 
 
-        StyleManager.fontStyle(rewardEng1, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardEng2, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardEng3, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardEng4, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor1, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor2, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardKor3, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor4, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardKor5, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng11, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng21, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(rewardEng31, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng41, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(rewardKor11, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(rewardKor21, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardKor31, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(rewardKor41, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardKor51, StyleManager.Standard.Regular12);
 
-        StyleManager.fontColorStyle(rewardEng1, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardEng2, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardEng3, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardEng4, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardKor1, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardKor2, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardKor3, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardKor4, StyleManager.AColor.Cf8f8fb);
-        StyleManager.fontColorStyle(rewardKor5, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng11, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng21, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng31, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng41, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor11, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor21, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor31, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor41, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor51, StyleManager.AColor.Cf8f8fb);
 
     }
 
@@ -305,6 +323,11 @@ public class WalletController extends BaseViewController {
         tooltip2Controller.hideTooltip();
         tooltip3Controller.hideTooltip();
         tooltip4Controller.hideTooltip();
+
+        tooltip1Pane.setPrefHeight(0);
+        tooltip2Pane.setPrefHeight(0);
+        tooltip3Pane.setPrefHeight(0);
+        tooltip4Pane.setPrefHeight(0);
     }
 
     public void showToolGroup(boolean showMining, boolean showMaster){
@@ -464,6 +487,7 @@ public class WalletController extends BaseViewController {
 
         // check staking
         stakingPane.setVisible(isStaking);
+        stakingPane1.setVisible(isStaking);
     }
     private void updateTokenList(){
         tokenListController.updateWallet(walletListModels);
@@ -490,6 +514,38 @@ public class WalletController extends BaseViewController {
         walletListController.refresh();
 
     }
+
+    public void updateRewardDetailList(){
+        // 리스트 수 체크
+        ArrayList<KeyStoreDataExp> keyStoreDataExpArray = AppManager.getInstance().getKeystoreExpList();
+
+        // 지갑수가 데이터수보다 많을 경우
+        if(keyStoreDataExpArray.size() > rewardDetails.size()) {
+            for (int i = rewardDetails.size(); i < keyStoreDataExpArray.size(); i++) {
+                addRewardDetail(keyStoreDataExpArray.get(i));
+            }
+        }
+
+        // 데이터수가 지갑수보다 많을 경우
+        if(rewardDetails.size() > keyStoreDataExpArray.size()) {
+            for(int i=0; i<rewardDetails.size(); i++ ){
+                if(i >= keyStoreDataExpArray.size()){
+                    rewardDetails.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        // 데이터 대입
+        for(int i=0; i<rewardDetails.size(); i++ ){
+            RewardDetailItemController controller = (RewardDetailItemController) rewardDetails.get(i).getController();
+            controller.setData(keyStoreDataExpArray.get(i));
+        }
+
+        // 새로고침
+        drawRewardDetailNode();
+    }
+
 
     public void walletSort(Sort sortType){
         walletListController.walletSort(sortType);
@@ -643,9 +699,11 @@ public class WalletController extends BaseViewController {
         if(id.equals("btnChangeNameWallet")) {
             btnChangeNameWallet.setImage(imageChangeNameHover);
             tooltip1Controller.showTooltip();
+            tooltip1Pane.setPrefHeight(-1);
         }else if(id.equals("btnChangePasswordWallet")) {
             btnChangePasswordWallet.setImage(imageChangePasswordHover);
             tooltip2Controller.showTooltip();
+            tooltip2Pane.setPrefHeight(-1);
         }else if(id.equals("toolKnowledgekey")) {
             // Check knowledge key used
             if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(walletCheckList.get(0).getAddress()))){
@@ -659,11 +717,13 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnBackupWallet")) {
             btnBackupWallet.setImage(imageBakcupHover);
             tooltip3Controller.showTooltip();
+            tooltip3Pane.setPrefHeight(-1);
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemoveHover);
             tooltip4Controller.showTooltip();
-        }else if(id.equals("apisInfoPane")){
-            this.rewardTooltip.setVisible(true);
+            tooltip4Pane.setPrefHeight(-1);
+        }else if(id.equals("apisInfoPane1")){
+            this.rewardTooltip1.setVisible(true);
         }else if(id.equals("btnToken")){
             this.btnToken.setStyle(new JavaFXStyle(this.btnToken.getStyle()).add("-fx-background-color", "#a61c1c").toString());
         }else if(id.equals("btnCreateWallet")){
@@ -713,8 +773,8 @@ public class WalletController extends BaseViewController {
             btnBackupWallet.setImage(imageBakcup);
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemove);
-        }else if(id.equals("apisInfoPane")){
-            this.rewardTooltip.setVisible(false);
+        }else if(id.equals("apisInfoPane1")){
+            this.rewardTooltip1.setVisible(false);
         }else if(id.equals("btnToken")){
             this.btnToken.setStyle(new JavaFXStyle(this.btnToken.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         }else if(id.equals("btnCreateWallet")){
@@ -857,6 +917,9 @@ public class WalletController extends BaseViewController {
 
         // 레이아웃 데이터 업데이트
         settingLayoutData();
+
+        // 리워드 상세 리스트 업데이트
+        updateRewardDetailList();
     }
 
     // 지갑리스트의 선택 목록을 초기화 한다.
@@ -975,6 +1038,10 @@ public class WalletController extends BaseViewController {
 
         // init tabs
         initLayoutWalletListTab();
+
+        // reward detail
+        initRewardDetail();
+
         this.tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
             @Override
             public void onMouseClicked(String text, int index) {
@@ -995,7 +1062,7 @@ public class WalletController extends BaseViewController {
         this.walletListTabMenuController.setFontSize14(20);
         this.walletListTabMenuController.setHSpace(20);
 
-        this.rewardTooltip.setVisible(false);
+        this.rewardTooltip1.setVisible(false);
 
         // init top total asset
         settingLayoutData();
@@ -1134,6 +1201,145 @@ public class WalletController extends BaseViewController {
         // Default Sort aliasAsc
         walletSort(Sort.ALIAS_ASC);
         tokenSort(Sort.ALIAS_ASC);
+
+    }
+
+
+    private boolean isScrolling = false;
+    private void initRewardDetail(){
+        myRewardsLabel1.textProperty().bind(myRewardsLabel.textProperty());
+        rewarded1.textProperty().bind(rewarded.textProperty());
+        rewardedLabel1.textProperty().bind(rewardedLabel.textProperty());
+
+        rewardDetailRoot1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                drawRewardDetailNode();
+                setVisibleRewardDetail(true);
+            }
+        });
+        rewardDetailRoot.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setVisibleRewardDetail(false);
+            }
+        });
+        rewardDetailScroll.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrolling){
+                    isScrolling = false;
+                }else{
+                    isScrolling = true;
+
+                    double w1w2 = rewardDetailScrollContent.getHeight() - rewardDetailScroll.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = rewardDetailScroll.getVvalue() + add;
+                        if(moveV > rewardDetailScroll.getVmax()){
+                            moveV = rewardDetailScroll.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = rewardDetailScroll.getVvalue() - add;
+                        if(moveV < rewardDetailScroll.getVmin()){
+                            moveV = rewardDetailScroll.getVmin();
+                        }
+                    }
+
+                    if(!rewardDetailScroll.isPressed()) {
+                        rewardDetailScroll.setVvalue(moveV);
+                    }
+                }
+            }
+        });
+
+
+        ArrayList<KeyStoreDataExp> keyStoreDataExpArray = AppManager.getInstance().getKeystoreExpList();
+        for(int i=0; i<keyStoreDataExpArray.size(); i++){
+            addRewardDetail(keyStoreDataExpArray.get(i));
+        }
+
+        drawRewardDetailNode();
+        setVisibleRewardDetail(false);
+    }
+
+    private void drawRewardDetailNode(){
+        rewardDetailList.getChildren().clear();
+
+        // sort
+        Collections.sort(rewardDetails, new SortRewardDesc());
+
+        for(int i=0; i<rewardDetails.size(); i++){
+            RewardDetailItemController controller = (RewardDetailItemController)rewardDetails.get(i).getController();
+//            if(i%2 == 0){
+//                controller.setBackground("#ffffff");
+//            }else{
+//                controller.setBackground("#f8f8fb");
+//            }
+            rewardDetailList.getChildren().add(rewardDetails.get(i).getNode());
+        }
+    }
+
+    /**
+     * 리워드 많이 받은 순으로 정렬
+     */
+    public class SortRewardDesc implements Comparator<BaseFxmlController> {
+        @Override
+        public int compare(BaseFxmlController o1, BaseFxmlController o2) {
+            RewardDetailItemController o1Ctrl = (RewardDetailItemController)o1.getController();
+            RewardDetailItemController o2Ctrl = (RewardDetailItemController)o2.getController();
+            return o2Ctrl.getReward().compareTo(o1Ctrl.getReward());
+        }
+    }
+
+    /**
+     * 지갑이름 오름 차순으로 정렬
+     */
+    public class SortAliasAsc implements Comparator<BaseFxmlController> {
+        @Override
+        public int compare(BaseFxmlController o1, BaseFxmlController o2) {
+            RewardDetailItemController o1Ctrl = (RewardDetailItemController)o1.getController();
+            RewardDetailItemController o2Ctrl = (RewardDetailItemController)o2.getController();
+            return o1Ctrl.getAlias().compareTo(o2Ctrl.getAlias());
+        }
+    }
+
+    private void addRewardDetail(KeyStoreDataExp data){
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("wallet/reward_detail_item.fxml");
+            RewardDetailItemController controller = (RewardDetailItemController)fxmlController.getController();
+            controller.setData(data);
+            rewardDetails.add(fxmlController);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void setVisibleRewardDetail(boolean isVisible){
+        rewordDetailPane.setVisible(isVisible);
+
+        if(isVisible){
+            GridPane.setMargin(rewardDetailScroll, new Insets(24, 0,0,0));
+            rewardDetailScroll.setPrefHeight(-1);
+            rewardDetailScroll.setVvalue(0);
+        }else{
+            GridPane.setMargin(rewardDetailScroll, new Insets(0, 0,0,0));
+            rewardDetailScroll.setPrefHeight(0);
+        }
 
     }
 

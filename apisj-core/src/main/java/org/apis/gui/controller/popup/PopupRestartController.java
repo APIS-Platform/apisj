@@ -74,6 +74,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                     PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup(rootPane, "popup_masternode.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
+                    controller.showStartBtn();
                     controller.getPasswordController().requestFocus();
                     break;
                 }

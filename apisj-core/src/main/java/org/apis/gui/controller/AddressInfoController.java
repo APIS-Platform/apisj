@@ -166,6 +166,7 @@ public class AddressInfoController extends BaseViewController {
         }
 
         if(address != null && address.length() == 40) {
+
             BigInteger txNonce = AppManager.getInstance().getTxNonce(address);
             BigInteger apis = AppManager.getInstance().getBalance(address);
             BigInteger mineral = AppManager.getInstance().getMineral(address);
