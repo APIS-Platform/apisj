@@ -37,7 +37,6 @@ import org.apis.sync.SyncManager;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
 import org.apis.util.*;
-import org.apis.util.blockchain.ApisUtil;
 import org.apis.util.blockchain.MasternodeRewardData;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
@@ -571,8 +570,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.setRewardPoint(rp);
         block.setCumulativeRewardPoint(cumulativeRP);
 
+
+        // Start distributing reward to the MNs vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
         final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
-        // Start distributing reward to the MNs======================================================================
         if(constants.isMasternodeRewardBlock(blockNumber)) {
 
             // 각 이자받는 마스터노드 갯수를 구한다.
@@ -611,16 +611,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             long countMajor = majorEarlybird.size() + majorNormal.size() + majorLate.size();
             long countPrivate = privateEarlybird.size() + privateNormal.size() + privateLate.size();
 
-            BigInteger oneAPIS = ApisUtil.ONE_APIS();
-            BigInteger weightGeneral = BigInteger.valueOf(countGeneral*100L).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(oneAPIS);
-            BigInteger weightMajor = BigInteger.valueOf(countMajor*105L).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(oneAPIS);
-            BigInteger weightPrivate = BigInteger.valueOf(countPrivate*120L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
-
-            BigInteger weightTotal = weightGeneral.add(weightMajor).add(weightPrivate);
             BigInteger storedMasternodeReward = track.getBalance(constants.getMASTERNODE_STORAGE());
 
-            if(weightTotal.compareTo(BigInteger.ZERO) > 0) {
-                BigInteger amountGeneral = storedMasternodeReward.divide(weightTotal);
+            if(countGeneral > 0 || countMajor > 0 || countPrivate > 0) {
+                BigInteger amountGeneral = MasternodeRewardUtil.calcBasicReward(constants, storedMasternodeReward, countGeneral, countMajor, countPrivate);
 
                 block.setMnGeneralList(allGeneralNormal);
                 block.setMnMajorList(allMajorNormal);
@@ -632,7 +626,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 block.setMnReward(amountGeneral);
             }
         }
-        // Finish distributing reward to the MNs======================================================================
+        // Finish distributing reward to the MNs ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
         // 블록 내용을 실행-
@@ -1301,140 +1295,51 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if(constants.isMasternodeRewardBlock(block.getNumber())) {
 
             BigInteger storedMnReward = track.getBalance(constants.getMASTERNODE_STORAGE());
-            BigInteger mnRewardUnit = block.getMnReward();
+            BigInteger mnBasicReward = block.getMnReward();
 
-            if(mnRewardUnit.compareTo(BigInteger.ZERO) > 0) {
+            if(mnBasicReward.compareTo(BigInteger.ZERO) > 0) {
                 // 블록에 저장된 마스터노드를 구한다.
-                List<byte[]> mnGeneralsOnBLock = block.getMnGeneralList();
-                List<byte[]> mnMajorsOnBlock = block.getMnMajorList();
-                List<byte[]> mnPrivatesOnBlock = block.getMnPrivateList();
+                List<byte[]> mnGeneralNormalOnBLock = block.getMnGeneralList();
+                List<byte[]> mnGeneralLateOnBLock   = block.getMnGeneralLateList();
+                List<byte[]> mnMajorNormalOnBlock   = block.getMnMajorList();
+                List<byte[]> mnMajorLateOnBlock     = block.getMnMajorLateList();
+                List<byte[]> mnPrivateNormalOnBlock = block.getMnPrivateList();
+                List<byte[]> mnPrivateLateOnBlock   = block.getMnPrivateLateList();
 
-                int countGeneralOnBlock = mnGeneralsOnBLock.size();
-                int countMajorOnBlock = mnMajorsOnBlock.size();
-                int countPrivateOnBlock = mnPrivatesOnBlock.size();
+                // 레포지토리에 저장된 마스터노드 갯수를 구한다.
+                List<byte[]> generalEarly   = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
+                List<byte[]> generalNormal  = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
+                List<byte[]> generalLate    = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE(), block.getNumber());
+                List<byte[]> majorEarly     = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
+                List<byte[]> majorNormal    = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
+                List<byte[]> majorLate      = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE(), block.getNumber());
+                List<byte[]> privateEarly   = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
+                List<byte[]> privateNormal  = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
+                List<byte[]> privateLate    = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE(), block.getNumber());
 
-                // 마스터노드 1개가 받는 보상
-                BigInteger mnRewardGeneral  = BigInteger.ZERO;
-                BigInteger mnRewardMajor    = BigInteger.ZERO;
-                BigInteger mnRewardPrivate  = BigInteger.ZERO;
+                byte[] repoMnHash = calcMnHash(generalEarly, generalNormal, generalLate, majorEarly, majorNormal, majorLate, privateEarly, privateNormal, privateLate);
 
-                BigInteger oneAPIS = ApisUtil.ONE_APIS();
-                if(countGeneralOnBlock > 0) {
-                    BigInteger weight = BigInteger.valueOf(countGeneralOnBlock*100L).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(oneAPIS);
-                    mnRewardGeneral = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(countGeneralOnBlock));
+                MasternodeRewardData masternodeRewardData = MasternodeRewardUtil.calcRewards(constants, block.getMnReward(), block.getMnGeneralList().size(), block.getMnGeneralLateList().size(), block.getMnMajorList().size(), block.getMnMajorLateList().size(), block.getMnPrivateList().size(), block.getMnPrivateLateList().size());
+
+                if(storedMnReward.compareTo(masternodeRewardData.getTotal()) >= 0 && FastByteComparisons.equal(block.getMnHash(), repoMnHash)) {
+                    // 재단에 할당된 부분을 전송한다.
+                    distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), masternodeRewardData.getFoundation(), track, rewards);
+
+                    // Normal distribute
+                    distributeMnReward(masternodeRewardData.getGeneralNormal(), mnGeneralNormalOnBLock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getMajorNormal(),   mnMajorNormalOnBlock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getPrivateNormal(), mnPrivateNormalOnBlock, track, constants, rewards);
+
+                    // Late distribute
+                    distributeMnReward(masternodeRewardData.getGeneralLate(),   mnGeneralLateOnBLock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getMajorLate(),     mnMajorLateOnBlock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getPrivateLate(),   mnPrivateLateOnBlock, track, constants, rewards);
+
+                    ConsoleUtil.printlnGreen(masternodeRewardData.toString());
+                } else {
+                    ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
+                    logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
                 }
-
-                if(countMajorOnBlock > 0) {
-                    BigInteger weight = BigInteger.valueOf(countMajorOnBlock*105L).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(oneAPIS);
-                    mnRewardMajor = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(countMajorOnBlock));
-                }
-
-                if(countPrivateOnBlock > 0) {
-                    BigInteger weight = BigInteger.valueOf(countPrivateOnBlock*120L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
-                    mnRewardPrivate = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(countPrivateOnBlock));
-                }
-
-                ConsoleUtil.printlnPurple("Original General Reward : %s", ApisUtil.readableApis(mnRewardGeneral));
-                ConsoleUtil.printlnPurple("Original Major Reward : %s", ApisUtil.readableApis(mnRewardMajor));
-                ConsoleUtil.printlnPurple("Original Private Reward : %s", ApisUtil.readableApis(mnRewardPrivate));
-
-                BigInteger totalGeneralReward = mnRewardGeneral.multiply(BigInteger.valueOf(countGeneralOnBlock));
-                BigInteger totalMajorReward = mnRewardMajor.multiply(BigInteger.valueOf(countMajorOnBlock));
-                BigInteger totalPrivateReward = mnRewardPrivate.multiply(BigInteger.valueOf(countPrivateOnBlock));
-
-                // 저장된 보상이 계산된 보상과 같거나 더 커야 한다.
-                if(storedMnReward.compareTo(totalGeneralReward.add(totalMajorReward).add(totalPrivateReward)) >= 0) {
-
-                    // 레포지토리에 저장된 마스터노드 갯수를 구한다.
-                    List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
-                    List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
-                    List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE(), block.getNumber());
-
-                    List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN());
-                    List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL());
-                    List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE(), block.getNumber());
-
-                    List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN());
-                    List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
-                    List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE(), block.getNumber());
-
-                    byte[] repoMnHash = calcMnHash(generalEarly, generalNormal, generalLate, majorEarly, majorNormal, majorLate, privateEarly, privateNormal, privateLate);
-
-                    // 레포지토리에서 읽어온 리스트와 블록으로 전달받은 리스트의 수가 동일해야만 진행한다.
-                    //if (mnGeneralsOnBLock.size() == allGeneral.size() && mnMajorsOnBlock.size() == allMajor.size() && mnPrivatesOnBlock.size() == allPrivate.size()) {
-                    if(FastByteComparisons.equal(block.getMnHash(), repoMnHash)) {
-                        /* Give rewards to late participating masternodes.
-                         *
-                         * 늦게 참여한 마스터노드는 보상의 70%만을 가져갈 수 있다.
-                         * 나머지 15%는 정상적으로 참여한 다른 마스터노드들에게 부여되고 나머지 15%는 재단에 부여된다.
-                         */
-                        BigInteger remainRewardByLateNode;  // 보상의 30% 잔여분
-                        remainRewardByLateNode = distributeLateMnReward(mnRewardGeneral, generalLate, track, constants, rewards);
-                        remainRewardByLateNode = remainRewardByLateNode.add(distributeLateMnReward(mnRewardMajor, majorLate, track, constants, rewards));
-                        remainRewardByLateNode = remainRewardByLateNode.add(distributeLateMnReward(mnRewardPrivate, privateLate, track, constants, rewards));
-
-                        /*
-                         * 늦게 참여한 마스터노드에게 분배하고 남은 보상을 다른 노드들에게 할당되는 부분과 재단에 할당되는 부분으로 나눠야 한다.
-                         * 다른 마스터노드에게는 1/2 만큼을 할당 (rewardToOtherNodes)
-                         * 재단에는 나머지 1/2 만큼을 할당 (rewardToFoundation)
-                         */
-                        BigInteger rewardToOtherNodes = remainRewardByLateNode.divide(BigInteger.valueOf(2));
-                        BigInteger rewardToFoundation = remainRewardByLateNode.subtract(rewardToOtherNodes);
-
-                        // 재단에 할당된 부분을 전송한다.
-                        distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), rewardToFoundation, track, rewards);
-                        ConsoleUtil.printlnPurple("Foundation - [%s] : %s", ByteUtil.toHexString(constants.getFOUNDATION_STORAGE()), ApisUtil.readableApis(rewardToFoundation, ',', true));
-
-                        long countGeneralNotLate = generalEarly.size() + generalNormal.size();
-                        long countMajorNotLate = majorEarly.size() + majorNormal.size();
-                        long countPrivateNotLate = privateEarly.size() + privateNormal.size();
-
-                        BigInteger remainGeneralWeight = BigInteger.valueOf(countGeneralNotLate * 100).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
-                        BigInteger remainMajorWeight = BigInteger.valueOf(countMajorNotLate * 105).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
-                        BigInteger remainPrivateWeight = BigInteger.valueOf(countPrivateNotLate * 120).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
-                        BigInteger remainTotalWeight = remainGeneralWeight.add(remainMajorWeight).add(remainPrivateWeight);
-
-                        BigInteger debrisRewardGeneral = BigInteger.ZERO;
-                        BigInteger debrisRewardMajor = BigInteger.ZERO;
-                        BigInteger debrisRewardPrivate = BigInteger.ZERO;
-                        if(remainTotalWeight.compareTo(BigInteger.ZERO) > 0) {
-                            if(countGeneralNotLate > 0) {
-                                debrisRewardGeneral = rewardToOtherNodes.multiply(remainGeneralWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countGeneralNotLate));
-                            }
-                            if(countMajorNotLate > 0) {
-                                debrisRewardMajor = rewardToOtherNodes.multiply(remainMajorWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countMajorNotLate));
-                            }
-                            if(countPrivateNotLate > 0) {
-                                debrisRewardPrivate = rewardToOtherNodes.multiply(remainPrivateWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countPrivateNotLate));
-                            }
-                        }
-
-                        ConsoleUtil.printlnPurple("Debris General Reward : %s", ApisUtil.readableApis(debrisRewardGeneral));
-                        ConsoleUtil.printlnPurple("Debris Major Reward : %s", ApisUtil.readableApis(debrisRewardMajor));
-                        ConsoleUtil.printlnPurple("Debris Private Reward : %s", ApisUtil.readableApis(debrisRewardPrivate));
-
-                        mnRewardGeneral = mnRewardGeneral.add(debrisRewardGeneral);
-                        mnRewardMajor = mnRewardMajor.add(debrisRewardMajor);
-                        mnRewardPrivate = mnRewardPrivate.add(debrisRewardPrivate);
-
-                        // 얼리버드 처리
-                        distributeMnReward(mnRewardGeneral, generalEarly, track, constants, rewards);
-                        distributeMnReward(mnRewardMajor, majorEarly, track, constants, rewards);
-                        distributeMnReward(mnRewardPrivate, privateEarly, track, constants, rewards);
-
-
-                        // 일반 노드 처리
-                        distributeMnReward(mnRewardGeneral, generalNormal, track, constants, rewards);
-                        distributeMnReward(mnRewardMajor, majorNormal, track, constants, rewards);
-                        distributeMnReward(mnRewardPrivate, privateNormal, track, constants, rewards);
-                    } else {
-                        ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
-                        logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
-                    }
-                }
-
-                MasternodeRewardData data = MasternodeRewardUtil.calcRewards(constants, block.getMnReward(), block.getMnGeneralList().size(), block.getMnGeneralLateList().size(), block.getMnMajorList().size(), block.getMnMajorLateList().size(), block.getMnPrivateList().size(), block.getMnPrivateLateList().size());
-                ConsoleUtil.printlnGreen(data.toString());
             }
         }
 
@@ -1481,54 +1386,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, wholeReward, track, rewards);
-            ConsoleUtil.printlnPurple("Normal     - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(wholeReward, ',', true));
+            // ConsoleUtil.printlnPurple("Normal     - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(wholeReward, ',', true));
         }
     }
 
-    private void distributeEbMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
-        BigInteger reward = wholeReward.multiply(BigInteger.valueOf(70)).divide(BigInteger.valueOf(100));
-        BigInteger fee = wholeReward.subtract(reward);
-        for(byte[] mn : listNode) {
-            byte[] recipient = track.getMnRecipient(mn);
-            if(recipient == null) {
-                recipient = mn;
-            }
 
-            distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
-            distributeReward(constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM_CONTRACT(), fee, track, rewards);
-
-            ConsoleUtil.printlnPurple("Early Bird - [%s]>>[%s] : %s (Fee %s)", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true), ApisUtil.readableApis(fee, ',', true));
-        }
-    }
-
-    /**
-     * 늦게 참여한 마스터노드들에게 보상을 분배한다.
-     * 늦게 참여한 마스터노드는 전체 보상의 70%를 할당받는다.
-     * 20%는 정상적으로 참여한 마스터노드들에게 분배된다.
-     * 10%는 재단에 할당된다.
-     * @param wholeReward 일반적인 마스터노드에 할당된 보상
-     * @param nodes 늦게 참여한 노드들의 리스트
-     * @param track 저장소
-     * @param constants 블록체인 상수
-     * @param rewards 보상 내역
-     * @return 마스터노드들에게 보상을 분배하고 남은 보상의 30%
-     */
-    private BigInteger distributeLateMnReward(BigInteger wholeReward, List<byte[]> nodes, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
-        BigInteger reward = wholeReward.multiply(BigInteger.valueOf(70)).divide(BigInteger.valueOf(100));
-        BigInteger remainReward = wholeReward.subtract(reward).multiply(BigInteger.valueOf(nodes.size()));
-
-        for(byte[] mn : nodes) {
-            byte[] recipient = track.getMnRecipient(mn);
-            if(recipient == null) {
-                recipient = mn;
-            }
-            distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
-
-            ConsoleUtil.printlnPurple("Late MN    - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true));
-        }
-
-        return remainReward;
-    }
 
     private void distributeReward(byte[] rewardFrom, byte[] rewardTo, BigInteger rewardAmount, Repository track, Map<byte[], BigInteger> rewards) {
         BIUtil.transfer(track, rewardFrom, rewardTo, rewardAmount);
