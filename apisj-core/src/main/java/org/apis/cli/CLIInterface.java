@@ -42,7 +42,7 @@ public class CLIInterface {
     public static void call(String[] args) {
         try {
             Map<String, Object> cliOptions = new HashMap<>();
-            processRpc("");
+
             for (int i = 0; i < args.length; ++i) {
                 String arg = args[i];
 
@@ -133,8 +133,8 @@ public class CLIInterface {
     }
 
     private static void processRpc(String arg) throws IOException {
-        /*if(!"-rpc".equals(arg))
-            return;*/
+        if(!"-rpc".equals(arg))
+            return;
 
         CLIStart cliStart = new CLIStart();
         cliStart.startRpcServerCheck();
