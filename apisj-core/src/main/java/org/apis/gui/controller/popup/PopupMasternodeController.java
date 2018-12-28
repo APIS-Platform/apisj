@@ -141,7 +141,7 @@ public class PopupMasternodeController extends BasePopupController {
         }
     }
 
-    private void showStartBtn() {
+    public void showStartBtn() {
         startBtn.setVisible(true);
         cancelRqBtn.setVisible(false);
         cancelChangeGrid.setVisible(false);
