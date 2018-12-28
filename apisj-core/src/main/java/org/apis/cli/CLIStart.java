@@ -96,9 +96,9 @@ public class CLIStart {
             prop.setProperty("max_connections", String.valueOf(1));
             prop.setProperty("allow_ip", "127.0.0.1");
 
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
+            File configDir = new File(config.configDir());
+            if(!configDir.exists()) {
+                configDir.mkdirs();
             }
             OutputStream output = new FileOutputStream(dirRpc);
             prop.store(output, null);
