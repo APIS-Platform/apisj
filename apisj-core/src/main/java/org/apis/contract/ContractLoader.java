@@ -33,7 +33,7 @@ public class ContractLoader {
     private static final String OWNER_GENESIS_1 = "891122cb40b2a83b2686107720d84c7eb7f37ad4";
     private static final String OWNER_GENESIS_2 = "dba192f770c6a61104c95d40787c22c5220eeb78";
     private static final String OWNER_GENESIS_3 = "57eb338a5424ae6611e4d3fe0effdd55b06792e2";
-    private static final String PLATFORM_WORKER = "792bda21311396ea99676c49f501345a64421f8a";
+    private static final String PLATFORM_WORKER = "c5f590c1035ae780906514ff8e76dd86b89b97dc";
 
 
     private static final SystemProperties config = SystemProperties.getDefault();
