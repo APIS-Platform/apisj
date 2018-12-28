@@ -88,9 +88,10 @@ public class Constants {
     private static final byte[] SMART_CONTRACT_CODE_FREEZER = ByteUtil.hexStringToBytes("766810d7e2c69fe619b771d0a388eb40770feaf0");
     private static final byte[] PROOF_OF_KNOWLEDGE = ByteUtil.hexStringToBytes("17660edd98a8044f87c572e5f211cc365fc2bd04");
     private static final byte[] BUY_MINERAL = ByteUtil.hexStringToBytes("becf13e64aebf8b0637be18bcea7a892fe48e498");
+    private static final byte[] MASTERNODE_GOVERNANCE = ByteUtil.hexStringToBytes("a6832980f1c41554a80e72b03a7b80817148ef4d");
 
     private static final byte[] MASTERNODE_PLATFORM = ByteUtil.hexStringToBytes("866962b19d403a712f2c6bca390f9f295ba2dfe9");
-    
+
     private static final byte[] MASTERNODE_STORAGE = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777770");
     private static final byte[] MASTERNODE_GENERAL_BASE_EARLY = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777771");
     private static final byte[] MASTERNODE_MAJOR_BASE_EARLY = ByteUtil.hexStringToBytes("7777777777777777777777777777777777777772");
@@ -255,6 +256,8 @@ public class Constants {
     public byte[] getPROOF_OF_KNOWLEDGE() { return PROOF_OF_KNOWLEDGE; }
 
     public byte[] getBUY_MINERAL() { return BUY_MINERAL; }
+
+    public byte[] getMASTERNODE_GOVERNANCE() { return MASTERNODE_GOVERNANCE; }
 
     public long getMASTERNODE_UPDATING_LIMIT() { return MASTERNODE_UPDATING_LIMIT; }
 

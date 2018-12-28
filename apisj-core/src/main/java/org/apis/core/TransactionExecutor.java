@@ -227,6 +227,18 @@ public class TransactionExecutor {
         }
 
         /*
+         * 마스터노드 거버넌스와 관련된 컨트렉트는 마스터노드들만 신청할 수 있도록 한다.
+         */
+        if(tx.getReceiveAddress() != null && FastByteComparisons.equal(tx.getReceiveAddress(), config.getBlockchainConfig().getCommonConstants().getMASTERNODE_GOVERNANCE())) {
+            AccountState senderState = track.getAccountState(tx.getSender());
+
+            if(senderState.getMnStartBlock().compareTo(BigInteger.ZERO) == 0) {
+                execError("Governance contracts can only participate in masternodes.");
+                return;
+            }
+        }
+
+        /*
          * 마스터노드 등록과 관련된 트랜잭션은 2FA 확인을 하지 않는다
          * 그 외의 트랜잭션은 2FA가 설정되어있는지, 일치하는지 등을 확인한다.
          *
