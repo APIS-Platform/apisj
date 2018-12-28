@@ -16,9 +16,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
+<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
     <children>
         <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="280.0">
             <columnConstraints>
@@ -248,18 +249,58 @@
         <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columnConstraints>
                 <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
-                <ColumnConstraints minWidth="10.0" prefWidth="750.0" />
+                <ColumnConstraints hgrow="SOMETIMES" />
                 <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
-                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
                 <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="24.0" />
                 <RowConstraints minHeight="10.0" prefHeight="34.0" />
                 <RowConstraints minHeight="10.0" prefHeight="10.0" />
-                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="140.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="140.0" valignment="TOP" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
+            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                  <ColumnConstraints minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TextField fx:id="searchApisAndTokens" focusTraversable="false" prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
+                     <font>
+                        <Font name="Noto Sans KR Regular" size="10.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </TextField>
+                  <GridPane GridPane.columnIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ImageView fx:id="btnSearch" fitHeight="30.0" fitWidth="32.0" onMouseClicked="#onMouseClickedSearchToken" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+                           <image>
+                              <Image url="@../../image/btn_search_none@2x.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+               </children>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
+            </GridPane>
                 <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <children>
                         <Pane layoutY="-84.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #d7dae2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -430,65 +471,28 @@
                   <DropShadow color="#0000004d" offsetY="3.0" />
                </effect>
                 </AnchorPane>
-                <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <TextField fx:id="searchApisAndTokens" focusTraversable="false" prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
-                            <font>
-                                <Font name="Noto Sans KR Regular" size="10.0" />
-                            </font>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                        </TextField>
-                  <GridPane GridPane.columnIndex="1">
+            <AnchorPane fx:id="rewardDetailRoot1" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <children>
+                  <Pane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_3333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </Pane>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
+                        <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="80.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                      </rowConstraints>
                      <children>
-                              <ImageView fx:id="btnSearch" fitHeight="30.0" fitWidth="32.0" onMouseClicked="#onMouseClickedSearchToken" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
-                                  <image>
-                                      <Image url="@../../image/btn_search_none@2x.png" />
-                                  </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                              </ImageView>
-                     </children>
-                  </GridPane>
-                    </children>
-               <effect>
-                  <DropShadow color="#0000001a" offsetY="3.0" />
-               </effect>
-                </GridPane>
-                <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
-                    <children>
-                        <Pane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_3333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <effect>
-                                <DropShadow color="#0000001a" offsetY="3.0" />
-                            </effect>
-                        </Pane>
-                        <GridPane AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="16.0">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" />
-                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                <RowConstraints vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Label fx:id="myRewardsLabel" styleClass="barlow_font_regular_14" text="My rewards" />
-                        <AnchorPane fx:id="stakingPane" GridPane.columnIndex="1">
+                        <Label fx:id="myRewardsLabel1" styleClass="barlow_font_regular_14" text="My rewards" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                        <AnchorPane fx:id="stakingPane1" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
                               <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
@@ -499,49 +503,49 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                              <Pane fx:id="nowStakingDot" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_3333">
+                                    <Pane fx:id="nowStakingDot1" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_3333">
                                        <GridPane.margin>
                                           <Insets right="4.0" />
                                        </GridPane.margin>
                                     </Pane>
-                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_12" text="Now Staking" textFill="#b01e1e" GridPane.columnIndex="1" />
+                                    <Label fx:id="nowStakingLabel1" styleClass="font_regular_12" text="Now Staking" textFill="#b01e1e" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
                         </AnchorPane>
-                                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                      <columnConstraints>
-                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                                      </columnConstraints>
-                                      <rowConstraints>
-                                          <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="6.0" minHeight="5.0" prefHeight="6.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="17.0" minHeight="17.0" prefHeight="17.0" />
-                                      </rowConstraints>
-                                      <children>
-                                          <AnchorPane GridPane.hgrow="SOMETIMES">
-                                              <children>
+                        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="58.0" />
+                              <RowConstraints maxHeight="6.0" minHeight="5.0" prefHeight="6.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane GridPane.hgrow="SOMETIMES">
+                                 <children>
                                     <GridPane layoutY="3.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <columnConstraints>
                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
                                           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                                          <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                          <Label fx:id="rewarded" styleClass="barlow_font_regular_32" text="0" textFill="#b01e1e" />
-                                                          <Label fx:id="rewardedLabel" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
+                                          <Label fx:id="rewarded1" styleClass="barlow_font_regular_32" text="0" textFill="#b01e1e" />
+                                          <Label fx:id="rewardedLabel1" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="8.0" left="4.0" />
                                              </GridPane.margin>
-                                                          </Label>
+                                          </Label>
                                        </children>
                                     </GridPane>
-                                              </children>
-                                          </AnchorPane>
-                                          <AnchorPane fx:id="apisInfoPane" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2">
-                                              <children>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane fx:id="apisInfoPane1" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2">
+                                 <children>
                                     <GridPane alignment="TOP_RIGHT" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <columnConstraints>
                                           <ColumnConstraints halignment="RIGHT" maxWidth="50.0" minWidth="-Infinity" />
@@ -551,31 +555,31 @@
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
                                        </rowConstraints>
                                        <children>
-                                                          <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                                              <image>
-                                                                  <Image url="@../../image/ic_info_darkgrey@2x.png" />
-                                                              </image>
+                                          <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/ic_info_darkgrey@2x.png" />
+                                             </image>
                                              <GridPane.margin>
                                                 <Insets right="8.0" />
                                              </GridPane.margin>
-                                                          </ImageView>
-                                                          <Label fx:id="howApisLabel" styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
-                                          <AnchorPane fx:id="rewardTooltip" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #2b2b2b;" styleClass="border_radius_4444" translateX="140.0" translateY="-42.0">
+                                          </ImageView>
+                                          <Label fx:id="howApisLabel1" styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
+                                          <AnchorPane fx:id="rewardTooltip1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #2b2b2b;" styleClass="border_radius_4444" translateX="140.0" translateY="-42.0">
                                              <children>
                                                 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.5" prefWidth="15.5" rotate="45.0" style="-fx-background-color: #2b2b2b; -fx-background-radius: 2 2 2 2;" AnchorPane.bottomAnchor="-3.0" AnchorPane.rightAnchor="145.0" />
                                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                   <columnConstraints>
+                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                                       <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                                                       <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
+                                                   </columnConstraints>
+                                                   <rowConstraints>
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="9.0" />
-                                                    <RowConstraints valignment="TOP" />
+                                                      <RowConstraints valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="9.0" />
-                                                  </rowConstraints>
+                                                   </rowConstraints>
                                                    <children>
                                                       <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                          <image>
@@ -586,21 +590,21 @@
                                                          </GridPane.margin>
                                                       </ImageView>
                                                       <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints hgrow="SOMETIMES" />
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                          <RowConstraints />
-                                                          <RowConstraints />
-                                                        </rowConstraints>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints />
+                                                            <RowConstraints />
+                                                         </rowConstraints>
                                                          <children>
                                                             <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                                                                <children>
-                                                                  <Label fx:id="rewardEng1" styleClass="font_regular_10" text="You can get rewards when you activate" textFill="#f8f8fb" />
-                                                                  <Label fx:id="rewardKor1" styleClass="font_semibold_10" textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardKor2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardKor3" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardKor4" layoutX="35.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardEng11" styleClass="font_regular_10" text="You can get rewards when you activate" textFill="#f8f8fb" />
+                                                                  <Label fx:id="rewardKor11" styleClass="font_semibold_10" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardKor21" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardKor31" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardKor41" layoutX="35.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
                                                                </children>
                                                             </HBox>
                                                             <HBox GridPane.rowIndex="1">
@@ -608,10 +612,10 @@
                                                                   <Insets />
                                                                </GridPane.margin>
                                                                <children>
-                                                                  <Label fx:id="rewardEng2" styleClass="font_semibold_10" text="'Mining'" textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardEng3" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text=" or register " textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardEng4" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" text="'Masternode'." textFill="WHITESMOKE" />
-                                                                  <Label fx:id="rewardKor5" layoutX="48.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardEng21" styleClass="font_semibold_10" text="'Mining'" textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardEng31" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text=" or register " textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardEng41" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" text="'Masternode'." textFill="WHITESMOKE" />
+                                                                  <Label fx:id="rewardKor51" layoutX="48.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -625,32 +629,54 @@
                                           </AnchorPane>
                                        </children>
                                     </GridPane>
-                                              </children>
+                                 </children>
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
-                                          </AnchorPane>
-                                      </children>
-                                  </GridPane>
-                            </children>
+                              </AnchorPane>
+                           </children>
                         </GridPane>
-                    </children>
-                </AnchorPane>
+                        <GridPane fx:id="iconDownDownPane1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="8.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fx:id="iconDownDown1" fitHeight="8.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../image/btn_down_down@2x.png" />
+                                 </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </AnchorPane>
             </children>
         </GridPane>
-        <GridPane layoutX="31.0" layoutY="255.0" prefHeight="69.0" prefWidth="714.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0">
+        <GridPane layoutX="31.0" layoutY="255.0" prefHeight="40.0" prefWidth="714.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="229.0">
             <columnConstraints>
                 <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" />
             </rowConstraints>
          <children>
-            <AnchorPane GridPane.columnIndex="1" />
-            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <AnchorPane GridPane.columnIndex="1">
                <children>
                   <Pane minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -672,7 +698,7 @@
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
                     </rowConstraints>
                      <children>
-                        <AnchorPane fx:id="tooltip1Pane" GridPane.columnIndex="2">
+                        <AnchorPane fx:id="tooltip1Pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="2">
                            <children>
                                <fx:include fx:id="tooltip1" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -680,7 +706,7 @@
                               <Insets top="-36.0" />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="tooltip2Pane" GridPane.columnIndex="3">
+                        <AnchorPane fx:id="tooltip2Pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="3">
                            <children>
                               <fx:include fx:id="tooltip2" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -688,7 +714,7 @@
                               <Insets top="-36.0" />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="tooltip3Pane" GridPane.columnIndex="4">
+                        <AnchorPane fx:id="tooltip3Pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="4">
                            <children>
                               <fx:include fx:id="tooltip3" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -696,7 +722,7 @@
                               <Insets top="-36.0" />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="tooltip4Pane" GridPane.columnIndex="5">
+                        <AnchorPane fx:id="tooltip4Pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="5">
                            <children>
                               <fx:include fx:id="tooltip4" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -909,5 +935,145 @@
             </AnchorPane>
          </children>
         </GridPane>
+      <GridPane fx:id="rewordDetailPane" layoutX="10.0" layoutY="10.0" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="24.0" />
+            <RowConstraints minHeight="10.0" prefHeight="34.0" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+         </rowConstraints>
+         <children>
+            <AnchorPane fx:id="rewardDetailRoot" GridPane.rowIndex="3">
+               <children>
+                  <Pane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_3333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </Pane>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="280.0" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                     </rowConstraints>
+                     <children>
+                        <GridPane fx:id="iconDownDownPane" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fx:id="iconDownDown" fitHeight="8.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                                 <image>
+                                    <Image url="@../../image/btn_down_down@2x.png" />
+                                 </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                        <Label fx:id="myRewardsLabel" styleClass="barlow_font_regular_14" text="My rewards" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets left="24.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane fx:id="stakingPane" GridPane.rowIndex="1">
+                           <children>
+                              <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Pane fx:id="nowStakingDot" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_3333">
+                                       <GridPane.margin>
+                                          <Insets right="4.0" />
+                                       </GridPane.margin>
+                                    </Pane>
+                                    <Label fx:id="nowStakingLabel" styleClass="font_regular_12" text="Now Staking" textFill="#b01e1e" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets right="24.0" />
+                           </GridPane.margin>
+                        </AnchorPane>
+                        <GridPane GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="58.0" />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES">
+                                 <children>
+                                    <GridPane layoutY="3.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="rewarded" styleClass="barlow_font_regular_32" text="0" textFill="#b01e1e" />
+                                          <Label fx:id="rewardedLabel" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets bottom="8.0" left="4.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                        <ScrollPane fx:id="rewardDetailScroll" fitToWidth="true" maxHeight="-Infinity" minHeight="0.0" stylesheets="@../css/scroll.css" GridPane.rowIndex="3">
+                           <content>
+                              <AnchorPane fx:id="rewardDetailScrollContent">
+                                 <children>
+                                    <VBox fx:id="rewardDetailList" spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <styleClass>
+                              <String fx:value="scroll_pane_border_transparent" />
+                              <String fx:value="scroll_pane_transparent" />
+                              <String fx:value="listview" />
+                           </styleClass>
+                           <GridPane.margin>
+                              <Insets top="24.0" />
+                           </GridPane.margin>
+                        </ScrollPane>
+                     </children>
+                  </GridPane>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </AnchorPane>
+         </children>
+      </GridPane>
     </children>
 </AnchorPane>
