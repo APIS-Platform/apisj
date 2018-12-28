@@ -10,8 +10,8 @@ public class MasternodeRewardUtil {
 
     public static MasternodeRewardData calcRewards(Constants constants, BigInteger basicReward, int countGn, int countGl, int countMn, int countMl, int countPn, int countPl) {
         final int countGeneral = countGn + countGl;
-        final int countMajor = countGn + countGl;
-        final int countPrivate = countGn + countGl;
+        final int countMajor = countMn + countMl;
+        final int countPrivate = countPn + countPl;
 
         BigInteger rewardGn  = BigInteger.ZERO;
         BigInteger rewardMn    = BigInteger.ZERO;

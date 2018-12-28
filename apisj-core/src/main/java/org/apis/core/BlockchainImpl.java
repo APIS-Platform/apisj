@@ -1319,7 +1319,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                 byte[] repoMnHash = calcMnHash(generalEarly, generalNormal, generalLate, majorEarly, majorNormal, majorLate, privateEarly, privateNormal, privateLate);
 
-                MasternodeRewardData masternodeRewardData = MasternodeRewardUtil.calcRewards(constants, block.getMnReward(), block.getMnGeneralList().size(), block.getMnGeneralLateList().size(), block.getMnMajorList().size(), block.getMnMajorLateList().size(), block.getMnPrivateList().size(), block.getMnPrivateLateList().size());
+                int countGN = block.getMnGeneralList().size();
+                int countGL = block.getMnGeneralLateList().size();
+                int countMN = block.getMnMajorList().size();
+                int countML = block.getMnMajorLateList().size();
+                int countPN = block.getMnPrivateList().size();
+                int countPL = block.getMnPrivateLateList().size();
+                MasternodeRewardData masternodeRewardData = MasternodeRewardUtil.calcRewards(constants, block.getMnReward(), countGN, countGL, countMN, countML, countPN, countPL);
 
                 if(storedMnReward.compareTo(masternodeRewardData.getTotal()) >= 0 && FastByteComparisons.equal(block.getMnHash(), repoMnHash)) {
                     // 재단에 할당된 부분을 전송한다.
