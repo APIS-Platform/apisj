@@ -194,7 +194,7 @@ public class PopupContractWarningController extends BasePopupController {
         if(tx != null){
             EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);
             if(runEstimate.isSuccess() || runEstimate.getReceipt().getError().toLowerCase().contains("invalid nonce")){
-                AppManager.getInstance().ethereumSendTransactions(tx);
+                AppManager.getInstance().apisSendTransactions(tx);
                 PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",this.zIndex);
                 controller.requestFocusYesButton();
 

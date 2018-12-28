@@ -17,7 +17,6 @@ import org.apis.keystore.KeyStoreManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
-import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -407,7 +406,7 @@ public class TransferController extends BaseViewController {
                     }
                 }
                 DBManager.getInstance().updateRecentAddress(txHash, address, alias);
-                AppManager.getInstance().ethereumSendTransactions(tx);
+                AppManager.getInstance().apisSendTransactions(tx);
             }
         }
     }

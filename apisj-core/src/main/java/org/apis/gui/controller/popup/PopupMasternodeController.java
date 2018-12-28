@@ -9,7 +9,6 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
-import org.apis.config.SystemProperties;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
@@ -20,10 +19,8 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class PopupMasternodeController extends BasePopupController {
@@ -253,7 +250,7 @@ public class PopupMasternodeController extends BasePopupController {
                 PopupCautionController controller = (PopupCautionController)PopupManager.getInstance().showMainPopup(rootPane, "popup_caution.fxml",zIndex + 1);
                 controller.initMessageComplete();
 
-            } else if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
+            } else if(AppManager.getInstance().apisMasternode(keystoreJsonData, password, recipientAddr)){
                 switch(btnFlag) {
                     case 0 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;
                     case 3 : AppManager.saveGeneralProperties("masternode_state", Integer.toString(AppManager.MnState.REQUEST_MASTERNODE.num)); break;

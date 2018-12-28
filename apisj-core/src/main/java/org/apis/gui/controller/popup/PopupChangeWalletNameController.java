@@ -38,8 +38,8 @@ public class PopupChangeWalletNameController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
-                String text = textFieldController.getText();
+                new_text = new_text.replaceAll("[^\\x{00}-\\x{7F}]","");
+                String text = new_text;
 
                 if (text == null || text.equals("")) {
                     textFieldController.failedForm("Enter new wallet name.");
@@ -48,6 +48,7 @@ public class PopupChangeWalletNameController extends BasePopupController {
                     textFieldController.succeededForm();
                     succeededForm();
                 }
+                textFieldController.setText(new_text);
             }
 
             @Override
