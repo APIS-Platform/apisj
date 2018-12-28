@@ -34,9 +34,9 @@ public class MasternodeRewardUtil {
             rewardPn = basicReward.multiply(weight).divide(BigInteger.valueOf(countPrivate));
         }
 
-        ConsoleUtil.printlnPurple("Original General Reward : %s", ApisUtil.readableApis(rewardGn));
-        ConsoleUtil.printlnPurple("Original Major Reward : %s", ApisUtil.readableApis(rewardMn));
-        ConsoleUtil.printlnPurple("Original Private Reward : %s", ApisUtil.readableApis(rewardPn));
+        //ConsoleUtil.printlnPurple("Original General Reward : %s", ApisUtil.readableApis(rewardGn));
+        //ConsoleUtil.printlnPurple("Original Major Reward : %s", ApisUtil.readableApis(rewardMn));
+        //ConsoleUtil.printlnPurple("Original Private Reward : %s", ApisUtil.readableApis(rewardPn));
 
 
         /* Give rewards to late participating masternodes.
@@ -83,14 +83,35 @@ public class MasternodeRewardUtil {
             }
         }
 
-        ConsoleUtil.printlnPurple("Debris General Reward : %s", ApisUtil.readableApis(debrisRewardGeneral));
-        ConsoleUtil.printlnPurple("Debris Major Reward : %s", ApisUtil.readableApis(debrisRewardMajor));
-        ConsoleUtil.printlnPurple("Debris Private Reward : %s", ApisUtil.readableApis(debrisRewardPrivate));
+        //ConsoleUtil.printlnPurple("Debris General Reward : %s", ApisUtil.readableApis(debrisRewardGeneral));
+        //ConsoleUtil.printlnPurple("Debris Major Reward : %s", ApisUtil.readableApis(debrisRewardMajor));
+        //ConsoleUtil.printlnPurple("Debris Private Reward : %s", ApisUtil.readableApis(debrisRewardPrivate));
 
         rewardGn = rewardGn.add(debrisRewardGeneral);
         rewardMn = rewardMn.add(debrisRewardMajor);
         rewardPn = rewardPn.add(debrisRewardPrivate);
 
-        return new MasternodeRewardData(rewardToFoundation, rewardGn, rewardGL, rewardMn, rewardML, rewardPn, rewardPL);
+        BigInteger totalReward = BigInteger.ZERO;
+        totalReward = totalReward.add(rewardToFoundation);
+        totalReward = totalReward.add(rewardGn.multiply(BigInteger.valueOf(countGn)));
+        totalReward = totalReward.add(rewardGL.multiply(BigInteger.valueOf(countGl)));
+        totalReward = totalReward.add(rewardMn.multiply(BigInteger.valueOf(countMn)));
+        totalReward = totalReward.add(rewardML.multiply(BigInteger.valueOf(countMl)));
+        totalReward = totalReward.add(rewardPn.multiply(BigInteger.valueOf(countPn)));
+        totalReward = totalReward.add(rewardPL.multiply(BigInteger.valueOf(countPl)));
+
+        return new MasternodeRewardData(rewardToFoundation, rewardGn, rewardGL, rewardMn, rewardML, rewardPn, rewardPL, totalReward);
+    }
+
+
+    public static BigInteger calcBasicReward(Constants constants, BigInteger storedMasternodeReward, long countGeneral, long countMajor, long countPrivate) {
+        BigInteger oneAPIS = ApisUtil.ONE_APIS();
+        BigInteger weightGeneral = BigInteger.valueOf(countGeneral*100L).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(oneAPIS);
+        BigInteger weightMajor = BigInteger.valueOf(countMajor*105L).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(oneAPIS);
+        BigInteger weightPrivate = BigInteger.valueOf(countPrivate*120L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
+
+        BigInteger weightTotal = weightGeneral.add(weightMajor).add(weightPrivate);
+
+        return storedMasternodeReward.divide(weightTotal);
     }
 }

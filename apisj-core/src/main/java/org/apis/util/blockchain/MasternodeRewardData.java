@@ -12,7 +12,7 @@ public class MasternodeRewardData {
     private BigInteger privateLate;
     private BigInteger total;
 
-    public MasternodeRewardData(BigInteger foundation, BigInteger generalNormal, BigInteger generalLate, BigInteger majorNormal, BigInteger majorLate, BigInteger privateNormal, BigInteger privateLate) {
+    public MasternodeRewardData(BigInteger foundation, BigInteger generalNormal, BigInteger generalLate, BigInteger majorNormal, BigInteger majorLate, BigInteger privateNormal, BigInteger privateLate, BigInteger total) {
         this.foundation = foundation;
         this.generalNormal = generalNormal;
         this.generalLate = generalLate;
@@ -20,7 +20,7 @@ public class MasternodeRewardData {
         this.majorLate = majorLate;
         this.privateNormal = privateNormal;
         this.privateLate = privateLate;
-        this.total = foundation.add(generalNormal).add(generalLate).add(majorNormal).add(majorNormal).add(privateNormal).add(privateLate);
+        this.total = total;
     }
 
     public BigInteger getFoundation() {
@@ -58,15 +58,15 @@ public class MasternodeRewardData {
 
     @Override
     public String toString() {
-        return "MasternodeRewardData{" +
-                "foundation=" + foundation +
-                ", generalNormal=" + generalNormal +
-                ", generalLate=" + generalLate +
-                ", majorNormal=" + majorNormal +
-                ", majorLate=" + majorLate +
-                ", privateNormal=" + privateNormal +
-                ", privateLate=" + privateLate +
-                ", total=" + total +
+        return "MasternodeRewardData{\n" +
+                "  foundation   =" + ApisUtil.readableApis(foundation, false) + "\n" +
+                "  generalNormal=" + ApisUtil.readableApis(generalNormal, false) + "\n" +
+                "  generalLate  =" + ApisUtil.readableApis(generalLate, false) + "\n" +
+                "  majorNormal  =" + ApisUtil.readableApis(majorNormal, false) + "\n" +
+                "  majorLate    =" + ApisUtil.readableApis(majorLate, false) + "\n" +
+                "  privateNormal=" + ApisUtil.readableApis(privateNormal, false) + "\n" +
+                "  privateLate  =" + ApisUtil.readableApis(privateLate, false) + "\n" +
+                "  total        =" + ApisUtil.readableApis(total, false) + "\n" +
                 '}';
     }
 }
