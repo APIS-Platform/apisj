@@ -224,11 +224,7 @@ public class WalletListHeadController extends BaseViewController {
             WalletItemModel itemModel = (WalletItemModel) this.model;
 
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
-            try {
-                this.labelWalletAlias.setText(new String(itemModel.getAlias().getBytes("UTF-8"), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            this.labelWalletAlias.setText(itemModel.getAlias());
             this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 6));
             this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
             setMask(itemModel.getMask());
