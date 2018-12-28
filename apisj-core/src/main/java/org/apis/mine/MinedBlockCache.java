@@ -169,7 +169,7 @@ public class MinedBlockCache {
 
         bestMinedBlocks.clear();
         bestMinedBlocks.addAll(receivedBlocks);
-        while(bestMinedBlocks.size() < 5 && bestMinedBlocks.size() > 0) {
+        while(bestMinedBlocks.size() < 8 && bestMinedBlocks.size() > 0) {
             Block firstBlock = bestMinedBlocks.get(0);
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
             if(blocks == null || blocks.isEmpty()) {
