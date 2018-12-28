@@ -935,19 +935,15 @@
             </AnchorPane>
          </children>
         </GridPane>
-      <GridPane fx:id="rewordDetailPane" layoutX="10.0" layoutY="10.0" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="rewordDetailPane" layoutX="10.0" layoutY="10.0" visible="false" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="68.0">
          <columnConstraints>
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="24.0" />
-            <RowConstraints minHeight="10.0" prefHeight="34.0" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
          </rowConstraints>
          <children>
-            <AnchorPane fx:id="rewardDetailRoot" GridPane.rowIndex="3">
+            <AnchorPane fx:id="rewardDetailRoot">
                <children>
                   <Pane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_3333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <effect>
