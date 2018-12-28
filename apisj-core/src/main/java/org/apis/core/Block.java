@@ -61,6 +61,9 @@ public class Block {
     private List<byte[]> mnGeneralList = new CopyOnWriteArrayList<>();
     private List<byte[]> mnMajorList = new CopyOnWriteArrayList<>();
     private List<byte[]> mnPrivateList = new CopyOnWriteArrayList<>();
+    private List<byte[]> mnGeneralLateList = new CopyOnWriteArrayList<>();
+    private List<byte[]> mnMajorLateList = new CopyOnWriteArrayList<>();
+    private List<byte[]> mnPrivateLateList = new CopyOnWriteArrayList<>();
 
     /* Private */
 
@@ -77,7 +80,9 @@ public class Block {
         this.rlpEncoded = rawData;
     }
 
-    public Block(BlockHeader header, List<Transaction> transactionsList, List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
+    public Block(BlockHeader header, List<Transaction> transactionsList,
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList,
+                 List<byte[]> mnGeneralLateList, List<byte[]> mnMajorLateList, List<byte[]> mnPrivateLateList) {
 
         this(header.getParentHash(),
                 header.getCoinbase(),
@@ -100,7 +105,10 @@ public class Block {
                 transactionsList,
                 mnGeneralList,
                 mnMajorList,
-                mnPrivateList);
+                mnPrivateList,
+                mnGeneralLateList,
+                mnMajorLateList,
+                mnPrivateLateList);
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
@@ -109,10 +117,13 @@ public class Block {
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot, BigInteger mnReward, byte[] mnHash,
                  List<Transaction> transactionsList,
-                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList,
+                 List<byte[]> mnGeneralLateList, List<byte[]> mnMajorLateList, List<byte[]> mnPrivateLateList) {
 
         this(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint, number, gasLimit,
-                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList, mnGeneralList, mnMajorList, mnPrivateList);
+                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList,
+                mnGeneralList, mnMajorList, mnPrivateList,
+                mnGeneralLateList, mnMajorLateList, mnPrivateLateList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
         if (!Hex.toHexString(transactionsRoot).
@@ -129,7 +140,8 @@ public class Block {
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce, BigInteger mnReward, byte[] mnHash,
                  List<Transaction> transactionsList,
-                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList,
+                 List<byte[]> mnGeneralLateList, List<byte[]> mnMajorLateList, List<byte[]> mnPrivateLateList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
                 rewardPoint, cumulativeRewardPoint, number, gasLimit, gasUsed, mineralUsed,
                 timestamp, extraData, mixHash, nonce, mnReward, mnHash);
@@ -152,6 +164,21 @@ public class Block {
         this.mnPrivateList = mnPrivateList;
         if(this.mnPrivateList == null) {
             this.mnPrivateList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnGeneralLateList = mnGeneralLateList;
+        if(this.mnGeneralLateList == null) {
+            this.mnGeneralLateList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnMajorLateList = mnMajorLateList;
+        if(this.mnMajorLateList == null) {
+            this.mnMajorLateList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnPrivateLateList = mnPrivateLateList;
+        if(this.mnPrivateLateList == null) {
+            this.mnPrivateLateList = new CopyOnWriteArrayList<>();
         }
 
         this.parsed = true;
@@ -188,6 +215,19 @@ public class Block {
         RLPList mnPrivateList = (RLPList) block.get(4);
         for (RLPElement aMnPrivateList : mnPrivateList) {
             this.mnPrivateList.add(aMnPrivateList.getRLPData());
+        }
+
+        RLPList mnGeneralLateList = (RLPList) block.get(5);
+        for (RLPElement aMnGeneralLateList : mnGeneralLateList) {
+            this.mnGeneralLateList.add(aMnGeneralLateList.getRLPData());
+        }
+        RLPList mnMajorLateList = (RLPList) block.get(6);
+        for (RLPElement aMnMajorLateList : mnMajorLateList) {
+            this.mnMajorLateList.add(aMnMajorLateList.getRLPData());
+        }
+        RLPList mnPrivateLateList = (RLPList) block.get(7);
+        for (RLPElement aMnPrivateLateList : mnPrivateLateList) {
+            this.mnPrivateLateList.add(aMnPrivateLateList.getRLPData());
         }
 
         this.parsed = true;
@@ -345,16 +385,45 @@ public class Block {
         return mnPrivateList;
     }
 
-    public void setMnGeneralList(List<byte[]> list) {
+    public List<byte[]> getMnGeneralLateList() {
+        parseRLP();
+        return mnGeneralLateList;
+    }
+
+    public List<byte[]> getMnMajorLateList() {
+        parseRLP();
+        return mnMajorLateList;
+    }
+
+    public List<byte[]> getMnPrivateLateList() {
+        parseRLP();
+        return mnPrivateLateList;
+    }
+
+
+    void setMnGeneralList(List<byte[]> list) {
         this.mnGeneralList = list;
         rlpEncoded = null;
     }
-    public void setMnMajorList(List<byte[]> list) {
+    void setMnMajorList(List<byte[]> list) {
         this.mnMajorList = list;
         rlpEncoded = null;
     }
-    public void setMnPrivateList(List<byte[]> list) {
+    void setMnPrivateList(List<byte[]> list) {
         this.mnPrivateList = list;
+        rlpEncoded = null;
+    }
+
+    void setMnGeneralLateList(List<byte[]> list) {
+        this.mnGeneralLateList = list;
+        rlpEncoded = null;
+    }
+    void setMnMajorLateList(List<byte[]> list) {
+        this.mnMajorLateList = list;
+        rlpEncoded = null;
+    }
+    void setMnPrivateLateList(List<byte[]> list) {
+        this.mnPrivateLateList = list;
         rlpEncoded = null;
     }
 
@@ -368,12 +437,12 @@ public class Block {
         return this.header.getMnReward();
     }
 
-    public void setMnHash(byte[] mnHash) {
+    void setMnHash(byte[] mnHash) {
         this.header.setMnHash(mnHash);
         rlpEncoded = null;
     }
 
-    public void setMnReward(BigInteger reward) {
+    void setMnReward(BigInteger reward) {
         this.header.setMnReward(reward);
         rlpEncoded = null;
     }
@@ -407,6 +476,9 @@ public class Block {
         toStringBuff.append(getMasternodeListString(getMnGeneralList(), "MN General"));
         toStringBuff.append(getMasternodeListString(getMnMajorList(), "MN Major"));
         toStringBuff.append(getMasternodeListString(getMnPrivateList(), "MN Private"));
+        toStringBuff.append(getMasternodeListString(getMnGeneralLateList(), "MN General Late"));
+        toStringBuff.append(getMasternodeListString(getMnMajorLateList(), "MN Major Late"));
+        toStringBuff.append(getMasternodeListString(getMnPrivateLateList(), "MN Private Late"));
 
         toStringBuff.append("]");
 
@@ -491,6 +563,21 @@ public class Block {
                     this.mnPrivateList.add(mn.getRLPData());
                 }
                 break;
+            case 3:
+                for (RLPElement mn : list) {
+                    this.mnGeneralLateList.add(mn.getRLPData());
+                }
+                break;
+            case 4:
+                for (RLPElement mn : list) {
+                    this.mnMajorLateList.add(mn.getRLPData());
+                }
+                break;
+            case 5:
+                for (RLPElement mn : list) {
+                    this.mnPrivateLateList.add(mn.getRLPData());
+                }
+                break;
         }
     }
 
@@ -534,6 +621,15 @@ public class Block {
                 break;
             case 2:
                 mnList = mnPrivateList;
+                break;
+            case 3:
+                mnList = mnGeneralLateList;
+                break;
+            case 4:
+                mnList = mnMajorLateList;
+                break;
+            case 5:
+                mnList = mnPrivateLateList;
                 break;
             default:
                 return null;
@@ -581,6 +677,9 @@ public class Block {
         body.add(getMnListEncoded(0));
         body.add(getMnListEncoded(1));
         body.add(getMnListEncoded(2));
+        body.add(getMnListEncoded(3));
+        body.add(getMnListEncoded(4));
+        body.add(getMnListEncoded(5));
 
         return body;
     }
@@ -597,6 +696,7 @@ public class Block {
                 getTransactionsList().size(), AddressUtil.getShortAddress(getCoinbase()), dateFormat.format(new Date(getTimestamp()*1000)));
         if(getMnReward().compareTo(BigInteger.ZERO) > 0) {
             descr += String.format(" MN [G:%d M:%d P:%d]", getMnGeneralList().size(), getMnMajorList().size(), getMnPrivateList().size());
+            descr += String.format(" MNL [G:%d M:%d P:%d]", getMnGeneralLateList().size(), getMnMajorLateList().size(), getMnPrivateLateList().size());
         }
         return descr;
     }
@@ -637,6 +737,9 @@ public class Block {
             block.parseMnList((RLPList) items.get(1), 0);
             block.parseMnList((RLPList) items.get(2), 1);
             block.parseMnList((RLPList) items.get(3), 2);
+            block.parseMnList((RLPList) items.get(4), 3);
+            block.parseMnList((RLPList) items.get(5), 4);
+            block.parseMnList((RLPList) items.get(6), 5);
 
             return block;
         }
