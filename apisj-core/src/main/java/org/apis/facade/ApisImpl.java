@@ -297,12 +297,13 @@ public class ApisImpl implements Apis, SmartLifecycle {
                 .getSnapshotTo(parent.getStateRoot());
 
         try {
+            long totalGasUsed = 0;
             for (Transaction tx : block.getTransactionsList()) {
 
                 org.apis.core.Repository txTrack = track.startTracking();
                 org.apis.core.TransactionExecutor executor = new org.apis.core.TransactionExecutor(
                         tx, block.getCoinbase(), txTrack, worldManager.getBlockStore(),
-                        programInvokeFactory, block, worldManager.getListener(), 0, BigInteger.ZERO)
+                        programInvokeFactory, block, worldManager.getListener(), totalGasUsed, BigInteger.ZERO)
                         .withCommonConfig(commonConfig);
 
                 executor.init();
@@ -310,6 +311,7 @@ public class ApisImpl implements Apis, SmartLifecycle {
                 executor.go();
 
                 TransactionExecutionSummary summary = executor.finalization();
+                totalGasUsed += executor.getGasUsed();
 
                 txTrack.commit();
 

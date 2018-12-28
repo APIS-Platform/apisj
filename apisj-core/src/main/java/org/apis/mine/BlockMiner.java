@@ -516,7 +516,6 @@ public class BlockMiner {
             for (Transaction tx : pendingTxs) {
                 newPendingTxs.add(new Transaction(tx.getEncoded()));
             }
-            ConsoleUtil.printlnPurple("PendingTransactions for mining size : " + newPendingTxs.size());
 
             boolean hasInvalidTx = true;
             Block newBlock = blockchain.createNewBlock(bestPendingState, newPendingTxs);
