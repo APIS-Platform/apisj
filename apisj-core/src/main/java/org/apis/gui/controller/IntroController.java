@@ -197,9 +197,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void change(String old_text, String new_text) {
-
-
-
+                createWalletPhaseTwoWalletNameController.setText(new_text.replaceAll("[^\\x{00}-\\x{7F}]",""));
             }
 
             @Override
@@ -502,7 +500,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                loadWalletPhaseFourTypePkNmController.setText(new_text.replaceAll("[^\\x{00}-\\x{7F}]",""));
             }
 
             @Override

@@ -31,7 +31,6 @@ public class BasePopupController extends BaseViewController {
     }
 
     protected void parentRequestFocus(){
-        System.out.println("parentRequestFocus : "+this.parentNode);
         if(this.parentNode != null){
             this.parentNode.requestFocus();
         }

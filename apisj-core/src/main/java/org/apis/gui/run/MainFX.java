@@ -36,10 +36,10 @@ public class MainFX extends Application  {
     @Override
     public void start(Stage primaryStage){
 
-        // init config file
-        new CLIStart();
-
         try {
+            // init config file
+            new CLIStart();
+
             BaseFxmlController fxmlController = new BaseFxmlController("loading.fxml");
             Parent loading = (Parent)fxmlController.getNode();
             Scene loadingScene = new Scene(loading);
