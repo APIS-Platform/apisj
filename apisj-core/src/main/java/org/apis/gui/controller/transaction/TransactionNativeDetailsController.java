@@ -282,7 +282,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                         itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsTokenTransferedLabel);
                         itemController.contentsBodyVBoxClear();
                         for(int i = 0; i < tokenValueValue.length; i++) {
-                            itemController.contentsBodyVBoxAdd("token", tokenFromValue[i], tokenToValue[i], tokenValueValue[i]);
+                            itemController.contentsBodyVBoxAdd("token,"+toValue, tokenFromValue[i], tokenToValue[i], tokenValueValue[i]);
                         }
 
                     } else {

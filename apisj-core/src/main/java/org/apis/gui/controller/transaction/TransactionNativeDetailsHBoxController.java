@@ -60,14 +60,19 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
             addItems(null, StringManager.getInstance().transaction.toLabel, null);
             addItems(to, null, shortTo);
         }
-        if(group.equals("token")) {
+        if(group.indexOf("token") == 0) {
+            String[] tokenInfo = group.split(",");
             addItems(null, StringManager.getInstance().transaction.fromLabel, null);
             addItems(from, null, shortFrom);
             addItems(null, StringManager.getInstance().transaction.toLabel, null);
             addItems(to, null, shortTo);
             addItems(null, StringManager.getInstance().transaction.forLabel, null);
             addItems(null, null, value);
-            addItems(null, null, "APIS");
+            if(tokenInfo.length > 1) {
+                addItems(null, null, AppManager.getInstance().getTokenSymbol(tokenInfo[1]));
+            }else{
+                addItems(null, null, "APIS");
+            }
         }
     }
 
