@@ -438,6 +438,9 @@ public class PendingStateImpl implements PendingState {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 Collections.emptyList()); // tx list
         return block;
     }
