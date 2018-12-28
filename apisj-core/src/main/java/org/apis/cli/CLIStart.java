@@ -32,12 +32,12 @@ public class CLIStart {
         };
 
         try {
-            File configDir = new File("config");
+            File configDir = new File(config.configDir());
             if(!configDir.exists()) {
                 configDir.mkdirs();
             }
 
-            InputStream input = new FileInputStream("config/daemon.properties");
+            InputStream input = new FileInputStream(config.configDir() + "/daemon.properties");
             daemonProp.load(input);
         } catch (IOException e) {
             daemonProp.setProperty("coinbase", ""); //

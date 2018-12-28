@@ -549,7 +549,7 @@ public class SystemProperties {
 
     @ValidateMe
     public String dumpDir() {
-        return baseDir() + config.getString("dump.dir");
+        return getCommonDir() + config.getString("dump.dir");
     }
 
     private String baseDir() {
@@ -562,11 +562,15 @@ public class SystemProperties {
 
     @ValidateMe
     public String keystoreDir() {
-        return baseDir() + config.getString("keystore.dir");
+        return getCommonDir() + config.getString("keystore.dir");
     }
 
     public String abiDir() {
-        return baseDir() + config.getString("abi.dir");
+        return getCommonDir() + config.getString("abi.dir");
+    }
+
+    public String configDir() {
+        return getCommonDir() + config.getString("config.dir");
     }
 
     @ValidateMe
@@ -577,6 +581,10 @@ public class SystemProperties {
     @ValidateMe
     public int dumpBlock() {
         return config.getInt("dump.block");
+    }
+
+    private String getCommonDir() {
+        return baseDir() + config.getString("database.dir") + "/";
     }
 
     @ValidateMe
@@ -687,7 +695,7 @@ public class SystemProperties {
 
     @ValidateMe
     public String vmTraceDir() {
-        return baseDir() + config.getString("vm.structured.dir");
+        return getCommonDir() + config.getString("vm.structured.dir");
     }
 
     public String customSolcPath() {

@@ -40,6 +40,7 @@ config
 storage
 keystore
 abi
+apisData
 
 # Mac
 .DS_Store
