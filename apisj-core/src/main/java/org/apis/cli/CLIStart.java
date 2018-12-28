@@ -422,7 +422,6 @@ public class CLIStart {
             output.close();
         }
 
-        rpc_setting_loop:
         while(true) {
             ConsoleUtil.printlnBlue("The current setting is as follows.\n");
             printProp("use_rpc", prop);;
@@ -447,10 +446,10 @@ public class CLIStart {
 
                 case SELECT_SERVERCHECK_START_WITHOUTRPC:
                     prop.setProperty("use_rpc", String.valueOf(false));
-                    break rpc_setting_loop;
+                    break;
                 case SELECT_SERVERCHECK_START_WITHRPC:
                     prop.setProperty("use_rpc", String.valueOf(true));
-                    break rpc_setting_loop;
+                    break;
                 case SELECT_SERVERCHECK_CHANGE_PORT:
                     changePort(prop);
                     break;
@@ -473,19 +472,6 @@ public class CLIStart {
                     break;
             }
         }
-
-        File config = new File("config");
-        if(!config.exists()) {
-            config.mkdirs();
-        }
-        OutputStream output = new FileOutputStream("config/rpc.properties");
-        prop.store(output, null);
-        output.close();
-
-        daemonProp.setProperty("autoStart", "true");
-        OutputStream daemonOutput = new FileOutputStream("config/daemon.properties");
-        daemonProp.store(daemonOutput, null);
-        daemonOutput.close();
     }
 
     private int readNumber(String format, Object... args) throws IOException {
