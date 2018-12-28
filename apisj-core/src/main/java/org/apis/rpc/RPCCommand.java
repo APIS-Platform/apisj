@@ -707,7 +707,9 @@ public class RPCCommand {
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
 
-                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
+                    SystemProperties config = SystemProperties.getDefault();
+                    final Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask, constants);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -737,13 +739,16 @@ public class RPCCommand {
 
 
                 try {
-                    long blocknumber = getBlockNumber(ethereum, (String)params[0]);
-                    Block block = ethereum.getBlockchain().getBlockByNumber(blocknumber);
+                    long blockNumber = getBlockNumber(ethereum, (String)params[0]);
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
 
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
 
-                    BlockData blockData = new BlockData(block, isFull, coinbaseMask);
+                    SystemProperties config = SystemProperties.getDefault();
+                    final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+                    BlockData blockData = new BlockData(block, isFull, coinbaseMask, constants);
                     command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -901,9 +906,12 @@ public class RPCCommand {
                         currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
+                    SystemProperties config = SystemProperties.getDefault();
+                    final Constants constants = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants();
+
                     List<BlockData> blocks = new ArrayList<>();
                     for(int i = 0; i < rowCount && currentBlock.getNumber() > 1; i++) {
-                        blocks.add(new BlockData(currentBlock, false));
+                        blocks.add(new BlockData(currentBlock, false, constants));
                         currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
