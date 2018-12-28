@@ -552,6 +552,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 BigInteger.ZERO,// mnReward
                 new byte[0],    // mnHash
                 txs,
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 
@@ -586,20 +587,23 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             List<byte[]> privateNormal      = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
             List<byte[]> privateLate        = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE(), blockNumber);
 
-            List<byte[]> allGeneral = new ArrayList<>();
-            allGeneral.addAll(generalEarlybird);
-            allGeneral.addAll(generalNormal);
-            allGeneral.addAll(generalLate);
+            List<byte[]> allGeneralNormal = new ArrayList<>();
+            allGeneralNormal.addAll(generalEarlybird);
+            allGeneralNormal.addAll(generalNormal);
 
-            List<byte[]> allMajor = new ArrayList<>();
-            allMajor.addAll(majorEarlybird);
-            allMajor.addAll(majorNormal);
-            allMajor.addAll(majorLate);
+            List<byte[]> allGeneralLate = new ArrayList<>(generalLate);
 
-            List<byte[]> allPrivate = new ArrayList<>();
-            allPrivate.addAll(privateEarlybird);
-            allPrivate.addAll(privateNormal);
-            allPrivate.addAll(privateLate);
+            List<byte[]> allMajorNormal = new ArrayList<>();
+            allMajorNormal.addAll(majorEarlybird);
+            allMajorNormal.addAll(majorNormal);
+
+            List<byte[]> allMajorLate = new ArrayList<>(majorLate);
+
+            List<byte[]> allPrivateNormal = new ArrayList<>();
+            allPrivateNormal.addAll(privateEarlybird);
+            allPrivateNormal.addAll(privateNormal);
+
+            List<byte[]> allPrivateLate = new ArrayList<>(privateLate);
 
 
             long countGeneral = generalEarlybird.size() + generalNormal.size() + generalLate.size();
@@ -617,9 +621,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             if(weightTotal.compareTo(BigInteger.ZERO) > 0) {
                 BigInteger amountGeneral = storedMasternodeReward.divide(weightTotal);
 
-                block.setMnGeneralList(allGeneral);
-                block.setMnMajorList(allMajor);
-                block.setMnPrivateList(allPrivate);
+                block.setMnGeneralList(allGeneralNormal);
+                block.setMnMajorList(allMajorNormal);
+                block.setMnPrivateList(allPrivateNormal);
+                block.setMnGeneralLateList(allGeneralLate);
+                block.setMnMajorLateList(allMajorLate);
+                block.setMnPrivateLateList(allPrivateLate);
                 block.setMnHash(calcMnHash(generalEarlybird, generalNormal, generalLate, majorEarlybird, majorNormal, majorLate, privateEarlybird, privateNormal, privateLate));
                 block.setMnReward(amountGeneral);
             }
