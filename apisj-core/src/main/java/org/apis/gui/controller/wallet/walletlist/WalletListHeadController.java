@@ -26,6 +26,7 @@ import org.apis.util.blockchain.ApisUtil;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -223,7 +224,11 @@ public class WalletListHeadController extends BaseViewController {
             WalletItemModel itemModel = (WalletItemModel) this.model;
 
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
-            this.labelWalletAlias.setText(itemModel.getAlias());
+            try {
+                this.labelWalletAlias.setText(new String(itemModel.getAlias().getBytes("UTF-8"), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 6));
             this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', true));
             setMask(itemModel.getMask());

@@ -89,7 +89,7 @@ public class PopupChangeWalletNameController extends BasePopupController {
     public void change(){
         if(isChangeable){
             try {
-                String name = URLDecoder.decode(textFieldController.getText(), "UTF-8");
+                String name = new String(textFieldController.getText().getBytes("UTF-8"), "UTF-8");
 
                 KeyStoreManager.getInstance().updateWalletAlias(this.model.getAddress(), name);
                 AppManager.getInstance().keystoreFileReadAll();
