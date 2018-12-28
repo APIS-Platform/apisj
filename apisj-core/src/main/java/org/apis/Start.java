@@ -1,6 +1,7 @@
 package org.apis;
 
 import org.apis.cli.CLIInterface;
+import org.apis.cli.CLIStart;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
@@ -30,7 +31,8 @@ public class Start {
     private static boolean synced = false;
     protected static Logger logger = LoggerFactory.getLogger("start");
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
+        new CLIStart();
         CLIInterface.call(args);
 
         final SystemProperties config = SystemProperties.getDefault();

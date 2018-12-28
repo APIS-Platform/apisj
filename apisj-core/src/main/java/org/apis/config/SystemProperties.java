@@ -80,6 +80,7 @@ public class SystemProperties {
     public final static String PROPERTY_PEER_ACTIVE = "peer.active";
     public final static String PROPERTY_DB_RESET = "database.reset";
     public final static String PROPERTY_PEER_DISCOVERY_ENABLED = "peer.discovery.enabled";
+    public final static String PROPERTY_SYNC_PEER_COUNT = "sync.peer.count";
 
     /* Testing */
     private final static Boolean DEFAULT_VMTEST_LOAD_LOCAL = false;
@@ -628,7 +629,7 @@ public class SystemProperties {
 
     @ValidateMe
     public int syncPeerCount() {
-        return config.getInt("sync.peer.count");
+        return config.getInt(PROPERTY_SYNC_PEER_COUNT);
     }
 
     public Integer syncVersion() {
