@@ -126,6 +126,13 @@ public class BuyMineralBodyController extends BaseViewController {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
                 BigInteger apis = new BigInteger(ApisUtil.convert(newValue.replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
+
+                if(apis.compareTo(payerController.getBalance()) > 0){
+                    apis = payerController.getBalance();
+                    amount.setText(ApisUtil.convert(apis.toString(),ApisUtil.Unit.aAPIS,ApisUtil.Unit.APIS, ',', true));
+                    return;
+                }
+
                 BigInteger mineral = getCalMineral(apis);
                 BigInteger percent = BigInteger.ZERO;
 
