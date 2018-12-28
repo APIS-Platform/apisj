@@ -112,6 +112,20 @@ public class CLIStart {
         ConsoleUtil.printlnGreen("The chance of getting reward goes higher with the registered miner's balance.");
         ConsoleUtil.printlnGreen("--");
 
+        byte[] coinbasePk = ByteUtil.hexStringToBytes(daemonProp.getProperty("coinbase", ""));
+        byte[] coinbase = null;
+        if(coinbasePk != null && coinbasePk.length > 0) {
+            coinbase = ECKey.fromPrivate(coinbasePk).getAddress();
+        }
+
+        if(coinbase != null && coinbase.length > 0) {
+            ConsoleUtil.printlnGreen("Stored coinbase : ");
+            ConsoleUtil.printlnPurple("[[ %s ]]", ByteUtil.toHexString(coinbase));
+            ConsoleUtil.printlnGreen("--\n");
+        }
+
+
+
         while(true) {
             List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
@@ -276,6 +290,25 @@ public class CLIStart {
         ConsoleUtil.printlnGreen("The balance of the Masternode must be exactly 50,000, 200,000, and 500,000 APIS.");
         ConsoleUtil.printlnGreen("--");
 
+        daemonProp.setProperty("masternode", "");
+        daemonProp.setProperty("recipient", "");
+
+        byte[] masternodePk = ByteUtil.hexStringToBytes(daemonProp.getProperty("masternode", ""));
+        byte[] masternode = null;
+        if(masternodePk != null && masternodePk.length > 0) {
+            masternode = ECKey.fromPrivate(masternodePk).getAddress();
+        }
+        byte[] recipient = ByteUtil.hexStringToBytes(daemonProp.getProperty("recipient", ""));
+
+        if(masternode != null && masternode.length > 0 && recipient != null && recipient.length > 0) {
+            ConsoleUtil.printlnGreen("Stored information : ");
+            ConsoleUtil.printlnPurple("Masternode : [[ %s ]]", ByteUtil.toHexString(masternode));
+            ConsoleUtil.printlnPurple("Recipient  : [[ %s ]]", ByteUtil.toHexString(recipient));
+            ConsoleUtil.printlnGreen("--\n");
+        }
+
+
+
         while (true) {
             keyStoreExceptMiner = KeyStoreManager.getInstance().loadKeyStoreFiles();
             int sizeOfKeystoreExceptMiner = keyStoreExceptMiner.size();
@@ -379,17 +412,17 @@ public class CLIStart {
 
                         while(true) {
                             ConsoleUtil.printlnGreen("Please enter the address to receive the Masternode's reward instead.");
-                            String recipient = ConsoleUtil.readLine(">> ");
+                            String recipientInput = ConsoleUtil.readLine(">> ");
 
                             try {
-                                byte[] recipientAddr = Hex.decode(recipient);
+                                byte[] recipientAddr = Hex.decode(recipientInput);
                                 if(recipientAddr.length > 20 || recipientAddr.length < 4) {
                                     ConsoleUtil.printlnRed("The address you've entered is incorrect.");
                                     continue;
                                 }
 
                                 config.setMasternodeRecipient(recipientAddr);
-                                daemonProp.setProperty("recipient", recipient);
+                                daemonProp.setProperty("recipient", recipientInput);
                             } catch (Exception ignored) {
                                 ConsoleUtil.printlnRed("The address you've entered is incorrect.");
                                 continue;
