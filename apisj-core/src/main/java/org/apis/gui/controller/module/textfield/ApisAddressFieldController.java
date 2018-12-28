@@ -37,7 +37,7 @@ public class ApisAddressFieldController extends BaseViewController {
             address = newValue;
             mask = null;
 
-            if(newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
+            if(newValue != null && newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
                 newValue = newValue.replaceAll("0x","");
                 addressField.setText(newValue);
                 return;
