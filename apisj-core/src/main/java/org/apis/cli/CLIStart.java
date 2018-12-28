@@ -352,6 +352,7 @@ public class CLIStart {
             ConsoleUtil.printlnCyan("2. Import your Private key");
             ConsoleUtil.printlnCyan("3. Select Masternode from locked Private key and enable masternode");
             ConsoleUtil.printlnCyan("4. Deactivate Masternode function");
+            ConsoleUtil.printlnCyan("5. Exit");
 
             switch (readNumber(">> ")) {
                 case 1: {
@@ -447,6 +448,10 @@ public class CLIStart {
                     daemonProp.setProperty("masternode", "");
                     daemonProp.setProperty("recipient", "");
                     storeDaemonConfig();
+                    break;
+                case 5:
+                    ConsoleUtil.printlnCyan("Bye");
+                    System.exit(0);
                     break;
                 default :
                     System.out.println();
