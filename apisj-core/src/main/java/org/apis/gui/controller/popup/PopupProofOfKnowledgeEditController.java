@@ -32,7 +32,6 @@ import org.apis.gui.model.base.BaseModel;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -379,7 +378,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
                     if(runEstimate.isSuccess()){
 
                         // 트랜잭션 전송
-                        AppManager.getInstance().ethereumSendTransactions(tx);
+                        AppManager.getInstance().apisSendTransactions(tx);
                         PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",1);
                         controller.requestFocusYesButton();
 

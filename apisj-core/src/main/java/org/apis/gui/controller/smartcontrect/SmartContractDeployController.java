@@ -30,7 +30,6 @@ import org.apis.gui.manager.*;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -462,7 +461,7 @@ public class SmartContractDeployController extends BaseViewController {
         String contract = this.solidityTextArea.getText();
 
 // 컴파일에 성공하면 json 스트링을 반환한다.
-        String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
+        String message = AppManager.getInstance().apisSmartContractStartToCompile(contract);
         if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
             try {
                 isCompiled = true;
@@ -569,7 +568,7 @@ public class SmartContractDeployController extends BaseViewController {
             codeTab2.setVisible(false);
 
             String contract = this.solidityTextArea.getText();
-            String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
+            String message = AppManager.getInstance().apisSmartContractStartToCompile(contract);
             isCompiled = (message != null && message.length() > 0 && AppManager.isJSONValid(message));
             btnStartPreGasUsedController.setCompiled(isCompiled);
 

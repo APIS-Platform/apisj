@@ -791,7 +791,7 @@ public class AppManager {
         byte[] toAddress = ByteUtil.hexStringToBytes(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
         Transaction tx = AppManager.getInstance().generateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, new byte[0], functionCallBytes,  password, knowledgeKey);
-        AppManager.getInstance().ethereumSendTransactions(tx);
+        AppManager.getInstance().apisSendTransactions(tx);
     }
 
     public byte[] getTokenSendTransferData(Object[] args){
@@ -1150,7 +1150,7 @@ public class AppManager {
     public EstimateTransactionResult estimateTransaction(Transaction tx){
         return EstimateTransaction.getInstance((ApisImpl) mApis).estimate(tx);
     }
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, char[] passwd, char[] knowledgeKey){
+    public Transaction apisGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, char[] passwd, char[] knowledgeKey){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -1192,7 +1192,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
+    public Transaction apisGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -1233,10 +1233,10 @@ public class AppManager {
 
     public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
         BigInteger nonce = this.mApis.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
-        return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
+        return apisGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
     }
 
-    public void ethereumSendTransactions(Transaction tx){
+    public void apisSendTransactions(Transaction tx){
 
         if(tx != null){
             this.mApis.submitTransaction(tx);
@@ -1245,7 +1245,7 @@ public class AppManager {
     }
 
     // 스마트 컨트렉트 컴파일
-    public String ethereumSmartContractStartToCompile(String stringContract){
+    public String apisSmartContractStartToCompile(String stringContract){
         if(stringContract == null || stringContract.length() == 0){
             return "";
         }
@@ -1271,7 +1271,7 @@ public class AppManager {
     }
 
     //마스터노드 실행
-    public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
+    public boolean apisMasternode(String keyStore, String password, byte[] recipientAddr){
         this.masternodeState = Integer.toString(MnState.EMPTY_MASTERNODE.num);
         this.masternodeAddress = null;
         this.recipientAddress = null;
