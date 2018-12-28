@@ -263,6 +263,10 @@
     "15aac88835e2959b637b59776d9892b9d92fe002": {
       "balance": "1200000000000000000000000000",
       "addressMask" : "isaac@me"
+    },
+    "8bc2d3b17088b6e9ad4910e7a0d69d928f91e87b": {
+      "balance": "123456789123456789000000000000000000",
+      "addressMask" : "isaac@me"
     }
   },
 
