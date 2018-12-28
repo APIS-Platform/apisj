@@ -1334,8 +1334,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     distributeMnReward(masternodeRewardData.getGeneralLate(),   mnGeneralLateOnBLock, track, constants, rewards);
                     distributeMnReward(masternodeRewardData.getMajorLate(),     mnMajorLateOnBlock, track, constants, rewards);
                     distributeMnReward(masternodeRewardData.getPrivateLate(),   mnPrivateLateOnBlock, track, constants, rewards);
-
-                    ConsoleUtil.printlnGreen(masternodeRewardData.toString());
                 } else {
                     ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
                     logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
