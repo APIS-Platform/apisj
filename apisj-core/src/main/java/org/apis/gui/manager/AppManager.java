@@ -1061,11 +1061,13 @@ public class AppManager {
         return new byte[0];
     }
 
-    public byte[] getContractCreationCode(String sender, long nonce, String contractSource, String contractName) {
+    public EstimateTransactionResult getContractCreationCode(String sender, String contractSource, String contractName) {
+        long nonce = AppManager.getInstance().getTxNonce(sender).longValue();
+
         EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
         EstimateTransactionResult estimateResult = estimator.estimateDeploy(ByteUtil.hexStringToBytes(sender), nonce, contractSource, contractName);
 
-        return estimateResult.getDeployBytes();
+        return estimateResult;
     }
 
     public ArrayList<Object[]> getTokenTransfer(String txHash) {
