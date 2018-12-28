@@ -5,7 +5,7 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.DataWord;
@@ -1043,7 +1043,7 @@ public class DBManager {
     }
 
 
-    synchronized void insertBlocks(List<Block> blocks, Ethereum ethereum) {
+    synchronized void insertBlocks(List<Block> blocks, Apis apis) {
         try {
             connection.setAutoCommit(false);
 
@@ -1080,7 +1080,7 @@ public class DBManager {
                         insertTx.setLong(4, blockUid);
                         insertTx.addBatch();
 
-                        TransactionReceipt txReceipt = ethereum.getTransactionInfo(tx.getHash()).getReceipt();
+                        TransactionReceipt txReceipt = apis.getTransactionInfo(tx.getHash()).getReceipt();
                         for(LogInfo logInfo : txReceipt.getLogInfoList()) {
                             for(DataWord topic : logInfo.getTopics()) {
                                 byte[] topicBytes = topic.getData();

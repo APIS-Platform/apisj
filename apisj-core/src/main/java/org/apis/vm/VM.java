@@ -38,7 +38,7 @@ import static org.apis.vm.OpCode.*;
 import static org.apis.util.ByteUtil.toHexString;
 
 /**
- * The Ethereum Virtual Machine (EVM) is responsible for initialization
+ * The Apis Virtual Machine (EVM) is responsible for initialization
  * and executing a transaction on a contract.
  *
  * It is a quasi-Turing-complete machine; the quasi qualification

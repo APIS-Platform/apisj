@@ -32,7 +32,7 @@ import java.util.List;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 
 /**
- * Wrapper around an Ethereum HelloMessage on the network
+ * Wrapper around an Apis HelloMessage on the network
  *
  * @see P2pMessageCodes#HELLO
  */

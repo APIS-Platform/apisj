@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * An extended {@link com.fasterxml.jackson.databind.ObjectMapper ObjectMapper} class to
- * customize ethereum state dumps.
+ * customize apis state dumps.
  *
  * @author Alon Muroch
  */
@@ -42,7 +42,7 @@ public class EtherObjectMapper extends ObjectMapper {
         SegmentedStringWriter sw = new SegmentedStringWriter(_jsonFactory._getBufferRecycler());
         try {
             JsonGenerator ge = _jsonFactory.createGenerator(sw);
-            // set ethereum custom pretty printer
+            // set apis custom pretty printer
             EtherPrettyPrinter pp = new EtherPrettyPrinter();
             ge.setPrettyPrinter(pp);
 
@@ -57,7 +57,7 @@ public class EtherObjectMapper extends ObjectMapper {
 
     /**
      * An extended {@link com.fasterxml.jackson.core.util.DefaultPrettyPrinter} class to customize
-     * an ethereum {@link com.fasterxml.jackson.core.PrettyPrinter Pretty Printer} Generator
+     * an apis {@link com.fasterxml.jackson.core.PrettyPrinter Pretty Printer} Generator
      *
      * @author Alon Muroch
      */
@@ -72,7 +72,7 @@ public class EtherObjectMapper extends ObjectMapper {
                 throws IOException, JsonGenerationException {
             /**
              * Custom object separator (Default is " : ") to make it easier to compare state dumps with other
-             * ethereum client implementations
+             * apis client implementations
              */
             jg.writeRaw(": ");
         }

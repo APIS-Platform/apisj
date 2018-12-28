@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum Transactions message on the network
+ * Wrapper around an Apis Transactions message on the network
  *
  * @see EthMessageCodes#TRANSACTIONS
  */

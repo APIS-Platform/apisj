@@ -18,7 +18,7 @@
 package org.apis.samples;
 
 import org.apis.core.CallTransaction;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
 import org.apis.util.Utils;
 import org.apis.vm.program.ProgramResult;
@@ -36,7 +36,7 @@ import java.util.Date;
  * i.e. which change the contract storage state, but after such calls the contract
  * storage will remain unmodified.
  *
- * As a side effect this sample shows how Java wrappers for Ethereum contracts can be
+ * As a side effect this sample shows how Java wrappers for Apis contracts can be
  * created and then manipulated as regular Java objects
  *
  * Created by Anton Nashatyrev on 05.02.2016.
@@ -44,7 +44,7 @@ import java.util.Date;
 public class PriceFeedSample extends BasicSample {
 
     /**
-     * Base class for a Ethereum Contract wrapper
+     * Base class for a Apis Contract wrapper
      * It can be used by two ways:
      * 1. for each function specify its name and input/output formal parameters
      * 2. Pass the contract JSON ABI to the constructor and then refer the function by name only
@@ -92,7 +92,7 @@ public class PriceFeedSample extends BasicSample {
          */
         protected Object[] callFunction(String name, String[] inParamTypes, String[] outParamTypes, Object ... args) {
             CallTransaction.Function function = CallTransaction.Function.fromSignature(name, inParamTypes, outParamTypes);
-            ProgramResult result = ethereum.callConstantFunction(contractAddr, function, args);
+            ProgramResult result = apis.callConstantFunction(contractAddr, function, args);
             return function.decodeResult(result.getHReturn());
         }
 
@@ -104,7 +104,7 @@ public class PriceFeedSample extends BasicSample {
                 throw new RuntimeException("The contract JSON ABI should be passed to constructor to use this method");
             }
             CallTransaction.Function function = contractFromABI.getByName(functionName);
-            ProgramResult result = ethereum.callConstantFunction(contractAddr, function, args);
+            ProgramResult result = apis.callConstantFunction(contractAddr, function, args);
             return function.decodeResult(result.getHReturn());
         }
 
@@ -112,7 +112,7 @@ public class PriceFeedSample extends BasicSample {
          * Checks if the contract exist in the repository
          */
         public boolean isExist() {
-            return !contractAddr.equals(zeroAddr) && ethereum.getRepository().isExist(Hex.decode(contractAddr));
+            return !contractAddr.equals(zeroAddr) && apis.getRepository().isExist(Hex.decode(contractAddr));
         }
     }
 
@@ -195,13 +195,13 @@ public class PriceFeedSample extends BasicSample {
 
         public Date updateTime() {
             BigInteger ret = (BigInteger) callFunction("updateTime")[0];
-            // All times in Ethereum are Unix times
+            // All times in Apis are Unix times
             return new Date(Utils.fromUnixTime(ret.longValue()));
         }
 
         public double getPrice(String ticker) {
             BigInteger ret = (BigInteger) callFunction("getPrice", ticker)[0];
-            // since Ethereum has no decimal numbers we are storing prices with
+            // since Apis has no decimal numbers we are storing prices with
             // virtual fixed point
             return ret.longValue() / 1_000_000d;
         }
@@ -271,6 +271,6 @@ public class PriceFeedSample extends BasicSample {
 
         // Based on Config class the sample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 }

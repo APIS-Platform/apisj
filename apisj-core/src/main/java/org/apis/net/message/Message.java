@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract message class for all messages on the Ethereum network
+ * Abstract message class for all messages on the Apis network
  *
  * @author Roman Mandeleil
  * @since 06.04.14

@@ -43,7 +43,7 @@ import static org.apis.util.ByteUtil.ZERO_BYTE_ARRAY;
 
 /**
  * A transaction (formally, T) is a single cryptographically
- * signed instruction sent by an actor external to Ethereum.
+ * signed instruction sent by an actor external to Apis.
  * An external actor can be a person (via a mobile device or desktop computer)
  * or could be from a piece of automated software running on a server.
  * There are two types of transactions: those which result in message calls

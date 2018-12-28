@@ -167,7 +167,7 @@ public class HashUtil {
     }
 
     /**
-     * The way to calculate new address inside ethereum
+     * The way to calculate new address inside apis
      *
      * @param addr
      *            - creating address

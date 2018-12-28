@@ -23,7 +23,7 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
 import org.apis.listener.EthereumListenerAdapter;
 import org.spongycastle.util.encoders.Hex;
@@ -63,7 +63,7 @@ public class PendingStateSample extends TestNetSample {
 
     @Override
     public void onSyncDone() {
-        ethereum.addListener(new EthereumListenerAdapter() {
+        apis.addListener(new EthereumListenerAdapter() {
             // listening here when the PendingState is updated with new transactions
             @Override
             public void onPendingTransactionsReceived(List<Transaction> transactions) {
@@ -95,7 +95,7 @@ public class PendingStateSample extends TestNetSample {
     void sendTransactions() throws InterruptedException {
         // initial sender nonce needs to be retrieved from the repository
         // for further transactions we just do nonce++
-        BigInteger nonce = ethereum.getRepository().getNonce(senderAddress);
+        BigInteger nonce = apis.getRepository().getNonce(senderAddress);
 
         int weisToSend = 100;
         int count = 0;
@@ -103,14 +103,14 @@ public class PendingStateSample extends TestNetSample {
             if (count < 5) {
                 Transaction tx = new Transaction(
                         ByteUtil.bigIntegerToBytes(nonce),
-                        ByteUtil.longToBytesNoLeadZeroes(ethereum.getGasPrice()),
+                        ByteUtil.longToBytesNoLeadZeroes(apis.getGasPrice()),
                         ByteUtil.longToBytesNoLeadZeroes(1_000_000),
                         receiverAddress,
                         ByteUtil.longToBytesNoLeadZeroes(weisToSend), new byte[0],
-                        ethereum.getChainIdForNextBlock());
+                        apis.getChainIdForNextBlock());
                 tx.sign(ECKey.fromPrivate(receiverAddress));
                 logger.info("<=== Sending transaction: " + tx);
-                ethereum.submitTransaction(tx);
+                apis.submitTransaction(tx);
 
                 nonce = nonce.add(BigInteger.ONE);
                 count++;
@@ -135,7 +135,7 @@ public class PendingStateSample extends TestNetSample {
     void onPendingTransactionReceived(Transaction tx) {
         logger.info("onPendingTransactionReceived: " + tx);
         if (Arrays.equals(tx.getSender(), senderAddress)) {
-            BigInteger receiverBalance = ethereum.getRepository().getBalance(receiverAddress);
+            BigInteger receiverBalance = apis.getRepository().getBalance(receiverAddress);
             BigInteger receiverBalancePending = pendingState.getRepository().getBalance(receiverAddress);
             logger.info(" + New pending transaction 0x" + Hex.toHexString(tx.getHash()).substring(0, 8));
 
@@ -163,7 +163,7 @@ public class PendingStateSample extends TestNetSample {
                 cleared++;
             }
         }
-        BigInteger receiverBalance = ethereum.getRepository().getBalance(receiverAddress);
+        BigInteger receiverBalance = apis.getRepository().getBalance(receiverAddress);
         BigInteger receiverBalancePending = pendingState.getRepository().getBalance(receiverAddress);
         logger.info("" + cleared + " transactions cleared in the block " + block.getShortDescr());
         logger.info("Receiver pending/current balance: " + receiverBalancePending + " / " + receiverBalance +
@@ -184,6 +184,6 @@ public class PendingStateSample extends TestNetSample {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 }

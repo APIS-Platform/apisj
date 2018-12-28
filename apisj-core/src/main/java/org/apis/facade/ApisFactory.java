@@ -32,15 +32,15 @@ import org.springframework.stereotype.Component;
  * @since 13.11.2014
  */
 @Component
-public class EthereumFactory {
+public class ApisFactory {
 
     private static final Logger logger = LoggerFactory.getLogger("general");
 
-    public static Ethereum createEthereum() {
+    public static Apis createEthereum() {
         return createEthereum((Class) null);
     }
 
-    public static Ethereum createEthereum(Class userSpringConfig) {
+    public static Apis createEthereum(Class userSpringConfig) {
         return userSpringConfig == null ? createEthereum(new Class[] {DefaultConfig.class}) :
                 createEthereum(DefaultConfig.class, userSpringConfig);
     }
@@ -50,18 +50,18 @@ public class EthereumFactory {
      * via 'systemProperties' bean either from the DefaultConfig or from supplied userSpringConfig
      * @param config  Not used
      * @param userSpringConfig   User Spring configuration class
-     * @return  Fully initialized Ethereum instance
+     * @return  Fully initialized Apis instance
      */
-    public static Ethereum createEthereum(SystemProperties config, Class userSpringConfig) {
+    public static Apis createEthereum(SystemProperties config, Class userSpringConfig) {
 
         return userSpringConfig == null ? createEthereum(new Class[] {DefaultConfig.class}) :
                 createEthereum(DefaultConfig.class, userSpringConfig);
     }
 
-    public static Ethereum createEthereum(Class ... springConfigs) {
+    public static Apis createEthereum(Class ... springConfigs) {
         logger.info("Starting APIS...");
         ApplicationContext context = new AnnotationConfigApplicationContext(springConfigs);
 
-        return context.getBean(Ethereum.class);
+        return context.getBean(Apis.class);
     }
 }

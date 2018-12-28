@@ -22,9 +22,8 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
-import org.apis.core.*;
 import org.apis.listener.EthereumListenerAdapter;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +47,7 @@ public class SendTransaction extends BasicSample {
 
     @Override
     public void onSyncDone() throws Exception {
-        ethereum.addListener(new EthereumListenerAdapter() {
+        apis.addListener(new EthereumListenerAdapter() {
             // when block arrives look for our included transactions
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
@@ -80,19 +79,19 @@ public class SendTransaction extends BasicSample {
 
         byte[] senderPrivateKey = Hex.decode("");
         byte[] fromAddress = ECKey.fromPrivate(senderPrivateKey).getAddress();
-        BigInteger nonce = ethereum.getRepository().getNonce(fromAddress);
+        BigInteger nonce = apis.getRepository().getNonce(fromAddress);
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
-                ByteUtil.longToBytesNoLeadZeroes(ethereum.getGasPrice()),
+                ByteUtil.longToBytesNoLeadZeroes(apis.getGasPrice()),
                 ByteUtil.longToBytesNoLeadZeroes(200000),
                 receiveAddress,
                 ByteUtil.bigIntegerToBytes(BigInteger.valueOf(1)),  // 1_000_000_000 gwei, 1_000_000_000_000L szabo, 1_000_000_000_000_000L finney, 1_000_000_000_000_000_000L ether
                 data,
-                ethereum.getChainIdForNextBlock());
+                apis.getChainIdForNextBlock());
 
         tx.sign(ECKey.fromPrivate(senderPrivateKey));
         logger.info("<=== Sending transaction: " + tx);
-        ethereum.submitTransaction(tx);
+        apis.submitTransaction(tx);
 
         return waitForTx(tx.getHash());
     }
@@ -101,14 +100,14 @@ public class SendTransaction extends BasicSample {
     private TransactionReceipt waitForTx(byte[] txHash) throws InterruptedException {
         ByteArrayWrapper txHashW = new ByteArrayWrapper(txHash);
         txWaiters.put(txHashW, null);
-        long startBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+        long startBlock = apis.getBlockchain().getBestBlock().getNumber();
 
         while(true) {
             TransactionReceipt receipt = txWaiters.get(txHashW);
             if (receipt != null) {
                 return receipt;
             } else {
-                long curBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+                long curBlock = apis.getBlockchain().getBestBlock().getNumber();
                 if (curBlock > startBlock + 16) {
                     throw new RuntimeException("The transaction was not included during last 16 blocks: " + txHashW.toString().substring(0,8));
                 } else {
@@ -136,7 +135,7 @@ public class SendTransaction extends BasicSample {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
 
     }
 

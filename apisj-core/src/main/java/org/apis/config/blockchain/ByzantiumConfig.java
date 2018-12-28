@@ -20,8 +20,6 @@ package org.apis.config.blockchain;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.Constants;
 import org.apis.config.ConstantsAdapter;
-import org.apis.core.BlockHeader;
-import org.apis.util.BIUtil;
 
 import java.math.BigInteger;
 
@@ -29,7 +27,7 @@ import java.math.BigInteger;
  * EIPs included in the Hard Fork:
  * <ul>
  *     <li>100 - Change difficulty adjustment to target mean block time including uncles</li>
- *     <li>140 - REVERT instruction in the Ethereum Virtual Machine</li>
+ *     <li>140 - REVERT instruction in the Apis Virtual Machine</li>
  *     <li>196 - Precompiled contracts for addition and scalar multiplication on the elliptic curve alt_bn128</li>
  *     <li>197 - Precompiled contracts for optimal Ate pairing check on the elliptic curve alt_bn128</li>
  *     <li>198 - Precompiled contract for bigint modular exponentiation</li>

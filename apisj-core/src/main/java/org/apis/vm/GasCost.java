@@ -19,7 +19,7 @@ package org.apis.vm;
 
 /**
  * The fundamental network cost unit. Paid for exclusively by APIS, which is converted
- * freely to and from Gas as required. Gas does not exist outside of the internal Ethereum
+ * freely to and from Gas as required. Gas does not exist outside of the internal Apis
  * computation engine; its price is set by the Transaction and miners are free to
  * ignore Transactions whose Gas price is too low.
  */

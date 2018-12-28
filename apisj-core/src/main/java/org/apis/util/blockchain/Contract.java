@@ -18,7 +18,7 @@
 package org.apis.util.blockchain;
 
 /**
- * Abstract Ethereum contract
+ * Abstract Apis contract
  *
  * Created by Anton Nashatyrev on 01.04.2016.
  */

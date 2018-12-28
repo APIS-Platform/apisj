@@ -23,7 +23,7 @@ import org.apis.db.ByteArrayWrapper;
 import org.apis.net.rlpx.Node;
 import org.apis.config.NodeFilter;
 import org.apis.config.SystemProperties;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.net.message.ReasonCode;
 import org.apis.sync.SyncManager;
 import org.apis.sync.SyncPool;
@@ -82,7 +82,7 @@ public class ChannelManager {
     SyncPool syncPool;
 
     @Autowired
-    private Ethereum ethereum;
+    private Apis apis;
 
     @Autowired
     private PendingState pendingState;
@@ -135,7 +135,7 @@ public class ChannelManager {
             return;
         }
 
-        ethereum.connect(node);
+        apis.connect(node);
     }
 
     public Set<String> nodesInUse() {

@@ -23,7 +23,7 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
 import org.apis.vm.program.ProgramResult;
 import org.apis.listener.EthereumListenerAdapter;
@@ -63,7 +63,7 @@ public class CreateContractSample extends TestNetSample {
     @Override
     public void onSyncDone() throws Exception {
         System.out.println("onSyncDone : ");
-        ethereum.addListener(new EthereumListenerAdapter() {
+        apis.addListener(new EthereumListenerAdapter() {
             // when block arrives look for our included transactions
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
@@ -108,25 +108,25 @@ public class CreateContractSample extends TestNetSample {
         }
         logger.info("Contract modified!");
 
-        ProgramResult r = ethereum.callConstantFunction(Hex.toHexString(contractAddress),
+        ProgramResult r = apis.callConstantFunction(Hex.toHexString(contractAddress),
                 contract.getByName("get"));
         Object[] ret = contract.getByName("get").decodeResult(r.getHReturn());
         logger.info("Current contract data member value: " + ret[0]);
     }
 
     protected TransactionReceipt sendTxAndWait(byte[] receiveAddress, byte[] data) throws InterruptedException {
-        BigInteger nonce = ethereum.getRepository().getNonce(senderAddress);
+        BigInteger nonce = apis.getRepository().getNonce(senderAddress);
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
-                ByteUtil.longToBytesNoLeadZeroes(ethereum.getGasPrice()),
+                ByteUtil.longToBytesNoLeadZeroes(apis.getGasPrice()),
                 ByteUtil.longToBytesNoLeadZeroes(3_000_000),
                 receiveAddress,
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
-                ethereum.getChainIdForNextBlock());
+                apis.getChainIdForNextBlock());
         tx.sign(ECKey.fromPrivate(senderPrivateKey));
         logger.info("<=== Sending transaction: " + tx);
-        ethereum.submitTransaction(tx);
+        apis.submitTransaction(tx);
 
         return waitForTx(tx.getHash());
     }
@@ -146,13 +146,13 @@ public class CreateContractSample extends TestNetSample {
     protected TransactionReceipt waitForTx(byte[] txHash) throws InterruptedException {
         ByteArrayWrapper txHashW = new ByteArrayWrapper(txHash);
         txWaiters.put(txHashW, null);
-        long startBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+        long startBlock = apis.getBlockchain().getBestBlock().getNumber();
         while(true) {
             TransactionReceipt receipt = txWaiters.get(txHashW);
             if (receipt != null) {
                 return receipt;
             } else {
-                long curBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+                long curBlock = apis.getBlockchain().getBestBlock().getNumber();
                 if (curBlock > startBlock + 16) {
                     throw new RuntimeException("The transaction was not included during last 16 blocks: " + txHashW.toString().substring(0,8));
                 } else {
@@ -179,6 +179,6 @@ public class CreateContractSample extends TestNetSample {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 }

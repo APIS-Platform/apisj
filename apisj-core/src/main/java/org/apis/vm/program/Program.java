@@ -1214,7 +1214,7 @@ public class Program {
     }
 
     /**
-     * Denotes problem when executing Ethereum bytecode.
+     * Denotes problem when executing Apis bytecode.
      * From blockchain and peer perspective this is quite normal situation
      * and doesn't mean exceptional situation in terms of the program execution
      */

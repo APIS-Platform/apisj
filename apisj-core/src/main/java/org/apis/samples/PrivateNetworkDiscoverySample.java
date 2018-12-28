@@ -24,7 +24,7 @@ import com.typesafe.config.ConfigValue;
 import com.typesafe.config.ConfigValueFactory;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.net.rlpx.discover.NodeManager;
 import org.apis.net.rlpx.discover.table.NodeEntry;
 import org.apis.net.server.Channel;
@@ -58,13 +58,13 @@ public class PrivateNetworkDiscoverySample {
      */
     public static void main(String[] args) throws Exception {
         BasicSample.sLogger.info("Starting main node to which others will connect to");
-        EthereumFactory.createEthereum(Node0Config.class);
+        ApisFactory.createEthereum(Node0Config.class);
 
         BasicSample.sLogger.info("Starting regular instance 1!");
-        EthereumFactory.createEthereum(Node1Config.class);
+        ApisFactory.createEthereum(Node1Config.class);
 
         BasicSample.sLogger.info("Starting regular instance 2!");
-        EthereumFactory.createEthereum(Node2Config.class);
+        ApisFactory.createEthereum(Node2Config.class);
     }
 
 

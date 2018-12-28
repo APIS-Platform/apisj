@@ -3,7 +3,7 @@ package org.apis.contract;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
-import org.apis.facade.EthereumImpl;
+import org.apis.facade.ApisImpl;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.BIUtil;
@@ -27,10 +27,10 @@ public class EstimateTransaction {
 
     private Logger logger = LoggerFactory.getLogger("estimate");
 
-    private EthereumImpl apis;
+    private ApisImpl apis;
 
 
-    public static EstimateTransaction getInstance(EthereumImpl apis) {
+    public static EstimateTransaction getInstance(ApisImpl apis) {
         if(instance == null) {
             instance = new EstimateTransaction(apis);
         }
@@ -46,7 +46,7 @@ public class EstimateTransaction {
         return instance;
     }
 
-    private EstimateTransaction(EthereumImpl apis) {
+    private EstimateTransaction(ApisImpl apis) {
         this.apis = apis;
     }
 

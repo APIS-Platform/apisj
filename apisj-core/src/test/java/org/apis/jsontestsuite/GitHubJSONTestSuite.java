@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Test file specific for tests maintained in the GitHub repository
- * by the Ethereum DEV team. <br/>
+ * by the Apis DEV team. <br/>
  *
  * @see <a href="https://github.com/ethereum/tests/">https://github.com/ethereum/tests/</a>
  */

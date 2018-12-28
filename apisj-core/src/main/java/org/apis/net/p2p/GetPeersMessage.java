@@ -20,7 +20,7 @@ package org.apis.net.p2p;
 import org.spongycastle.util.encoders.Hex;
 
 /**
- * Wrapper around an Ethereum GetPeers message on the network
+ * Wrapper around an Apis GetPeers message on the network
  *
  * @see P2pMessageCodes#GET_PEERS
  */

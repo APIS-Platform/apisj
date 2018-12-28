@@ -26,7 +26,7 @@ import static org.apis.vm.OpCode.Tier.*;
 
 
 /**
- * Instruction set for the Ethereum Virtual Machine
+ * Instruction set for the Apis Virtual Machine
  * See Yellow Paper: http://www.gavwood.com/Paper.pdf
  * - Appendix G. Virtual Machine Specification
  */

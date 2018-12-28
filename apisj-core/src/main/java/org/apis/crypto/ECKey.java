@@ -105,7 +105,7 @@ import static org.apis.util.ByteUtil.toHexString;
  * be reversed to find the public key used to calculate it. This can be convenient when you have a message and a
  * signature and want to find out who signed it, rather than requiring the user to provide the expected identity.</p>
  *
- * This code is borrowed from the bitcoinj project and altered to fit Ethereum.<br>
+ * This code is borrowed from the bitcoinj project and altered to fit Apis.<br>
  * See <a href="https://github.com/bitcoinj/bitcoinj/blob/df9f5a479d28c84161de88165917a5cffcba08ca/core/src/main/java/org/bitcoinj/core/ECKey.java">
  * bitcoinj on GitHub</a>.
  */
@@ -113,7 +113,7 @@ public class ECKey implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ECKey.class);
 
     /**
-     * The parameters of the secp256k1 curve that Ethereum uses.
+     * The parameters of the secp256k1 curve that Apis uses.
      */
     public static final ECDomainParameters CURVE;
     public static final ECParameterSpec CURVE_SPEC;
@@ -134,7 +134,7 @@ public class ECKey implements Serializable {
     private static final long serialVersionUID = -728224901792295832L;
 
     static {
-        // All clients must agree on the curve to use by agreement. Ethereum uses secp256k1.
+        // All clients must agree on the curve to use by agreement. Apis uses secp256k1.
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
         CURVE = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
         CURVE_SPEC = new ECParameterSpec(params.getCurve(), params.getG(), params.getN(), params.getH());
@@ -578,7 +578,7 @@ public class ECKey implements Serializable {
 
     /**
      * Groups the two components that make up a signature, and provides a way to encode to Base64 form, which is
-     * how ECDSA signatures are represented when embedded in other data structures in the Ethereum protocol. The raw
+     * how ECDSA signatures are represented when embedded in other data structures in the Apis protocol. The raw
      * components can be useful for doing further EC maths on them.
      */
     public static class ECDSASignature {
@@ -667,7 +667,7 @@ public class ECKey implements Serializable {
         /**
          * Will automatically adjust the S component to be less than or equal to half the curve order, if necessary.
          * This is required because for every signature (r,s) the signature (r, -s (mod N)) is a valid signature of
-         * the same message. However, we dislike the ability to modify the bits of a Ethereum transaction after it's
+         * the same message. However, we dislike the ability to modify the bits of a Apis transaction after it's
          * been signed, as that violates various assumed invariants. Thus in future only one of those forms will be
          * considered legal and the other will be banned.
          *
@@ -800,7 +800,7 @@ public class ECKey implements Serializable {
      * determine if the signature was correct.
      *
      * @param messageHash a piece of human readable text that was signed
-     * @param signatureBase64 The Ethereum-format message signature in base64
+     * @param signatureBase64 The Apis-format message signature in base64
      *
      * @return -
      * @throws SignatureException If the public key could not be recovered or if there was a signature format error.

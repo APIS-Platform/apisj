@@ -32,7 +32,7 @@ import org.spongycastle.util.Pack;
  * Support class for constructing integrated encryption cipher
  * for doing basic message exchanges on top of key agreement ciphers.
  * Follows the description given in IEEE Std 1363a with a couple of changes
- * specific to Ethereum:
+ * specific to Apis:
  * - Hash the MAC key before use
  * - Include the encryption IV in the MAC computation
  */

@@ -20,7 +20,7 @@ package org.apis.util.blockchain;
 import org.apis.core.Block;
 
 /**
- * Interface to Ethereum contract compiled with Solidity with
+ * Interface to Apis contract compiled with Solidity with
  * respect to language function signatures encoding and
  * storage layout
  *

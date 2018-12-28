@@ -278,7 +278,7 @@ public class RLPTest {
 
         assertArrayEquals(expected, data);
 
-        String test2 = "Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++";
+        String test2 = "Apis(++)/ZeroGox/v0.5.0/ncurses/Linux/g++";
 
         byte[] expected2 = {(byte) 0xAD, (byte) 0x45, (byte) 0x74, (byte) 0x68, (byte) 0x65, (byte) 0x72, (byte) 0x65,
                 (byte) 0x75, (byte) 0x6D, (byte) 0x28, (byte) 0x2B, (byte) 0x2B, (byte) 0x29, (byte) 0x2F,
@@ -291,7 +291,7 @@ public class RLPTest {
         data = encodeString(test2);
         assertArrayEquals(expected2, data);
 
-        String test3 = "Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++Ethereum(++)/ZeroGox/v0.5.0/ncurses/Linux/g++";
+        String test3 = "Apis(++)/ZeroGox/v0.5.0/ncurses/Linux/g++Apis(++)/ZeroGox/v0.5.0/ncurses/Linux/g++";
 
         byte[] expected3 = {(byte) 0xB8, (byte) 0x5A,
                 (byte) 0x45, (byte) 0x74, (byte) 0x68, (byte) 0x65, (byte) 0x72, (byte) 0x65,

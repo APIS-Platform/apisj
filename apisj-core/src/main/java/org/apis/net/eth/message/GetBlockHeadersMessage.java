@@ -28,7 +28,7 @@ import static org.apis.util.ByteUtil.byteArrayToInt;
 import static org.apis.util.ByteUtil.byteArrayToLong;
 
 /**
- * Wrapper around an Ethereum GetBlockHeaders message on the network
+ * Wrapper around an Apis GetBlockHeaders message on the network
  *
  * @see EthMessageCodes#GET_BLOCK_HEADERS
  *

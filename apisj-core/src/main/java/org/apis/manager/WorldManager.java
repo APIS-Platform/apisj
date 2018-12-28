@@ -123,12 +123,12 @@ public class WorldManager {
     }
 
     public void addListener(EthereumListener listener) {
-        logger.info("Ethereum listener added");
+        logger.info("Apis listener added");
         ((CompositeEthereumListener) this.listener).addListener(listener);
     }
 
     public void removeListener(EthereumListener listener) {
-        logger.info("Ethereum listener removed");
+        logger.info("Apis listener removed");
         ((CompositeEthereumListener) this.listener).removeListener(listener);
     }
 

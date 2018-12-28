@@ -33,14 +33,14 @@ import static org.spongycastle.util.BigIntegers.asUnsignedByteArray;
  * Recursive Length Prefix (RLP) encoding.
  * <p>
  * The purpose of RLP is to encode arbitrarily nested arrays of binary data, and
- * RLP is the main encoding method used to serialize objects in Ethereum. The
+ * RLP is the main encoding method used to serialize objects in Apis. The
  * only purpose of RLP is to encode structure; encoding specific atomic data
  * types (eg. strings, integers, floats) is left up to higher-order protocols; in
- * Ethereum the standard is that integers are represented in big endian binary
+ * Apis the standard is that integers are represented in big endian binary
  * form. If one wishes to use RLP to encode a dictionary, the two suggested
  * canonical forms are to either use [[k1,v1],[k2,v2]...] with keys in
  * lexicographic order or to use the higher-level Patricia Tree encoding as
- * Ethereum does.
+ * Apis does.
  * <p>
  * The RLP encoding function takes in an item. An item is defined as follows:
  * <p>
@@ -152,7 +152,7 @@ public class RLP {
 
         int value = 0;
         // NOTE: From RLP doc:
-        // Ethereum integers must be represented in big endian binary form
+        // Apis integers must be represented in big endian binary form
         // with no leading zeroes (thus making the integer value zero be
         // equivalent to the empty byte array)
 

@@ -4,7 +4,7 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.util.ByteUtil;
 
 import java.math.BigInteger;
@@ -41,16 +41,16 @@ public class TransactionRecord {
         this.blockUid = rs.getLong("blockUid");
     }
 
-    public TransactionRecord init(Ethereum ethereum) {
+    public TransactionRecord init(Apis apis) {
         if(hash == null || hash.length == 0) {
             return this;
         }
-        TransactionInfo txInfo = ethereum.getTransactionInfo(hash);
+        TransactionInfo txInfo = apis.getTransactionInfo(hash);
         if(txInfo != null) {
             TransactionReceipt receipt = txInfo.getReceipt();
             Transaction tx = receipt.getTransaction();
 
-            Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+            Block block = apis.getBlockchain().getBlockByHash(txInfo.getBlockHash());
             block_hash = ByteUtil.toHexString(block.getHash());
             block_number = block.getNumber();
             nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();

@@ -20,7 +20,7 @@ package org.apis.net.p2p;
 import org.spongycastle.util.encoders.Hex;
 
 /**
- * Wrapper around an Ethereum Pong message on the network
+ * Wrapper around an Apis Pong message on the network
  *
  * @see P2pMessageCodes#PONG
  */

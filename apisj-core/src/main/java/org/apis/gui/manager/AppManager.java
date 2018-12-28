@@ -32,9 +32,9 @@ import org.apis.db.sql.DBManager;
 import org.apis.db.sql.DBSyncManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.db.sql.TransactionRecord;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
-import org.apis.facade.EthereumImpl;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
+import org.apis.facade.ApisImpl;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
@@ -84,7 +84,7 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : private
      * ============================================== */
-    private Ethereum mEthereum;
+    private Apis mApis;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<>();
     private int peerSize = 0;
@@ -191,7 +191,7 @@ public class AppManager {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             // DB Sync Start
-            DBSyncManager.getInstance(mEthereum).syncThreadStart();
+            DBSyncManager.getInstance(mApis).syncThreadStart();
 
             // constants
             constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
@@ -220,8 +220,8 @@ public class AppManager {
                 AppManager.this.setTotalMineral(totalMineral);
 
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
-                for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
-                    TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
+                for (Transaction tx : mApis.getBlockchain().getBestBlock().getTransactionsList()) {
+                    TransactionInfo txInfo = ((BlockchainImpl) mApis.getBlockchain()).getTransactionInfo(tx.getHash());
                     DBManager.getInstance().updateContractCreation(txInfo);
                 }
 
@@ -318,8 +318,8 @@ public class AppManager {
             }
 
             // block number
-            AppManager.this.myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
-            AppManager.this.worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
+            AppManager.this.myBestBlock = AppManager.this.mApis.getBlockchain().getBestBlock().getNumber();
+            AppManager.this.worldBestBlock = mApis.getSyncStatus().getBlockBestKnown();
 
 
             //sync
@@ -371,7 +371,7 @@ public class AppManager {
             System.out.println("===================== [onPeerDisconnect] =====================");
 
             // peer number
-            AppManager.this.peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
+            AppManager.this.peerSize = AppManager.this.mApis.getChannelManager().getActivePeers().size();
 
         }
 
@@ -380,7 +380,7 @@ public class AppManager {
             System.out.println("===================== [onPeerAddedToSyncPool] =====================");
 
             // peer number
-            AppManager.this.peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
+            AppManager.this.peerSize = AppManager.this.mApis.getChannelManager().getActivePeers().size();
 
         }
     };
@@ -491,20 +491,20 @@ public class AppManager {
      *  public method
      * ============================================== */
     public boolean isSyncDone(){return this.isSyncDone;}
-    public long getBestBlock(){ return this.mEthereum.getSyncStatus().getBlockBestKnown(); }
-    public long getLastBlock(){ return this.mEthereum.getBlockchain().getBestBlock().getNumber(); }
+    public long getBestBlock(){ return this.mApis.getSyncStatus().getBlockBestKnown(); }
+    public long getLastBlock(){ return this.mApis.getBlockchain().getBestBlock().getNumber(); }
     public long getBlockTimeLong(long block_number) {
-        return this.mEthereum.getBlockchain().getBlockByNumber(block_number).getTimestamp();
+        return this.mApis.getBlockchain().getBlockByNumber(block_number).getTimestamp();
     }
     public String getBlockTimeToString(long block_number) {
         long blockTime = getBlockTimeLong(block_number)*1000;
         return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
     }
     public BigInteger getTxNonce(String address){
-        return ((Repository)mEthereum.getRepository()).getNonce(ByteUtil.hexStringToBytes(address));
+        return ((Repository) mApis.getRepository()).getNonce(ByteUtil.hexStringToBytes(address));
     }
     public String getAddressWithMask(String mask){
-        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        Repository repository = ((Repository) mApis.getRepository()).getSnapshotTo(mApis.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);
 
         if(addr != null){
@@ -514,10 +514,10 @@ public class AppManager {
         }
     }
     public String getMaskWithAddress(String address){
-        if(mEthereum == null || address == null || !AddressUtil.isAddress(address)){
+        if(mApis == null || address == null || !AddressUtil.isAddress(address)){
             return null;
         }
-        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        Repository repository = ((Repository) mApis.getRepository()).getSnapshotTo(mApis.getBlockchain().getBestBlock().getStateRoot());
         String mask = repository.getMaskByAddress(ByteUtil.hexStringToBytes(address));
 
         if(mask != null){
@@ -558,7 +558,7 @@ public class AppManager {
     }
 
     public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
-        long maxNonce = Long.parseLong(mEthereum.getRepository().getNonce(addr).toString());
+        long maxNonce = Long.parseLong(mApis.getRepository().getNonce(addr).toString());
         for(long nonce = maxNonce; nonce >=0 ; nonce-- ) {
             if(FastByteComparisons.equal(contractAddress, HashUtil.calcNewAddr(addr, ByteUtil.longToBytes(nonce)))){
                 return nonce;
@@ -594,7 +594,7 @@ public class AppManager {
     public boolean startRPC(){
         // start server
         try {
-            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mApis);
             rpcServerManager.loadProperties();
             if(rpcServerManager.isAvailable()) {
                 rpcServerManager.startServer();
@@ -610,7 +610,7 @@ public class AppManager {
     public boolean stopRPC(){
         // stop server
         try {
-            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mApis);
             rpcServerManager.stopServer();
             System.out.println("<< ======== STOP RPC SERVER");
         } catch (IOException e) {
@@ -631,7 +631,7 @@ public class AppManager {
     }
 
     public boolean isMasterNode(String address){
-        return ((Repository)mEthereum.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
+        return ((Repository) mApis.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
     }
 
     public boolean isMining(String address) {
@@ -846,17 +846,17 @@ public class AppManager {
         }
 
         // 목록에 있는 데이터들의 값을 갱신한다.
-        if(mEthereum != null) {
-            Block bestBlock = mEthereum.getBlockchain().getBestBlock();
-            Block parentBlock = mEthereum.getBlockchain().getBlockByHash(bestBlock.getParentHash());
-            Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+        if(mApis != null) {
+            Block bestBlock = mApis.getBlockchain().getBestBlock();
+            Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+            Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
 
             KeyStoreDataExp keyExp = null;
             for(int i=0; i<keyStoreDataExpList.size(); i++){
                 keyExp = keyStoreDataExpList.get(i);
                 keyExp.mask = getMaskWithAddress(keyExp.address);
                 keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
-                keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
+                keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
                 keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
                 keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
             }
@@ -904,11 +904,11 @@ public class AppManager {
         }else{
         }
 
-        mEthereum = EthereumFactory.createEthereum();
-        mEthereum.addListener(mListener);
+        mApis = ApisFactory.createEthereum();
+        mApis.addListener(mListener);
 
         if (actionBlocksLoader) {
-            mEthereum.getBlockLoader().loadBlocks();
+            mApis.getBlockLoader().loadBlocks();
         }else{
         }
 
@@ -923,7 +923,7 @@ public class AppManager {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
 
                         //main - time
-                        long timeStemp = mEthereum.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
+                        long timeStemp = mApis.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
                         long nowStemp = TimeUtils.getRealTimestamp(); //ms
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
 
@@ -945,10 +945,10 @@ public class AppManager {
 
 
     public BigInteger getBalance(String address){
-        return mEthereum.getRepository().getBalance(ByteUtil.hexStringToBytes(address));
+        return mApis.getRepository().getBalance(ByteUtil.hexStringToBytes(address));
     }
     public BigInteger getMineral(String address){
-        return mEthereum.getRepository().getMineral(ByteUtil.hexStringToBytes(address), mEthereum.getBlockchain().getBestBlock().getNumber());
+        return mApis.getRepository().getMineral(ByteUtil.hexStringToBytes(address), mApis.getBlockchain().getBestBlock().getNumber());
     }
 
     private ECKey getSenderKey(String json, String passwd ){
@@ -971,10 +971,10 @@ public class AppManager {
     }
 
     public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
-        if(this.mEthereum != null) {
+        if(this.mApis != null) {
             BigInteger value = BigInteger.ZERO;
 
-            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) mApis);
             EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, value, data);
 
             if(estimateResult == null) {
@@ -993,11 +993,11 @@ public class AppManager {
     }
 
     public long getPreGasUsedWithNonce(byte[] sender, byte[] contractAddress, byte[] data)  {
-        if(this.mEthereum != null) {
+        if(this.mApis != null) {
             BigInteger value = BigInteger.ZERO;
-            long nonce = this.mEthereum.getRepository().getNonce(sender).longValue();
+            long nonce = this.mApis.getRepository().getNonce(sender).longValue();
             System.out.println("nonce : "+nonce);
-            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+            EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) mApis);
             EstimateTransactionResult estimateResult = estimator.estimate(sender, contractAddress, nonce, value, data);
 
             if(estimateResult == null) {
@@ -1016,8 +1016,8 @@ public class AppManager {
     }
 
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
-        if(this.mEthereum != null) {
-            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+        if(this.mApis != null) {
+            EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) mApis);
             EstimateTransactionResult estimateResult = estimator.estimate(abi, sender, contractAddress, value, functionName, args);
 
             if(estimateResult == null) {
@@ -1034,8 +1034,8 @@ public class AppManager {
         }
     }
     public long getPreGasCreateContract(byte[] sender, long nonce, String contractSource, String contractName, Object ... args){
-        if(this.mEthereum != null) {
-            EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+        if(this.mApis != null) {
+            EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) mApis);
             EstimateTransactionResult estimateResult = estimator.estimateDeploy(sender, nonce, contractSource, contractName, args);
 
             if(estimateResult == null) {
@@ -1054,7 +1054,7 @@ public class AppManager {
 
     public byte[] getGasUsed(String txHash){
         try {
-            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
+            TransactionInfo txInfo = ((BlockchainImpl) this.mApis.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
             byte[] gasUsed = txReceipt.getGasUsed();
             if (gasUsed != null) {
@@ -1068,7 +1068,7 @@ public class AppManager {
     public EstimateTransactionResult getContractCreationCode(String sender, String contractSource, String contractName) {
         long nonce = AppManager.getInstance().getTxNonce(sender).longValue();
 
-        EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)mEthereum);
+        EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) mApis);
         EstimateTransactionResult estimateResult = estimator.estimateDeploy(ByteUtil.hexStringToBytes(sender), nonce, contractSource, contractName);
 
         return estimateResult;
@@ -1076,7 +1076,7 @@ public class AppManager {
 
     public ArrayList<Object[]> getTokenTransfer(String txHash) {
             ArrayList<Object[]> tokenTransferList = new  ArrayList<Object[]>();
-            TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
+            TransactionInfo txInfo = ((BlockchainImpl)this.mApis.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
 
             if (txReceipt == null) {
@@ -1104,7 +1104,7 @@ public class AppManager {
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mApis.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -1120,7 +1120,7 @@ public class AppManager {
     }
 
     public List<InternalTransaction> getInternalTransactions(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mApis.getBlockchain()).getTransactionInfo(ByteUtil.hexStringToBytes(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -1134,7 +1134,7 @@ public class AppManager {
     }
 
     public EstimateTransactionResult estimateTransaction(Transaction tx){
-        return EstimateTransaction.getInstance((EthereumImpl)mEthereum).estimate(tx);
+        return EstimateTransaction.getInstance((ApisImpl) mApis).estimate(tx);
     }
     public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, char[] passwd, char[] knowledgeKey){
         String json = "";
@@ -1146,13 +1146,13 @@ public class AppManager {
         }
 
         ECKey senderKey = getSenderKey(json, String.valueOf(passwd));
-        BigInteger nonce = this.mEthereum.getPendingState().getNonce(senderKey.getAddress());
+        BigInteger nonce = this.mApis.getPendingState().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();
 
-        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(this.mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(this.mApis.getBlockchain().getBestBlock().getStateRoot());
 
 
         byte[] reAddress = repo.getAddressByMask(sMask);
@@ -1169,7 +1169,7 @@ public class AppManager {
                 sMask,  //address mask
                 value,
                 data, // data - smart contract data
-                this.mEthereum.getChainIdForNextBlock());
+                this.mApis.getChainIdForNextBlock());
 
         tx.sign(senderKey);
         if(knowledgeKey != null && knowledgeKey.length > 0){
@@ -1205,7 +1205,7 @@ public class AppManager {
                 toMask, //mask
                 value,  //value
                 data, // data - smart contract data
-                this.mEthereum.getChainIdForNextBlock());
+                this.mApis.getChainIdForNextBlock());
 
         // For raw transaction byte code
         //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + ByteUtil.toHexString(tx.getHash()));
@@ -1218,14 +1218,14 @@ public class AppManager {
     }
 
     public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
-        BigInteger nonce = this.mEthereum.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
+        BigInteger nonce = this.mApis.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
         return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
     }
 
     public void ethereumSendTransactions(Transaction tx){
 
         if(tx != null){
-            this.mEthereum.submitTransaction(tx);
+            this.mApis.submitTransaction(tx);
         }else{
         }
     }
@@ -1291,13 +1291,13 @@ public class AppManager {
     }
 
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function){
-        ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
+        ProgramResult r = this.mApis.callConstantFunction(contractAddress, function);
         Object[] ret = function.decodeResult(r.getHReturn());
         return ret;
     }
 
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function, Object ... args){
-        ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function, args);
+        ProgramResult r = this.mApis.callConstantFunction(contractAddress, function, args);
         Object[] ret = function.decodeResult(r.getHReturn());
         return ret;
     }
@@ -1341,7 +1341,7 @@ public class AppManager {
     }
 
     public byte[] getProofKey(byte[] addr){
-        Repository data = ((Repository)mEthereum.getRepository());
+        Repository data = ((Repository) mApis.getRepository());
         return data.getProofKey(addr);
     }
 
@@ -1762,7 +1762,7 @@ public class AppManager {
     }
 
     public TransactionRecord initTransactionRecord(TransactionRecord record) {
-        return record.init(mEthereum);
+        return record.init(mApis);
     }
 
     public static void copyClipboard(String text){

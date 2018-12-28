@@ -4,7 +4,7 @@ import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
@@ -224,28 +224,28 @@ public class ContractLoader {
 
 
 
-    public static void initAddressMaskingContracts(Ethereum ethereum) {
+    public static void initAddressMaskingContracts(Apis apis) {
         assert config != null;
-        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-        ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+        BigInteger nonce = apis.getRepository().getNonce(config.getMinerCoinbase());
+        apis.submitTransaction(getAddressMaskingContractInitTransaction(nonce, apis.getChainIdForNextBlock()));
     }
 
-    public static void initFoundationContracts(Ethereum ethereum) {
+    public static void initFoundationContracts(Apis apis) {
         assert config != null;
-        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-        ethereum.submitTransaction(getFoundationWalletInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+        BigInteger nonce = apis.getRepository().getNonce(config.getMinerCoinbase());
+        apis.submitTransaction(getFoundationWalletInitTransaction(nonce, apis.getChainIdForNextBlock()));
     }
 
-    public static void initBuyMineralContract(Ethereum ethereum) {
+    public static void initBuyMineralContract(Apis apis) {
         assert config != null;
-        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-        ethereum.submitTransaction(getBuyMineralContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+        BigInteger nonce = apis.getRepository().getNonce(config.getMinerCoinbase());
+        apis.submitTransaction(getBuyMineralContractInitTransaction(nonce, apis.getChainIdForNextBlock()));
     }
 
-    public static void initEarlyBirdManagerContracts(Ethereum ethereum) {
+    public static void initEarlyBirdManagerContracts(Apis apis) {
         assert config != null;
-        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-        ethereum.submitTransaction(getEarlyBirdManagerInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+        BigInteger nonce = apis.getRepository().getNonce(config.getMinerCoinbase());
+        apis.submitTransaction(getEarlyBirdManagerInitTransaction(nonce, apis.getChainIdForNextBlock()));
     }
 
 

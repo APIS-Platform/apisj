@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A list of commands for the Ethereum network protocol.
+ * A list of commands for the Apis network protocol.
  * <br>
  * The codes for these commands are the first byte in every packet.
  *
@@ -32,13 +32,13 @@ import java.util.Map;
  */
 public enum EthMessageCodes {
 
-    /* Ethereum protocol */
+    /* Apis protocol */
 
     /**
      * {@code [0x00, [PROTOCOL_VERSION, NETWORK_ID, TD, BEST_HASH, GENESIS_HASH] } <br>
      *
-     * Inform a peer of it's current ethereum state. This message should be
-     * send after the initial handshake and prior to any ethereum related messages.
+     * Inform a peer of it's current apis state. This message should be
+     * send after the initial handshake and prior to any apis related messages.
      */
     STATUS(0x00),
 
@@ -66,7 +66,7 @@ public enum EthMessageCodes {
      *
      * Specify (a) transaction(s) that the peer should make sure is included
      * on its transaction queue. The items in the list (following the first item 0x12)
-     * are transactions in the format described in the main Ethereum specification.
+     * are transactions in the format described in the main Apis specification.
      */
     TRANSACTIONS(0x02),
 
@@ -90,7 +90,7 @@ public enum EthMessageCodes {
      *
      * Reply to GetBlockHeaders.
      * The items in the list (following the message ID) are
-     * block headers in the format described in the main Ethereum specification,
+     * block headers in the format described in the main Apis specification,
      * previously asked for in a GetBlockHeaders message.
      * This may validly contain no block headers
      * if no block headers were able to be returned for the GetBlockHeaders query.
@@ -114,7 +114,7 @@ public enum EthMessageCodes {
      *
      * Reply to GetBlockBodies.
      * The items in the list (following the message ID) are some of the blocks, minus the header,
-     * in the format described in the main Ethereum specification, previously asked for in a GetBlockBodies message.
+     * in the format described in the main Apis specification, previously asked for in a GetBlockBodies message.
      * This may validly contain no block headers
      * if no block headers were able to be returned for the GetBlockHeaders query.
      */
@@ -125,7 +125,7 @@ public enum EthMessageCodes {
      *
      * Specify a single block that the peer should know about. The composite item
      * in the list (following the message ID) is a block in the format described
-     * in the main Ethereum specification.
+     * in the main Apis specification.
      */
     NEW_BLOCK(0x07),
 

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum BlockBodies message on the network
+ * Wrapper around an Apis BlockBodies message on the network
  *
  * @see EthMessageCodes#BLOCK_BODIES
  *

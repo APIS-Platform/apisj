@@ -22,22 +22,15 @@ import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.keystore.KeyStoreUtil;
-import org.apis.listener.EthereumListener;
 import org.apis.mine.Ethash;
 import org.apis.mine.MinerListener;
-import org.apis.net.eth.message.StatusMessage;
-import org.apis.net.message.Message;
-import org.apis.net.p2p.HelloMessage;
-import org.apis.net.rlpx.Node;
-import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.context.annotation.Bean;
 
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -121,12 +114,12 @@ public class PrivateMinerSample_bak {
                 logger.info("Generating Full Dataset (may take up to 10 min if not cached)...");
                 // calling this just for indication of the dataset generation
                 // basically this is not required
-                Ethash ethash = Ethash.getForBlock(config, ethereum.getBlockchain().getBestBlock().getNumber());
+                Ethash ethash = Ethash.getForBlock(config, apis.getBlockchain().getBestBlock().getNumber());
                 //ethash.getFullDataset();
                 logger.info("Full dataset generated (loaded).");
             }
-            ethereum.getBlockMiner().addListener(this);
-            //ethereum.getBlockMiner().startMining();
+            apis.getBlockMiner().addListener(this);
+            //apis.getBlockMiner().startMining();
         }
 
         @Override
@@ -147,7 +140,7 @@ public class PrivateMinerSample_bak {
         @Override
         public void blockMined(Block block) {
             logger.info("Block mined! : \n" + block);
-            //ethereum.submitRewardPoint(new RewardPoint(block.getNumber(), config.getMinerCoinbase(), config.getBlockchainConfig().getConfigForBlock(block.getNumber()).calcRewardPoint(config.getMinerCoinbase(), ethereum.getSnapshotTo(block.getStateRoot()).getBalance(config.getMinerCoinbase()), block.getHeader())));
+            //apis.submitRewardPoint(new RewardPoint(block.getNumber(), config.getMinerCoinbase(), config.getBlockchainConfig().getConfigForBlock(block.getNumber()).calcRewardPoint(config.getMinerCoinbase(), apis.getSnapshotTo(block.getStateRoot()).getBalance(config.getMinerCoinbase()), block.getHeader())));
         }
 
         @Override
@@ -287,7 +280,7 @@ public class PrivateMinerSample_bak {
             logger.info(Hex.encode(senderKey.getAddress()).toString());
             String aa = Hex.encode(senderKey.getAddress()).toString();
 
-            for (int i = ethereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
+            for (int i = apis.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
                 {
                     StringBuffer temp = new StringBuffer();
                     Random rnd = new Random();
@@ -327,10 +320,10 @@ public class PrivateMinerSample_bak {
                     }
                     Transaction txs = new Transaction(nonce,
                             ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
-                            receiverAddr, new byte[]{77}, new byte[0], ethereum.getChainIdForNextBlock());
+                            receiverAddr, new byte[]{77}, new byte[0], apis.getChainIdForNextBlock());
                     txs.sign(senderKey);
                     //logger.info("<== Submitting tx: " + txs);
-                    ethereum.submitTransaction(txs);
+                    apis.submitTransaction(txs);
                 }
                 Thread.sleep(9000);
             }
@@ -361,7 +354,7 @@ public class PrivateMinerSample_bak {
         //EthereumFactory.createEthereum(MinerConfig.class);
 
         BasicSample.sLogger.info("Starting APIS regular instance!");
-        EthereumFactory.createEthereum(RegularConfig.class);
+        ApisFactory.createEthereum(RegularConfig.class);
 
         /*BasicSample.sLogger.info("Starting APIS2 regular instance!");
         EthereumFactory.createEthereum(RegularConfig.class);*/

@@ -18,11 +18,10 @@
 package org.apis.samples;
 
 import org.apis.crypto.ECKey;
-import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.TransactionStore;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
 import org.apis.vm.program.ProgramResult;
 import org.apis.core.Block;
@@ -206,7 +205,7 @@ public class EventListenerSample extends TestNetSample {
      */
     @Override
     public void onSyncDone() throws Exception {
-        ethereum.addListener(new EthereumListenerAdapter() {
+        apis.addListener(new EthereumListenerAdapter() {
             @Override
             public void onPendingTransactionUpdate(TransactionReceipt txReceipt, PendingTransactionState state, Block block) {
                 ByteArrayWrapper txHashW = new ByteArrayWrapper(txReceipt.getTransaction().getHash());
@@ -228,9 +227,9 @@ public class EventListenerSample extends TestNetSample {
     public void requestFreeEther(byte[] addressBytes) {
         String address = "0x" + toHexString(addressBytes);
         logger.info("Checking address {} for available ether.", address);
-        BigInteger balance = ethereum.getRepository().getBalance(addressBytes);
+        BigInteger balance = apis.getRepository().getBalance(addressBytes);
         logger.info("Address {} balance: {} wei", address, balance);
-        BigInteger requiredBalance = BigInteger.valueOf(3_000_000 * ethereum.getGasPrice());
+        BigInteger requiredBalance = BigInteger.valueOf(3_000_000 * apis.getGasPrice());
         if (balance.compareTo(requiredBalance) < 0) {
             logger.info("Insufficient funds for address {}, requesting free ether", address);
             try {
@@ -271,7 +270,7 @@ public class EventListenerSample extends TestNetSample {
 
     private void waitForEther(byte[] address, BigInteger requiredBalance) throws InterruptedException {
         while(true) {
-            BigInteger balance = ethereum.getRepository().getBalance(address);
+            BigInteger balance = apis.getRepository().getBalance(address);
             if (balance.compareTo(requiredBalance) > 0) {
                 logger.info("Address {} successfully funded. Balance: {} wei", "0x" + toHexString(address), balance);
                 break;
@@ -288,7 +287,7 @@ public class EventListenerSample extends TestNetSample {
      *  - Calls contract from 2 different addresses
      */
     private void deployContractAndTest() throws Exception {
-        ethereum.addListener(new EthereumListenerAdapter() {
+        apis.addListener(new EthereumListenerAdapter() {
             // when block arrives look for our included transactions
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
@@ -310,13 +309,13 @@ public class EventListenerSample extends TestNetSample {
         logger.info("Contract created: " + toHexString(address));
 
         IncEventListener eventListener = new IncEventListener(pendingState, metadata.abi, address);
-        ethereum.addListener(eventListener.listener);
+        apis.addListener(eventListener.listener);
 
         CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
         contractIncCall(senderPrivateKey, 777, metadata.abi, address);
         contractIncCall(sender2PrivateKey, 555, metadata.abi, address);
 
-        ProgramResult r = ethereum.callConstantFunction(Hex.toHexString(address),
+        ProgramResult r = apis.callConstantFunction(Hex.toHexString(address),
                 contract.getByName("get"));
         Object[] ret = contract.getByName("get").decodeResult(r.getHReturn());
         logger.info("Current contract data member value: " + ret[0]);
@@ -333,7 +332,7 @@ public class EventListenerSample extends TestNetSample {
         IncEventListener eventListener = new IncEventListener(pendingState, metadata.abi, address);
         BlockReplay blockReplay = new BlockReplay(blockStore, transactionStore, eventListener.listener,
                 blockStore.getMaxNumber() - 5000, blockStore.getMaxNumber());
-        ethereum.addListener(blockReplay);
+        apis.addListener(blockReplay);
         blockReplay.replayAsync();
     }
 
@@ -372,21 +371,21 @@ public class EventListenerSample extends TestNetSample {
 
     protected TransactionReceipt sendTxAndWait(byte[] receiveAddress,
                                                byte[] data, byte[] privateKey) throws InterruptedException {
-        BigInteger nonce = ethereum.getRepository().getNonce(ECKey.fromPrivate(privateKey).getAddress());
+        BigInteger nonce = apis.getRepository().getNonce(ECKey.fromPrivate(privateKey).getAddress());
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
-                ByteUtil.longToBytesNoLeadZeroes(ethereum.getGasPrice()),
+                ByteUtil.longToBytesNoLeadZeroes(apis.getGasPrice()),
                 ByteUtil.longToBytesNoLeadZeroes(3_000_000),
                 receiveAddress,
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
-                ethereum.getChainIdForNextBlock());
+                apis.getChainIdForNextBlock());
         tx.sign(ECKey.fromPrivate(privateKey));
 
         logger.info("<=== Sending transaction: " + tx);
         ByteArrayWrapper txHashW = new ByteArrayWrapper(tx.getHash());
         txWaiters.put(txHashW, null);
-        ethereum.submitTransaction(tx);
+        apis.submitTransaction(tx);
 
         return waitForTx(txHashW);
     }
@@ -404,13 +403,13 @@ public class EventListenerSample extends TestNetSample {
     }
 
     protected TransactionReceipt waitForTx(ByteArrayWrapper txHashW) throws InterruptedException {
-        long startBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+        long startBlock = apis.getBlockchain().getBestBlock().getNumber();
         while(true) {
             TransactionReceipt receipt = txWaiters.get(txHashW);
             if (receipt != null) {
                 return receipt;
             } else {
-                long curBlock = ethereum.getBlockchain().getBestBlock().getNumber();
+                long curBlock = apis.getBlockchain().getBestBlock().getNumber();
                 if (curBlock > startBlock + 16) {
                     throw new RuntimeException("The transaction was not included during last 16 blocks: " + txHashW.toString().substring(0,8));
                 } else {
@@ -437,6 +436,6 @@ public class EventListenerSample extends TestNetSample {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 }

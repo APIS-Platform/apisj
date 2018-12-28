@@ -24,11 +24,8 @@ import org.apis.config.blockchain.FrontierConfig;
 import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.ImportResult;
-import org.apis.facade.EthereumImpl;
+import org.apis.facade.ApisImpl;
 import org.apis.listener.CompositeEthereumListener;
-import org.apis.mine.BlockMiner;
-import org.apis.mine.Ethash;
-import org.apis.mine.MinerIfc;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.StandaloneBlockchain;
 import org.junit.Before;
@@ -59,7 +56,7 @@ public class ExternalMinerTest {
     private CompositeEthereumListener listener = new CompositeEthereumListener();
 
     @Mock
-    private EthereumImpl ethereum;
+    private ApisImpl ethereum;
 
     @InjectMocks
     @Resource

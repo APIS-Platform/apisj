@@ -21,8 +21,8 @@ import com.typesafe.config.ConfigFactory;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ import static java.lang.Thread.sleep;
 @Ignore
 public class SyncSanityTest {
 
-    private Ethereum regularNode;
+    private Apis regularNode;
     private static AtomicBoolean firstRun = new AtomicBoolean(true);
     private static final Logger testLogger = LoggerFactory.getLogger("TestLogger");
     private static final MutableObject<String> configPath = new MutableObject<>("longrun/conf/ropsten.conf");
@@ -129,7 +129,7 @@ public class SyncSanityTest {
                     // Stop syncing
                     config.setSyncEnabled(false);
                     config.setDiscoveryEnabled(false);
-                    ethereum.getChannelManager().close();
+                    apis.getChannelManager().close();
                     syncPool.close();
 
                     return;
@@ -140,7 +140,7 @@ public class SyncSanityTest {
         @Override
         public void onSyncDone() throws Exception {
             // Full sanity check
-            fullSanityCheck(ethereum, commonConfig);
+            fullSanityCheck(apis, commonConfig);
         }
     }
 
@@ -159,9 +159,9 @@ public class SyncSanityTest {
         return fatalErrors.get() == 0;
     }
 
-    private static void fullSanityCheck(Ethereum ethereum, CommonConfig commonConfig) {
+    private static void fullSanityCheck(Apis apis, CommonConfig commonConfig) {
 
-        BlockchainValidation.fullCheck(ethereum, commonConfig, fatalErrors);
+        BlockchainValidation.fullCheck(apis, commonConfig, fatalErrors);
         logStats();
 
         if (!firstRun.get()) {
@@ -203,6 +203,6 @@ public class SyncSanityTest {
 
     public void runEthereum() throws Exception {
         testLogger.info("Starting EthereumJ regular instance!");
-        this.regularNode = EthereumFactory.createEthereum(RegularConfig.class);
+        this.regularNode = ApisFactory.createEthereum(RegularConfig.class);
     }
 }

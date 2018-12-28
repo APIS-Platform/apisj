@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum NewBlockHashes message on the network<br>
+ * Wrapper around an Apis NewBlockHashes message on the network<br>
  *
  * @see EthMessageCodes#NEW_BLOCK_HASHES
  *

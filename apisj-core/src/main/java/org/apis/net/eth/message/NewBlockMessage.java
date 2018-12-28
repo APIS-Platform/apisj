@@ -28,7 +28,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.math.BigInteger;
 
 /**
- * Wrapper around an Ethereum Blocks message on the network
+ * Wrapper around an Apis Blocks message on the network
  *
  * @see EthMessageCodes#NEW_BLOCK
  */

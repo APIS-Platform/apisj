@@ -23,8 +23,8 @@ import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.message.Message;
@@ -103,16 +103,16 @@ public class SanityLongRunTest {
         SysPropConfig1.props = new SystemProperties(ConfigFactory.parseString(config1));
         SysPropConfig2.props = new SystemProperties(ConfigFactory.parseString(config2));
 
-//        Ethereum ethereum1 = EthereumFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
-        Ethereum ethereum1 = null;
+//        Apis apis1 = EthereumFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
+        Apis apis1 = null;
 
 //        Thread.sleep(1000000000);
 
-        Ethereum ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
+        Apis apis2 = ApisFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
 
         final CountDownLatch semaphore = new CountDownLatch(1);
 
-        ethereum2.addListener(new EthereumListenerAdapter() {
+        apis2.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof StatusMessage) {
@@ -131,7 +131,7 @@ public class SanityLongRunTest {
         final CountDownLatch semaphoreBlocks = new CountDownLatch(1);
         final CountDownLatch semaphoreFirstBlock = new CountDownLatch(1);
 
-        ethereum2.addListener(new EthereumListenerAdapter() {
+        apis2.addListener(new EthereumListenerAdapter() {
             int blocksCnt = 0;
 
             @Override
@@ -156,20 +156,20 @@ public class SanityLongRunTest {
         }
 
         // SHH messages exchange
-        String identity1 = ethereum1.getWhisper().newIdentity();
-        String identity2 = ethereum2.getWhisper().newIdentity();
+        String identity1 = apis1.getWhisper().newIdentity();
+        String identity2 = apis2.getWhisper().newIdentity();
 
         final int[] counter1 = new int[1];
         final int[] counter2 = new int[1];
 
-        ethereum1.getWhisper().watch(new MessageWatcher(identity1, null, null) {
+        apis1.getWhisper().watch(new MessageWatcher(identity1, null, null) {
             @Override
             protected void newMessage(WhisperMessage msg) {
                 System.out.println("=== You have a new message to 1: " + msg);
                 counter1[0]++;
             }
         });
-        ethereum2.getWhisper().watch(new MessageWatcher(identity2, null, null) {
+        apis2.getWhisper().watch(new MessageWatcher(identity2, null, null) {
             @Override
             protected void newMessage(WhisperMessage msg) {
                 System.out.println("=== You have a new message to 2: " + msg);
@@ -181,8 +181,8 @@ public class SanityLongRunTest {
         int cnt = 0;
         long end = System.currentTimeMillis() + 60 * 60 * 1000;
         while (semaphoreBlocks.getCount() > 0) {
-            ethereum1.getWhisper().send(identity2, "Hello Eth2!".getBytes(), null);
-            ethereum2.getWhisper().send(identity1, "Hello Eth1!".getBytes(), null);
+            apis1.getWhisper().send(identity2, "Hello Eth2!".getBytes(), null);
+            apis2.getWhisper().send(identity1, "Hello Eth1!".getBytes(), null);
             cnt++;
             Thread.sleep(10 * 1000);
             if (counter1[0] != cnt || counter2[0] != cnt) {
@@ -193,8 +193,8 @@ public class SanityLongRunTest {
             }
         }
 
-        ethereum1.close();
-        ethereum2.close();
+        apis1.close();
+        apis2.close();
 
         System.out.println("Passed.");
     }

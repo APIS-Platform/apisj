@@ -75,7 +75,7 @@ public class JSONReader {
     public static String loadJSONFromCommit(String filename, String shacommit) throws IOException {
         String json = "";
         if (!SystemProperties.getDefault().githubTestsLoadLocal())
-            json = getFromUrl("https://raw.githubusercontent.com/ethereum/tests/" + shacommit + "/" + filename);
+            json = getFromUrl("https://raw.githubusercontent.com/apis/tests/" + shacommit + "/" + filename);
         if (!json.isEmpty()) json = json.replaceAll("//", "data");
         return json.isEmpty() ? getFromLocal(filename) : json;
     }
@@ -152,7 +152,7 @@ public class JSONReader {
             return jsons;
         }
 
-        String result = getFromUrl("https://api.github.com/repos/ethereum/tests/git/trees/" + sha + "?recursive=1");
+        String result = getFromUrl("https://api.github.com/repos/apis/tests/git/trees/" + sha + "?recursive=1");
 
         JSONParser parser = new JSONParser();
         JSONObject testSuiteObj = null;

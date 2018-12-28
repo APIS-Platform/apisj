@@ -27,7 +27,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.math.BigInteger;
 
 /**
- * Wrapper for Ethereum STATUS message. <br>
+ * Wrapper for Apis STATUS message. <br>
  *
  * @see EthMessageCodes#STATUS
  */

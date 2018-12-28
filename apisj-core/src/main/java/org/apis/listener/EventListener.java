@@ -75,7 +75,7 @@ public abstract class EventListener<EventData> {
         public Block bestConfirmingBlock;
         // if came from a block we take block time, it pending we take current time
         public long created;
-        // status of the Ethereum Tx
+        // status of the Apis Tx
         public TxStatus txStatus;
 
         public PendingEvent(long created) {
@@ -217,7 +217,7 @@ public abstract class EventListener<EventData> {
         if (!initialized) throw new RuntimeException("Event listener should be initialized");
         byte[] txHash = receipt.getTransaction().getHash();
         if (logFilter.matchBloom(receipt.getBloomFilter())) {
-            int txCount = 0; // several transactions are possible withing a single Ethereum Tx
+            int txCount = 0; // several transactions are possible withing a single Apis Tx
             List<EventData> matchedTxs = new ArrayList<>();
             for (LogInfo logInfo : receipt.getLogInfoList()) {
                 if (logFilter.matchBloom(logInfo.getBloom()) &&

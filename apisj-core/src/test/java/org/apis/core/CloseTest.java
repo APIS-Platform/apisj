@@ -17,10 +17,8 @@
  */
 package org.apis.core;
 
-import org.apis.core.Block;
-import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -39,11 +37,11 @@ public class CloseTest {
     public void relaunchTest() throws InterruptedException {
 
         while (true) {
-            Ethereum ethereum = EthereumFactory.createEthereum();
-            Block bestBlock = ethereum.getBlockchain().getBestBlock();
+            Apis apis = ApisFactory.createEthereum();
+            Block bestBlock = apis.getBlockchain().getBestBlock();
             Assert.assertNotNull(bestBlock);
             final CountDownLatch latch = new CountDownLatch(1);
-            ethereum.addListener(new EthereumListenerAdapter() {
+            apis.addListener(new EthereumListenerAdapter() {
                 int counter = 0;
                 @Override
                 public void onBlock(Block block, List<TransactionReceipt> receipts) {
@@ -53,8 +51,8 @@ public class CloseTest {
             });
             System.out.println("### Waiting for some blocks to be imported...");
             latch.await();
-            System.out.println("### Closing Ethereum instance");
-            ethereum.close();
+            System.out.println("### Closing Apis instance");
+            apis.close();
             Thread.sleep(5000);
             System.out.println("### Closed.");
         }

@@ -66,11 +66,11 @@ import static org.apis.core.ImportResult.*;
 import static org.apis.crypto.HashUtil.sha3;
 
 /**
- * The APIS blockchain is in many ways similar to the Ethereum blockchain,
+ * The APIS blockchain is in many ways similar to the Apis blockchain,
  * although it does have some differences.
  * <p>
- * The main difference between APIS and Ethereum with regard to the blockchain architecture
- * is that, unlike Ethereum, APIS blocks remove uncle blocks and contain sum of used mineral
+ * The main difference between APIS and Apis with regard to the blockchain architecture
+ * is that, unlike Apis, APIS blocks remove uncle blocks and contain sum of used mineral
  * </p>
  * The block validation algorithm in APIS is as follows:
  * <ol>

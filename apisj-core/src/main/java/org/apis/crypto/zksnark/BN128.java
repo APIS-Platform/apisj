@@ -42,7 +42,7 @@ import java.math.BigInteger;
  *
  * Current implementation uses Jacobian coordinate system as
  * <a href="https://github.com/scipr-lab/libff/blob/master/libff/algebra/curves/alt_bn128/alt_bn128_g1.cpp">libff</a> does,
- * use {@link #toEthNotation()} to convert Jacobian coords to Ethereum encoding <br/>
+ * use {@link #toEthNotation()} to convert Jacobian coords to Apis encoding <br/>
  *
  * @author Mikhail Kalinin
  * @since 05.09.2017
@@ -60,7 +60,7 @@ public abstract class BN128<T extends Field<T>> {
     }
 
     /**
-     * Point at infinity in Ethereum notation: should return (0; 0; 0),
+     * Point at infinity in Apis notation: should return (0; 0; 0),
      * {@link #isZero()} method called for that point, also, returns {@code true}
      */
     abstract protected BN128<T> zero();
@@ -94,7 +94,7 @@ public abstract class BN128<T extends Field<T>> {
     public BN128<T> toEthNotation() {
         BN128<T> affine = toAffine();
 
-        // affine zero is (0; 1; 0), convert to Ethereum zero: (0; 0; 0)
+        // affine zero is (0; 1; 0), convert to Apis zero: (0; 0; 0)
         if (affine.isZero()) {
             return zero();
         } else {

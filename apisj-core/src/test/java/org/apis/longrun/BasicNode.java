@@ -22,8 +22,8 @@ import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.TransactionReceipt;
 import org.apis.db.DbFlushManager;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
@@ -44,7 +44,7 @@ import java.util.Vector;
 import static java.lang.Thread.sleep;
 
 /**
- * BasicNode of ethereum instance
+ * BasicNode of apis instance
  */
 class BasicNode implements Runnable {
     static final Logger sLogger = LoggerFactory.getLogger("sample");
@@ -53,7 +53,7 @@ class BasicNode implements Runnable {
     public Logger logger;
 
     @Autowired
-    protected Ethereum ethereum;
+    protected Apis apis;
 
     @Autowired
     protected SystemProperties config;
@@ -81,7 +81,7 @@ class BasicNode implements Runnable {
 
         // Based on Config class the BasicNode would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 
     public BasicNode() {
@@ -103,9 +103,9 @@ class BasicNode implements Runnable {
     private void springInit() {
         logger = LoggerFactory.getLogger(loggerName);
         // adding the main EthereumJ callback to be notified on different kind of events
-        ethereum.addListener(listener);
+        apis.addListener(listener);
 
-        logger.info("Sample component created. Listening for ethereum events...");
+        logger.info("Sample component created. Listening for apis events...");
 
         // starting lifecycle tracking method run()
         new Thread(this, "SampleWorkThread").start();
@@ -114,7 +114,7 @@ class BasicNode implements Runnable {
     /**
      * The method tracks step-by-step the instance lifecycle from node discovery till sync completion.
      * At the end the method onSyncDone() is called which might be overridden by a sample subclass
-     * to start making other things with the Ethereum network
+     * to start making other things with the Apis network
      */
     public void run() {
         try {

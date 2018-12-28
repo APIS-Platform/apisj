@@ -21,8 +21,8 @@ import com.typesafe.config.ConfigFactory;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -78,6 +78,6 @@ public class RopstenSample extends BasicSample {
             }
         }
 
-        Ethereum ethereum = EthereumFactory.createEthereum(SampleConfig.class);
+        Apis apis = ApisFactory.createEthereum(SampleConfig.class);
     }
 }

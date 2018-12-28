@@ -24,8 +24,8 @@ import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.Blockchain;
 import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.handler.Eth62;
 import org.apis.net.eth.handler.EthHandler;
@@ -72,8 +72,8 @@ public class ShortSyncTest {
     private static Block b10;
     private static Block b8_;
 
-    private Ethereum ethereumA;
-    private Ethereum ethereumB;
+    private Apis apisA;
+    private Apis apisB;
     private EthHandler ethA;
     private String testDbA;
     private String testDbB;
@@ -150,7 +150,7 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
 
         for (Block b : mainB1B10) {
             blockchainA.tryToConnect(b);
@@ -159,7 +159,7 @@ public class ShortSyncTest {
         // A == b10, B == genesis
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -188,7 +188,7 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -197,7 +197,7 @@ public class ShortSyncTest {
         // A == b8', B == genesis
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b8_)) {
@@ -225,8 +225,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : mainB1B10) {
             blockchainA.tryToConnect(b);
@@ -239,7 +239,7 @@ public class ShortSyncTest {
         // A == b10, B == b8'
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -270,8 +270,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : mainB1B10) {
             blockchainA.tryToConnect(b);
@@ -286,7 +286,7 @@ public class ShortSyncTest {
         // A == b5, B == b9
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -325,8 +325,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -341,7 +341,7 @@ public class ShortSyncTest {
 
         final CountDownLatch semaphore = new CountDownLatch(1);
         final CountDownLatch semaphoreB8_ = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -387,8 +387,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : mainB1B10) {
             blockchainA.tryToConnect(b);
@@ -403,7 +403,7 @@ public class ShortSyncTest {
 
         final CountDownLatch semaphore = new CountDownLatch(1);
         final CountDownLatch semaphoreB7 = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b7)) {
@@ -451,8 +451,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        final Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        final Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -465,7 +465,7 @@ public class ShortSyncTest {
 
         // A == b8', B == b4
 
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof NewBlockMessage) {
@@ -478,7 +478,7 @@ public class ShortSyncTest {
         });
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -511,8 +511,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        final Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        final Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -528,7 +528,7 @@ public class ShortSyncTest {
 
         final CountDownLatch semaphore = new CountDownLatch(1);
         final CountDownLatch semaphoreB7_ = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b7_)) {
@@ -595,8 +595,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        final Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        final Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -612,7 +612,7 @@ public class ShortSyncTest {
         ethA.sendNewBlock(b8_);
 
         final CountDownLatch semaphoreDisconnect = new CountDownLatch(1);
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof DisconnectMessage) {
@@ -636,7 +636,7 @@ public class ShortSyncTest {
         }
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -646,13 +646,13 @@ public class ShortSyncTest {
         });
 
         final CountDownLatch semaphoreConnect = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onPeerAddedToSyncPool(Channel peer) {
                 semaphoreConnect.countDown();
             }
         });
-        ethereumB.connect(nodeA);
+        apisB.connect(nodeA);
 
         // await connection
         semaphoreConnect.await(10, SECONDS);
@@ -702,8 +702,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        final Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        final Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -719,7 +719,7 @@ public class ShortSyncTest {
         ethA.sendNewBlockHashes(b8_);
 
         final CountDownLatch semaphoreDisconnect = new CountDownLatch(1);
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof DisconnectMessage) {
@@ -739,7 +739,7 @@ public class ShortSyncTest {
         SysPropConfigA.eth62 = null;
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b10)) {
@@ -749,13 +749,13 @@ public class ShortSyncTest {
         });
 
         final CountDownLatch semaphoreConnect = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onPeerAddedToSyncPool(Channel peer) {
                 semaphoreConnect.countDown();
             }
         });
-        ethereumB.connect(nodeA);
+        apisB.connect(nodeA);
 
         // await connection
         semaphoreConnect.await(10, SECONDS);
@@ -791,8 +791,8 @@ public class ShortSyncTest {
 
         // A == B == genesis
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        final Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        final Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -807,7 +807,7 @@ public class ShortSyncTest {
 
         final CountDownLatch semaphore1 = new CountDownLatch(1);
         final CountDownLatch semaphore2 = new CountDownLatch(1);
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.isEqual(b6_)) {
@@ -863,7 +863,7 @@ public class ShortSyncTest {
 
         setupPeers();
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
 
         for (Block b : mainB1B10) {
             blockchainA.tryToConnect(b);
@@ -872,7 +872,7 @@ public class ShortSyncTest {
         // A == b10, B == genesis
 
         final CountDownLatch semaphoreDisconnect = new CountDownLatch(1);
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof DisconnectMessage) {
@@ -923,8 +923,8 @@ public class ShortSyncTest {
 
         setupPeers();
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -937,7 +937,7 @@ public class ShortSyncTest {
         // A == b8', B == b10
 
         final CountDownLatch semaphoreDisconnect = new CountDownLatch(1);
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof DisconnectMessage) {
@@ -989,8 +989,8 @@ public class ShortSyncTest {
 
         setupPeers();
 
-        Blockchain blockchainA = (Blockchain) ethereumA.getBlockchain();
-        Blockchain blockchainB = (Blockchain) ethereumB.getBlockchain();
+        Blockchain blockchainA = (Blockchain) apisA.getBlockchain();
+        Blockchain blockchainB = (Blockchain) apisB.getBlockchain();
 
         for (Block b : forkB1B5B8_) {
             blockchainA.tryToConnect(b);
@@ -1003,7 +1003,7 @@ public class ShortSyncTest {
         // A == b8', B == b10
 
         final CountDownLatch semaphoreDisconnect = new CountDownLatch(1);
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {
                 if (message instanceof DisconnectMessage) {
@@ -1024,10 +1024,10 @@ public class ShortSyncTest {
 
     private void setupPeers() throws InterruptedException {
 
-        ethereumA = EthereumFactory.createEthereum(SysPropConfigA.props, SysPropConfigA.class);
-        ethereumB = EthereumFactory.createEthereum(SysPropConfigB.props, SysPropConfigB.class);
+        apisA = ApisFactory.createEthereum(SysPropConfigA.props, SysPropConfigA.class);
+        apisB = ApisFactory.createEthereum(SysPropConfigB.props, SysPropConfigB.class);
 
-        ethereumA.addListener(new EthereumListenerAdapter() {
+        apisA.addListener(new EthereumListenerAdapter() {
             @Override
             public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
                 ethA = (EthHandler) channel.getEthHandler();
@@ -1036,14 +1036,14 @@ public class ShortSyncTest {
 
         final CountDownLatch semaphore = new CountDownLatch(1);
 
-        ethereumB.addListener(new EthereumListenerAdapter() {
+        apisB.addListener(new EthereumListenerAdapter() {
             @Override
             public void onPeerAddedToSyncPool(Channel peer) {
                 semaphore.countDown();
             }
         });
 
-        ethereumB.connect(nodeA);
+        apisB.connect(nodeA);
 
         semaphore.await(10, SECONDS);
         if(semaphore.getCount() > 0) {

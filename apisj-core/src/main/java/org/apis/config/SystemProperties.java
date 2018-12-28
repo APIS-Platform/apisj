@@ -359,7 +359,7 @@ public class SystemProperties {
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException("The class specified via blockchain.config.class '" + className + "' not found", e);
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("The class specified via blockchain.config.class '" + className + "' is not instance of org.ethereum.config.BlockchainForkConfig", e);
+                        throw new RuntimeException("The class specified via blockchain.config.class '" + className + "' is not instance of org.apis.config.BlockchainForkConfig", e);
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException("The class specified via blockchain.config.class '" + className + "' couldn't be instantiated (check for default constructor and its accessibility)", e);
                     }

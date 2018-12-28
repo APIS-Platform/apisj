@@ -24,7 +24,7 @@ import org.apis.util.RLPList;
 import static org.apis.net.message.ReasonCode.UNKNOWN;
 
 /**
- * Wrapper around an Ethereum Disconnect message on the network
+ * Wrapper around an Apis Disconnect message on the network
  *
  * @see P2pMessageCodes#DISCONNECT
  */

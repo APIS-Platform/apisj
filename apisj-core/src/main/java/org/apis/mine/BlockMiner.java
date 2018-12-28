@@ -6,8 +6,8 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumImpl;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteUtil;
@@ -37,7 +37,7 @@ public class BlockMiner {
     private BlockStore blockStore;
 
     @Autowired
-    private Ethereum ethereum;
+    private Apis apis;
 
     protected PendingState pendingState;
 
@@ -115,7 +115,7 @@ public class BlockMiner {
             if(block != null) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
-                        ((EthereumImpl) ethereum).addNewMinedBlock(block);
+                        ((ApisImpl) apis).addNewMinedBlock(block);
                     }
                     else {
                         blockchain.tryToConnect(block);
@@ -181,7 +181,7 @@ public class BlockMiner {
 
 
         // Get the state of the master node.
-        Repository mnRepo = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+        Repository mnRepo = ((Repository) apis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
         AccountState mnState = mnRepo.getAccountState(mnKey.getAddress());
 
         /*
@@ -233,12 +233,12 @@ public class BlockMiner {
      */
     private void sendMasternodeTransaction(ECKey mnKey, long bestNumber) {
 
-        BigInteger nonce = ethereum.getRepository().getNonce(mnKey.getAddress());
+        BigInteger nonce = apis.getRepository().getNonce(mnKey.getAddress());
         BigInteger gasPrice = config.getMasternodeGasPrice();
         BigInteger gasLimit = BigInteger.valueOf(220_000L);
         long value = 0L;
 
-        BigInteger nodeMineral = ethereum.getRepository().getMineral(mnKey.getAddress(), bestNumber);
+        BigInteger nodeMineral = apis.getRepository().getMineral(mnKey.getAddress(), bestNumber);
         if(nodeMineral.compareTo(gasPrice.multiply(gasLimit)) < 0) {
             // Do not run if you do not have enough minerals to transfer the transaction.
             // Insufficient minerals will consume APIS to transfer transactions.
@@ -253,12 +253,12 @@ public class BlockMiner {
                 mnKey.getAddress(),
                 ByteUtil.longToBytesNoLeadZeroes(value),
                 config.getMasternodeRecipient(),
-                ethereum.getChainIdForNextBlock());
+                apis.getChainIdForNextBlock());
         tx.sign(mnKey);
 
         logger.debug(ConsoleUtil.colorBBlue("Submit Masternode Update TX : {}"), tx.toString());
 
-        ethereum.submitTransaction(tx);
+        apis.submitTransaction(tx);
         lastMnUpdatedBlock = bestNumber;
     }
 
@@ -323,7 +323,7 @@ public class BlockMiner {
          * 마스터노드는 마이닝을 실행할 수 없도록 한다.
          * 블록을 생성하더라도 다른 노드에 의해 블록이 거절되고, 블랙리스트에 등록된다.
          */
-        Repository bestRepo = ((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+        Repository bestRepo = ((Repository) apis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
         AccountState minerState = bestRepo.getAccountState(config.getMinerCoinbase());
         if(minerState == null) {
             printMiningMessage("No account for coinbase address.", bestBlock.getNumber());
@@ -382,7 +382,7 @@ public class BlockMiner {
         }
 
         // If miner's balance is zero, mining will not proceed.
-        if(ethereum.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
+        if(apis.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
             printMiningMessage("Miner's balance is zero.", bestBlock.getNumber());
             return false;
         }
@@ -407,7 +407,7 @@ public class BlockMiner {
         }
 
         // 연결된 노드가 없는 경우, 블록을 생성하지 않도록 한다.
-        if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
+        if(blockchain.getBestBlock().getNumber() > 100 && apis.getChannelManager().getActivePeers().isEmpty()) {
             printMiningMessage("Blocks can not be created because there are no connected nodes.", bestBlock.getNumber());
             return false;
         }
@@ -415,7 +415,7 @@ public class BlockMiner {
 
 
         // 연결된 노드들의 RP 값과 비교했을 때 내 RP 값이 현저히 낮을 경우, 블록을 생성하지 않는다
-        /*Collection<Channel> peers = ethereum.getChannelManager().getActivePeers();
+        /*Collection<Channel> peers = apis.getChannelManager().getActivePeers();
         Repository rpRepo = RewardPointUtil.getRewardPointBalanceRepo(bestRepo, bestBlock, blockStore);
         List<BigInteger> rpList = new ArrayList<>();
         for(Channel peer : peers) {
@@ -526,7 +526,7 @@ public class BlockMiner {
             }
 
             while (hasInvalidTx) {
-                BlockSummary summary = ethereum.replayBlock(newBlock);
+                BlockSummary summary = apis.replayBlock(newBlock);
 
                 hasInvalidTx = false;
                 for (int i = 0; i < summary.getReceipts().size(); i++) {
@@ -560,13 +560,13 @@ public class BlockMiner {
 
         // 부모가 genesis일 경우, 컨트렉트들을 생성한다.
         if(blockchain.getBestBlock().isGenesis()) {
-            ContractLoader.initFoundationContracts(ethereum);
+            ContractLoader.initFoundationContracts(apis);
         } else if(blockchain.getBestBlock().getNumber() == 2) {
-            ContractLoader.initAddressMaskingContracts(ethereum);
+            ContractLoader.initAddressMaskingContracts(apis);
         } else if(blockchain.getBestBlock().getNumber() == 3) {
-            ContractLoader.initBuyMineralContract(ethereum);
+            ContractLoader.initBuyMineralContract(apis);
         } else if(blockchain.getBestBlock().getNumber() == 4) {
-            ContractLoader.initEarlyBirdManagerContracts(ethereum);
+            ContractLoader.initEarlyBirdManagerContracts(apis);
         }
 
         miningBlock = getNewBlockForMining();
@@ -598,7 +598,7 @@ public class BlockMiner {
         // 제네시스 블록이면 바로 DB에 저장한다.
         if(newBlock.getNumber() <= 1 && blockchain.getBlockByHash(newBlock.getParentHash()).isGenesis()) {
             logger.debug("Importing newly mined block {} {} ...", newBlock.getShortHash(), newBlock.getNumber());
-            ImportResult importResult = ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
+            ImportResult importResult = ((ApisImpl) apis).addNewMinedBlock(newBlock);
             logger.debug("Mined block import result is " + importResult);
         }
 
@@ -621,10 +621,10 @@ public class BlockMiner {
 
             // 너무 오랜 시간이 지났으면, 일단 채굴한 블럭을 체인에 연결한다.
             if(now - parent.getTimestamp() > config.getBlockchainConfig().getConfigForBlock(newBlock.getNumber()).getConstants().getBLOCK_TIME()*2) {
-                ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
+                ((ApisImpl) apis).addNewMinedBlock(newBlock);
             }
 
-            ethereum.submitMinedBlock(minedBlocks);
+            apis.submitMinedBlock(minedBlocks);
         }
 
         isGeneratingBlock = false;

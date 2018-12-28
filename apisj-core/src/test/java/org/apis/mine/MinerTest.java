@@ -25,14 +25,11 @@ import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
-import org.apis.mine.BlockMiner;
-import org.apis.mine.Ethash;
-import org.apis.mine.MinerListener;
+import org.apis.facade.Apis;
 import org.apis.net.eth.message.NewBlockMessage;
 import org.apis.crypto.ECKey;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.handler.Eth62;
 import org.apis.util.ByteUtil;
@@ -106,10 +103,10 @@ public class MinerTest {
 //                        "genesis = frontier.json \n" +
                         "database.dir = testDB-1 \n"));
 
-        Ethereum ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
+        Apis apis2 = ApisFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereum2.addListener(new EthereumListenerAdapter() {
+        apis2.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 System.err.println("=== New block: " + blockInfo(block));
@@ -154,14 +151,14 @@ public class MinerTest {
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
         byte[] receiverAddr = Hex.decode("5db10750e8caff27f906b41c71b3471057dd2004");
 
-        for (int i = ethereum2.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 200; i++, j++) {
+        for (int i = apis2.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 200; i++, j++) {
             {
                 Transaction tx = new Transaction(ByteUtil.intToBytesNoLeadZeroes(i),
                         ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
                         receiverAddr, new byte[]{77}, new byte[0]);
                 tx.sign(senderKey);
                 System.out.println("=== Submitting tx: " + tx);
-                ethereum2.submitTransaction(tx);
+                apis2.submitTransaction(tx);
 
                 submittedTxs.put(new ByteArrayWrapper(tx.getHash()), Pair.of(tx, System.currentTimeMillis()));
             }
@@ -209,11 +206,11 @@ public class MinerTest {
 ////                        "genesis = frontier.json \n" +
 //                        "database.dir = testDB-1 \n"));
 
-        Ethereum ethereum1 = EthereumFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
-//        Ethereum ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
+        Apis apis1 = ApisFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
+//        Apis ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
 
         final CountDownLatch semaphore = new CountDownLatch(1);
-        ethereum1.addListener(new EthereumListenerAdapter() {
+        apis1.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 System.out.println("=== New block: " + blockInfo(block));
@@ -242,7 +239,7 @@ public class MinerTest {
         System.out.println("=== Sync done.");
 
 
-        BlockMiner blockMiner = ethereum1.getBlockMiner();
+        BlockMiner blockMiner = apis1.getBlockMiner();
         blockMiner.addListener(new MinerListener() {
             @Override
             public void miningStarted() {
@@ -287,14 +284,14 @@ public class MinerTest {
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("3ec771c31cac8c0dba77a69e503765701d3c2bb62435888d4ffa38fed60c445c"));
         byte[] receiverAddr = Hex.decode("31e2e1ed11951c7091dfba62cd4b7145e947219c");
 
-        for (int i = ethereum1.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
+        for (int i = apis1.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
             {
                 Transaction tx = new Transaction(ByteUtil.intToBytesNoLeadZeroes(i),
                         ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
                         receiverAddr, new byte[]{77}, new byte[0]);
                 tx.sign(senderKey);
                 System.out.println("=== Submitting tx: " + tx);
-                ethereum1.submitTransaction(tx);
+                apis1.submitTransaction(tx);
 
                 submittedTxs.put(new ByteArrayWrapper(tx.getHash()), Pair.of(tx, System.currentTimeMillis()));
             }
@@ -303,7 +300,7 @@ public class MinerTest {
 
         Thread.sleep(1000000000);
 
-        ethereum1.close();
+        apis1.close();
 
         System.out.println("Passed.");
 

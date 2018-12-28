@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum NodeData message on the network
+ * Wrapper around an Apis NodeData message on the network
  *
  * @see EthMessageCodes#NODE_DATA
  */

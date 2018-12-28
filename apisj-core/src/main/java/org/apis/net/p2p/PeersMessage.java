@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Wrapper around an Ethereum Peers message on the network
+ * Wrapper around an Apis Peers message on the network
  *
  * @see P2pMessageCodes#PEERS
  */

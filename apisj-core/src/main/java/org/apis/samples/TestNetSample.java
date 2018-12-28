@@ -21,7 +21,7 @@ import com.typesafe.config.ConfigFactory;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.springframework.context.annotation.Bean;
 
 import static org.apis.crypto.HashUtil.sha3;
@@ -108,6 +108,6 @@ public class TestNetSample extends BasicSample {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(SampleConfig.class);
+        ApisFactory.createEthereum(SampleConfig.class);
     }
 }

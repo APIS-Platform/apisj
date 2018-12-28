@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum BlockHeaders message on the network
+ * Wrapper around an Apis BlockHeaders message on the network
  *
  * @see EthMessageCodes#BLOCK_HEADERS
  *

@@ -19,8 +19,8 @@ package org.apis.samples;
 
 import org.apis.core.Block;
 import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.facade.Repository;
 import org.apis.listener.EthereumListenerAdapter;
 import org.spongycastle.util.encoders.Hex;
@@ -31,16 +31,16 @@ import java.util.List;
 public class FollowAccount extends EthereumListenerAdapter {
 
 
-    Ethereum ethereum = null;
+    Apis apis = null;
 
-    public FollowAccount(Ethereum ethereum) {
-        this.ethereum = ethereum;
+    public FollowAccount(Apis apis) {
+        this.apis = apis;
     }
 
     public static void main(String[] args) {
 
-        Ethereum ethereum = EthereumFactory.createEthereum();
-        ethereum.addListener(new FollowAccount(ethereum));
+        Apis apis = ApisFactory.createEthereum();
+        apis.addListener(new FollowAccount(apis));
     }
 
     @Override
@@ -49,13 +49,13 @@ public class FollowAccount extends EthereumListenerAdapter {
         byte[] cow = Hex.decode("cd2a3d9f938e13cd947ec05abc7fe734df8dd826");
 
         // Get snapshot some time ago - 10% blocks ago
-        long bestNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+        long bestNumber = apis.getBlockchain().getBestBlock().getNumber();
         long oldNumber = (long) (bestNumber * 0.9);
 
-        Block oldBlock = ethereum.getBlockchain().getBlockByNumber(oldNumber);
+        Block oldBlock = apis.getBlockchain().getBlockByNumber(oldNumber);
 
-        Repository repository = ethereum.getRepository();
-        Repository snapshot = ethereum.getSnapshotTo(oldBlock.getStateRoot());
+        Repository repository = apis.getRepository();
+        Repository snapshot = apis.getSnapshotTo(oldBlock.getStateRoot());
 
         BigInteger nonce_ = snapshot.getNonce(cow);
         BigInteger nonce = repository.getNonce(cow);

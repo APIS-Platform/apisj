@@ -44,7 +44,7 @@ public class Serializers {
     }
 
     /**
-     * Serializes/Deserializes AccountState instances from the State Trie (part of Ethereum spec)
+     * Serializes/Deserializes AccountState instances from the State Trie (part of Apis spec)
      */
     public final static Serializer<AccountState, byte[]> AccountStateSerializer = new Serializer<AccountState, byte[]>() {
         @Override
@@ -74,7 +74,7 @@ public class Serializers {
     };
 
     /**
-     * Contract storage value serializer (part of Ethereum spec)
+     * Contract storage value serializer (part of Apis spec)
      */
     public final static Serializer<DataWord, byte[]> StorageValueSerializer = new Serializer<DataWord, byte[]>() {
         @Override
@@ -91,7 +91,7 @@ public class Serializers {
     };
 
     /**
-     * Trie node serializer (part of Ethereum spec)
+     * Trie node serializer (part of Apis spec)
      */
     public final static Serializer<Value, byte[]> TrieNodeSerializer = new Serializer<Value, byte[]>() {
         @Override
@@ -106,7 +106,7 @@ public class Serializers {
     };
 
     /**
-     * Trie node serializer (part of Ethereum spec)
+     * Trie node serializer (part of Apis spec)
      */
     public final static Serializer<BlockHeader, byte[]> BlockHeaderSerializer = new Serializer<BlockHeader, byte[]>() {
         @Override

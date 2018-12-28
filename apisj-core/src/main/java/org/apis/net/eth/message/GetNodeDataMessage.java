@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum GetNodeData message on the network
+ * Wrapper around an Apis GetNodeData message on the network
  * Could contain:
  * - state roots
  * - accounts state roots

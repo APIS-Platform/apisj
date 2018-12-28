@@ -26,8 +26,8 @@ import ch.qos.logback.core.spi.FilterReply;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
@@ -42,7 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -67,7 +66,7 @@ public class BasicSample implements Runnable {
     protected Logger logger;
 
     @Autowired
-    protected Ethereum ethereum;
+    protected Apis apis;
 
     @Autowired
     protected SystemProperties config;
@@ -89,7 +88,7 @@ public class BasicSample implements Runnable {
 
         // Based on Config class the BasicSample would be created by Spring
         // and its springInit() method would be called as an entry point
-        EthereumFactory.createEthereum(Config.class);
+        ApisFactory.createEthereum(Config.class);
     }
 
     public BasicSample() {
@@ -133,9 +132,9 @@ public class BasicSample implements Runnable {
         setupLogging();
 
         // adding the main EthereumJ callback to be notified on different kind of events
-        ethereum.addListener(listener);
+        apis.addListener(listener);
 
-        logger.info("Sample component created. Listening for ethereum events...");
+        logger.info("Sample component created. Listening for apis events...");
 
         // starting lifecycle tracking method run()
         new Thread(this, "SampleWorkThread").start();
@@ -144,7 +143,7 @@ public class BasicSample implements Runnable {
     /**
      * The method tracks step-by-step the instance lifecycle from node discovery till sync completion.
      * At the end the method onSyncDone() is called which might be overridden by a sample subclass
-     * to start making other things with the Ethereum network
+     * to start making other things with the Apis network
      */
     public void run() {
         try {
@@ -266,14 +265,14 @@ public class BasicSample implements Runnable {
      * Waits until blocks import started
      */
     protected void waitForFirstBlock() throws Exception {
-        Block currentBest = ethereum.getBlockchain().getBestBlock();
+        Block currentBest = apis.getBlockchain().getBestBlock();
         logger.info("Current BEST block: " + currentBest.getShortDescr());
         logger.info("Waiting for blocks start importing (may take a while)...");
         int cnt = 0;
         while(true) {
             Thread.sleep(cnt < 300 ? 1000 : 60000);
 
-            //ethereum.getBlockMiner().startMining();
+            //apis.getBlockMiner().startMining();
 
             if (bestBlock != null && bestBlock.getNumber() > currentBest.getNumber()) {
                 logger.info("[v] Blocks import started.");
@@ -353,8 +352,8 @@ public class BasicSample implements Runnable {
                 // RewardPoint 전송
                 BlockchainConfig bcConfig = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber());
 
-                //RewardPoint rewardPoint = bcConfig.calcRewardPoint(config.getMinerCoinbase(), ethereum.getSnapshotTo(bestBlock.getStateRoot()).getBalance(config.getMinerCoinbase()), bestBlock.getHash(), bestBlock.getNumber());
-                //ethereum.submitRewardPoint(rewardPoint);
+                //RewardPoint rewardPoint = bcConfig.calcRewardPoint(config.getMinerCoinbase(), apis.getSnapshotTo(bestBlock.getStateRoot()).getBalance(config.getMinerCoinbase()), bestBlock.getHash(), bestBlock.getNumber());
+                //apis.submitRewardPoint(rewardPoint);
             }
         }
         @Override

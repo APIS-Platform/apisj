@@ -425,7 +425,7 @@ public class TransactionTest {
         List<String> res = new StateTestRunner(stateTestSuite.getTestCases().get("test1")) {
             @Override
             protected ProgramResult executeTransaction(Transaction tx) {
-                // first emulating the constant call (Ethereum.callConstantFunction)
+                // first emulating the constant call (Apis.callConstantFunction)
                 // to ensure it doesn't affect the final state
 
                 {

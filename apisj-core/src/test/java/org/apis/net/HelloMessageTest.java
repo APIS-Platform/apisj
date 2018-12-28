@@ -52,7 +52,7 @@ public class HelloMessageTest {
 
         assertEquals(P2pMessageCodes.HELLO, helloMessage.getCommand());
         assertEquals(2, helloMessage.getP2PVersion());
-        assertEquals("Ethereum(++)/v0.7.9/Release/Linux/g++", helloMessage.getClientId());
+        assertEquals("Apis(++)/v0.7.9/Release/Linux/g++", helloMessage.getClientId());
         assertEquals(2, helloMessage.getCapabilities().size());
         assertEquals(992, helloMessage.getListenPort());
         assertEquals(
@@ -66,7 +66,7 @@ public class HelloMessageTest {
 
         //Init
         byte version = 2;
-        String clientStr = "Ethereum(++)/v0.7.9/Release/Linux/g++";
+        String clientStr = "Apis(++)/v0.7.9/Release/Linux/g++";
         List<Capability> capabilities = Arrays.asList(
                 new Capability(Capability.ETH, EthVersion.UPPER),
                 new Capability(Capability.SHH, ShhHandler.VERSION),

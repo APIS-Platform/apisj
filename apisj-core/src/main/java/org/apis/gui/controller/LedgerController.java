@@ -13,8 +13,8 @@ import javafx.scene.paint.Color;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.hid.HIDDevice;
 import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
@@ -34,15 +34,15 @@ public class LedgerController implements Initializable {
     @FXML private Button btnCheck, btnAddress;
     @FXML private TextField editPath, editAddress;
 
-    private static Ethereum mEthereum;
+    private static Apis mApis;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         rawDataTextArea.setText("");
         signedTextArea.setText("");
 
-        mEthereum = EthereumFactory.createEthereum();
-        mEthereum.addListener(mListener);
+        mApis = ApisFactory.createEthereum();
+        mApis.addListener(mListener);
     }
 
 
@@ -114,7 +114,7 @@ public class LedgerController implements Initializable {
                 break;
             case "btnSend":
                 if(signedTx != null) {
-                    mEthereum.submitTransaction(signedTx);
+                    mApis.submitTransaction(signedTx);
                     txtStatus.setText("전송했습니다.");
                 }
                 break;
@@ -159,7 +159,7 @@ public class LedgerController implements Initializable {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             Platform.runLater(() -> {
-                long best = mEthereum.getSyncStatus().getBlockBestKnown();
+                long best = mApis.getSyncStatus().getBlockBestKnown();
                 txtBlock.setText(String.format("%d / %d", block.getNumber(), best));
             });
         }

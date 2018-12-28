@@ -19,11 +19,10 @@ package org.apis.net.rlpx;
 
 import org.apis.config.NoAutoscan;
 import org.apis.config.SystemProperties;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
-import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -95,19 +94,19 @@ public class SnappyConnectionTest {
                 "database.dir", "test_db-2",
                 "peer.p2p.version", String.valueOf(vOutbound));
 
-        Ethereum ethereum1 = EthereumFactory.createEthereum(SysPropConfig1.class);
-        Ethereum ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.class);
+        Apis apis1 = ApisFactory.createEthereum(SysPropConfig1.class);
+        Apis apis2 = ApisFactory.createEthereum(SysPropConfig2.class);
 
         final CountDownLatch semaphore = new CountDownLatch(2);
 
-        ethereum1.addListener(new EthereumListenerAdapter() {
+        apis1.addListener(new EthereumListenerAdapter() {
             @Override
             public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
                 System.out.println("1: -> " + statusMessage);
                 semaphore.countDown();
             }
         });
-        ethereum2.addListener(new EthereumListenerAdapter() {
+        apis2.addListener(new EthereumListenerAdapter() {
             @Override
             public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
                 System.out.println("2: -> " + statusMessage);
@@ -115,13 +114,13 @@ public class SnappyConnectionTest {
             }
         });
 
-        ethereum2.connect(new Node("enode://a560c55a0a5b5d137c638eb6973812f431974e4398c6644fa0c19181954fab530bb2a1e2c4eec7cc855f6bab9193ea41d6cf0bf2b8b41ed6b8b9e09c072a1e5a" +
+        apis2.connect(new Node("enode://a560c55a0a5b5d137c638eb6973812f431974e4398c6644fa0c19181954fab530bb2a1e2c4eec7cc855f6bab9193ea41d6cf0bf2b8b41ed6b8b9e09c072a1e5a" +
                 "@localhost:30334"));
 
         semaphore.await(60, TimeUnit.SECONDS);
 
-        ethereum1.close();
-        ethereum2.close();
+        apis1.close();
+        apis2.close();
 
         if(semaphore.getCount() > 0) {
             throw new RuntimeException("One or both StatusMessage was not received: " + semaphore.getCount());

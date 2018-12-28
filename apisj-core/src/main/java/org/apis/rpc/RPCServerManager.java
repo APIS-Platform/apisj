@@ -1,6 +1,6 @@
 package org.apis.rpc;
 
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 
 import java.io.*;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.TreeSet;
 public class RPCServerManager {
     private static RPCServerManager sManager = null;
 
-    private Ethereum ethereum;
+    private Apis apis;
 
     private  Properties prop = null;
 
@@ -34,15 +34,15 @@ public class RPCServerManager {
     private RPCWebSocketServer rpcServer = null;
     private boolean isRun = false;
 
-    public static RPCServerManager getInstance(Ethereum ethereum) throws IOException {
+    public static RPCServerManager getInstance(Apis apis) throws IOException {
         if(sManager == null) {
-            sManager = new RPCServerManager(ethereum);
+            sManager = new RPCServerManager(apis);
         }
         return sManager;
     }
 
-    private RPCServerManager(Ethereum ethereum) throws IOException {
-        this.ethereum = ethereum;
+    private RPCServerManager(Apis apis) throws IOException {
+        this.apis = apis;
 
         loadProperties();
     }
@@ -159,7 +159,7 @@ public class RPCServerManager {
         if(isRun) {
             return;
         }
-        rpcServer = new RPCWebSocketServer(port, id, password, ethereum);
+        rpcServer = new RPCWebSocketServer(port, id, password, apis);
         rpcServer.setConnectionRule(whitelist, maxConnection);
         rpcServer.setReuseAddr(true);
 
@@ -182,7 +182,7 @@ public class RPCServerManager {
     @Override
     public String toString() {
         return "RPCServerManager{" +
-                "ethereum=" + ethereum +
+                "apis=" + apis +
                 ", port=" + port +
                 ", id='" + id + '\'' +
                 ", password='" + password + '\'' +

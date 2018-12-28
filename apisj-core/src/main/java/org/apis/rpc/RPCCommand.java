@@ -11,8 +11,8 @@ import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumImpl;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisImpl;
 import org.apis.facade.SyncStatus;
 import org.apis.keystore.*;
 import org.apis.listener.BlockReplay;
@@ -184,7 +184,7 @@ public class RPCCommand {
 
 
 
-    static void conduct(Ethereum ethereum, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
+    static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
         MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
         long id = message.getId();
         String method = message.getMethod();
@@ -192,21 +192,21 @@ public class RPCCommand {
 
         if(!isPendingTxListenerRegistered) {
             isPendingTxListenerRegistered = true;
-            ethereum.addListener(pendingTxListener);
+            apis.addListener(pendingTxListener);
         }
 
-        conduct(ethereum, conn, token, id, method, params, isEncrypt);
+        conduct(apis, conn, token, id, method, params, isEncrypt);
     }
 
-    public static void conduct(Ethereum ethereum, WebSocket conn, String token, long id, String method, Object[] params, boolean isEncrypt) throws ParseException {
+    public static void conduct(Apis apis, WebSocket conn, String token, long id, String method, Object[] params, boolean isEncrypt) throws ParseException {
 
         String command = null;
-        Repository latestRepo = (Repository) ethereum.getLastRepositorySnapshot();
+        Repository latestRepo = (Repository) apis.getLastRepositorySnapshot();
 
         switch (method) {
 
             case COMMAND_NET_PEERCOUNT: {
-                int count = ethereum.getChannelManager().getActivePeers().size(); // net peer count
+                int count = apis.getChannelManager().getActivePeers().size(); // net peer count
                 String countHexString = objectToHexString(count);
                 command = createJson(id, method, countHexString);
                 break;
@@ -219,8 +219,8 @@ public class RPCCommand {
 
             case COMMAND_APIS_SYNCING: {
                 long startingBlock = SyncStatus.getStartingBlock();
-                long currentBlock = ethereum.getSyncStatus().getBlockLastImported();
-                long highestBlock = ethereum.getSyncStatus().getBlockBestKnown();
+                long currentBlock = apis.getSyncStatus().getBlockLastImported();
+                long highestBlock = apis.getSyncStatus().getBlockBestKnown();
 
                 if (startingBlock == 0 && currentBlock == 0 && highestBlock == 0) {
                     command = createJson(id, method, false);
@@ -267,7 +267,7 @@ public class RPCCommand {
 
 
                 try {
-                    long lastBlockNumber = getBlockNumber(ethereum, DEFAULT_PARAMETER_BLOCK_LATEST);
+                    long lastBlockNumber = getBlockNumber(apis, DEFAULT_PARAMETER_BLOCK_LATEST);
                     int index = 0;
                     for (KeyStoreData keyStoreData : keyStoreDataList) {
                         int walletIndex = index++;
@@ -283,7 +283,7 @@ public class RPCCommand {
                         BigInteger attoAPIS = latestRepo.getBalance(address);
                         BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
                         //BigInteger nonce = latestRepo.getNonce(address);
-                        BigInteger nonce = ethereum.getPendingState().getNonce(address);
+                        BigInteger nonce = apis.getPendingState().getNonce(address);
                         byte[] proofKey = latestRepo.getProofKey(address);
                         boolean isMasternode = false;
 
@@ -310,14 +310,14 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_BLOCKNUMBER: {
-                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
                 String blockNumberHexString = objectToHexString(blockNumber);
                 command = createJson(id, method, blockNumberHexString);
                 break;
             }
 
             case COMMAND_TOTAL_COINS: {
-                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
                 BigInteger totalCoins = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getTotalAPIS(blockNumber);
                 command = createJson(id, method, ApisUtil.readableApis(totalCoins, true));
                 break;
@@ -339,7 +339,7 @@ public class RPCCommand {
                     blockNumberParam = (String) params[1];
                 }
 
-                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+                long blockNumber = getBlockNumber(apis, blockNumberParam);
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -348,8 +348,8 @@ public class RPCCommand {
 
 
                 try {
-                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                    Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) apis.getRepository()).getSnapshotTo(block.getStateRoot());
                     byte[] address = getAddressByte(repository, (String)params[0]);
                     if (address==null) {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
@@ -389,7 +389,7 @@ public class RPCCommand {
 
                 // get transaction count
                 try {
-                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
+                    BigInteger nonce = apis.getPendingState().getNonce(address);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -413,7 +413,7 @@ public class RPCCommand {
                 try {
                     String hashString = (String) params[0];
                     byte[] hash = ByteUtil.hexStringToBytes(hashString);
-                    int transactionCount = ethereum.getBlockchain().getBlockByHash(hash).getTransactionsList().size();
+                    int transactionCount = apis.getBlockchain().getBlockByHash(hash).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
                     command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
@@ -434,14 +434,14 @@ public class RPCCommand {
                 }
 
                 try {
-                    long blockNumber = getBlockNumber(ethereum, (String) params[0]);
+                    long blockNumber = getBlockNumber(apis, (String) params[0]);
                     if (blockNumber == 0) { // block data null
                         command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                         send(conn, token, command, isEncrypt);
                         return;
                     }
 
-                    int transactionCount = ethereum.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
+                    int transactionCount = apis.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
                     command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
@@ -469,7 +469,7 @@ public class RPCCommand {
                 }
 
                 // getblocknumber
-                long blockNumber = getBlockNumber(ethereum, defaultBlockParameter);
+                long blockNumber = getBlockNumber(apis, defaultBlockParameter);
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -477,8 +477,8 @@ public class RPCCommand {
                 }
 
                 try {
-                    Repository repository = ((Repository) ethereum.getRepository())
-                            .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
+                    Repository repository = ((Repository) apis.getRepository())
+                            .getSnapshotTo(apis.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
                     byte[] address = getAddressByte(repository, (String)params[0]);
                     if (address==null) {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
@@ -568,8 +568,8 @@ public class RPCCommand {
 
                     ECKey senderKey = ECKey.fromPrivate(privateKey);
 
-                    BigInteger nonce = ethereum.getPendingState().getNonce(senderKey.getAddress());
-                    int nextBlock = ethereum.getChainIdForNextBlock();
+                    BigInteger nonce = apis.getPendingState().getNonce(senderKey.getAddress());
+                    int nextBlock = apis.getChainIdForNextBlock();
 
                     Transaction tx = new Transaction(
                             ByteUtil.bigIntegerToBytes(nonce),
@@ -592,7 +592,7 @@ public class RPCCommand {
                         }
                     }
 
-                    command = contractRun(id, method, ethereum, tx);
+                    command = contractRun(id, method, apis, tx);
 //                    command = createJson(id, method, ByteUtil.toHexString(tx.getEncoded()));  // signning txencode
                 }
 
@@ -640,7 +640,7 @@ public class RPCCommand {
                         txPendingResults.put(key, new TransactionPendingResult());
                     }
 
-                    ethereum.submitTransaction(tx);
+                    apis.submitTransaction(tx);
 
                     command = createJson(id, method, ByteUtil.toHexString0x(tx.getHash()));
 
@@ -655,7 +655,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_CALL: {
                 try {
-                    EstimateTransactionResult estimateResult = estimateTransaction(params, (EthereumImpl) ethereum);
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis);
                     byte[] result = estimateResult.getReceipt().getExecutionResult();
                     command = createJson(id, method, ByteUtil.toHexString0x(result));
                 } catch (Exception e) {
@@ -667,7 +667,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_ESTIMATE_GAS: {
                 try {
-                    EstimateTransactionResult estimateResult = estimateTransaction(params, (EthereumImpl) ethereum);
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis);
                     command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimateResult.getGasUsed())));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
@@ -677,7 +677,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_GAS_PRICE: {
                 try {
-                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(ethereum.getGasPrice())));
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(apis.getGasPrice())));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
@@ -702,10 +702,10 @@ public class RPCCommand {
                 String blockHashString = (String) params[0];
                 try {
                     byte[] hash = ByteUtil.hexStringToBytes(blockHashString);
-                    Block block = ethereum.getBlockchain().getBlockByHash(hash);
+                    Block block = apis.getBlockchain().getBlockByHash(hash);
 
                     byte[] coinbase = block.getCoinbase();
-                    String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
+                    String coinbaseMask = apis.getRepository().getMaskByAddress(coinbase);
 
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
@@ -739,11 +739,11 @@ public class RPCCommand {
 
 
                 try {
-                    long blockNumber = getBlockNumber(ethereum, (String)params[0]);
-                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    long blockNumber = getBlockNumber(apis, (String)params[0]);
+                    Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
 
                     byte[] coinbase = block.getCoinbase();
-                    String coinbaseMask = ethereum.getRepository().getMaskByAddress(coinbase);
+                    String coinbaseMask = apis.getRepository().getMaskByAddress(coinbase);
 
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
@@ -774,7 +774,7 @@ public class RPCCommand {
 
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
-                    TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
+                    TransactionInfo txInfo = apis.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
                         //command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
@@ -787,7 +787,7 @@ public class RPCCommand {
                         }
                     }
                     else {
-                        TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), apis.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         txData.setTransactionIndex(txInfo.getIndex());
 
                         String errStr = txInfo.getReceipt().getError();
@@ -814,7 +814,7 @@ public class RPCCommand {
                 try {
                     String txHashString = (String) params[0];
                     if (txHashString.contains("@")) {
-                        byte[] address = ethereum.getRepository().getAddressByMask(txHashString);
+                        byte[] address = apis.getRepository().getAddressByMask(txHashString);
                         txHashString = ByteUtil.toHexString(address);
                     }
 
@@ -837,8 +837,8 @@ public class RPCCommand {
                     List<TransactionSearchData> txReceipts = new ArrayList<>();
                     for(TransactionRecord txRecord : txRecords) {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
-                        TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
-                        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+                        TransactionInfo txInfo = apis.getTransactionInfo(txHash);
+                        Block block = apis.getBlockchain().getBlockByHash(txInfo.getBlockHash());
                         txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
                     }
 
@@ -872,8 +872,8 @@ public class RPCCommand {
                     List<TransactionSearchData> txReceipts = new ArrayList<>();
                     for(TransactionRecord txRecord : txRecords) {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
-                        TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
-                        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+                        TransactionInfo txInfo = apis.getTransactionInfo(txHash);
+                        Block block = apis.getBlockchain().getBlockByHash(txInfo.getBlockHash());
                         txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
                     }
 
@@ -900,10 +900,10 @@ public class RPCCommand {
                         } catch (NumberFormatException | DecoderException ignored) {}
                     }
 
-                    Block currentBlock = ethereum.getBlockchain().getBestBlock();
+                    Block currentBlock = apis.getBlockchain().getBestBlock();
 
                     for(int i = 0; i < offset && currentBlock.getNumber() > 1; i++) {
-                        currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
+                        currentBlock = apis.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
                     SystemProperties config = SystemProperties.getDefault();
@@ -912,7 +912,7 @@ public class RPCCommand {
                     List<BlockData> blocks = new ArrayList<>();
                     for(int i = 0; i < rowCount && currentBlock.getNumber() > 1; i++) {
                         blocks.add(new BlockData(currentBlock, false, constants));
-                        currentBlock = ethereum.getBlockchain().getBlockByHash(currentBlock.getParentHash());
+                        currentBlock = apis.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
                     Collections.reverse(blocks);
@@ -925,7 +925,7 @@ public class RPCCommand {
             }
             case COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS: {
                 long fromBlock = 1;
-                long toBlock = ethereum.getBlockchain().getBestBlock().getNumber() - 1;
+                long toBlock = apis.getBlockchain().getBestBlock().getNumber() - 1;
 
                 if(params.length > 0 && params[0] != null) {
                     try {
@@ -948,10 +948,10 @@ public class RPCCommand {
                 }
 
                 long txCount = 0;
-                Block parentBlock = ethereum.getBlockchain().getBlockByNumber(toBlock);
+                Block parentBlock = apis.getBlockchain().getBlockByNumber(toBlock);
                 while(parentBlock.getNumber() > fromBlock) {
                     txCount += parentBlock.getTransactionsList().size();
-                    parentBlock = ethereum.getBlockchain().getBlockByHash(parentBlock.getParentHash());
+                    parentBlock = apis.getBlockchain().getBlockByHash(parentBlock.getParentHash());
                 }
 
                 command = createJson(id, method, new TransactionCountData(fromBlock, toBlock, txCount));
@@ -970,7 +970,7 @@ public class RPCCommand {
 
                 String blockHashString = (String) params[0];
                 byte[] blockHash = ByteUtil.hexStringToBytes(blockHashString);
-                Block block = ethereum.getBlockchain().getBlockByHash(blockHash);
+                Block block = apis.getBlockchain().getBlockByHash(blockHash);
 
                 BigInteger indexBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[1]));
 
@@ -990,7 +990,7 @@ public class RPCCommand {
                 }
 
                 BigInteger blockNumberBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[0]));
-                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumberBi.longValue());
+                Block block = apis.getBlockchain().getBlockByNumber(blockNumberBi.longValue());
 
                 BigInteger indexBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[1]));
 
@@ -1011,7 +1011,7 @@ public class RPCCommand {
 
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
-                    TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
+                    TransactionInfo txInfo = apis.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
                         TransactionPendingResult result = txPendingResults.get(ByteUtil.bytesToBigInteger(txHash));
@@ -1023,7 +1023,7 @@ public class RPCCommand {
                         }
                     }
                     else {
-                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, apis.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(id, method, txReceiptData);
                     }
 
@@ -1037,7 +1037,7 @@ public class RPCCommand {
             }
 
             case COMMAND_NET_VERSION: {
-                command = createJson(id, method, ethereum.getChainIdForNextBlock());
+                command = createJson(id, method, apis.getChainIdForNextBlock());
                 break;
             }
 
@@ -1085,8 +1085,8 @@ public class RPCCommand {
                     String mask = state.getAddressMask();
 
                     BigInteger attoAPIS = state.getBalance();
-                    BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
-                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
+                    BigInteger attoMNR = state.getMineral(apis.getBlockchain().getBestBlock().getNumber());
+                    BigInteger nonce = apis.getPendingState().getNonce(address);
                     byte[] proofKey = state.getProofKey();
                     String isContract = null;
                     boolean isMasternode = false;
@@ -1189,28 +1189,28 @@ public class RPCCommand {
                             command = createJson(id, method, null, "The address entered was not found in the stored address list.");
                         } else {
                             if(txData.getNonce() < 0) {
-                                txData.setNonce(ethereum.getPendingState().getNonce(key.getAddress()).longValue());
+                                txData.setNonce(apis.getPendingState().getNonce(key.getAddress()).longValue());
                             }
 
                             if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
-                                txData.setTo(ethereum.getRepository().getAddressByMask(txData.getToMask()));
+                                txData.setTo(apis.getRepository().getAddressByMask(txData.getToMask()));
                             }
 
                             if(txData.isGasPriceEmpty()) {
-                                txData.setGasPrice(ByteUtil.longToBytes(ethereum.getGasPrice()));
+                                txData.setGasPrice(ByteUtil.longToBytes(apis.getGasPrice()));
                             }
 
                             if(txData.isEmptyGas()) {
-                                EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)ethereum);
+                                EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
 
                                 txData.setGas(BigInteger.valueOf(50_000_000L));
-                                Transaction tempTx = txData.getTransaction(ethereum.getChainIdForNextBlock());
+                                Transaction tempTx = txData.getTransaction(apis.getChainIdForNextBlock());
 
                                 EstimateTransactionResult estimateResult = estimator.estimate(tempTx);
                                 txData.setGas(BigInteger.valueOf(estimateResult.getGasUsed()));
                             }
 
-                            Transaction tx = txData.getTransaction(ethereum.getChainIdForNextBlock());
+                            Transaction tx = txData.getTransaction(apis.getChainIdForNextBlock());
                             tx.sign(key);
 
                             TransactionData finalData = new TransactionData(tx, null);
@@ -1239,7 +1239,7 @@ public class RPCCommand {
                     blockNumberParam = (String) params[0];
                 }
 
-                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+                long blockNumber = getBlockNumber(apis, blockNumberParam);
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -1247,8 +1247,8 @@ public class RPCCommand {
                 }
 
                 try {
-                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                    Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) apis.getRepository()).getSnapshotTo(block.getStateRoot());
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
@@ -1339,7 +1339,7 @@ public class RPCCommand {
                     NewBlockListener listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
 
                     mListeners.put(key, listener);
-                    ethereum.addListener(listener);
+                    apis.addListener(listener);
 
                     command = createJson(id, method, keyStr);
                     send(conn, token, command, isEncrypt);
@@ -1350,7 +1350,7 @@ public class RPCCommand {
                     PendingTransactionListener listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
 
                     mListeners.put(key, listener);
-                    ethereum.addListener(listener);
+                    apis.addListener(listener);
 
                     command = createJson(id, method, keyStr);
                     send(conn, token, command, isEncrypt);
@@ -1370,10 +1370,10 @@ public class RPCCommand {
                     List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
 
 
-                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, ethereum);
+                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, apis);
 
                     mListeners.put(key, listener);
-                    ethereum.addListener(listener);
+                    apis.addListener(listener);
 
                     command = createJson(id, method, keyStr);
                     send(conn, token, command, isEncrypt);
@@ -1394,7 +1394,7 @@ public class RPCCommand {
                 BigInteger index = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(indexStr));
 
                 NewBlockListener listener = (NewBlockListener) mListeners.get(index);
-                ethereum.removeListener(listener);
+                apis.removeListener(listener);
                 mListeners.remove(index);
                 break;
             }
@@ -1421,12 +1421,12 @@ public class RPCCommand {
                     } catch (NumberFormatException ignored) {}
                 }
                 if(toBlock != null) {
-                    toBlockNumber = getBlockNumber(ethereum, toBlock);
+                    toBlockNumber = getBlockNumber(apis, toBlock);
                 }
 
-                LastLogListener listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, ethereum);
+                LastLogListener listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, apis);
 
-                BlockReplay blockReplay = new BlockReplay(ethereum.getBlockchain().getBlockStore(), ethereum.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
+                BlockReplay blockReplay = new BlockReplay(apis.getBlockchain().getBlockStore(), apis.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
                 blockReplay.replayAsync();
                 break;
             }
@@ -1483,7 +1483,7 @@ public class RPCCommand {
         return createJson(id, method, new TransactionData(tx, block));
     }
 
-    private static EstimateTransactionResult estimateTransaction(Object[] params, EthereumImpl ethereum) throws Exception {
+    private static EstimateTransactionResult estimateTransaction(Object[] params, ApisImpl ethereum) throws Exception {
         if (params.length == 0) {
             throw new Exception(ERROR_MESSAGE_UNKNOWN);
         }
@@ -1525,13 +1525,13 @@ public class RPCCommand {
      * earliest : 1
      * 그 외 : String to Long
      *
-     * @param ethereum 코어 객체
+     * @param apis 코어 객체
      * @param blockParameter 파라미터로 입력받은 값
      * @return 기본 값은 latest
      */
-    private static long getBlockNumber(Ethereum ethereum, String blockParameter) {
+    private static long getBlockNumber(Apis apis, String blockParameter) {
         long blockNumber;
-        long best = ethereum.getBlockchain().getBestBlock().getNumber();
+        long best = apis.getBlockchain().getBestBlock().getNumber();
 
         switch (blockParameter) {
             case DEFAULTBLOCK_PARAMETER_EARLIEST:
@@ -1574,8 +1574,8 @@ public class RPCCommand {
         send(conn, token, text, false);
     }
 
-    private static String contractRun(long id, String method, Ethereum ethereum, Transaction transaction) {
-        EstimateTransaction estimator = EstimateTransaction.getInstance((EthereumImpl)ethereum);
+    private static String contractRun(long id, String method, Apis apis, Transaction transaction) {
+        EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
         EstimateTransactionResult estimateResult = estimator.estimate(transaction);
 
         boolean isSuccessful = estimateResult.isSuccess();
@@ -1586,7 +1586,7 @@ public class RPCCommand {
         if(isSuccessful) {
             ConsoleUtil.printlnRed("[contractRun] success send transaction");
 
-            ethereum.submitTransaction(transaction); // send
+            apis.submitTransaction(transaction); // send
             returnCommand = createJson(id, method, ByteUtil.toHexString0x(transaction.getHash()));
         }
         else {

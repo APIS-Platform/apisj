@@ -19,8 +19,8 @@ package org.apis.net.shh;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.NoAutoscan;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.manager.WorldManager;
 import org.apis.net.p2p.HelloMessage;
@@ -66,8 +66,8 @@ public class ShhLongRun extends Thread {
         Node node = new Node("enode://6ed738b650ac2b771838506172447dc683b7e9dae7b91d699a48a0f94651b1a0d2e2ef01c6fffa22f762aaa553286047f0b0bb39f2e3a24b2a18fe1b9637dcbe" +
                 "@localhost:10003");
 
-        Ethereum ethereum = EthereumFactory.createEthereum(Config.class);
-        ethereum.connect(
+        Apis apis = ApisFactory.createEthereum(Config.class);
+        apis.connect(
                 node.getHost(),
                 node.getPort(),
                 Hex.toHexString(node.getId()));
@@ -96,7 +96,7 @@ public class ShhLongRun extends Thread {
         WorldManager worldManager;
 
         @Autowired
-        Ethereum ethereum;
+        Apis apis;
 
 
         @Autowired

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum Receipts message on the network
+ * Wrapper around an Apis Receipts message on the network
  * Tx Receipts grouped by blocks
  *
  * @see EthMessageCodes#RECEIPTS

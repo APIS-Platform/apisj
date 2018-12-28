@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper around an Ethereum GetReceipts message on the network
+ * Wrapper around an Apis GetReceipts message on the network
  *
  * @see EthMessageCodes#GET_RECEIPTS
  */

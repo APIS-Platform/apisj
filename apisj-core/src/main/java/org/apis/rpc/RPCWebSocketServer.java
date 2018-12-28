@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocket;
@@ -40,13 +40,13 @@ public class RPCWebSocketServer extends WebSocketServer {
 
 //    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    private static Ethereum mEthereum;
+    private static Apis mApis;
 
-    RPCWebSocketServer(int port, String id, String pw, Ethereum ethereum) {
+    RPCWebSocketServer(int port, String id, String pw, Apis apis) {
         super(new InetSocketAddress(port));
         serverID = id;
         serverPW = pw;
-        mEthereum = ethereum;
+        mApis = apis;
 //        mDisportThread.start();
     }
 
@@ -226,7 +226,7 @@ public class RPCWebSocketServer extends WebSocketServer {
                 client.refreshLastDiscoveredTime();
 
                 // conduct
-                RPCCommand.conduct(mEthereum, conn, token, payload, isEncrypted);
+                RPCCommand.conduct(mApis, conn, token, payload, isEncrypted);
                 client.addID();
             }
         } catch (ParseException | IllegalStateException e) {

@@ -1,9 +1,7 @@
 package org.apis.db.sql;
 
 import org.apis.core.Block;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 
@@ -14,22 +12,22 @@ import java.util.stream.Collectors;
 public class DBSyncManager {
     private static DBSyncManager sDbSyncManager = null;
 
-    public static DBSyncManager getInstance(Ethereum ethereum) {
+    public static DBSyncManager getInstance(Apis apis) {
         if(sDbSyncManager == null) {
-            sDbSyncManager = new DBSyncManager(ethereum);
+            sDbSyncManager = new DBSyncManager(apis);
         }
         return sDbSyncManager;
     }
 
 
-    private final Ethereum ethereum;
+    private final Apis apis;
 
     private static boolean isSyncing = false;
 
     private DBManager dbManager;
 
-    private DBSyncManager(Ethereum ethereum) {
-        this.ethereum = ethereum;
+    private DBSyncManager(Apis apis) {
+        this.apis = apis;
         this.dbManager = DBManager.getInstance();
     }
 
@@ -60,8 +58,8 @@ public class DBSyncManager {
         while(isSyncing) {
             long tt = System.currentTimeMillis();
 
-            if(currentBlockNumber <= ethereum.getBlockchain().getBestBlock().getNumber()) {
-                Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
+            if(currentBlockNumber <= apis.getBlockchain().getBestBlock().getNumber()) {
+                Block currentBlock = apis.getBlockchain().getBlockByNumber(currentBlockNumber);
 
                 if (currentBlock != null) {
                     blocks.add(currentBlock);
@@ -77,7 +75,7 @@ public class DBSyncManager {
                 break;
             }
 
-            dbManager.insertBlocks(blocks, ethereum);
+            dbManager.insertBlocks(blocks, apis);
 
             blocks.clear();
             currentBlockNumber += 1;

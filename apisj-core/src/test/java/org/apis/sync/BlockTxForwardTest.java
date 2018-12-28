@@ -26,8 +26,8 @@ import org.apis.core.BlockSummary;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.mine.Ethash;
@@ -86,7 +86,7 @@ public class BlockTxForwardTest {
         public Logger logger;
 
         @Autowired
-        protected Ethereum ethereum;
+        protected Apis apis;
 
         @Autowired
         protected SystemProperties config;
@@ -105,7 +105,7 @@ public class BlockTxForwardTest {
 
             // Based on Config class the BasicSample would be created by Spring
             // and its springInit() method would be called as an entry point
-            EthereumFactory.createEthereum(Config.class);
+            ApisFactory.createEthereum(Config.class);
         }
 
         public BasicSample() {
@@ -127,9 +127,9 @@ public class BlockTxForwardTest {
         private void springInit() {
             logger = LoggerFactory.getLogger(loggerName);
             // adding the main EthereumJ callback to be notified on different kind of events
-            ethereum.addListener(listener);
+            apis.addListener(listener);
 
-            logger.info("Sample component created. Listening for ethereum events...");
+            logger.info("Sample component created. Listening for apis events...");
 
             // starting lifecycle tracking method run()
             new Thread(this, "SampleWorkThread").start();
@@ -138,7 +138,7 @@ public class BlockTxForwardTest {
         /**
          * The method tracks step-by-step the instance lifecycle from node discovery till sync completion.
          * At the end the method onSyncDone() is called which might be overridden by a sample subclass
-         * to start making other things with the Ethereum network
+         * to start making other things with the Apis network
          */
         public void run() {
             try {
@@ -279,12 +279,12 @@ public class BlockTxForwardTest {
                 logger.info("Generating Full Dataset (may take up to 10 min if not cached)...");
                 // calling this just for indication of the dataset generation
                 // basically this is not required
-                Ethash ethash = Ethash.getForBlock(config, ethereum.getBlockchain().getBestBlock().getNumber());
+                Ethash ethash = Ethash.getForBlock(config, apis.getBlockchain().getBestBlock().getNumber());
                 ethash.getFullDataset();
                 logger.info("Full dataset generated (loaded).");
             }
-            ethereum.getBlockMiner().addListener(this);
-            ethereum.getBlockMiner().startMining();
+            apis.getBlockMiner().addListener(this);
+            apis.getBlockMiner().startMining();
         }
 
         @Override
@@ -438,7 +438,7 @@ public class BlockTxForwardTest {
             ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
             byte[] receiverAddr = Hex.decode("5db10750e8caff27f906b41c71b3471057dd2004");
 
-            for (int i = ethereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
+            for (int i = apis.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
                 {
                     if (stopTxGeneration.get()) break;
                     Transaction tx = new Transaction(ByteUtil.intToBytesNoLeadZeroes(i),
@@ -446,7 +446,7 @@ public class BlockTxForwardTest {
                             receiverAddr, new byte[]{77}, new byte[0]);
                     tx.sign(senderKey);
                     logger.info("<== Submitting tx: " + tx);
-                    ethereum.submitTransaction(tx);
+                    apis.submitTransaction(tx);
                 }
                 Thread.sleep(7000);
             }
@@ -506,7 +506,7 @@ public class BlockTxForwardTest {
         }, 0, 15, TimeUnit.SECONDS);
 
         testLogger.info("Starting EthereumJ miner instance!");
-        Ethereum miner = EthereumFactory.createEthereum(MinerConfig.class);
+        Apis miner = ApisFactory.createEthereum(MinerConfig.class);
 
         miner.addListener(new EthereumListenerAdapter() {
             @Override
@@ -544,10 +544,10 @@ public class BlockTxForwardTest {
         });
 
         testLogger.info("Starting EthereumJ regular instance!");
-        EthereumFactory.createEthereum(RegularConfig.class);
+        ApisFactory.createEthereum(RegularConfig.class);
 
         testLogger.info("Starting EthereumJ txSender instance!");
-        Ethereum txGenerator = EthereumFactory.createEthereum(GeneratorConfig.class);
+        Apis txGenerator = ApisFactory.createEthereum(GeneratorConfig.class);
         txGenerator.addListener(new EthereumListenerAdapter() {
             @Override
             public void onRecvMessage(Channel channel, Message message) {

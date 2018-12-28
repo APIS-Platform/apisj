@@ -29,8 +29,8 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionExecutor;
 import org.apis.core.TransactionReceipt;
 import org.apis.db.ContractDetails;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.sync.SyncManager;
@@ -74,7 +74,7 @@ import static java.lang.Thread.sleep;
 @Ignore
 public class SyncWithLoadTest {
 
-    private Ethereum regularNode;
+    private Apis regularNode;
 
     private final static CountDownLatch errorLatch = new CountDownLatch(1);
     private static AtomicBoolean isRunning = new AtomicBoolean(true);
@@ -174,23 +174,23 @@ public class SyncWithLoadTest {
                     // Getting contract details
                     byte[] contractAddress = receipt.getTransaction().getContractAddress();
                     if (contractAddress != null) {
-                        ContractDetails details = ((Repository) ethereum.getRepository()).getContractDetails(contractAddress);
+                        ContractDetails details = ((Repository) apis.getRepository()).getContractDetails(contractAddress);
                         assert FastByteComparisons.equal(details.getAddress(), contractAddress);
                     }
 
                     // Getting AccountState for sender in the past
                     Random rnd = new Random();
-                    Block bestBlock = ethereum.getBlockchain().getBestBlock();
-                    Block randomBlock = ethereum.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
+                    Block bestBlock = apis.getBlockchain().getBestBlock();
+                    Block randomBlock = apis.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
                     byte[] sender = receipt.getTransaction().getSender();
-                    AccountState senderState = ((Repository) ethereum.getRepository()).getSnapshotTo(randomBlock.getStateRoot()).getAccountState(sender);
+                    AccountState senderState = ((Repository) apis.getRepository()).getSnapshotTo(randomBlock.getStateRoot()).getAccountState(sender);
                     if (senderState != null) senderState.getBalance();
 
                     // Getting receiver's nonce somewhere in the past
-                    Block anotherRandomBlock = ethereum.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
+                    Block anotherRandomBlock = apis.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
                     byte[] receiver = receipt.getTransaction().getReceiveAddress();
                     if (receiver != null) {
-                        ((Repository) ethereum.getRepository()).getSnapshotTo(anotherRandomBlock.getStateRoot()).getNonce(receiver);
+                        ((Repository) apis.getRepository()).getSnapshotTo(anotherRandomBlock.getStateRoot()).getNonce(receiver);
                     }
                 }
             }
@@ -198,15 +198,15 @@ public class SyncWithLoadTest {
             @Override
             public void onPendingTransactionsReceived(List<Transaction> transactions) {
                 Random rnd = new Random();
-                Block bestBlock = ethereum.getBlockchain().getBestBlock();
+                Block bestBlock = apis.getBlockchain().getBestBlock();
                 for (Transaction tx : transactions) {
-                    Block block = ethereum.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
-                    Repository repository = ((Repository) ethereum.getRepository())
+                    Block block = apis.getBlockchain().getBlockByNumber(rnd.nextInt((int) bestBlock.getNumber()));
+                    Repository repository = ((Repository) apis.getRepository())
                             .getSnapshotTo(block.getStateRoot())
                             .startTracking();
                     try {
                         TransactionExecutor executor = new TransactionExecutor
-                                (tx, block.getCoinbase(), repository, ethereum.getBlockchain().getBlockStore(),
+                                (tx, block.getCoinbase(), repository, apis.getBlockchain().getBlockStore(),
                                         programInvokeFactory, block, new EthereumListenerAdapter(), 0)
                                 .withCommonConfig(commonConfig)
                                 .setLocalCall(true);
@@ -231,7 +231,7 @@ public class SyncWithLoadTest {
         @Override
         public void run() {
             try {
-                ethereum.addListener(blockListener);
+                apis.addListener(blockListener);
 
                 // Run 1-30 minutes
                 Random generator = new Random();
@@ -250,7 +250,7 @@ public class SyncWithLoadTest {
                 testLogger.info("[v] Sync complete! The best block: " + bestBlock.getShortDescr());
             }
 
-            fullSanityCheck(ethereum, commonConfig);
+            fullSanityCheck(apis, commonConfig);
             isRunning.set(false);
         }
     }
@@ -268,9 +268,9 @@ public class SyncWithLoadTest {
         return fatalErrors.get() == 0;
     }
 
-    private static void fullSanityCheck(Ethereum ethereum, CommonConfig commonConfig) {
+    private static void fullSanityCheck(Apis apis, CommonConfig commonConfig) {
 
-        BlockchainValidation.fullCheck(ethereum, commonConfig, fatalErrors);
+        BlockchainValidation.fullCheck(apis, commonConfig, fatalErrors);
         logStats();
 
         firstRun.set(false);
@@ -310,6 +310,6 @@ public class SyncWithLoadTest {
 
     public void runEthereum() throws Exception {
         testLogger.info("Starting EthereumJ regular instance!");
-        this.regularNode = EthereumFactory.createEthereum(RegularConfig.class);
+        this.regularNode = ApisFactory.createEthereum(RegularConfig.class);
     }
 }

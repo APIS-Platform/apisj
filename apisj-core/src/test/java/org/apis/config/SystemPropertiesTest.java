@@ -210,11 +210,11 @@ public class SystemPropertiesTest {
     public void testNonExistentBlockchainNetConfigClass() {
         SystemProperties props = new SystemProperties();
         try {
-            props.overrideParams("blockchain.config.name", null, "blockchain.config.class", "org.ethereum.config.net.NotExistsConfig");
+            props.overrideParams("blockchain.config.name", null, "blockchain.config.class", "org.apis.config.net.NotExistsConfig");
             props.getBlockchainConfig();
             fail("Should throw exception for invalid class");
         } catch (RuntimeException expected) {
-            assertEquals("The class specified via blockchain.config.class 'org.ethereum.config.net.NotExistsConfig' not found", expected.getMessage());
+            assertEquals("The class specified via blockchain.config.class 'org.apis.config.net.NotExistsConfig' not found", expected.getMessage());
         }
     }
 
@@ -226,7 +226,7 @@ public class SystemPropertiesTest {
             props.getBlockchainConfig();
             fail("Should throw exception for invalid class");
         } catch (RuntimeException expected) {
-            assertEquals("The class specified via blockchain.config.class 'NodeFilter' is not instance of org.ethereum.config.BlockchainForkConfig", expected.getMessage());
+            assertEquals("The class specified via blockchain.config.class 'NodeFilter' is not instance of org.apis.config.BlockchainForkConfig", expected.getMessage());
         }
     }
 

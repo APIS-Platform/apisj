@@ -2,7 +2,7 @@ package org.apis.rpc.listener;
 
 import org.apis.core.*;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.Ethereum;
+import org.apis.facade.Apis;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCCommand;
 import org.apis.rpc.template.LogInfoData;
@@ -26,13 +26,13 @@ public class LastLogListener extends EthereumListenerAdapter {
     private boolean isEncrypt;
     private List<byte[]> addresses;
     private List<TopicBloom> tbs;
-    private Ethereum core;
+    private Apis core;
     private long id;
 
     private List<TransactionReceiptData> listTransactionReceipt = null;
     private List<LogInfoData> listLogInfo = null;
 
-    public LastLogListener(String method, long id, WebSocket conn, String token, boolean isEncrypt, List<byte[]> addresses, List<byte[]> topics, Ethereum core) {
+    public LastLogListener(String method, long id, WebSocket conn, String token, boolean isEncrypt, List<byte[]> addresses, List<byte[]> topics, Apis core) {
         this.method = method;
         this.id = id;
         this.conn = conn;

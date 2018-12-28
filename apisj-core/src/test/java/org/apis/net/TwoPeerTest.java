@@ -21,10 +21,10 @@ import com.typesafe.config.ConfigFactory;
 import org.apis.config.NoAutoscan;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.facade.Apis;
 import org.apis.net.eth.message.*;
 import org.apis.crypto.ECKey;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.mine.Ethash;
 import org.apis.net.eth.handler.Eth62;
@@ -189,8 +189,8 @@ public class TwoPeerTest {
             }
         };
 
-        Ethereum ethereum1 = EthereumFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
-        BlockchainImpl blockchain = (BlockchainImpl) ethereum1.getBlockchain();
+        Apis apis1 = ApisFactory.createEthereum(SysPropConfig1.props, SysPropConfig1.class);
+        BlockchainImpl blockchain = (BlockchainImpl) apis1.getBlockchain();
         Block bGen = blockchain.getBestBlock();
         Block b1 = addNextBlock(blockchain, bGen, "chain A");
         Block b2 = addNextBlock(blockchain, b1, null);
@@ -209,26 +209,26 @@ public class TwoPeerTest {
         alternativeFork.add(b1b);
         alternativeFork.add(b2b);
 
-//        byte[] root = ((RepositoryImpl) ethereum.getRepository()).getRoot();
-//        ((RepositoryImpl) ethereum.getRepository()).syncToRoot(root);
-//        byte[] root1 = ((RepositoryImpl) ethereum.getRepository()).getRoot();
+//        byte[] root = ((RepositoryImpl) apis.getRepository()).getRoot();
+//        ((RepositoryImpl) apis.getRepository()).syncToRoot(root);
+//        byte[] root1 = ((RepositoryImpl) apis.getRepository()).getRoot();
 //        Block b2b = addNextBlock(blockchain, b1, "chain B");
 
         System.out.println("Blocks added");
 
-        Ethereum ethereum2 = EthereumFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
+        Apis apis2 = ApisFactory.createEthereum(SysPropConfig2.props, SysPropConfig2.class);
 
         final CountDownLatch semaphore = new CountDownLatch(1);
 
         final Channel[] channel1 = new Channel[1];
-        ethereum1.addListener(new EthereumListenerAdapter() {
+        apis1.addListener(new EthereumListenerAdapter() {
             @Override
             public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
                 channel1[0] = channel;
                 System.out.println("==== Got the Channel: " + channel);
             }
         });
-        ethereum2.addListener(new EthereumListenerAdapter() {
+        apis2.addListener(new EthereumListenerAdapter() {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 if (block.getNumber() == 4) {
@@ -257,8 +257,8 @@ public class TwoPeerTest {
         Thread.sleep(10000000);
 
 
-        ethereum1.close();
-        ethereum2.close();
+        apis1.close();
+        apis2.close();
 
         System.out.println("Passed.");
 

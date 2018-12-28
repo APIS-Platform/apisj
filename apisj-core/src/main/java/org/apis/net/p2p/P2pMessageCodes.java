@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A list of commands for the Ethereum network protocol.
+ * A list of commands for the Apis network protocol.
  * <br>
  * The codes for these commands are the first byte in every packet.
  * ÐΞV

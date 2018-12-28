@@ -19,7 +19,7 @@ package org.apis.config;
 
 /**
  * Describes a set of configs for a specific blockchain depending on the block number
- * E.g. the main Ethereum net has at least FrontierConfig and HomesteadConfig depending on the block
+ * E.g. the main Apis net has at least FrontierConfig and HomesteadConfig depending on the block
  *
  * Created by Anton Nashatyrev on 25.02.2016.
  *

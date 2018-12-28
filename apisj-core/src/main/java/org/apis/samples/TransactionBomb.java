@@ -21,8 +21,8 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.HashUtil;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.util.ByteUtil;
 import org.apis.listener.EthereumListenerAdapter;
 import org.spongycastle.util.encoders.Hex;
@@ -35,17 +35,17 @@ import static org.apis.crypto.HashUtil.sha3;
 public class TransactionBomb extends EthereumListenerAdapter {
 
 
-    Ethereum ethereum = null;
+    Apis apis = null;
     boolean startedTxBomb = false;
 
-    public TransactionBomb(Ethereum ethereum) {
-        this.ethereum = ethereum;
+    public TransactionBomb(Apis apis) {
+        this.apis = apis;
     }
 
     public static void main(String[] args) {
 
-        Ethereum ethereum = EthereumFactory.createEthereum();
-        ethereum.addListener(new TransactionBomb(ethereum));
+        Apis apis = ApisFactory.createEthereum();
+        apis.addListener(new TransactionBomb(apis));
     }
 
 
@@ -64,7 +64,7 @@ public class TransactionBomb extends EthereumListenerAdapter {
 
         if (startedTxBomb){
             byte[] sender = Hex.decode("cd2a3d9f938e13cd947ec05abc7fe734df8dd826");
-            long nonce = ethereum.getRepository().getNonce(sender).longValue();;
+            long nonce = apis.getRepository().getNonce(sender).longValue();;
 
             for (int i=0; i < 20; ++i){
                 sendTx(nonce);
@@ -88,12 +88,12 @@ public class TransactionBomb extends EthereumListenerAdapter {
                 toAddress,
                 value,
                 null,
-                ethereum.getChainIdForNextBlock());
+                apis.getChainIdForNextBlock());
 
         byte[] privKey = HashUtil.sha3("cow".getBytes());
         tx.sign(privKey);
 
-        ethereum.getChannelManager().sendTransaction(Collections.singletonList(tx), null);
+        apis.getChannelManager().sendTransaction(Collections.singletonList(tx), null);
         System.err.println("Sending tx: " + Hex.toHexString(tx.getHash()));
     }
 

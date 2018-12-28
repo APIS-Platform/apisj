@@ -3,23 +3,20 @@ package org.apis.scrap;
 import org.apache.http.conn.util.InetAddressUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
-import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
+import org.apis.facade.Apis;
+import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.BIUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.vm.program.InternalTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.math.BigInteger;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
@@ -27,7 +24,7 @@ import java.util.Timer;
 public class Scrapper implements Runnable {
 
     @Autowired
-    protected static Ethereum mEthereum;
+    protected static Apis mApis;
 
     @Autowired
     protected SystemProperties config;
@@ -89,8 +86,8 @@ public class Scrapper implements Runnable {
         }
 
 
-        mEthereum = EthereumFactory.createEthereum();
-        mEthereum.addListener(mListener);
+        mApis = ApisFactory.createEthereum();
+        mApis.addListener(mListener);
     }
 
     private static void println(String str) {
@@ -106,7 +103,7 @@ public class Scrapper implements Runnable {
         setupLogging();
 
         // adding the main EthereumJ callback to be notified on different kind of events
-        mEthereum.addListener(mListener);
+        mApis.addListener(mListener);
 
         logger.info("Listening for apis events...");
 
@@ -142,13 +139,13 @@ public class Scrapper implements Runnable {
                 result.close();
 
                 while(true) {
-                    if(lastBlockNumber >= mEthereum.getBlockchain().getBestBlock().getNumber()) {
+                    if(lastBlockNumber >= mApis.getBlockchain().getBestBlock().getNumber()) {
                         Thread.sleep(1_000L);
                         continue;
                     }
 
                     lastBlockNumber += 1;
-                    Block block = mEthereum.getBlockchain().getBlockByNumber(lastBlockNumber);
+                    Block block = mApis.getBlockchain().getBlockByNumber(lastBlockNumber);
 
                     InsertBlock insertBlock = new InsertBlock(block);
                     PreparedStatement preparedStatement = insertBlock.getInsertState(conn);
@@ -157,7 +154,7 @@ public class Scrapper implements Runnable {
 
                     // 각 블록의 트랜잭션들을 기록한다.
                     for (Transaction tx : block.getTransactionsList()) {
-                        TransactionInfo transactionInfo = mEthereum.getTransactionInfo(tx.getHash());
+                        TransactionInfo transactionInfo = mApis.getTransactionInfo(tx.getHash());
                         if (transactionInfo == null) break;
 
                         TransactionReceipt receipt = transactionInfo.getReceipt();
@@ -209,7 +206,7 @@ public class Scrapper implements Runnable {
     };
 
     private static void updateAccount(byte[] address) throws SQLException {
-        BigInteger balance = mEthereum.getRepository().getBalance(address);
+        BigInteger balance = mApis.getRepository().getBalance(address);
 
         PreparedStatement state = new InsertAccount(address, balance).getInsertState(conn);
         state.executeUpdate();
