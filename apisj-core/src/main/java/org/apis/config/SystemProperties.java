@@ -22,20 +22,20 @@ import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigRenderOptions;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apis.config.net.*;
+import org.apis.config.net.JsonNetConfig;
+import org.apis.config.net.MainNetConfig;
+import org.apis.config.net.TestNetConfig;
 import org.apis.core.Genesis;
 import org.apis.core.genesis.GenesisConfig;
 import org.apis.core.genesis.GenesisJson;
 import org.apis.core.genesis.GenesisLoader;
+import org.apis.crypto.ECKey;
 import org.apis.gui.common.OSInfo;
 import org.apis.net.p2p.P2pHandler;
 import org.apis.net.rlpx.MessageCodec;
 import org.apis.net.rlpx.Node;
 import org.apis.util.BuildInfo;
 import org.apis.util.ByteUtil;
-import org.apis.config.blockchain.OlympicConfig;
-import org.apis.config.net.*;
-import org.apis.crypto.ECKey;
 import org.apis.util.Utils;
 import org.apis.validator.BlockCustomHashRule;
 import org.apis.validator.BlockHeaderValidator;
@@ -185,23 +185,23 @@ public class SystemProperties {
 
             Config javaSystemProperties = ConfigFactory.load("no-such-resource-only-system-props");
             Config referenceConfig = ConfigFactory.parseResources("apis_test.conf");
-            logger.info("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'apis_test.conf'");
+            logger.debug("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'apis_test.conf'");
             String res = System.getProperty("ethereumj.conf.res");
             Config cmdLineConfigRes = res != null ? ConfigFactory.parseResources(res) : ConfigFactory.empty();
-            logger.info("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.res resource '" + res + "'");
+            logger.debug("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.res resource '" + res + "'");
             Config userConfig = ConfigFactory.parseResources("user.conf");
-            logger.info("Config (" + (userConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from resource 'user.conf'");
+            logger.debug("Config (" + (userConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from resource 'user.conf'");
             File userDirFile = new File(System.getProperty("user.dir"), "/config/ethereumj.conf");
             Config userDirConfig = ConfigFactory.parseFile(userDirFile);
-            logger.info("Config (" + (userDirConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from file '" + userDirFile + "'");
+            logger.debug("Config (" + (userDirConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from file '" + userDirFile + "'");
             Config testConfig = ConfigFactory.parseResources("test-ethereumj.conf");
-            logger.info("Config (" + (testConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-ethereumj.conf'");
+            logger.debug("Config (" + (testConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-ethereumj.conf'");
             Config testUserConfig = ConfigFactory.parseResources("test-user.conf");
-            logger.info("Config (" + (testUserConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-user.conf'");
+            logger.debug("Config (" + (testUserConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-user.conf'");
             String file = System.getProperty("ethereumj.conf.file");
             Config cmdLineConfigFile = file != null ? ConfigFactory.parseFile(new File(file)) : ConfigFactory.empty();
-            logger.info("Config (" + (cmdLineConfigFile.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.file file '" + file + "'");
-            logger.info("Config (" + (apiConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): config passed via constructor");
+            logger.debug("Config (" + (cmdLineConfigFile.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.file file '" + file + "'");
+            logger.debug("Config (" + (apiConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): config passed via constructor");
             config = apiConfig
                     .withFallback(cmdLineConfigFile)
                     .withFallback(testUserConfig)

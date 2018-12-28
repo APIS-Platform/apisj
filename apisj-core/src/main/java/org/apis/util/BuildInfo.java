@@ -44,7 +44,7 @@ public class BuildInfo {
                 buildTime = props.getProperty("build.time");
                 buildBranch = props.getProperty("build.branch");
             } else {
-                logger.warn("File not found `build-info.properties`. Run `gradle build` to generate it");
+                logger.debug("File not found `build-info.properties`. Run `gradle build` to generate it");  //warn
             }
         } catch (IOException e) {
             logger.error("Error reading /build-info.properties", e);
