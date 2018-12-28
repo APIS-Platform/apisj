@@ -211,6 +211,33 @@
     "026f7929da07156036b295bf256e12fac8f947d0": {
       "balance": "1000000000000000000"
     }
+
+
+
+
+
+
+    ,
+    "57eb338a5424ae6611e4d3fe0effdd55b06792e2": {
+      "balance": "100000000000000000000000000000",
+      "addressMask" : "houseowner@me"
+    },
+    "9ae02ded4f67ef9fd15a154b45bf74a34471550d": {
+      "balance": "100000000000000000000000000",
+      "addressMask" : "kimhojong@me"
+    },
+    "891122cb40b2a83b2686107720d84c7eb7f37ad4": {
+      "balance": "1989112200000000000000000000",
+      "addressMask" : "daryl@test"
+    },
+    "9a710ec62e69bf37606a97179fb57314392f8b04": {
+      "balance": "130000000000000000000000000000",
+      "addressMask" : "jackal@me"
+    },
+    "15aac88835e2959b637b59776d9892b9d92fe002": {
+      "balance": "1200000000000000000000000000",
+      "addressMask" : "isaac@me"
+    },
   },
 
   "nonce": "0x0000000000000000",
