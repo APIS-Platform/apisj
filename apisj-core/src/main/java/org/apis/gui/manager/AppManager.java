@@ -631,7 +631,16 @@ public class AppManager {
     }
 
     public boolean isMasterNode(String address){
-        return ((Repository) mApis.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
+        Block bestBlock = mApis.getBlockchain().getBestBlock();
+        Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+
+        if(bestBlock.getNumber() >= 10) {
+            Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+            return repo.getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
+        }else{
+            return ((Repository) mApis.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
+        }
+
     }
 
     public boolean isMining(String address) {
