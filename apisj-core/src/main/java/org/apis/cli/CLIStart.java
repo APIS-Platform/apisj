@@ -208,9 +208,9 @@ public class CLIStart {
         String coinbasePrivateKey = daemonProp.getProperty("coinbase", "");
         byte[] privateKey = ByteUtil.hexStringToBytes(coinbasePrivateKey);
         byte[] coinbase;
-        if(privateKey != null) {
+        if(privateKey != null && privateKey.length > 0) {
             coinbase = ECKey.fromPrivate(privateKey).getAddress();
-            if(coinbase != null) {
+            if(coinbase != null && coinbase.length > 0) {
                 keyStoreExceptMiner.removeIf(data -> FastByteComparisons.equal(ByteUtil.hexStringToBytes(data.address), coinbase));   // remove miner address
             }
         }
