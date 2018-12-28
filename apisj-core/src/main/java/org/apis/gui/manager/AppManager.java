@@ -289,6 +289,7 @@ public class AppManager {
                                         if (apis.equals("50000000000000000000000")
                                             || apis.equals("200000000000000000000000")
                                             || apis.equals("500000000000000000000000")) {
+                                            AppManager.saveGeneralProperties("masternode_state", Integer.toString(MnState.REQUEST_MASTERNODE.num));
                                         // Change to empty state when the balance under the limit
                                         } else {
                                             SystemProperties.getDefault().setMasternodePrivateKey(null);
