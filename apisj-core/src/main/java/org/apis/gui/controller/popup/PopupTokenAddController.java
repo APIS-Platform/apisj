@@ -187,7 +187,6 @@ public class PopupTokenAddController extends BasePopupController {
             @Override
             public void run() {
                 tokenAddressTextField.requestFocus();
-                System.out.println("requestFocus");
             }
         });
     }
