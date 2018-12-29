@@ -163,7 +163,9 @@ public class AppManager {
                         BigInteger totalMineral = BigInteger.ZERO;
                         BigInteger totalReward = BigInteger.ZERO;
                         AppManager.getInstance().keystoreFileReadAll();
-                        for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                        for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                            KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
+
                             BigInteger balance = keyExp.balance;
                             BigInteger mineral = keyExp.mineral;
                             BigInteger reward = keyExp.rewards;
