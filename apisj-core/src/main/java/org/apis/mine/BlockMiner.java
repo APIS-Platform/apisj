@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -233,16 +234,24 @@ public class BlockMiner {
      */
     private void sendMasternodeTransaction(ECKey mnKey, long bestNumber) {
 
-        BigInteger nonce = apis.getRepository().getNonce(mnKey.getAddress());
+        Repository repo = ((Repository)apis.getRepository()).getSnapshotTo(apis.getBlockchain().getBlockByNumber(bestNumber).getStateRoot());
+        BigInteger nonce = repo.getNonce(mnKey.getAddress());
         BigInteger gasPrice = config.getMasternodeGasPrice();
         BigInteger gasLimit = BigInteger.valueOf(220_000L);
         long value = 0L;
 
-        BigInteger nodeMineral = apis.getRepository().getMineral(mnKey.getAddress(), bestNumber);
+        BigInteger nodeMineral = repo.getMineral(mnKey.getAddress(), bestNumber);
         if(nodeMineral.compareTo(gasPrice.multiply(gasLimit)) < 0) {
             // Do not run if you do not have enough minerals to transfer the transaction.
             // Insufficient minerals will consume APIS to transfer transactions.
             // Therefore, if the balance is changed, it can not be registered as a master node.
+            return;
+        }
+
+        long masternodeLastUpdate = repo.getMnLastBlock(mnKey.getAddress());
+        long randomNum = ThreadLocalRandom.current().nextLong(5000, 7000);
+
+        if(bestNumber - masternodeLastUpdate < randomNum) {
             return;
         }
 

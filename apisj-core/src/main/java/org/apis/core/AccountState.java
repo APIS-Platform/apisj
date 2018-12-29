@@ -351,7 +351,7 @@ public class AccountState {
         }
 
         if(mnStartBlock.longValue() > 0) {
-            BigInteger mnCollectRate = ApisUtil.convert(3_000L, ApisUtil.Unit.nAPIS);
+            BigInteger mnCollectRate = ApisUtil.convert(4_000L, ApisUtil.Unit.nAPIS);
             if(collectRate.compareTo(mnCollectRate) < 0) {
                 collectRate = mnCollectRate;
             }
