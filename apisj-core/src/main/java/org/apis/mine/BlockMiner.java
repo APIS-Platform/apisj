@@ -221,8 +221,16 @@ public class BlockMiner {
             for(byte[] mn : updatingList) {
                 if(FastByteComparisons.equal(mn, mnKey.getAddress())) {
                     updateMano(mnKey, blockNumber);
-                    break;
+                    return;
                 }
+            }
+
+            // 또는 너무 오래 된 경우 업데이트를 한다.
+            long masternodeLastUpdate = mnRepo.getMnLastBlock(mnKey.getAddress());
+            long randomNum = ThreadLocalRandom.current().nextLong(5000, 7000);
+
+            if(blockNumber - masternodeLastUpdate > randomNum) {
+                updateMano(mnKey, blockNumber);
             }
         }
     }
@@ -248,12 +256,6 @@ public class BlockMiner {
             return;
         }
 
-        long masternodeLastUpdate = repo.getMnLastBlock(mnKey.getAddress());
-        long randomNum = ThreadLocalRandom.current().nextLong(5000, 7000);
-
-        if(bestNumber - masternodeLastUpdate < randomNum) {
-            return;
-        }
 
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),

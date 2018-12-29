@@ -31,9 +31,9 @@ public class ContractLoader {
     public static final int CONTRACT_WINK = 7;
 
     private static final String OWNER_GENESIS_1 = "7781007C5D52BCa2C0e2585c0b92439870782c44";
-    private static final String OWNER_GENESIS_2 = "50E4531813BAF7bd51Db4BD59f79F62aaFd123c3";
-    private static final String OWNER_GENESIS_3 = "284C5Cbb1A0bc8dB69E92D5531c1fb48Df589FF8";
-    private static final String OWNER_GENESIS_4 = "1FD13E3b79010BD1b7Db95Abb171e99f6B0FCc5E";
+    private static final String OWNER_GENESIS_2 = "6AB43DEf39013617cAB403d57A65AE6696dD8549";
+    private static final String OWNER_GENESIS_3 = "Fa975fE8cd3e2EB323Ec7c57Dc98363b2550bd4D";
+    private static final String OWNER_GENESIS_4 = "62a838182B3494c0049b128be1d484C4C79B646B";
     private static final String OWNER_GENESIS_5 = "88371729cDFdb771fac419E68499b899de0C343a";
 
     private static final String PLATFORM_WORKER = "c5f590c1035ae780906514ff8e76dd86b89b97dc";
