@@ -276,7 +276,21 @@ public class AppManager {
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
                                     cancelMasternode();
+                                } else {
+                                    if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                        // Do nothing when the balance is correct
+                                        if (apis.equals("50000000000000000000000")
+                                            || apis.equals("200000000000000000000000")
+                                            || apis.equals("500000000000000000000000")) {
+                                            // Reset properties and request when the balance is not correct
+                                        } else {
+                                            SystemProperties.getDefault().setMasternodePrivateKey(null);
+                                            SystemProperties.getDefault().setMasternodeRecipient(null);
+                                            cancelMasternode();
+                                        }
+                                    }
                                 }
+
                             }
 
                         // Activated state
