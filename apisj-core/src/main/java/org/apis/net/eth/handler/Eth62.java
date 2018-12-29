@@ -667,8 +667,8 @@ public class Eth62 extends EthHandler {
             for(Block block : receivedBlocks) {
                 bytes += block.getEncoded().length;
             }
-            /*ConsoleUtil.printlnCyan("Received Block size : %d (%.3f kB)", receivedBlocks.size(), bytes/1000f);
-            for(Block block : minedBlockCache.getBestMinedBlocks()) {
+            ConsoleUtil.printlnCyan("Received Block size : %d (%.3f kB) %s", receivedBlocks.size(), bytes/1000f, receivedBlocks.size() > 0 ? receivedBlocks.get(receivedBlocks.size() - 1).getShortDescr() : "");
+            /*for(Block block : minedBlockCache.getBestMinedBlocks()) {
                 ConsoleUtil.printlnCyan(block.getShortDescr());
             }
             ConsoleUtil.printlnCyan(minedBlockCache.getBestMinedBlocks().size() + " __ " + channel.getInetSocketAddress().getHostString());*/
