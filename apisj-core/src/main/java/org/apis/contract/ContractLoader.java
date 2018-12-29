@@ -30,11 +30,11 @@ public class ContractLoader {
     public static final int CONTRACT_MASTERNODE_PLATFORM = 6;
     public static final int CONTRACT_WINK = 7;
 
-    private static final String OWNER_GENESIS_1 = "891122cb40b2a83b2686107720d84c7eb7f37ad4";
-    private static final String OWNER_GENESIS_2 = "dba192f770c6a61104c95d40787c22c5220eeb78";
-    private static final String OWNER_GENESIS_3 = "57eb338a5424ae6611e4d3fe0effdd55b06792e2";
-    private static final String OWNER_GENESIS_4 = "57eb338a5424ae6611e4d3fe0effdd55b06792e3";
-    private static final String OWNER_GENESIS_5 = "57eb338a5424ae6611e4d3fe0effdd55b06792e4";
+    private static final String OWNER_GENESIS_1 = "7781007C5D52BCa2C0e2585c0b92439870782c44";
+    private static final String OWNER_GENESIS_2 = "50E4531813BAF7bd51Db4BD59f79F62aaFd123c3";
+    private static final String OWNER_GENESIS_3 = "284C5Cbb1A0bc8dB69E92D5531c1fb48Df589FF8";
+    private static final String OWNER_GENESIS_4 = "1FD13E3b79010BD1b7Db95Abb171e99f6B0FCc5E";
+    private static final String OWNER_GENESIS_5 = "88371729cDFdb771fac419E68499b899de0C343a";
 
     private static final String PLATFORM_WORKER = "c5f590c1035ae780906514ff8e76dd86b89b97dc";
 
