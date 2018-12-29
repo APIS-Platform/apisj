@@ -163,7 +163,9 @@ public class AppManager {
                         BigInteger totalMineral = BigInteger.ZERO;
                         BigInteger totalReward = BigInteger.ZERO;
                         AppManager.getInstance().keystoreFileReadAll();
-                        for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                        for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                            KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
+
                             BigInteger balance = keyExp.balance;
                             BigInteger mineral = keyExp.mineral;
                             BigInteger reward = keyExp.rewards;
@@ -274,7 +276,21 @@ public class AppManager {
                             } else {
                                 if(SystemProperties.getDefault().getMasternodeKey() == null) {
                                     cancelMasternode();
+                                } else {
+                                    if(address.equals(AppManager.getGeneralPropertiesData("masternode_address"))) {
+                                        // Do nothing when the balance is correct
+                                        if (apis.equals("50000000000000000000000")
+                                            || apis.equals("200000000000000000000000")
+                                            || apis.equals("500000000000000000000000")) {
+                                            // Reset properties and request when the balance is not correct
+                                        } else {
+                                            SystemProperties.getDefault().setMasternodePrivateKey(null);
+                                            SystemProperties.getDefault().setMasternodeRecipient(null);
+                                            cancelMasternode();
+                                        }
+                                    }
                                 }
+
                             }
 
                         // Activated state
