@@ -424,47 +424,6 @@ public class BlockMiner {
         }
 
 
-
-        // 연결된 노드들의 RP 값과 비교했을 때 내 RP 값이 현저히 낮을 경우, 블록을 생성하지 않는다
-        /*Collection<Channel> peers = apis.getChannelManager().getActivePeers();
-        Repository rpRepo = RewardPointUtil.getRewardPointBalanceRepo(bestRepo, bestBlock, blockStore);
-        List<BigInteger> rpList = new ArrayList<>();
-        for(Channel peer : peers) {
-            byte[] coinbase = peer.getCoinbase();
-            if(coinbase == null) {
-                continue;
-            }
-            ByteArrayWrapper coinbaseW = new ByteArrayWrapper(coinbase);
-
-            // 최근에 채굴했던 채굴자들은 비교 대상에서 제외한다. 왜냐면 그들은 블록을 전파할 수 없기 때문
-            if(recentMiners.indexOf(coinbaseW) >= 0) {
-                continue;
-            }
-
-            BigInteger balance = rpRepo.getBalance(coinbase);
-            byte[] seed = RewardPointUtil.calcSeed(coinbase, balance, bestBlock.getHash());
-
-            BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
-            rpList.add(rp);
-        }
-
-        if(rpList.size() >= 3) {
-            rpList.sort(new AscendingBigInteger());
-
-            // 채굴자의 RP 값을 계산한다.
-            BigInteger balance = rpRepo.getBalance(config.getMinerCoinbase());
-            byte[] seed = RewardPointUtil.calcSeed(config.getMinerCoinbase(), balance, bestBlock.getHash());
-
-            BigInteger minerRP = RewardPointUtil.calcRewardPoint(seed, balance);
-
-            if(minerRP.compareTo(rpList.get(2)) < 0) {
-                printMiningMessage("I will not create a block because my RP value is smaller than the RP value of the other peers.", bestBlock.getNumber());
-                return false;
-            }
-        }*/
-
-
-
         if(!isGeneratingBlock) {
             restartMining();
             return true;
