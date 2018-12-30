@@ -444,6 +444,63 @@ public class DBManager {
         return transactions;
     }
 
+    private static final int TYPE_SELECT_ALL = 0;
+    private static final int TYPE_SELECT_SEND = 1;
+    private static final int TYPE_SELECT_RECEIVE = 2;
+
+    public long countOfSendingTransaction(byte[] address) {
+        return countOfTransaction(address, TYPE_SELECT_SEND);
+    }
+    public long countOfReceivingTransaction(byte[] address) {
+        return countOfTransaction(address, TYPE_SELECT_RECEIVE);
+    }
+    public long countOfAllTransaction(byte[] address) {
+        return countOfTransaction(address, TYPE_SELECT_ALL);
+    }
+
+    private long countOfTransaction(byte[] address, int type) {
+        if(address == null || address.length == 0) {
+            return 0;
+        }
+
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            switch(type) {
+                case TYPE_SELECT_SEND:
+                    query = "SELECT count(*) FROM transactions WHERE sender = ?";
+                    state = this.connection.prepareStatement(query);
+                    state.setBytes(1, address);
+                    break;
+                case TYPE_SELECT_RECEIVE:
+                    query = "SELECT count(*) FROM transactions WHERE receiver = ?";
+                    state = this.connection.prepareStatement(query);
+                    state.setBytes(1, address);
+                    break;
+                case TYPE_SELECT_ALL:
+                default:
+                    query = "SELECT count(*) FROM transactions WHERE receiver = ? OR sender = ?";
+                    state = this.connection.prepareStatement(query);
+                    state.setBytes(1, address);
+                    state.setBytes(2, address);
+                    break;
+            }
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return result.getLong(0);
+            }
+
+        } catch (SQLException | DecoderException ignored) {
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return 0;
+    }
 
 
     public List<TransactionRecord> selectTransactions(String searchText, long rowCount, long offset) {

@@ -71,6 +71,7 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GET_RECENT_TRANSACTIONS= "apis_getRecentTransactions";
     private static final String COMMAND_APIS_GET_RECENT_BLOCKS= "apis_getRecentBlocks";
     private static final String COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS = "apis_getTransactionCountOnBlocks";
+    private static final String COMMAND_APIS_GET_TRANSACTION_COUNT_BY_ADDRESS = "apis_getTransactionCountByAddress";
 
     // apis only
     public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
@@ -956,6 +957,50 @@ public class RPCCommand {
 
                 command = createJson(id, method, new TransactionCountData(fromBlock, toBlock, txCount));
                 break;
+            }
+
+            case COMMAND_APIS_GET_TRANSACTION_COUNT_BY_ADDRESS: {
+                if(params.length < 1) {
+                    // 주소가 없으므로 에러
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+                long txCount;
+
+                byte[] address = null;
+                try {
+                    String addressParam = (String)params[0];
+                    if(addressParam.contains("@")) {
+                        address = apis.getRepository().getAddressByMask(addressParam);
+                    } else {
+                        address = ByteUtil.hexStringToBytes((String) params[0]);
+                    }
+                } catch (Exception ignored) {}
+
+                String type = "all";
+                if(params.length > 1 && params[1] != null) {
+                    try {
+                        type = (String) params[1];
+                    } catch (NumberFormatException | DecoderException ignored) {}
+                }
+
+
+                DBManager dbManager = DBManager.getInstance();
+                switch(type.toLowerCase()) {
+                    case "send":
+                        txCount = dbManager.countOfSendingTransaction(address);
+                        break;
+                    case "receive":
+                        txCount = dbManager.countOfReceivingTransaction(address);
+                        break;
+                    case "all":
+                    default:
+                        txCount = dbManager.countOfAllTransaction(address);
+                        break;
+                }
+
+                command = createJson(id, method, txCount);
             }
 
             // parameter
