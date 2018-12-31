@@ -44,7 +44,7 @@ public class LedgerController implements Initializable {
         mApis = ApisFactory.createEthereum();
         mApis.addListener(mListener);
     }
-
+// agadgbvsdb
 
     @FXML
     public void onMousePressed(InputEvent event) {
