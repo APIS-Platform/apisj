@@ -356,6 +356,7 @@ public class StringManager {
 
         public SimpleStringProperty lwPhaseTwoListItem1 = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseTwoListItem2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoListItem3 = new SimpleStringProperty();
 
         public SimpleStringProperty walletNameLabel = new SimpleStringProperty();
         public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
@@ -365,6 +366,23 @@ public class StringManager {
         public SimpleStringProperty popupSuccessComment = new SimpleStringProperty();
         public SimpleStringProperty popupCautionTitle = new SimpleStringProperty();
         public SimpleStringProperty popupCautionComment = new SimpleStringProperty();
+
+        public SimpleStringProperty lwPhaseThreeTitle3 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu3 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu3Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourTitle2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourMenu2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourMenu2Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeRightTitle3 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeRightSubTitle3 = new SimpleStringProperty();
+        public SimpleStringProperty ledgerHelp = new SimpleStringProperty();
+        public SimpleStringProperty checkConnection = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionSuccess = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionFailedEmpty = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionFailedMulti = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourRightTitle2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourRightSubTitle2 = new SimpleStringProperty();
+        public SimpleStringProperty addWallet = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -408,6 +426,7 @@ public class StringManager {
 
             lwPhaseTwoListItem1.set(StringManager.this.getString("intro_lw_phase_two_list_item_1", "Select Wallet file"));
             lwPhaseTwoListItem2.set(StringManager.this.getString("intro_lw_phase_two_list_item_2", "Private key"));
+            lwPhaseTwoListItem3.set(StringManager.this.getString("intro_lw_phase_two_list_item_3", "Hardward Wallet (Ledger)"));
 
             walletNameLabel.set(StringManager.this.getString("intro_wallet_name_label", "Wallet Name"));
             walletPasswordLabel.set(StringManager.this.getString("intro_wallet_password_label", "Wallet Password"));
@@ -418,6 +437,22 @@ public class StringManager {
             popupCautionTitle.set(StringManager.this.getString("intro_popup_caution_title", "Caution!"));
             popupCautionComment.set(StringManager.this.getString("intro_popup_caution_comment", "Do you want to proceed without downloading the Keystore file?"));
 
+            lwPhaseThreeTitle3.set(StringManager.this.getString("intro_lw_phase_three_title_3", "NANO LEDGER"));
+            lwPhaseThreeMenu3.set(StringManager.this.getString("intro_lw_phase_three_menu_3", "Load Wallet"));
+            lwPhaseThreeMenu3Comment.set(StringManager.this.getString("intro_lw_phase_three_menu_3_comment", "This is a recommended way to access your wallet."));
+            lwPhaseFourTitle2.set(StringManager.this.getString("intro_lw_phase_four_title_2", "NANO LEDGER"));
+            lwPhaseFourMenu2.set(StringManager.this.getString("intro_lw_phase_four_menu_2", "Load Wallet"));
+            lwPhaseFourMenu2Comment.set(StringManager.this.getString("intro_lw_phase_four_menu_2_comment", "Select HD derivation path and the address."));
+            lwPhaseThreeRightTitle3.set(StringManager.this.getString("intro_lw_phase_three_right_title_3", "Ledger Hardware Wallet"));
+            lwPhaseThreeRightSubTitle3.set(StringManager.this.getString("intro_lw_phase_three_right_sub_title_3", "This is a recommended way to access your wallet."));
+            ledgerHelp.set(StringManager.this.getString("ledger_help", "A hardware wallet is a small USB device that allows you to access your wallet quickly, safely & easily. It is more secure because your private key never leaves the hardware wallet. It protects you from phishing, malware, and more. Please connect ledger and press the button below."));
+            checkConnection.set(StringManager.this.getString("check_connection", "Check Connection"));
+            checkConnectionSuccess.set(StringManager.this.getString("check_connection_success", "1 wallet found."));
+            checkConnectionFailedEmpty.set(StringManager.this.getString("check_connection_failed_empty", "No wallet found."));
+            checkConnectionFailedMulti.set(StringManager.this.getString("check_connection_failed_multi", "2 or more wallet found. Please connect only one wallet."));
+            lwPhaseFourRightTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_title", "Select HD derivation path"));
+            lwPhaseFourRightSubTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_sub_title", "Select the address"));
+            addWallet.set(StringManager.this.getString("add_wallet", "Add your wallet"));
         }
     }
 

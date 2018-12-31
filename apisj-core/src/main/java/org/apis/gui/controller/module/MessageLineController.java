@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,12 +31,22 @@ public class MessageLineController extends BaseViewController {
     public void setSuccessed(SimpleStringProperty message){
         messageLabel.textProperty().unbind();
         messageLabel.textProperty().bind(message);
+        StyleManager.fontColorStyle(messageLabel, StyleManager.AColor.C36b25b);
         icon.setImage(ImageManager.icCheckGreen);
     }
 
     public void setFailed(SimpleStringProperty message){
         messageLabel.textProperty().unbind();
         messageLabel.textProperty().bind(message);
+        StyleManager.fontColorStyle(messageLabel, StyleManager.AColor.C910000);
         icon.setImage(ImageManager.icErrorRed);
+    }
+
+    public String getMessageLabel() {
+        return messageLabel.getText();
+    }
+
+    public void setMessageLabel(String messageLabel) {
+        this.messageLabel.setText(messageLabel);
     }
 }

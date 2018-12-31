@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.controller.module.textfield.ApisTextFieldPkController;
@@ -30,6 +31,7 @@ public class IntroController extends BaseViewController {
     // Load Wallet Radio Button Values
     private static final int LOAD_WALLET_SELECT_WALLET_FILE = 1;
     private static final int LOAD_WALLET_PRIVATE_KEY = 2;
+    private static final int LOAD_WALLET_NANO_LEDGER = 3;
 
     private boolean isPrevMain = false;
     // Download Keystore File Flag
@@ -38,6 +40,9 @@ public class IntroController extends BaseViewController {
     private static boolean MATCH_KEYSTORE_FILE_PASSWORD = false;
     // Keystore File Delete Flag from Finishing the Phases
     private static boolean DELETE_KEYSTORE_FILE_FLAG = false;
+    // Check Ledger connection Flag
+    private static int CHECK_CONNECTION_FLAG = 0;
+    private int i = 0;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
@@ -46,11 +51,10 @@ public class IntroController extends BaseViewController {
     @FXML private ImageView bgImage;
     @FXML private ImageView hexagonCreateWalletLabelImg, hexagonLoadWalletLabelImg;
     @FXML private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
-    @FXML private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg, keystoreFileDragZone;
+    @FXML private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg, loadWalletPhaseTwoRadioThreeImg, keystoreFileDragZone;
     @FXML private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, createWalletPhaseThreeNext, introNoFour, loadWalletPhaseTwoIntroNoFour, keystoreFileNameLabel, pkLabel, backBtn, backBtn1, backBtn2, backBtn3, backBtn4, backBtn5, backBtn6, nextBtn3, createWalletPhaseTwoNext, introCwPhaseFourRightNext, loadWalletPhaseThreeTypeFileLoad, loadWalletPhaseThreeTypePkNext, loadWalletPhaseFourTypePkLoad;
     @FXML private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
-    @FXML private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk ;
-    @FXML private GridPane keystoreFileNameGrid, keystoreFileMessage;
+    @FXML private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk, introLoadWalletPhaseThreeTypeLedger, introLoadWalletPhaseFourTypeLedger;    @FXML private GridPane keystoreFileNameGrid, keystoreFileMessage;
     @FXML private GridPane hexagonCreateWalletBtn, hexagonLoadWalletBtn, dragDropGrid;
     @FXML private TabPane introPhaseTab;
     @FXML private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution, copyPk;
@@ -66,18 +70,21 @@ public class IntroController extends BaseViewController {
             introLwPhaseTwoTitle, introLwPhaseTwoMenu1, introLwPhaseTwoMenu1Comment,
             introLwPhaseThreeTitle, introLwPhaseThreeMenu1, introLwPhaseThreeMenu1Comment,
             introLwPhaseThreeTitle2, introLwPhaseThreeMenu2, introLwPhaseThreeMenu2Comment,
+            introLwPhaseThreeTitle3, introLwPhaseThreeMenu3, introLwPhaseThreeMenu3Comment,
             introLwPhaseFourTitle, introLwPhaseFourMenu1, introLwPhaseFourMenu1Comment,
+            introLwPhaseFourTitle2, introLwPhaseFourMenu2, introLwPhaseFourMenu2Comment,
             introCwPhaseTwoRightTitle, introCwPhaseTwoRightSubTitle,
             introCwPhaseTwoRightNameLabel, introCwPhaseTwoRightPassLabel, introCwPhaseTwoRightCPassLabel,
             introCwPhaseThreeRightTitle, introCwPhaseThreeRightSubTitle, introCwPhaseThreeRightDownload,introCwPhaseThreeRightDownloadBtn,
             introCwPhaseFourRightTitle, introCwPhaseFourRightSubTitle, introCwPhaseFourRightPkLabel,
-            introLwPhaseTwoRightTitle, introLwPhaseTwoRightSubTitle, introLwPhaseTwoRightList1, introLwPhaseTwoRightList2,
+            introLwPhaseTwoRightTitle, introLwPhaseTwoRightSubTitle, introLwPhaseTwoRightList1, introLwPhaseTwoRightList2, introLwPhaseTwoRightList3,
             introLwPhaseThreeRightTitle, introLwPhaseThreeRightSubTitle,
-            introLwPhaseThreeRightTitle2, introLwPhaseThreeRightSubTitle2, introLwPhaseFourRightTitle, introLwPhaseFourRightSubTitle,
+            introLwPhaseThreeRightTitle2, introLwPhaseThreeRightSubTitle2, introLwPhaseFourRightTitle, introLwPhaseFourRightSubTitle, introLwPhaseFourRightTitle2, introLwPhaseFourRightSubTitle2,
             popupSuccessTitle, popupSuccessComment, popupSuccessButton, popupCautionTitle, popupCautionComment, popupCautionNoButton, popupCautionYesButton,
             introLwPhaseThreeRightButtonTitle, selectKeystoreBtn, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
             introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel,
-            dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel, version
+            dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel, version,
+            introLwPhaseThreeRightTitle3, introLwPhaseThreeRightSubTitle3, ledgerHelp, checkConnectionBtn, backBtn7, loadWalletPhaseThreeTypeLedgerNext, backBtn8, loadWalletPhaseFourTypeLedgerAdd
     ;
 
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
@@ -100,6 +107,8 @@ public class IntroController extends BaseViewController {
     public ApisTextFieldController createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController, createWalletPhaseTwoConfirmPasswordController,
                                    loadWalletPhaseThreeTypeFilePwController, loadWalletPrivateKeyController, loadWalletPhaseFourTypePkNmController,
                                    loadWalletPhaseFourTypePkPwController, loadWalletPhaseFourTypePkCfController;
+
+    @FXML private MessageLineController checkConnectionMessageController;
 
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
@@ -715,6 +724,7 @@ public class IntroController extends BaseViewController {
         this.introLwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoMenu1Comment);
         this.introLwPhaseTwoRightList1.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoListItem1);
         this.introLwPhaseTwoRightList2.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoListItem2);
+        this.introLwPhaseTwoRightList3.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoListItem3);
         this.introLwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1);
         this.introLwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1Comment);
         this.introLwPhaseThreeRightTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2);
@@ -751,6 +761,8 @@ public class IntroController extends BaseViewController {
         this.backBtn4.textProperty().bind(StringManager.getInstance().common.backButton);
         this.backBtn5.textProperty().bind(StringManager.getInstance().common.backButton);
         this.backBtn6.textProperty().bind(StringManager.getInstance().common.backButton);
+        this.backBtn7.textProperty().bind(StringManager.getInstance().common.backButton);
+        this.backBtn8.textProperty().bind(StringManager.getInstance().common.backButton);
 
         this.createWalletPhaseTwoNext.textProperty().bind(StringManager.getInstance().common.nextButton);
         this.createWalletPhaseThreeNext.textProperty().bind(StringManager.getInstance().common.nextButton);
@@ -759,10 +771,26 @@ public class IntroController extends BaseViewController {
         this.loadWalletPhaseThreeTypeFileLoad.textProperty().bind(StringManager.getInstance().common.nextButton);
         this.loadWalletPhaseThreeTypePkNext.textProperty().bind(StringManager.getInstance().common.nextButton);
         this.loadWalletPhaseFourTypePkLoad.textProperty().bind(StringManager.getInstance().common.nextButton);
+        this.loadWalletPhaseThreeTypeLedgerNext.textProperty().bind(StringManager.getInstance().common.nextButton);
 
         this.popupCopyTitle.textProperty().bind(StringManager.getInstance().popup.copyPkTitle);
         this.popupCopySubTitle.textProperty().bind(StringManager.getInstance().popup.copyPkSubTitle);
         this.popupCopyConfirmBtn.textProperty().bind(StringManager.getInstance().common.confirmButton);
+
+        this.introLwPhaseThreeTitle3.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeTitle3);
+        this.introLwPhaseThreeMenu3.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu3);
+        this.introLwPhaseThreeMenu3Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu3Comment);
+        this.introLwPhaseFourTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourTitle2);
+        this.introLwPhaseFourMenu2.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu2);
+        this.introLwPhaseFourMenu2Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu2Comment);
+        this.introLwPhaseThreeRightTitle3.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeRightTitle3);
+        this.introLwPhaseThreeRightSubTitle3.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeRightSubTitle3);
+        this.ledgerHelp.textProperty().bind(StringManager.getInstance().intro.ledgerHelp);
+        this.checkConnectionBtn.textProperty().bind(StringManager.getInstance().intro.checkConnection);
+        this.checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
+        this.introLwPhaseFourRightTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourRightTitle2);
+        this.introLwPhaseFourRightSubTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourRightSubTitle2);
+        this.loadWalletPhaseFourTypeLedgerAdd.textProperty().bind(StringManager.getInstance().intro.addWallet);
     }
 
     public void versionSetting() {
@@ -1065,6 +1093,18 @@ public class IntroController extends BaseViewController {
             // TextField Initialize
             loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
             loadWalletPrivateKeyController.requestFocus();
+        } else if(loadWalletPhaseTwoFlag == LOAD_WALLET_NANO_LEDGER) {
+            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+            this.introLoadWalletPhaseTwo.setVisible(false);
+            this.introLoadWalletPhaseThreeTypeLedger.setVisible(true);
+            this.introNaviTwo.setImage(introNaviCircle);
+            this.introNaviThree.setImage(introNavi);
+            this.introNaviTwo.setFitWidth(6);
+            this.introNaviThree.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(8);
+
+            checkConnectionMessageController.setVisible(false);
+            CHECK_CONNECTION_FLAG = 0;
         }
     }
 
@@ -1073,6 +1113,7 @@ public class IntroController extends BaseViewController {
         this.introNaviFour.setVisible(false);
         this.loadWalletPhaseTwoRadioOneImg.setImage(radioCheckBtnRed);
         this.loadWalletPhaseTwoRadioTwoImg.setImage(radioCheckBtnGrey);
+        this.loadWalletPhaseTwoRadioThreeImg.setImage(radioCheckBtnGrey);
         loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
     }
 
@@ -1081,7 +1122,17 @@ public class IntroController extends BaseViewController {
         this.introNaviFour.setVisible(true);
         this.loadWalletPhaseTwoRadioOneImg.setImage(radioCheckBtnGrey);
         this.loadWalletPhaseTwoRadioTwoImg.setImage(radioCheckBtnRed);
+        this.loadWalletPhaseTwoRadioThreeImg.setImage(radioCheckBtnGrey);
         loadWalletPhaseTwoFlag = LOAD_WALLET_PRIVATE_KEY;
+    }
+
+    public void loadWalletPhaseTwoRadioThree() {
+        this.loadWalletPhaseTwoIntroNoFour.setVisible(true);
+        this.introNaviFour.setVisible(true);
+        this.loadWalletPhaseTwoRadioOneImg.setImage(radioCheckBtnGrey);
+        this.loadWalletPhaseTwoRadioTwoImg.setImage(radioCheckBtnGrey);
+        this.loadWalletPhaseTwoRadioThreeImg.setImage(radioCheckBtnRed);
+        loadWalletPhaseTwoFlag = LOAD_WALLET_NANO_LEDGER;
     }
 
     public void loadWalletPhaseThreeTypeFileBackClick() {
@@ -1281,6 +1332,84 @@ public class IntroController extends BaseViewController {
                 }
             }
         }
+    }
+
+    public void loadWalletPhaseThreeTypeLedgerBackClick() {
+        this.introLoadWalletPhaseThreeTypeLedger.setVisible(false);
+        this.introLoadWalletPhaseTwo.setVisible(true);
+        this.introNaviThree.setImage(introNaviCircle);
+        this.introNaviTwo.setImage(introNavi);
+        this.introNaviThree.setFitWidth(6);
+        this.introNaviTwo.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(4);
+    }
+
+    public void loadWalletPhaseThreeTypeLedgerNextClick() {
+        checkConnection();
+
+        switch(CHECK_CONNECTION_FLAG) {
+            case 0 :
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                break;
+            case 1 :
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                break;
+            case 2 :
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                break;
+            case 3 :
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
+                this.introLoadWalletPhaseThreeTypeLedger.setVisible(false);
+                this.introLoadWalletPhaseFourTypeLedger.setVisible(true);
+                this.introNaviThree.setImage(introNaviCircle);
+                this.introNaviFour.setImage(introNavi);
+                this.introNaviThree.setFitWidth(6);
+                this.introNaviFour.setFitWidth(24);
+                this.introPhaseTab.getSelectionModel().select(9);
+                break;
+            default : break;
+        }
+    }
+
+    public void checkConnection() {
+        switch(i) {
+            case 0 :
+                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                CHECK_CONNECTION_FLAG = 1;
+                checkConnectionMessageController.setVisible(true);
+                i++;
+                break;
+            case 1 :
+                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                CHECK_CONNECTION_FLAG = 2;
+                checkConnectionMessageController.setVisible(true);
+                i++;
+                break;
+            case 2 :
+                checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
+                CHECK_CONNECTION_FLAG = 3;
+                checkConnectionMessageController.setVisible(true);
+                i = 0;
+                break;
+            default : break;
+        }
+    }
+
+    public void loadWalletPhaseFourTypeLedgerBackClick() {
+        this.introLoadWalletPhaseFourTypeLedger.setVisible(false);
+        this.introLoadWalletPhaseThreeTypeLedger.setVisible(true);
+        this.introNaviFour.setImage(introNaviCircle);
+        this.introNaviThree.setImage(introNavi);
+        this.introNaviFour.setFitWidth(6);
+        this.introNaviThree.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(8);
+    }
+
+    public void loadWalletPhaseFourTypeLedgerAddClick() {
+
     }
 
     public static boolean getDeleteKeystoreFileFlag() {
