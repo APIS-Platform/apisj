@@ -234,8 +234,12 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_COINBASE: {
-                byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
-                String address = ByteUtil.toHexString0x(coinbase);
+                ECKey coinbaseKey = SystemProperties.getDefault().getCoinbaseKey();
+                String address = "";
+                if(coinbaseKey != null) {
+                    byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
+                    address = ByteUtil.toHexString0x(coinbase);
+                }
                 command = createJson(id, method, address);
                 break;
             }
@@ -257,7 +261,7 @@ public class RPCCommand {
                 byte[] targetAddress = null;
                 if (params.length > 0) {
                     byte[] address = getAddressByte(latestRepo, (String)params[0]);
-                    if (address==null) {
+                    if (address == null) {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                         send(conn, token, command, isEncrypt);
                         return;
@@ -279,23 +283,13 @@ public class RPCCommand {
                             }
                         }
 
-                        String mask = latestRepo.getMaskByAddress(address);
-
-                        BigInteger attoAPIS = latestRepo.getBalance(address);
-                        BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
-                        //BigInteger nonce = latestRepo.getNonce(address);
-                        BigInteger nonce = apis.getPendingState().getNonce(address);
-                        byte[] proofKey = latestRepo.getProofKey(address);
-                        boolean isMasternode = false;
-
                         AccountState accountState = latestRepo.getAccountState(address);
-                        if (accountState != null) {
-                            if (accountState.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-                                isMasternode = true;
-                            }
+                        if (accountState == null) {
+                            accountState = new AccountState(SystemProperties.getDefault());
                         }
 
-                        WalletInfo walletInfo = new WalletInfo(walletIndex, address, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
+                        BigInteger nonce = apis.getPendingState().getNonce(address);
+                        WalletInfo walletInfo = new WalletInfo(walletIndex, address, accountState, lastBlockNumber, nonce);
                         walletInfos.add(walletInfo);
                     }
 
@@ -352,7 +346,7 @@ public class RPCCommand {
                     Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
                     Repository repository = ((Repository) apis.getRepository()).getSnapshotTo(block.getStateRoot());
                     byte[] address = getAddressByte(repository, (String)params[0]);
-                    if (address==null) {
+                    if (address == null) {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                         send(conn, token, command, isEncrypt);
                         return;
@@ -382,7 +376,7 @@ public class RPCCommand {
                 }
 
                 byte[] address = getAddressByte(latestRepo, (String)params[0]);
-                if (address==null) {
+                if (address == null) {
                     command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
@@ -391,7 +385,7 @@ public class RPCCommand {
                 // get transaction count
                 try {
                     BigInteger nonce = apis.getPendingState().getNonce(address);
-                    String nonceHexString = objectToHexString(nonce);
+                    String nonceHexString = ByteUtil.toHexString0x(nonce.toByteArray());
                     command = createJson(id, method, nonceHexString);
 
                 } catch (Exception e) {
@@ -415,7 +409,7 @@ public class RPCCommand {
                     String hashString = (String) params[0];
                     byte[] hash = ByteUtil.hexStringToBytes(hashString);
                     int transactionCount = apis.getBlockchain().getBlockByHash(hash).getTransactionsList().size();
-                    String transactionCountToHexString = objectToHexString(transactionCount);
+                    String transactionCountToHexString = ByteUtil.toHexString0x(ByteUtil.intToBytes(transactionCount));
                     command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -443,7 +437,7 @@ public class RPCCommand {
                     }
 
                     int transactionCount = apis.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
-                    String transactionCountToHexString = objectToHexString(transactionCount);
+                    String transactionCountToHexString = ByteUtil.toHexString0x(ByteUtil.intToBytes(transactionCount));
                     command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -478,10 +472,9 @@ public class RPCCommand {
                 }
 
                 try {
-                    Repository repository = ((Repository) apis.getRepository())
-                            .getSnapshotTo(apis.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
+                    Repository repository = ((Repository) apis.getRepository()).getSnapshotTo(apis.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
                     byte[] address = getAddressByte(repository, (String)params[0]);
-                    if (address==null) {
+                    if (address == null) {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                         send(conn, token, command, isEncrypt);
                         return;
@@ -706,7 +699,7 @@ public class RPCCommand {
                     Block block = apis.getBlockchain().getBlockByHash(hash);
 
                     byte[] coinbase = block.getCoinbase();
-                    String coinbaseMask = apis.getRepository().getMaskByAddress(coinbase);
+                    String coinbaseMask = latestRepo.getMaskByAddress(coinbase);
 
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
@@ -744,7 +737,7 @@ public class RPCCommand {
                     Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
 
                     byte[] coinbase = block.getCoinbase();
-                    String coinbaseMask = apis.getRepository().getMaskByAddress(coinbase);
+                    String coinbaseMask = latestRepo.getMaskByAddress(coinbase);
 
                     SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
@@ -815,7 +808,7 @@ public class RPCCommand {
                 try {
                     String txHashString = (String) params[0];
                     if (txHashString.contains("@")) {
-                        byte[] address = apis.getRepository().getAddressByMask(txHashString);
+                        byte[] address = latestRepo.getAddressByMask(txHashString);
                         txHashString = ByteUtil.toHexString(address);
                     }
 
@@ -840,7 +833,11 @@ public class RPCCommand {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
                         TransactionInfo txInfo = apis.getTransactionInfo(txHash);
                         Block block = apis.getBlockchain().getBlockByHash(txInfo.getBlockHash());
-                        txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
+
+                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, block);
+                        txReceiptData.setMask(latestRepo);
+
+                        txReceipts.add(new TransactionSearchData(txReceiptData));
                     }
 
                     command = createJson(id, method, txReceipts);
@@ -875,7 +872,12 @@ public class RPCCommand {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
                         TransactionInfo txInfo = apis.getTransactionInfo(txHash);
                         Block block = apis.getBlockchain().getBlockByHash(txInfo.getBlockHash());
-                        txReceipts.add(new TransactionSearchData(new TransactionReceiptData(txInfo, block)));
+
+                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, block);
+                        txReceiptData.setMask(latestRepo);
+
+                        TransactionSearchData txSearchData = new TransactionSearchData(txReceiptData);
+                        txReceipts.add(txSearchData);
                     }
 
                     command = createJson(id, method, txReceipts);
@@ -972,7 +974,7 @@ public class RPCCommand {
                 try {
                     String addressParam = (String)params[0];
                     if(addressParam.contains("@")) {
-                        address = apis.getRepository().getAddressByMask(addressParam);
+                        address = latestRepo.getAddressByMask(addressParam);
                     } else {
                         address = ByteUtil.hexStringToBytes((String) params[0]);
                     }
@@ -1069,6 +1071,7 @@ public class RPCCommand {
                     }
                     else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, apis.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        txReceiptData.setMask(latestRepo);
                         command = createJson(id, method, txReceiptData);
                     }
 
@@ -1127,23 +1130,9 @@ public class RPCCommand {
                         state = new AccountState(SystemProperties.getDefault());
                     }
 
-                    String mask = state.getAddressMask();
-
-                    BigInteger attoAPIS = state.getBalance();
-                    BigInteger attoMNR = state.getMineral(apis.getBlockchain().getBestBlock().getNumber());
+                    long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
                     BigInteger nonce = apis.getPendingState().getNonce(address);
-                    byte[] proofKey = state.getProofKey();
-                    String isContract = null;
-                    boolean isMasternode = false;
-                    byte[] codeHash = state.getCodeHash();
-                    if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
-                        isContract = Boolean.toString(true);
-                    }
-                    if (state.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-                        isMasternode = true;
-                    }
-
-                    WalletInfo walletInfo = new WalletInfo(-1, address, mask, attoAPIS, attoMNR, nonce, proofKey, isContract, isMasternode);
+                    WalletInfo walletInfo = new WalletInfo(-1, address, state, blockNumber, nonce);
 
                     command = createJson(id, method, walletInfo);
                 }
@@ -1238,7 +1227,7 @@ public class RPCCommand {
                             }
 
                             if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
-                                txData.setTo(apis.getRepository().getAddressByMask(txData.getToMask()));
+                                txData.setTo(latestRepo.getAddressByMask(txData.getToMask()));
                             }
 
                             if(txData.isGasPriceEmpty()) {
@@ -1547,7 +1536,7 @@ public class RPCCommand {
         return String.format("0x%08X", object);
     }
 
-    public static byte[] getAddressByte(Repository repository, String addressOrMask) {
+    private static byte[] getAddressByte(Repository repository, String addressOrMask) {
         byte[] address = null;
         try {
             if (addressOrMask.contains("@")) { // is mask
@@ -1558,7 +1547,6 @@ public class RPCCommand {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            address = null;
         }
 
         return address;

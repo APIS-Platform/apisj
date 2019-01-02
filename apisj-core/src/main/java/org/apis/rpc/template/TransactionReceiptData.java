@@ -4,6 +4,7 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
+import org.apis.facade.Repository;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -51,6 +52,7 @@ public class TransactionReceiptData {
      * 20 Bytes - address of the sender.
      */
     private String from;
+    private String fromMask;
 
     /**
      * 20 Bytes - address of the receiver. null when its a contract creation transaction.
@@ -238,7 +240,7 @@ public class TransactionReceiptData {
         return to;
     }
 
-    String getToMask() {
+    public String getToMask() {
         return toMask;
     }
 
@@ -294,6 +296,50 @@ public class TransactionReceiptData {
         return mineralUsedMNR;
     }
 
+    public void setFromMask(String fromMask) {
+        this.fromMask = fromMask;
+    }
+
+    public String getFromMask() {
+        return fromMask;
+    }
+
+    public void setToMask(String toMask) {
+        if(this.toMask == null || this.toMask.isEmpty()) {
+            this.toMask = toMask;
+        }
+    }
+
+    /**
+     * Repo 정보에서 from 주소와 to 주소에 할당된 마스크 정보를 불러와 세팅한다.
+     * @param repo 마지막 블록의 저장소
+     */
+    public void setMask(Repository repo) {
+        byte[] from = ByteUtil.hexStringToBytes(this.from);
+        if(from == null) {
+            return;
+        }
+        String fromMask = repo.getMaskByAddress(from);
+        if(fromMask != null && !fromMask.isEmpty()) {
+            setFromMask(fromMask);
+        }
+
+        byte[] to = ByteUtil.hexStringToBytes(this.to);
+        if(to == null) {
+            return;
+        }
+        if(this.toMask != null && !this.toMask.isEmpty()) {
+            return;
+        }
+
+        String toMask = repo.getMaskByAddress(to);
+        if (toMask != null && !toMask.isEmpty()) {
+            setToMask(toMask);
+        }
+    }
+
+
+
     @Override
     public String toString() {
         return "TransactionReceiptData{" +
@@ -304,6 +350,7 @@ public class TransactionReceiptData {
                 ", blockNumber=" + blockNumber +
                 ", timestamp='" + timestamp + '\'' +
                 ", from='" + from + '\'' +
+                ", fromMask='" + fromMask + '\'' +
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +

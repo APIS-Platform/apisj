@@ -34,6 +34,7 @@ public class TransactionSearchData {
      */
     private String to;
 
+    private String fromMask;
     private String toMask;
 
 
@@ -75,6 +76,7 @@ public class TransactionSearchData {
         this.blockNumber = txData.getBlockNumber();
         this.timestamp = txData.getTimestamp();
         this.from = txData.getFrom();
+        this.fromMask = txData.getFromMask();
         this.to = txData.getTo();
         this.toMask = txData.getToMask();
         this.value = txData.getValue();
@@ -101,6 +103,7 @@ public class TransactionSearchData {
                 ", blockNumber=" + blockNumber +
                 ", timestamp='" + timestamp + '\'' +
                 ", from='" + from + '\'' +
+                ", fromMask='" + fromMask + '\'' +
                 ", to='" + to + '\'' +
                 ", toMask='" + toMask + '\'' +
                 ", value='" + value + '\'' +
