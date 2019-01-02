@@ -378,11 +378,13 @@ public class StringManager {
         public SimpleStringProperty ledgerHelp = new SimpleStringProperty();
         public SimpleStringProperty checkConnection = new SimpleStringProperty();
         public SimpleStringProperty checkConnectionSuccess = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionFailedInit = new SimpleStringProperty();
         public SimpleStringProperty checkConnectionFailedEmpty = new SimpleStringProperty();
         public SimpleStringProperty checkConnectionFailedMulti = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseFourRightTitle2 = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseFourRightSubTitle2 = new SimpleStringProperty();
         public SimpleStringProperty addWallet = new SimpleStringProperty();
+        public SimpleStringProperty customPathLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -448,11 +450,13 @@ public class StringManager {
             ledgerHelp.set(StringManager.this.getString("ledger_help", "A hardware wallet is a small USB device that allows you to access your wallet quickly, safely & easily. It is more secure because your private key never leaves the hardware wallet. It protects you from phishing, malware, and more. Please connect ledger and press the button below."));
             checkConnection.set(StringManager.this.getString("check_connection", "Check Connection"));
             checkConnectionSuccess.set(StringManager.this.getString("check_connection_success", "1 wallet found."));
+            checkConnectionFailedInit.set(StringManager.this.getString("check_connection_failed_init", "Check connection first."));
             checkConnectionFailedEmpty.set(StringManager.this.getString("check_connection_failed_empty", "No wallet found."));
             checkConnectionFailedMulti.set(StringManager.this.getString("check_connection_failed_multi", "2 or more wallet found. Please connect only one wallet."));
             lwPhaseFourRightTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_title", "Select HD derivation path"));
             lwPhaseFourRightSubTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_sub_title", "Select the address"));
             addWallet.set(StringManager.this.getString("add_wallet", "Add your wallet"));
+            customPathLabel.set(StringManager.this.getString("custom_path_label", "Your Custom Path"));
         }
     }
 

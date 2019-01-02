@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -2400,7 +2399,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="introLwPhaseFourRightTitle2" styleClass="font_semibold_18" text="Select HD derivation path" textFill="#161515" />
-                                                <GridPane id="abcd" GridPane.rowIndex="1">
+                                                <GridPane GridPane.rowIndex="1">
                                                   <columnConstraints>
                                                     <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
                                                   </columnConstraints>
@@ -2445,108 +2444,14 @@
                                                             <Insets bottom="20.0" />
                                                          </GridPane.margin>
                                                       </AnchorPane>
-                                                      <AnchorPane GridPane.rowIndex="2">
+                                                      <AnchorPane id="abcd" GridPane.rowIndex="2">
                                                          <GridPane.margin>
                                                             <Insets />
                                                          </GridPane.margin>
-                                                         <children>
-                                                            <GridPane>
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints />
-                                                                  <RowConstraints />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                                                     <image>
-                                                                        <Image url="@../image/btn_circle_none@2x.png" />
-                                                                     </image>
-                                                                     <GridPane.margin>
-                                                                        <Insets right="8.0" />
-                                                                     </GridPane.margin>
-                                                                  </ImageView>
-                                                                  <GridPane styleClass="font_semibold_12" GridPane.columnIndex="1">
-                                                                     <columnConstraints>
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                        <ColumnConstraints />
-                                                                     </columnConstraints>
-                                                                     <rowConstraints>
-                                                                        <RowConstraints />
-                                                                     </rowConstraints>
-                                                                     <children>
-                                                                        <Label styleClass="font_semibold_12" text="m/" textFill="#2b2b2b">
-                                                                           <opaqueInsets>
-                                                                              <Insets />
-                                                                           </opaqueInsets>
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </Label>
-                                                                        <Label styleClass="font_semibold_12" text="’/" textFill="#2b2b2b" GridPane.columnIndex="2">
-                                                                           <opaqueInsets>
-                                                                              <Insets />
-                                                                           </opaqueInsets>
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </Label>
-                                                                        <Label styleClass="font_semibold_12" text="’/" textFill="#2b2b2b" GridPane.columnIndex="4">
-                                                                           <opaqueInsets>
-                                                                              <Insets />
-                                                                           </opaqueInsets>
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </Label>
-                                                                        <Label styleClass="font_semibold_12" text="’/" textFill="#2b2b2b" GridPane.columnIndex="6">
-                                                                           <opaqueInsets>
-                                                                              <Insets />
-                                                                           </opaqueInsets>
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </Label>
-                                                                        <TextField fx:id="derivationTextField1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="48.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" GridPane.columnIndex="1">
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextField fx:id="derivationTextField2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="48.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" GridPane.columnIndex="3">
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextField fx:id="derivationTextField3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="48.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" GridPane.columnIndex="5">
-                                                                           <GridPane.margin>
-                                                                              <Insets right="5.0" />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextField fx:id="derivationTextField4" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="48.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" GridPane.columnIndex="7" />
-                                                                     </children>
-                                                                  </GridPane>
-                                                                  <Label fx:id="derivationCustom" styleClass="font_semibold_12" text="Your Custom Path" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                     <opaqueInsets>
-                                                                        <Insets />
-                                                                     </opaqueInsets>
-                                                                     <GridPane.margin>
-                                                                        <Insets top="2.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                               </children>
-                                                            </GridPane>
-                                                         </children>
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
+                                                         <fx:include fx:id="customPath" source="module/ledger/derivation_path_text_item.fxml" />
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>

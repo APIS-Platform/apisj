@@ -12,6 +12,7 @@ import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.ledger.DerivationPathItemController;
+import org.apis.gui.controller.module.ledger.DerivationPathTextItemController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.controller.module.textfield.ApisTextFieldPkController;
@@ -47,8 +48,13 @@ public class IntroController extends BaseViewController {
     private static boolean MATCH_KEYSTORE_FILE_PASSWORD = false;
     // Keystore File Delete Flag from Finishing the Phases
     private static boolean DELETE_KEYSTORE_FILE_FLAG = false;
+
     // Check Ledger connection Flag & Ledger variables
-    private static int CHECK_CONNECTION_FLAG = 0;
+    private static final int CHECK_CONNECTION_FLAG_INIT = 0;
+    private static final int CHECK_CONNECTION_FLAG_NULL = 1;
+    private static final int CHECK_CONNECTION_FLAG_MORE = 2;
+    private static final int CHECK_CONNECTION_FLAG_SUCCESS = 3;
+    private static int CHECK_CONNECTION_FLAG = CHECK_CONNECTION_FLAG_INIT;
     private HIDDevice ledger = null;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
@@ -117,7 +123,7 @@ public class IntroController extends BaseViewController {
 
     @FXML private MessageLineController checkConnectionMessageController;
 
-    @FXML private DerivationPathItemController apisPathController, etcPathController, ethPathController;
+    @FXML private DerivationPathItemController apisPathController, etcPathController, ethPathController, customPathController;
 
     private ArrayList<DerivationPathItemController> pathItemControllers = new ArrayList<DerivationPathItemController>();
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
@@ -814,10 +820,12 @@ public class IntroController extends BaseViewController {
         apisPathController.init("m/44’/777’/0’/0", "APIS");
         etcPathController.init("m/44’/60’/0’/0", "Jaxx, Metamask, TREZOR(ETH)");
         ethPathController.init("m/44’/777’/0’/0", "Ledger (ETH)");
+        ((DerivationPathTextItemController)customPathController).init(StringManager.getInstance().intro.customPathLabel);
 
         pathItemControllers.add(apisPathController);
         pathItemControllers.add(etcPathController);
         pathItemControllers.add(ethPathController);
+        pathItemControllers.add(customPathController);
 
         for(int i=0; i<pathItemControllers.size(); i++) {
             DerivationPathItemController controller = pathItemControllers.get(i);
@@ -826,7 +834,9 @@ public class IntroController extends BaseViewController {
                 public void clicked() {
                     controller.check();
                     for(int j=0; j<pathItemControllers.size(); j++) {
-                        pathItemControllers.get(j).unCheck();
+                        if(pathItemControllers.get(j) != controller) {
+                            pathItemControllers.get(j).unCheck();
+                        }
                     }
                 }
             });
@@ -1140,7 +1150,7 @@ public class IntroController extends BaseViewController {
             this.introPhaseTab.getSelectionModel().select(8);
 
             checkConnectionMessageController.setVisible(false);
-            CHECK_CONNECTION_FLAG = 0;
+            CHECK_CONNECTION_FLAG = CHECK_CONNECTION_FLAG_INIT;
         }
     }
 
@@ -1381,65 +1391,73 @@ public class IntroController extends BaseViewController {
     }
 
     public void loadWalletPhaseThreeTypeLedgerNextClick() {
-        checkConnection();
+        if(CHECK_CONNECTION_FLAG == CHECK_CONNECTION_FLAG_INIT) {
+            checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedInit);
+            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+            checkConnectionMessageController.setVisible(true);
+            return;
+        }
 
-        switch(CHECK_CONNECTION_FLAG) {
-            case 0 :
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-                break;
-            case 1 :
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-                break;
-            case 2 :
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-                break;
-            case 3 :
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
-                this.introLoadWalletPhaseThreeTypeLedger.setVisible(false);
-                this.introLoadWalletPhaseFourTypeLedger.setVisible(true);
-                this.introNaviThree.setImage(introNaviCircle);
-                this.introNaviFour.setImage(introNavi);
-                this.introNaviThree.setFitWidth(6);
-                this.introNaviFour.setFitWidth(24);
-                this.introPhaseTab.getSelectionModel().select(9);
-                break;
-            default : break;
+        if(checkOnlyConncection() == CHECK_CONNECTION_FLAG_SUCCESS) {
+            this.introLoadWalletPhaseThreeTypeLedger.setVisible(false);
+            this.introLoadWalletPhaseFourTypeLedger.setVisible(true);
+            this.introNaviThree.setImage(introNaviCircle);
+            this.introNaviFour.setImage(introNavi);
+            this.introNaviThree.setFitWidth(6);
+            this.introNaviFour.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(9);
+        } else {
+            checkConnection();
         }
     }
 
     public void checkConnection() {
+        switch(CHECK_CONNECTION_FLAG = checkOnlyConncection()) {
+            case CHECK_CONNECTION_FLAG_SUCCESS :
+                checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
+                checkConnectionMessageController.setVisible(true);
+
+                if(ledger == null) {
+                    try {
+                        HIDModule module = HIDModule.getInstance();
+                        ledger = new HIDDevice(module.getDeviceList().get(0).getDevice());
+                    } catch (UsbException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case CHECK_CONNECTION_FLAG_MORE :
+                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                checkConnectionMessageController.setVisible(true);
+                ledger = null;
+                break;
+
+            case CHECK_CONNECTION_FLAG_NULL :
+                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
+                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                checkConnectionMessageController.setVisible(true);
+                ledger = null;
+                break;
+
+            default : break;
+        }
+    }
+
+    public int checkOnlyConncection() {
         HIDModule module = HIDModule.getInstance();
         module.loadDeviceList();
 
         List<DeviceData> devices = module.getDeviceList();
 
         if(devices.size() == 1) {
-            checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
-            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
-            CHECK_CONNECTION_FLAG = 3;
-            checkConnectionMessageController.setVisible(true);
-
-            if(ledger == null) {
-                try {
-                    ledger = new HIDDevice(module.getDeviceList().get(0).getDevice());
-                } catch (UsbException e) {
-                    e.printStackTrace();
-                }
-            }
-
+           return CHECK_CONNECTION_FLAG_SUCCESS;
         } else if(devices.size() > 1) {
-            checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
-            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-            CHECK_CONNECTION_FLAG = 2;
-            checkConnectionMessageController.setVisible(true);
-            ledger = null;
-
+            return CHECK_CONNECTION_FLAG_MORE;
         } else {
-            checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
-            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-            CHECK_CONNECTION_FLAG = 1;
-            checkConnectionMessageController.setVisible(true);
-            ledger = null;
+            return CHECK_CONNECTION_FLAG_NULL;
         }
     }
 

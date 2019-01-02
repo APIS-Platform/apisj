@@ -101,6 +101,9 @@ public class ImageManager {
     public static final Image icBackWhite = new Image("image/ic_back_w@2x.png");
     public static final Image icBackRed = new Image("image/ic_back_r@2x.png");
 
+    public static final Image checkGrey = new Image("image/ledger_btn_uncheck@2x.png");
+    public static final Image checkRed = new Image("image/ledger_btn_check@2x.png");
+
 
 
     public static ImageView imageViewRectangle30(ImageView imageView){
