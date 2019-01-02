@@ -23,10 +23,12 @@ import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
-import org.apis.util.*;
+import org.apis.util.BIUtil;
+import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
-import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
@@ -72,12 +74,12 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GET_RECENT_BLOCKS= "apis_getRecentBlocks";
     private static final String COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS = "apis_getTransactionCountOnBlocks";
     private static final String COMMAND_APIS_GET_TRANSACTION_COUNT_BY_ADDRESS = "apis_getTransactionCountByAddress";
+    private static final String COMMAND_APIS_GET_MASTERNODE_COUNT = "apis_getMasternodeCount";
 
     // apis only
-    public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
-    public static final String COMMAND_APIS_GETMNLIST = "apis_getMnList";
-    public static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
-    public static final String COMMAND_APIS_REGISTERKNOWLEDGEKEY = "apis_registerKnowledgeKey";
+    private static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
+    private static final String COMMAND_APIS_GETMNLIST = "apis_getMnList";
+    private static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
 
     private static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
     private static final String COMMAND_PERSONAL_SIGN = "personal_sign";
@@ -89,11 +91,11 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GET_LOGS = "apis_getLogs";
 
     // tag
-    static final String TAG_JSONRPC = "jsonrpc";
     static final String TAG_ID = "id";
     static final String TAG_METHOD = "method";
     static final String TAG_PARAMS = "params";
-    static final String TAG_RESULT = "result";
+    //static final String TAG_JSONRPC = "jsonrpc";
+    //static final String TAG_RESULT = "result";
 
     static final String TAG_AUTHKEY = "authKey"; // header
     static final String TAG_TOKEN = "token";
@@ -102,90 +104,89 @@ public class RPCCommand {
     static final String TAG_ERROR = "error";
     static final String TAG_PAYLOAD = "payload";
 
-    static final String TAG_FROM = "from";
-    static final String TAG_TO = "to";
-    static final String TAG_GAS = "gas";
-    static final String TAG_GASPRICE = "gasPrice";
-    static final String TAG_VALUE = "value";
-    static final String TAG_DATA = "data";
-    static final String TAG_WALLET_INDEX = "walletIndex";
-    static final String TAG_KEYSTORE_PW = "keyStorePassword";
-    static final String TAG_KNOWLEDGE_PW = "knowledgePassword";
+    //private static final String TAG_FROM = "from";
+    private static final String TAG_TO = "to";
+    private static final String TAG_GAS = "gas";
+    private static final String TAG_GASPRICE = "gasPrice";
+    private static final String TAG_VALUE = "value";
+    private static final String TAG_DATA = "data";
+    private static final String TAG_WALLET_INDEX = "walletIndex";
+    private static final String TAG_KEYSTORE_PW = "keyStorePassword";
+    private static final String TAG_KNOWLEDGE_PW = "knowledgePassword";
 
     // default block parammeter
-    static final String DEFAULTBLOCK_PARAMETER_EARLIEST = "earliest";
-    static final String DEFAULT_PARAMETER_BLOCK_LATEST = "latest";
-    static final String DEFAULTBLOCK_PARAMETER_PENDING = "pending";
+    private static final String DEFAULTBLOCK_PARAMETER_EARLIEST = "earliest";
+    private static final String DEFAULT_PARAMETER_BLOCK_LATEST = "latest";
+    //private static final String DEFAULTBLOCK_PARAMETER_PENDING = "pending";
 
     // error
     static final int ERROR_CODE_UNNKOWN = 100;
     static final int ERROR_CODE_OVERFLOW_MAXCONNECTION = 101;
-    static final int ERROR_CODE_DUPLICATE_IP = 102;
     static final int ERROR_CODE_WRONG_ID_PASSWORD = 103;
     static final int ERROR_CODE_WRONG_AUTHKEY = 104;
     static final int ERROR_CODE_WRONG_TOKENKEY = 105;
     static final int ERROR_CODE_WRONG_ID = 106;
     static final int ERROR_CODE_WITHOUT_PERMISSION_CLIENT = 113;
     static final int ERROR_CODE_WITHOUT_PERMISSION_IP = 114;
-    static final int ERROR_CODE_WITHOUT_PERMISSION_TYPE = 115;
     static final int ERROR_CODE_NULL_ID = 120;
-    static final int ERROR_CODE_TIMEOUT = 121;
+    //static final int ERROR_CODE_DUPLICATE_IP = 102;
+    //static final int ERROR_CODE_WITHOUT_PERMISSION_TYPE = 115;
+    //static final int ERROR_CODE_TIMEOUT = 121;
 
     static final String ERROR_MESSAGE_UNKNOWN = "unknown message.";
-    static final String ERROR_MESSAGE_UNKNOWN_ADDRESS = "unknown Address.";
-    static final String ERROR_MESSAGE_INVALID_ADDRESS = "Invalid Address format.";
-    static final String ERROR_MESSAGE_UNKNOWN_HASH = "unknown Hash.";
-    static final String ERROR_MESSAGE_UNKNOWN_BLOCKDATA= "unknown block data.";
-    static final String ERROR_MESSAGE_NULL_BLOCKDATA = "there is no block data.";
-    static final String ERROR_MESSAGE_NULL_WALLETINDEX = "wrong (wallet)index.";
-    static final String ERROR_MESSAGE_NULL_TOADDRESS = "there is no (to) address.";
-    static final String ERROR_MESSAGE_NULL_TOMASK = "there is no (to) mask.";
-    static final String ERROR_MESSAGE_NULL_GAS = "there is no gas.";
-    static final String ERROR_MESSAGE_NULL_GASPRICE = "there is no gas price.";
-    static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
-    static final String ERROR_MESSAGE_NULL_PARAMETER = "there is no value."; // 조회할 값이 없다
-    static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "The password for the KeyStore file is missing.";
+    private static final String ERROR_MESSAGE_UNKNOWN_ADDRESS = "unknown Address.";
+    private static final String ERROR_MESSAGE_INVALID_ADDRESS = "Invalid Address format.";
+    private static final String ERROR_MESSAGE_UNKNOWN_HASH = "unknown Hash.";
+    private static final String ERROR_MESSAGE_NULL_BLOCKDATA = "there is no block data.";
+    private static final String ERROR_MESSAGE_NULL_WALLETINDEX = "wrong (wallet)index.";
+    private static final String ERROR_MESSAGE_NULL_TOADDRESS = "there is no (to) address.";
+    private static final String ERROR_MESSAGE_NULL_GAS = "there is no gas.";
+    private static final String ERROR_MESSAGE_NULL_GASPRICE = "there is no gas price.";
+    private static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
+    private static final String ERROR_MESSAGE_NULL_PARAMETER = "there is no value."; // 조회할 값이 없다
+    private static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "The password for the KeyStore file is missing.";
 
 
-    static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
-    static final String ERROR_MESSAGE_INVALID_TX = "The transaction data type is invalid.";
+    private static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
+    private static final String ERROR_MESSAGE_INVALID_TX = "The transaction data type is invalid.";
 
-    static final String ERROR_PARAMETER_SIZE = "The number of input parameters for '%s' must be %d.";
+    private static final String ERROR_PARAMETER_SIZE = "The number of input parameters for '%s' must be %d.";
 
 
     static final String ERROR_DEPORT_UNKNOWN = "unknown error.";
     static final String ERROR_DEPORT_OVERFLOW_MAXCONNECTION = "Reached max connection allowance.";
-    static final String ERROR_DEPORT_DUPLICATE_IP = "IP address duplicated.";
     static final String ERROR_DEPORT_WRONG_ID_PASSWORD = "Wrong ID or password.";
     static final String ERROR_DEPORT_WRONG_AUTHKEY = "Unauthorized key.";
     static final String ERROR_DEPORT_WRONG_TOKENKEY = "Unauthorized token key.";
     static final String ERROR_DEPORT_WRONG_ID = "Wrong ID.";
     static final String ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT = "Unallowed client.";
     static final String ERROR_DEPORT_WITHOUT_PERMISSION_IP = "Unallowed IP address.";
-    static final String ERROR_DEPORT_WITHOUT_PERMISSION_TYPE = "Unallowed command.";
     static final String ERROR_DEPORT_NULL_ID = "Cannot find ID.";
-    static final String ERROR_DEPORT_TIMEOUT = "Timeout";
+    //static final String ERROR_DEPORT_DUPLICATE_IP = "IP address duplicated.";
+    //static final String ERROR_DEPORT_WITHOUT_PERMISSION_TYPE = "Unallowed command.";
+    //static final String ERROR_DEPORT_TIMEOUT = "Timeout";
 
 
-    static final String ERROR_NULL_ADDRESS_BY_MASK = "Address registered to the mask does not exist.";
-    static final String ERROR_NULL_MASK_BY_ADDRESS = "There is no mask registered to the address.";
-    static final String ERROR_NULL_TRANSACTION = "There is no transaction.";
-    static final String ERROR_OUT_OF_INDEXED_TRANSACTION = "The index you entered does not exist in the block. (input : %d, index size: %d).";
-    static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
-    static final String ERROR_CONNOT_FETCH_RECENT_BLOCKS = "It was not possible to load recent blocks with the input conditions.";
-    static final String ERROR_NULL_TOADDRESS_OR_TOMASK = "There is no receiving address or mask.";
-    static final String ERROR_NULL_BLOCK_BY_NUMBER = "There is no block can be found with the number.";
-    static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
-    static final String ERROR_NULL_MASTERNODE_ADDRESS = "There is no address registered as masternode.";
-    static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
-    static final String ERROR_NULL_SENDER = "Sender address does not exist.";
+    private static final String ERROR_NULL_MASK_BY_ADDRESS = "There is no address matching the mask you entered.";
+    private static final String ERROR_OUT_OF_INDEXED_TRANSACTION = "The index you entered does not exist in the block. (input : %d, index size: %d).";
+    private static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
+    private static final String ERROR_CONNOT_FETCH_RECENT_BLOCKS = "It was not possible to load recent blocks with the input conditions.";
+    private static final String ERROR_NULL_BLOCK_BY_NUMBER = "There is no block can be found with the number.";
+    private static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
+    private static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
+    private static final String ERROR_NULL_SENDER = "Sender address does not exist.";
+    private static final String ERROR_BLOCKCHAIN_CONFIG_NOT_LOADED = "Failed to load blockchain config.";
+    private static final String ERROR_RECOVER_SIGN_NULL = "Unable to generate recovery signatures.";
+    /*private static final String ERROR_NULL_TRANSACTION = "There is no transaction.";
+    private static final String ERROR_NULL_TOADDRESS_OR_TOMASK = "There is no receiving address or mask.";
+    private static final String ERROR_NULL_MASTERNODE_ADDRESS = "There is no address registered as masternode.";*/
 
 
-    static final HashMap<BigInteger, EthereumListener> mListeners = new HashMap<>();
+    private static final HashMap<BigInteger, EthereumListener> mListeners = new HashMap<>();
 
 
 
-    static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
+    static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) {
         MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
         long id = message.getId();
         String method = message.getMethod();
@@ -199,16 +200,26 @@ public class RPCCommand {
         conduct(apis, conn, token, id, method, params, isEncrypt);
     }
 
-    public static void conduct(Apis apis, WebSocket conn, String token, long id, String method, Object[] params, boolean isEncrypt) throws ParseException {
+    private static void conduct(Apis apis, WebSocket conn, String token, long id, String method, Object[] params, boolean isEncrypt) {
 
         String command = null;
         Repository latestRepo = (Repository) apis.getLastRepositorySnapshot();
+        Block bestBlock = apis.getBlockchain().getBestBlock();
+
+        SystemProperties config = SystemProperties.getDefault();
+        if(config == null) {
+            command = createJson(id, method, null, ERROR_BLOCKCHAIN_CONFIG_NOT_LOADED);
+            send(conn, token, command, isEncrypt);
+            return;
+        }
+
+        Constants latestConstants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
 
         switch (method) {
 
             case COMMAND_NET_PEERCOUNT: {
                 int count = apis.getChannelManager().getActivePeers().size(); // net peer count
-                String countHexString = objectToHexString(count);
+                String countHexString = ByteUtil.toHexString0x(ByteUtil.intToBytes(count));
                 command = createJson(id, method, countHexString);
                 break;
             }
@@ -234,10 +245,10 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_COINBASE: {
-                ECKey coinbaseKey = SystemProperties.getDefault().getCoinbaseKey();
+                ECKey coinbaseKey = config.getCoinbaseKey();
                 String address = "";
                 if(coinbaseKey != null) {
-                    byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
+                    byte[] coinbase = config.getCoinbaseKey().getAddress();
                     address = ByteUtil.toHexString0x(coinbase);
                 }
                 command = createJson(id, method, address);
@@ -246,7 +257,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_MINING: {
                 boolean result = false;
-                if (SystemProperties.getDefault().getCoinbaseKey() != null) {
+                if (config.getCoinbaseKey() != null) {
                     result = true;
                 }
                 command = createJson(id, method, result);
@@ -285,7 +296,7 @@ public class RPCCommand {
 
                         AccountState accountState = latestRepo.getAccountState(address);
                         if (accountState == null) {
-                            accountState = new AccountState(SystemProperties.getDefault());
+                            accountState = new AccountState(config);
                         }
 
                         BigInteger nonce = apis.getPendingState().getNonce(address);
@@ -306,14 +317,14 @@ public class RPCCommand {
 
             case COMMAND_APIS_BLOCKNUMBER: {
                 long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
-                String blockNumberHexString = objectToHexString(blockNumber);
+                String blockNumberHexString = ByteUtil.toHexString0x(ByteUtil.longToBytes(blockNumber));
                 command = createJson(id, method, blockNumberHexString);
                 break;
             }
 
             case COMMAND_TOTAL_COINS: {
                 long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
-                BigInteger totalCoins = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getTotalAPIS(blockNumber);
+                BigInteger totalCoins = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getTotalAPIS(blockNumber);
                 command = createJson(id, method, ApisUtil.readableApis(totalCoins, true));
                 break;
             }
@@ -701,7 +712,6 @@ public class RPCCommand {
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = latestRepo.getMaskByAddress(coinbase);
 
-                    SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
                     BlockData blockData = new BlockData(block, isFull, coinbaseMask, constants);
                     command = createJson(id, method, blockData);
@@ -739,7 +749,6 @@ public class RPCCommand {
                     byte[] coinbase = block.getCoinbase();
                     String coinbaseMask = latestRepo.getMaskByAddress(coinbase);
 
-                    SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
                     BlockData blockData = new BlockData(block, isFull, coinbaseMask, constants);
@@ -909,7 +918,6 @@ public class RPCCommand {
                         currentBlock = apis.getBlockchain().getBlockByHash(currentBlock.getParentHash());
                     }
 
-                    SystemProperties config = SystemProperties.getDefault();
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants();
 
                     List<BlockData> blocks = new ArrayList<>();
@@ -1003,6 +1011,29 @@ public class RPCCommand {
                 }
 
                 command = createJson(id, method, txCount);
+                break;
+            }
+
+            case COMMAND_APIS_GET_MASTERNODE_COUNT: {
+                List<byte[]> mnGeneralEarly = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));
+                List<byte[]> mnMajorEarly = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_MAJOR_BASE_EARLY_RUN()));
+                List<byte[]> mnPrivateEarly = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN()));
+
+                List<byte[]> mnGeneralNormal = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_GENERAL_BASE_NORMAL()));
+                List<byte[]> mnMajorNormal = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_MAJOR_BASE_NORMAL()));
+                List<byte[]> mnPrivateNormal = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
+
+                List<byte[]> mnGeneralLate = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_GENERAL_BASE_LATE()));
+                List<byte[]> mnMajorLate = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_MAJOR_BASE_LATE()));
+                List<byte[]> mnPrivateLate = new ArrayList<>(latestRepo.getMasterNodeList(latestConstants.getMASTERNODE_PRIVATE_BASE_LATE()));
+
+                MasternodeCountData countData = new MasternodeCountData(
+                        mnGeneralEarly.size(), mnMajorEarly.size(), mnPrivateEarly.size(),
+                        mnGeneralNormal.size(), mnMajorNormal.size(), mnPrivateNormal.size(),
+                        mnGeneralLate.size(), mnMajorLate.size(), mnPrivateLate.size());
+
+                command = createJson(id, method, countData);
+                break;
             }
 
             // parameter
@@ -1127,7 +1158,7 @@ public class RPCCommand {
                     AccountState state = latestRepo.getAccountState(address);
 
                     if (state == null) {
-                        state = new AccountState(SystemProperties.getDefault());
+                        state = new AccountState(config);
                     }
 
                     long blockNumber = apis.getBlockchain().getBestBlock().getNumber();
@@ -1196,6 +1227,11 @@ public class RPCCommand {
 
                 ECKey.ECDSASignature signature = KeyStoreUtil.decodeSignature(signatureBytes);
                 ECKey recoveredKey = ECKey.recoverFromSignature(0, signature, HashUtil.sha3(dataSigned));
+                if(recoveredKey == null) {
+                    command = createJson(id, method, null, ERROR_RECOVER_SIGN_NULL);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
                 command = createJson(id, method, ByteUtil.toHexString0x(recoveredKey.getAddress()));
                 break;
             }
@@ -1283,7 +1319,7 @@ public class RPCCommand {
                 try {
                     Block block = apis.getBlockchain().getBlockByNumber(blockNumber);
                     Repository repository = ((Repository) apis.getRepository()).getSnapshotTo(block.getStateRoot());
-                    SystemProperties config = SystemProperties.getDefault();
+
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
                     List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY());
@@ -1532,10 +1568,6 @@ public class RPCCommand {
     }
 
 
-    public static String objectToHexString(Object object) {
-        return String.format("0x%08X", object);
-    }
-
     private static byte[] getAddressByte(Repository repository, String addressOrMask) {
         byte[] address = null;
         try {
@@ -1613,7 +1645,7 @@ public class RPCCommand {
 
         boolean isSuccessful = estimateResult.isSuccess();
         String preRunError = estimateResult.getReceipt().getError();
-        String returnCommand = "";
+        String returnCommand;
 
         // run
         if(isSuccessful) {
