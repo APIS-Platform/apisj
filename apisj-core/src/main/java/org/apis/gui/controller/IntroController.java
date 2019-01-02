@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.MessageLineController;
+import org.apis.gui.controller.module.ledger.DerivationPathItemController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.controller.module.textfield.ApisTextFieldPkController;
@@ -18,12 +19,18 @@ import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.hid.HIDDevice;
+import org.apis.hid.HIDModule;
+import org.apis.hid.template.DeviceData;
 import org.apis.keystore.*;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.usb.UsbException;
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -40,9 +47,9 @@ public class IntroController extends BaseViewController {
     private static boolean MATCH_KEYSTORE_FILE_PASSWORD = false;
     // Keystore File Delete Flag from Finishing the Phases
     private static boolean DELETE_KEYSTORE_FILE_FLAG = false;
-    // Check Ledger connection Flag
+    // Check Ledger connection Flag & Ledger variables
     private static int CHECK_CONNECTION_FLAG = 0;
-    private int i = 0;
+    private HIDDevice ledger = null;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
@@ -110,6 +117,9 @@ public class IntroController extends BaseViewController {
 
     @FXML private MessageLineController checkConnectionMessageController;
 
+    @FXML private DerivationPathItemController apisPathController, etcPathController, ethPathController;
+
+    private ArrayList<DerivationPathItemController> pathItemControllers = new ArrayList<DerivationPathItemController>();
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
@@ -127,6 +137,9 @@ public class IntroController extends BaseViewController {
 
         bgImage.fitWidthProperty().bind(rootPane.widthProperty());
         bgImage.fitHeightProperty().bind(rootPane.heightProperty());
+
+        // Ledger path control
+        ledgerPathControl();
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -797,6 +810,29 @@ public class IntroController extends BaseViewController {
         version.setText("VER." + SystemProperties.getDefault().projectVersion());
     }
 
+    private void ledgerPathControl() {
+        apisPathController.init("m/44’/777’/0’/0", "APIS");
+        etcPathController.init("m/44’/60’/0’/0", "Jaxx, Metamask, TREZOR(ETH)");
+        ethPathController.init("m/44’/777’/0’/0", "Ledger (ETH)");
+
+        pathItemControllers.add(apisPathController);
+        pathItemControllers.add(etcPathController);
+        pathItemControllers.add(ethPathController);
+
+        for(int i=0; i<pathItemControllers.size(); i++) {
+            DerivationPathItemController controller = pathItemControllers.get(i);
+            controller.setHandler(new DerivationPathItemController.DerivationPathItemImpl() {
+                @Override
+                public void clicked() {
+                    controller.check();
+                    for(int j=0; j<pathItemControllers.size(); j++) {
+                        pathItemControllers.get(j).unCheck();
+                    }
+                }
+            });
+        }
+    }
+
     public void setVisibleHomeBtn(boolean isVisible) {
         if(isVisible) {
             this.introHomeBtn.setVisible(true);
@@ -1372,29 +1408,38 @@ public class IntroController extends BaseViewController {
     }
 
     public void checkConnection() {
-        switch(i) {
-            case 0 :
-                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-                CHECK_CONNECTION_FLAG = 1;
-                checkConnectionMessageController.setVisible(true);
-                i++;
-                break;
-            case 1 :
-                checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
-                CHECK_CONNECTION_FLAG = 2;
-                checkConnectionMessageController.setVisible(true);
-                i++;
-                break;
-            case 2 :
-                checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
-                StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
-                CHECK_CONNECTION_FLAG = 3;
-                checkConnectionMessageController.setVisible(true);
-                i = 0;
-                break;
-            default : break;
+        HIDModule module = HIDModule.getInstance();
+        module.loadDeviceList();
+
+        List<DeviceData> devices = module.getDeviceList();
+
+        if(devices.size() == 1) {
+            checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
+            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
+            CHECK_CONNECTION_FLAG = 3;
+            checkConnectionMessageController.setVisible(true);
+
+            if(ledger == null) {
+                try {
+                    ledger = new HIDDevice(module.getDeviceList().get(0).getDevice());
+                } catch (UsbException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else if(devices.size() > 1) {
+            checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
+            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+            CHECK_CONNECTION_FLAG = 2;
+            checkConnectionMessageController.setVisible(true);
+            ledger = null;
+
+        } else {
+            checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
+            StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+            CHECK_CONNECTION_FLAG = 1;
+            checkConnectionMessageController.setVisible(true);
+            ledger = null;
         }
     }
 

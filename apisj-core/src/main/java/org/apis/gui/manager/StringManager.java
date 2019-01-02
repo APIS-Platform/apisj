@@ -1005,7 +1005,7 @@ public class StringManager {
             miningWalletConfirmSubTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_sub_title", "Write down your wallet password."));
             miningWaleltConfirmAddress.set(StringManager.this.getString("popup_mining_wallet_confirm_address", "Mining Wallet Address"));
             miningWalletConfirmPassword.set(StringManager.this.getString("popup_mining_wallet_confirm_password", "Password"));
-            miningWalletConfirmStart.set(StringManager.this.getString("popup_mining_wallet_confirm_start", "Strart Mining"));
+            miningWalletConfirmStart.set(StringManager.this.getString("popup_mining_wallet_confirm_start", "Start Mining"));
             miningWalletConfirmStop.set(StringManager.this.getString("popup_mining_wallet_confirm_stop", "Stop Mining"));
 
             masternodeTitle.set(StringManager.this.getString("popup_masternode_title", "Masternode"));
