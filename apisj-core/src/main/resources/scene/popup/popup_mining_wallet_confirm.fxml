@@ -104,7 +104,7 @@
                         </Label>
                         <AnchorPane GridPane.rowIndex="7">
                            <children>
-                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" text="Start Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
