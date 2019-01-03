@@ -220,6 +220,8 @@ public class KeyStoreManager {
             String allText = AppManager.fileRead(file);
 
             if(allText.length() > 0) {
+                int error = allText.indexOf("{");
+                allText = allText.substring(error, allText.length());
                 KeyStoreData keyStoreData = new Gson().fromJson(allText, KeyStoreData.class);
                 return keyStoreData;
             } else {
