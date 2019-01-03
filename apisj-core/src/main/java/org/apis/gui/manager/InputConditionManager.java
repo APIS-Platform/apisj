@@ -54,6 +54,12 @@ public class InputConditionManager {
         return number;
     }
 
+    public static String returnFilterInteger(String number) {
+        number = number.replaceAll("[^0-9]", "");
+
+        return number;
+    }
+
 
     public static String returnFilterApis(String value, ApisUtil.Unit from, ApisUtil.Unit to){
         return ApisUtil.convert(value, from, to, ',',false);
@@ -71,6 +77,13 @@ public class InputConditionManager {
         return (observable, oldValue, newValue) -> {
             StringProperty string = (StringProperty) observable;
             string.set(returnFilterNumber(newValue));
+        };
+    }
+
+    public static ChangeListener<String> onlyIntegerListener() {
+        return (observable, oldValue, newValue) -> {
+            StringProperty string = (StringProperty) observable;
+            string.set(returnFilterInteger(newValue));
         };
     }
 }

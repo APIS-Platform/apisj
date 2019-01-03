@@ -1,18 +1,22 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.ledger.DerivationPathItemController;
 import org.apis.gui.controller.module.ledger.DerivationPathTextItemController;
+import org.apis.gui.controller.module.ledger.LedgerAddressItemController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
 import org.apis.gui.controller.module.textfield.ApisTextFieldPkController;
@@ -69,8 +73,10 @@ public class IntroController extends BaseViewController {
     @FXML private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk, introLoadWalletPhaseThreeTypeLedger, introLoadWalletPhaseFourTypeLedger;    @FXML private GridPane keystoreFileNameGrid, keystoreFileMessage;
     @FXML private GridPane hexagonCreateWalletBtn, hexagonLoadWalletBtn, dragDropGrid;
+    @FXML private GridPane ledgerPrevPage, ledgerNextPage;
     @FXML private TabPane introPhaseTab;
     @FXML private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution, copyPk;
+    @FXML private VBox ledgerAddrVBox;
     @FXML private Label popupCopyTitle, popupCopySubTitle, popupCopyConfirmBtn;
     @FXML private Label hexagonCreateTitle, hexagonCreateSubTitle, hexagonLoadTitle, hexagonLoadSubTitle;
 
@@ -97,7 +103,8 @@ public class IntroController extends BaseViewController {
             introLwPhaseThreeRightButtonTitle, selectKeystoreBtn, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
             introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel,
             dragDropEng1, dragDropEng2, dragDropKor1, dragDropKor2, keystoreFileMessageLabel, version,
-            introLwPhaseThreeRightTitle3, introLwPhaseThreeRightSubTitle3, ledgerHelp, checkConnectionBtn, backBtn7, loadWalletPhaseThreeTypeLedgerNext, backBtn8, loadWalletPhaseFourTypeLedgerAdd
+            introLwPhaseThreeRightTitle3, introLwPhaseThreeRightSubTitle3, ledgerHelp, checkConnectionBtn, backBtn7, loadWalletPhaseThreeTypeLedgerNext, backBtn8, loadWalletPhaseFourTypeLedgerAdd,
+            ledgerAddrLabel, ledgerBalanceLabel, ledgerPageNum
     ;
 
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
@@ -126,6 +133,7 @@ public class IntroController extends BaseViewController {
     @FXML private DerivationPathItemController apisPathController, etcPathController, ethPathController, customPathController;
 
     private ArrayList<DerivationPathItemController> pathItemControllers = new ArrayList<DerivationPathItemController>();
+    private ArrayList<LedgerAddressItemController> addressItemControllers = new ArrayList<LedgerAddressItemController>();
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
@@ -146,6 +154,7 @@ public class IntroController extends BaseViewController {
 
         // Ledger path control
         ledgerPathControl();
+        ledgerAddressControl();
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -843,6 +852,18 @@ public class IntroController extends BaseViewController {
         }
     }
 
+    private void ledgerAddressControl() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/module/ledger/ledger_address_item.fxml"));
+            Node node = loader.load();
+            LedgerAddressItemController controller = loader.getController();
+
+            addressItemControllers.add(controller);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setVisibleHomeBtn(boolean isVisible) {
         if(isVisible) {
             this.introHomeBtn.setVisible(true);
@@ -1472,7 +1493,7 @@ public class IntroController extends BaseViewController {
     }
 
     public void loadWalletPhaseFourTypeLedgerAddClick() {
-
+        System.out.println(customPathController.isChecked());
     }
 
     public static boolean getDeleteKeystoreFileFlag() {
