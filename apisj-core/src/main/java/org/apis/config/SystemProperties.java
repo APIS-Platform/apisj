@@ -185,21 +185,28 @@ public class SystemProperties {
             this.classLoader = classLoader;
 
             Config javaSystemProperties = ConfigFactory.load("no-such-resource-only-system-props");
+
             Config referenceConfig = ConfigFactory.parseResources("apis_mainnet.conf");
             logger.debug("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'apis_mainnet.conf'");
+
             String res = System.getProperty("ethereumj.conf.res");
             Config cmdLineConfigRes = res != null ? ConfigFactory.parseResources(res) : ConfigFactory.empty();
             logger.debug("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.res resource '" + res + "'");
+
             Config userConfig = ConfigFactory.parseResources("user.conf");
             logger.debug("Config (" + (userConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from resource 'user.conf'");
             File userDirFile = new File(System.getProperty("user.dir"), "/config/ethereumj.conf");
+
             Config userDirConfig = ConfigFactory.parseFile(userDirFile);
             logger.debug("Config (" + (userDirConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from file '" + userDirFile + "'");
+
             Config testConfig = ConfigFactory.parseResources("test-ethereumj.conf");
             logger.debug("Config (" + (testConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-ethereumj.conf'");
+
             Config testUserConfig = ConfigFactory.parseResources("test-user.conf");
             logger.debug("Config (" + (testUserConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): test properties from resource 'test-user.conf'");
             String file = System.getProperty("ethereumj.conf.file");
+
             Config cmdLineConfigFile = file != null ? ConfigFactory.parseFile(new File(file)) : ConfigFactory.empty();
             logger.debug("Config (" + (cmdLineConfigFile.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.file file '" + file + "'");
             logger.debug("Config (" + (apiConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): config passed via constructor");
@@ -346,7 +353,7 @@ public class SystemProperties {
                         case "ropsten":
                             blockchainConfig = new RopstenNetConfig();
                             break;*/
-                        case "testnet":
+                        case "test":
                             blockchainConfig = new TestNetConfig();
                             break;
                         default:

@@ -19,13 +19,14 @@ package org.apis.config.net;
 
 import org.apis.config.blockchain.FrontierConfig;
 import org.apis.config.blockchain.HomesteadConfig;
+import org.apis.config.blockchain.OsirisConfig;
 
 /**
  * Created by Anton Nashatyrev on 25.02.2016.
  */
 public class TestNetConfig extends BaseNetConfig {
     public TestNetConfig() {
-        add(0, new FrontierConfig());
+        add(0, new OsirisConfig());
         //add(1_150_000, new HomesteadConfig());
     }
 }
