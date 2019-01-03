@@ -15,13 +15,13 @@ import java.util.ResourceBundle;
 public class LedgerAddressItemController implements Initializable {
     @FXML private AnchorPane bgAnchor;
     @FXML private Label address, balance;
-    @FXML private ImageView checkBtn;
+    @FXML private ImageView checkImg;
 
     private LedgerAddressItemImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        checkBtn.setImage(ImageManager.checkGrey);
+        checkImg.setImage(ImageManager.checkGrey);
 
         this.bgAnchor.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
