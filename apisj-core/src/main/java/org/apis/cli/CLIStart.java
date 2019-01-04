@@ -542,6 +542,7 @@ public class CLIStart {
                     break;
 
                 case 7:
+                    storeRpcConfig(prop);
                     ConsoleUtil.printlnGreen("Bye");
                     System.exit(0);
                     break;
@@ -636,5 +637,11 @@ public class CLIStart {
         }
 
         prop.setProperty("allow_ip", ipList);
+    }
+
+    private void storeRpcConfig(Properties prop) throws IOException {
+        OutputStream daemonOutput = new FileOutputStream(dirRpc);
+        prop.store(daemonOutput, null);
+        daemonOutput.close();
     }
 }
