@@ -62,6 +62,10 @@ public class DerivationPathItemController implements Initializable {
         this.handler = handler;
     }
 
+    public DerivationPathItemImpl getHandler() {
+        return this.handler;
+    }
+
     public interface DerivationPathItemImpl {
         void clicked();
     }

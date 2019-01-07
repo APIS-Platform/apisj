@@ -29,6 +29,7 @@ import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
 import org.apis.keystore.*;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.usb.UsbException;
@@ -136,6 +137,11 @@ public class IntroController extends BaseViewController {
     private ArrayList<LedgerAddressItemController> addressItemControllers = new ArrayList<LedgerAddressItemController>();
     private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
+    // Ledger variables
+    private List<byte[]> ledgerAddressList = new ArrayList<byte[]>();
+    private List<String> ledgerPathList = new ArrayList<String>();
+    private int ledgerStartNum = 0, ledgerRowNum = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setIntro(this);
@@ -154,7 +160,8 @@ public class IntroController extends BaseViewController {
 
         // Ledger path control
         ledgerPathControl();
-        ledgerAddressControl();
+        ledgerAddressPageControl();
+        ledgerAddrVBox.getChildren().clear();
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -826,9 +833,9 @@ public class IntroController extends BaseViewController {
     }
 
     private void ledgerPathControl() {
-        apisPathController.init("m/44’/777’/0’/0", "APIS");
-        etcPathController.init("m/44’/60’/0’/0", "Jaxx, Metamask, TREZOR(ETH)");
-        ethPathController.init("m/44’/777’/0’/0", "Ledger (ETH)");
+        apisPathController.init("44'/777'/0'/0", "APIS");
+        etcPathController.init("44'/60'/0'/0", "Jaxx, Metamask, TREZOR(ETH)");
+        ethPathController.init("44'/777'/0'/0", "Ledger (ETH)");
         ((DerivationPathTextItemController)customPathController).init(StringManager.getInstance().intro.customPathLabel);
 
         pathItemControllers.add(apisPathController);
@@ -841,6 +848,16 @@ public class IntroController extends BaseViewController {
             controller.setHandler(new DerivationPathItemController.DerivationPathItemImpl() {
                 @Override
                 public void clicked() {
+                    String path = controller.getPathLabel();
+                    String walletNum = path.substring(path.lastIndexOf("/") + 1);
+
+                    if(walletNum.equals("")) {
+                        ledgerStartNum = 0;
+                    } else {
+                        ledgerStartNum = Integer.parseInt(walletNum);
+                    }
+                    ledgerAddressControl(path, 1);
+
                     controller.check();
                     for(int j=0; j<pathItemControllers.size(); j++) {
                         if(pathItemControllers.get(j) != controller) {
@@ -850,18 +867,115 @@ public class IntroController extends BaseViewController {
                 }
             });
         }
+
+        apisPathController.getHandler().clicked();
     }
 
-    private void ledgerAddressControl() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/module/ledger/ledger_address_item.fxml"));
-            Node node = loader.load();
-            LedgerAddressItemController controller = loader.getController();
+    private void ledgerAddressControl(String path, int currentPage) {
+        ledgerAddrVBox.getChildren().clear();
+        ledgerPathList.clear();
+        ledgerAddressList.clear();
 
-            addressItemControllers.add(controller);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Wrong path
+        if(path.length() == 0) {
+            ledgerPageNum.setText("1");
+            return;
+        // Add path list in a page
+        } else {
+            String walletPre = path.substring(0, path.lastIndexOf("/") + 1);
+
+            ledgerRowNum = ledgerStartNum + 4 * (currentPage - 1);
+
+            for(int i=ledgerRowNum; i<ledgerRowNum+4; i++) {
+                ledgerPathList.add(walletPre + i);
+            }
         }
+
+        // Add address list in a page
+        if(ledger != null) {
+            for(int i=0; i<ledgerPathList.size(); i++) {
+                ledgerAddressList.add(ledger.getAddress(ledgerPathList.get(i), false, false));
+            }
+        }
+
+        if(ledgerAddressList.size() != 0) {
+            // Exception handling
+            if (ByteUtil.toHexString(ledgerAddressList.get(0)).length() == 0) {
+                ledgerPageNum.setText("1");
+                return;
+            }
+
+            for (int i=0; i<ledgerAddressList.size(); i++) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/module/ledger/ledger_address_item.fxml"));
+                    Node node = loader.load();
+                    LedgerAddressItemController controller = loader.getController();
+
+                    controller.setAddress(ByteUtil.toHexString(ledgerAddressList.get(i)));
+                    // Change balance representation
+                    String balance = ApisUtil.readableApis(AppManager.getInstance().getBalance(controller.getAddress()), true);
+                    if(balance.indexOf(".") != -1) {
+                        String[] balanceSplit = balance.split("\\.");
+                        controller.setBalance(balanceSplit[0]);
+                    } else {
+                        controller.setBalance(balance);
+                    }
+
+                    addressItemControllers.add(controller);
+                    ledgerAddrVBox.getChildren().add(node);
+
+                    controller.setHandler(new LedgerAddressItemController.LedgerAddressItemImpl() {
+                        @Override
+                        public void clicked() {
+                            controller.check();
+                            for (int j=0; j<addressItemControllers.size(); j++) {
+                                if (addressItemControllers.get(j) != controller) {
+                                    addressItemControllers.get(j).unCheck();
+                                }
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } // if(addressList.size() != 0)
+    }
+
+    private void ledgerAddressPageControl() {
+        // Move previous page
+        ledgerPrevPage.setOnMouseClicked(event -> {
+            if(ledgerAddressList.size() != 0) {
+                int currentPage = Integer.parseInt(ledgerPageNum.getText());
+
+                currentPage--;
+
+                if (currentPage < 1) {
+                    currentPage = 1;
+                } else {
+                    ledgerAddressControl(ledgerPathList.get(0), currentPage);
+                }
+                ledgerPageNum.setText(Integer.toString(currentPage));
+
+            } else {
+                ledgerPageNum.setText("1");
+            }
+        });
+
+        // Move next page
+        ledgerNextPage.setOnMouseClicked(event -> {
+            if(ledgerAddressList.size() != 0) {
+                int currentPage = Integer.parseInt(ledgerPageNum.getText());
+
+                currentPage++;
+
+                ledgerAddressControl(ledgerPathList.get(0), currentPage);
+                ledgerPageNum.setText(Integer.toString(currentPage));
+
+            } else {
+                ledgerPageNum.setText("1");
+            }
+        });
     }
 
     public void setVisibleHomeBtn(boolean isVisible) {
@@ -1426,6 +1540,8 @@ public class IntroController extends BaseViewController {
             this.introNaviFour.setImage(introNavi);
             this.introNaviThree.setFitWidth(6);
             this.introNaviFour.setFitWidth(24);
+            this.apisPathController.getHandler().clicked();
+            ((DerivationPathTextItemController)this.customPathController).clear();
             this.introPhaseTab.getSelectionModel().select(9);
         } else {
             checkConnection();

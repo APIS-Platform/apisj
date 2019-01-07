@@ -30,14 +30,30 @@
                   <Insets right="8.0" />
                </GridPane.margin>
             </ImageView>
-            <Label fx:id="pathLabel" styleClass="font_semibold_12" text="m/44’/777’/0’/0" textFill="#2b2b2b" translateY="-1.0" GridPane.columnIndex="1">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </Label>
+            <GridPane GridPane.columnIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label styleClass="font_semibold_12" text="m/" textFill="#2b2b2b">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+                  <Label fx:id="pathLabel" styleClass="font_semibold_12" text="44’/777’/0’/0" textFill="#2b2b2b" GridPane.columnIndex="1">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
             <Label fx:id="categoryLabel" styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <opaqueInsets>
                   <Insets />

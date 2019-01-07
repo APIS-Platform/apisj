@@ -72,6 +72,13 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
         this.categoryLabel.textProperty().bind(category);
     }
 
+    public void clear() {
+        derivationTextField1.setText("");
+        derivationTextField2.setText("");
+        derivationTextField3.setText("");
+        derivationTextField4.setText("");
+    }
+
     private ChangeListener<Boolean> focusListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -90,6 +97,9 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
             if(newValue.length() > 4) {
                 string.set(newValue.substring(0, 4));
             }
+            if(handler != null) {
+                handler.clicked();
+            }
         }
     };
 
@@ -103,6 +113,16 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
     public void unCheck() {
         checked = false;
         this.checkImg.setImage(ImageManager.checkGrey);
+    }
+
+    @Override
+    public String getPathLabel() {
+        String path = "";
+        if(derivationTextField1.getText().length() != 0 && derivationTextField2.getText().length() != 0 && derivationTextField3.getText().length() != 0 && derivationTextField4.getText().length() != 0) {
+            path =derivationTextField1.getText() + "'/" + derivationTextField2.getText() + "'/" + derivationTextField3.getText() + "'/" + derivationTextField4.getText();
+        }
+
+        return path;
     }
 
     public void setHandler(DerivationPathItemImpl handler) {

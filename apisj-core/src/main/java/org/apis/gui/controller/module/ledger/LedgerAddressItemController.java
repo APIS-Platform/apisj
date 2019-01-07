@@ -18,6 +18,7 @@ public class LedgerAddressItemController implements Initializable {
     @FXML private ImageView checkImg;
 
     private LedgerAddressItemImpl handler;
+    private boolean checked = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -31,6 +32,20 @@ public class LedgerAddressItemController implements Initializable {
                 }
             }
         });
+    }
+
+    public void check() {
+        checked = true;
+        checkImg.setImage(ImageManager.checkRed);
+    }
+
+    public void unCheck() {
+        checked = false;
+        checkImg.setImage(ImageManager.checkGrey);
+    }
+
+    public boolean isChecked() {
+        return this.checked;
     }
 
     public String getAddress() {
