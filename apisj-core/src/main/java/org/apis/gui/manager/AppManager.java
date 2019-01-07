@@ -28,10 +28,7 @@ import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
-import org.apis.db.sql.DBManager;
-import org.apis.db.sql.DBSyncManager;
-import org.apis.db.sql.TokenRecord;
-import org.apis.db.sql.TransactionRecord;
+import org.apis.db.sql.*;
 import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
 import org.apis.facade.ApisImpl;
@@ -826,6 +823,7 @@ public class AppManager {
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
         List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
+        List<LedgerRecord> ledgers = DBManager.getInstance().selectLedgers();
 
         for(KeyStoreData key : keys){
             boolean isExist = false;
