@@ -86,7 +86,7 @@ public class DBManager {
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
         String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` BLOB NOT NULL UNIQUE, `blockNumber` INTEGER )";
         String queryCreateTokens = "CREATE TABLE \"tokens\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `token_address` TEXT NOT NULL UNIQUE, `token_name` TEXT DEFAULT 'Unnamed', `token_symbol` TEXT NOT NULL, `decimal` INTEGER, `total_supply` TEXT )";
-        String queryCreateLedgers = "CREATE TABLE \"ledgers\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `path` TEXT NOT NULL )";
+        String queryCreateLedgers = "CREATE TABLE \"ledgers\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `path` TEXT NOT NULL, `alias` TEXT DEFAULT 'Unnamed' )";
 
 
         String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address` )";
@@ -950,8 +950,65 @@ public class DBManager {
         return false;
     }
 
-    public boolean updateLedgers( byte[] address, String path ) {
+    public List<LedgerRecord> selectLedgers(){
+        List<LedgerRecord> ledgerRecords = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `ledgers`");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                ledgerRecords.add(new LedgerRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return ledgerRecords;
+    }
+
+    public boolean updateLedgers( byte[] address, String path, String alias ) {
+        try {
+            int updateResult = 0;
+            PreparedStatement update = this.connection.prepareStatement("UPDATE ledgers SET `address` = ?, `path` = ?, `alias` = ? WHERE `address` = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, path);
+            update.setString(3, alias);
+            updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                boolean insertResult = false;
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO ledgers (`address`, `path`, `alias`) values (?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, path);
+                state.setString(3, alias);
+                insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteLedger(byte[] address){
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `ledgers` WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            boolean deleteResult = state.execute();
+            state.close();
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return false;
     }

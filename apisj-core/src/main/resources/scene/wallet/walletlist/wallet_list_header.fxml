@@ -111,6 +111,7 @@
                               <ColumnConstraints maxWidth="140.0" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
@@ -128,7 +129,15 @@
                                     <Insets />
                                  </GridPane.margin>
                               </ImageView>
-                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="2">
+                              <ImageView fx:id="icLedger" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../../../image/ic_ledger@2x.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets bottom="2.0" left="4.0" top="2.0" />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="3">
                                  <padding>
                                     <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
                                  </padding>

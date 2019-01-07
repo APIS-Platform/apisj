@@ -47,7 +47,7 @@ public class WalletListHeadController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private ImageView walletIcon;
-    @FXML private ImageView btnCheckBox, icAddressMasking, icTransfer, foldIcon, icKnowledgekey;
+    @FXML private ImageView btnCheckBox, icAddressMasking, icTransfer, foldIcon, icKnowledgekey, icLedger;
     @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
     @FXML private Pane leftLine, masternodeState;
     @FXML private AnchorPane miningPane;

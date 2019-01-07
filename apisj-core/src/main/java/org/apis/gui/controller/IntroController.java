@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.config.SystemProperties;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.ledger.DerivationPathItemController;
@@ -859,6 +860,7 @@ public class IntroController extends BaseViewController {
                     ledgerAddressControl(path, 1);
 
                     controller.check();
+                    ledgerPageNum.setText("1");
                     StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
                     for(int j=0; j<pathItemControllers.size(); j++) {
                         if(pathItemControllers.get(j) != controller) {
@@ -876,6 +878,7 @@ public class IntroController extends BaseViewController {
         ledgerAddrVBox.getChildren().clear();
         ledgerPathList.clear();
         ledgerAddressList.clear();
+        addressItemControllers.clear();
 
         // Wrong path
         if(path.length() == 0) {
@@ -955,6 +958,7 @@ public class IntroController extends BaseViewController {
                 if (currentPage < 1) {
                     currentPage = 1;
                 } else {
+                    StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
                     ledgerAddressControl(ledgerPathList.get(0), currentPage);
                 }
                 ledgerPageNum.setText(Integer.toString(currentPage));
@@ -971,6 +975,7 @@ public class IntroController extends BaseViewController {
 
                 currentPage++;
 
+                StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
                 ledgerAddressControl(ledgerPathList.get(0), currentPage);
                 ledgerPageNum.setText(Integer.toString(currentPage));
 
@@ -1629,8 +1634,19 @@ public class IntroController extends BaseViewController {
             StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
 
         } else {
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@HOLY");
-            System.out.println(address);
+            DBManager.getInstance().updateLedgers(ByteUtil.hexStringToBytes(address), path, "");
+
+            this.introLoadWalletPhaseFourTypeLedger.setVisible(false);
+            this.introPhaseOne.setVisible(true);
+            this.introNaviFour.setImage(introNaviCircle);
+            this.introNaviOne.setImage(introNavi);
+            this.introNaviFour.setFitWidth(6);
+            this.introNaviOne.setFitWidth(24);
+            this.introNoFour.setVisible(false);
+            this.introNaviFour.setVisible(false);
+            this.introPhaseTab.getSelectionModel().select(0);
+
+            AppManager.getInstance().guiFx.pageMoveMain();
         }
     }
 
