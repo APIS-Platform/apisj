@@ -2587,7 +2587,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="loadWalletPhaseFourTypeLedgerAdd" alignment="CENTER" onMouseClicked="#loadWalletPhaseFourTypeLedgerAddClick" style="-fx-background-color: #b01e1e;" text="Add your wallet" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="loadWalletPhaseFourTypeLedgerAdd" alignment="CENTER" onMouseClicked="#loadWalletPhaseFourTypeLedgerAddClick" style="-fx-background-color: #d8d8d8;" text="Add your wallet" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />

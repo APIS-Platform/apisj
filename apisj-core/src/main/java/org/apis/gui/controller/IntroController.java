@@ -859,6 +859,7 @@ public class IntroController extends BaseViewController {
                     ledgerAddressControl(path, 1);
 
                     controller.check();
+                    StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
                     for(int j=0; j<pathItemControllers.size(); j++) {
                         if(pathItemControllers.get(j) != controller) {
                             pathItemControllers.get(j).unCheck();
@@ -928,6 +929,7 @@ public class IntroController extends BaseViewController {
                         @Override
                         public void clicked() {
                             controller.check();
+                            StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cb01e1e);
                             for (int j=0; j<addressItemControllers.size(); j++) {
                                 if (addressItemControllers.get(j) != controller) {
                                     addressItemControllers.get(j).unCheck();
@@ -1609,7 +1611,27 @@ public class IntroController extends BaseViewController {
     }
 
     public void loadWalletPhaseFourTypeLedgerAddClick() {
-        System.out.println(customPathController.isChecked());
+        String path = "";
+        String address = "";
+
+        for(int i=0; i<pathItemControllers.size(); i++) {
+            if(pathItemControllers.get(i).isChecked()) {
+                path = pathItemControllers.get(i).getPathLabel();
+            }
+        }
+        for(int i=0; i<addressItemControllers.size(); i++) {
+            if(addressItemControllers.get(i).isChecked()) {
+                address = addressItemControllers.get(i).getAddress();
+            }
+        }
+
+        if(path.equals("") || address.equals("")) {
+            StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
+
+        } else {
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@HOLY");
+            System.out.println(address);
+        }
     }
 
     public static boolean getDeleteKeystoreFileFlag() {

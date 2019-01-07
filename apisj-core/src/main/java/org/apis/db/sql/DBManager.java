@@ -86,6 +86,7 @@ public class DBManager {
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
         String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` BLOB NOT NULL UNIQUE, `blockNumber` INTEGER )";
         String queryCreateTokens = "CREATE TABLE \"tokens\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `token_address` TEXT NOT NULL UNIQUE, `token_name` TEXT DEFAULT 'Unnamed', `token_symbol` TEXT NOT NULL, `decimal` INTEGER, `total_supply` TEXT )";
+        String queryCreateLedgers = "CREATE TABLE \"ledgers\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `path` TEXT NOT NULL )";
 
 
         String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address` )";
@@ -152,6 +153,10 @@ public class DBManager {
         PreparedStatement createTokens = conn.prepareStatement(queryCreateTokens);
         createTokens.execute();
         createTokens.close();
+
+        PreparedStatement createLedgers = conn.prepareStatement(queryCreateLedgers);
+        createLedgers.execute();
+        createLedgers.close();
 
 
 
@@ -941,6 +946,12 @@ public class DBManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return false;
+    }
+
+    public boolean updateLedgers( byte[] address, String path ) {
+
 
         return false;
     }
