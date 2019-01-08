@@ -679,14 +679,14 @@
             <AnchorPane GridPane.columnIndex="1">
                <children>
                   <Pane minHeight="1.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                  <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane fx:id="toolGroupGrid" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                         <ColumnConstraints minWidth="10.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
-                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
-                      <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
-                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                         <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />

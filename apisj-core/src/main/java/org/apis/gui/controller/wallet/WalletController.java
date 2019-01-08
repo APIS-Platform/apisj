@@ -73,7 +73,7 @@ public class WalletController extends BaseViewController {
     @FXML private GridPane rewordDetailPane;
 
     // tab wallet
-    @FXML private GridPane walletTable;
+    @FXML private GridPane walletTable, toolGroupGrid;
     @FXML private AnchorPane headerWalletItem, walletTableScrollContentPane;
     @FXML private ScrollPane walletTableScrollPane;
     @FXML private Label headerWalletNameLabel, headerWalletMaskLabel, headerWalletAmountLabel, headerWalletTransferLabel;
@@ -330,12 +330,29 @@ public class WalletController extends BaseViewController {
         tooltip4Pane.setPrefHeight(0);
     }
 
+    public void showLedgerToolGroup(){
+        this.btnChangeNameWallet.setVisible(true);
+        this.btnChangePasswordWallet.setVisible(false);
+        this.btnBackupWallet.setVisible(false);
+        this.btnRemoveWallet.setVisible(true);
+        this.toolKnowledgekey.setVisible(true);
+
+        this.toolGroupGrid.getColumnConstraints().get(3).setPrefWidth(0);
+        this.toolGroupGrid.getColumnConstraints().get(4).setPrefWidth(0);
+
+        hideToolMining();
+        hideToolMasternode();
+    }
+
     public void showToolGroup(boolean showMining, boolean showMaster){
         this.btnChangeNameWallet.setVisible(true);
         this.btnChangePasswordWallet.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
         this.toolKnowledgekey.setVisible(true);
+
+        this.toolGroupGrid.getColumnConstraints().get(3).setPrefWidth(40);
+        this.toolGroupGrid.getColumnConstraints().get(4).setPrefWidth(40);
 
         if(showMining){
             showToolMining();
@@ -954,6 +971,9 @@ public class WalletController extends BaseViewController {
         // Show or hide mining & masternode button
         if(apis.equals("0000000000000000000") || apis.equals("0")) {
             showToolGroup(false, false);
+            if(AppManager.getInstance().isLedger(model.getAddress())) {
+                showLedgerToolGroup();
+            }
 
         } else {
             boolean isPossibleMining = true;
@@ -991,6 +1011,10 @@ public class WalletController extends BaseViewController {
             }
 
             showToolGroup(isPossibleMining, isPossibleMasternode);
+            System.out.println(AppManager.getInstance().isLedger(model.getAddress()));
+            if(AppManager.getInstance().isLedger(model.getAddress())) {
+                showLedgerToolGroup();
+            }
         }
 
         // Check knowledge key used
