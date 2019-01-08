@@ -29,6 +29,18 @@ public class LedgerRecord {
         return alias;
     }
 
+    public void setAddress(byte[] address) {
+        this.address = address;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     @Override
     public String toString() {
         return "LedgerRecord{" +

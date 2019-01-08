@@ -827,6 +827,9 @@ public class WalletController extends BaseViewController {
                 @Override
                 public void remove(List<byte[]> removeWalletAddressList) {
                     for(int i=0; i<removeWalletAddressList.size(); i++){
+                        if(AppManager.getInstance().isLedger(ByteUtil.toHexString(removeWalletAddressList.get(i)))) {
+                            DBManager.getInstance().deleteLedger(removeWalletAddressList.get(i));
+                        }
                         for(int j=0; j<AppManager.getInstance().getKeystoreExpList().size(); j++){
                             if(AppManager.getInstance().getKeystoreExpList().get(j).address.equals(ByteUtil.toHexString(removeWalletAddressList.get(i)))){
                                 AppManager.getInstance().getKeystoreExpList().remove(j);
@@ -858,6 +861,9 @@ public class WalletController extends BaseViewController {
                 }
             });
             controller.setModel(walletCheckList.get(0));
+            if(AppManager.getInstance().isLedger(walletCheckList.get(0).getAddress())) {
+                controller.removeDialog(true);
+            }
             controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {

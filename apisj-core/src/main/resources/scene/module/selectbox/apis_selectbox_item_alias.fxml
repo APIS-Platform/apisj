@@ -47,18 +47,30 @@
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" />
+                              <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999">
+                                 <GridPane.margin>
+                                    <Insets right="4.0" />
+                                 </GridPane.margin></Label>
                               <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                  <image>
                                     <Image url="@../../../image/ic_knowledgekey@2x.png" />
                                  </image>
                                  <GridPane.margin>
-                                    <Insets left="4.0" right="4.0" />
+                                    <Insets right="4.0" />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <ImageView fx:id="icLedger" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../../../image/ic_ledger@2x.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets right="4.0" top="2.0" />
                                  </GridPane.margin>
                               </ImageView>
                            </children>

@@ -42,17 +42,23 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
         } else{
             passwordController.succeededForm();
 
-            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup(rootPane, "popup_remove_wallet.fxml", zIndex+1);
-            controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
-                @Override
-                public void remove(List<byte[]> removeWalletAddressList) {
-                    if(handler != null){
-                        handler.remove(removeWalletAddressList);
-                    }
-                }
-            });
-            controller.remove(ByteUtil.hexStringToBytes(model.getAddress()));
+            removeDialog(false);
         }
+    }
+
+    public void removeDialog(boolean isLedger) {
+        int zIndex = this.zIndex + 1;
+        if(isLedger) zIndex = 0;
+        PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup(rootPane, "popup_remove_wallet.fxml", zIndex);
+        controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
+            @Override
+            public void remove(List<byte[]> removeWalletAddressList) {
+                if(handler != null){
+                    handler.remove(removeWalletAddressList);
+                }
+            }
+        });
+        controller.remove(ByteUtil.hexStringToBytes(model.getAddress()));
     }
 
     @Override

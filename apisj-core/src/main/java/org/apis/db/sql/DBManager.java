@@ -971,6 +971,28 @@ public class DBManager {
         return ledgerRecords;
     }
 
+    public LedgerRecord selectLedger(byte[] address) {
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `ledgers` WHERE `address` = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return new LedgerRecord(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return null;
+    }
+
     public boolean updateLedgers( byte[] address, String path, String alias ) {
         try {
             int updateResult = 0;
@@ -978,6 +1000,7 @@ public class DBManager {
             update.setString(1, ByteUtil.toHexString(address));
             update.setString(2, path);
             update.setString(3, alias);
+            update.setString(4, ByteUtil.toHexString(address));
             updateResult = update.executeUpdate();
             update.close();
             if(updateResult == 0) {

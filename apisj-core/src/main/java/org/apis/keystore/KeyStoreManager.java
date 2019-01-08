@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.LedgerRecord;
 import org.apis.gui.manager.AppManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
@@ -305,6 +307,12 @@ public class KeyStoreManager {
     }
 
     public void updateWalletAlias(String address, String alias) {
+        // Ledger
+        if(AppManager.getInstance().isLedger(address)) {
+            LedgerRecord ledger = DBManager.getInstance().selectLedger(ByteUtil.hexStringToBytes(address));
+            if(DBManager.getInstance().updateLedgers(ledger.getAddress(), ledger.getPath(), alias)) return;
+        }
+
         List<KeyStoreData> fileList = loadKeyStoreFiles();
         KeyStoreData changeData = null;
         for(KeyStoreData data : fileList){

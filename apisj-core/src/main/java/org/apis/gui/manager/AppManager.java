@@ -664,6 +664,15 @@ public class AppManager {
         return ByteUtil.toHexString(SystemProperties.getDefault().getCoinbaseKey().getAddress()).equals(address);
     }
 
+    public boolean isLedger(String address) {
+        for(int i=0; i<keyStoreDataExpList.size(); i++) {
+            if(keyStoreDataList.get(i).address.equals(address) && keyStoreDataExpList.get(i).isLedger) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private CallTransaction.Contract getTokenContract() {
         if(tokenContract == null) {
             tokenContract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
@@ -887,6 +896,37 @@ public class AppManager {
                     keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
                     keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
                 }
+            }
+        }
+
+        for(LedgerRecord ledger : ledgers) {
+            boolean isExist = false;
+            KeyStoreData key = new KeyStoreData();
+            KeyStoreDataExp keyExp = null;
+
+            for(int j=0; j<keyStoreDataList.size(); j++) {
+                key.address = ByteUtil.toHexString(ledger.getAddress());
+                key.alias = ledger.getAlias();
+
+                if (key.address.equalsIgnoreCase(keyStoreDataList.get(j).address)) {
+                    isExist = true;
+
+                    keyStoreDataList.get(j).alias = ledger.getAlias();
+                    keyStoreDataExpList.get(j).alias = ledger.getAlias();
+                    keyStoreDataExpList.get(j).ledgerPath = ledger.getPath();
+                }
+            }
+
+            if(!isExist) {
+                key.address = ByteUtil.toHexString(ledger.getAddress());
+                key.alias = ledger.getAlias();
+
+                keyExp = new KeyStoreDataExp(key);
+                keyExp.isLedger = true;
+                keyExp.ledgerPath = ledger.getPath();
+
+                keyStoreDataList.add(key);
+                keyStoreDataExpList.add(keyExp);
             }
         }
 

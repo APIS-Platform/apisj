@@ -34,7 +34,7 @@ public class TokenListBodyController extends BaseViewController{
     @FXML private GridPane walletPane;
     @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, tokenSymbol, labelAddressMasking;
     @FXML private AnchorPane miningPane;
-    @FXML private ImageView walletIcon, icAddressMasking, icTransfer, icKnowledgekey;
+    @FXML private ImageView walletIcon, icAddressMasking, icTransfer, icKnowledgekey, icLedger;
     @FXML private Label btnAddressMasking, btnTransfer;
     @FXML private Pane bottomLine;
 
@@ -194,6 +194,15 @@ public class TokenListBodyController extends BaseViewController{
                 StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
                 icKnowledgekey.setFitWidth(1);
+            }
+
+            // 렛저 체크
+            if(AppManager.getInstance().isLedger(itemModel.getAddress())){
+                icLedger.setVisible(true);
+                icLedger.setFitWidth(25);
+            }else{
+                icLedger.setVisible(false);
+                icLedger.setFitWidth(1);
             }
 
             setMask(itemModel.getMask());

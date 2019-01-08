@@ -240,6 +240,15 @@ public class WalletListHeadController extends BaseViewController {
                 icKnowledgekey.setFitWidth(1);
             }
 
+            // 렛저 체크
+            if(AppManager.getInstance().isLedger(itemModel.getAddress())){
+                icLedger.setVisible(true);
+                icLedger.setFitWidth(25);
+            }else{
+                icLedger.setVisible(false);
+                icLedger.setFitWidth(1);
+            }
+
             // 마이닝 체크
             if (itemModel.isMining()) {
                 this.tagLabel.setVisible(true);

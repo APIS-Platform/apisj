@@ -29,6 +29,7 @@ import org.apis.hid.HIDDevice;
 import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
 import org.apis.keystore.*;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -1634,7 +1635,7 @@ public class IntroController extends BaseViewController {
             StyleManager.backgroundColorStyle(loadWalletPhaseFourTypeLedgerAdd, StyleManager.AColor.Cd8d8d8);
 
         } else {
-            DBManager.getInstance().updateLedgers(ByteUtil.hexStringToBytes(address), path, "");
+            DBManager.getInstance().updateLedgers(ByteUtil.hexStringToBytes(address), path, AddressUtil.getShortAddress(address));
 
             this.introLoadWalletPhaseFourTypeLedger.setVisible(false);
             this.introPhaseOne.setVisible(true);

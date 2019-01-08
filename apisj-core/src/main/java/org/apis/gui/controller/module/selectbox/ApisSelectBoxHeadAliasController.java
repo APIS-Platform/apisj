@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderController{
 
     @FXML private Label aliasLabel, addressLabel, balanceLabel, symbolLabel;
-    @FXML private ImageView icon, icKnowledgekey;
+    @FXML private ImageView icon, icKnowledgekey, icLedger;
 
     private String tokenAddress;
 
@@ -70,9 +70,20 @@ public class ApisSelectBoxHeadAliasController extends BaseSelectBoxHeaderControl
             if(itemModel.isUsedProofKey()){
                 StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
+                icKnowledgekey.setFitWidth(14);
             }else{
                 StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
+                icKnowledgekey.setFitWidth(1);
+            }
+
+            // 렛저 체크
+            if(AppManager.getInstance().isLedger(itemModel.getAddress())){
+                icLedger.setVisible(true);
+                icLedger.setFitWidth(25);
+            }else{
+                icLedger.setVisible(false);
+                icLedger.setFitWidth(1);
             }
         }
     }
