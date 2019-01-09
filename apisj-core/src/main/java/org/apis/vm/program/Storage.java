@@ -52,6 +52,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public AccountState createAccount(byte[] addr, long blockNumber) {
+        return repository.createAccount(addr, blockNumber);
+    }
+
+    @Override
     public boolean isExist(byte[] addr) {
         return repository.isExist(addr);
     }
@@ -143,6 +148,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public BigInteger addBalance(byte[] addr, BigInteger value, long blockNumber) {
+        return repository.addBalance(addr, value, blockNumber);
+    }
+
+    @Override
     public BigInteger addReward(byte[] addr, BigInteger reward) {
         return repository.addReward(addr, reward);
     }
@@ -223,8 +233,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public void checkMasternodeCollateral(byte[] sender) {
-        repository.checkMasternodeCollateral(sender);
+    public void checkMasternodeCollateral(byte[] sender, long blockNumber) {
+        repository.checkMasternodeCollateral(sender, blockNumber);
     }
 
     @Override

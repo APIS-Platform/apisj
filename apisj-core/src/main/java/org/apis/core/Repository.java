@@ -42,6 +42,8 @@ public interface Repository extends org.apis.facade.Repository {
      */
     AccountState createAccount(byte[] addr);
 
+    AccountState createAccount(byte[] addr, long blockNumber);
+
 
     /**
      * @param addr - account to check
@@ -163,6 +165,7 @@ public interface Repository extends org.apis.facade.Repository {
      * @return new balance of the account
      */
     BigInteger addBalance(byte[] addr, BigInteger value);
+    BigInteger addBalance(byte[] addr, BigInteger value, long blockNumber);
 
     BigInteger addReward(byte[] addr, BigInteger reward);
 
@@ -215,7 +218,7 @@ public interface Repository extends org.apis.facade.Repository {
 
     void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
-    void checkMasternodeCollateral(byte[] sender);
+    void checkMasternodeCollateral(byte[] sender, long blockNumber);
     void cleaningMasterNodes(long blockNumber);
     void updateMasterNode(Transaction tx, long blockNumber);
     MasternodeSize sizeofMasterNode(byte[] baseNode);
