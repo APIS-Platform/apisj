@@ -77,6 +77,11 @@ public class Constants {
 
     private static final long CONTINUOUS_MINING_LIMIT = 3;
 
+    /**
+     * 최초 잔고가 생겼을 때 미네랄이 생성되는 시점을 현재로 지정하는 내용을 적용할 블록 번호
+     */
+    private static final long INIT_MINERAL_APPLY_BLOCK = 999_999_999L;  // 400_000L
+
 
 
     private static final byte[] FOUNDATION_STORAGE = ByteUtil.hexStringToBytes("3affc7a364d5c725ce33be33aff9673a7dfeab64");
@@ -174,6 +179,10 @@ public class Constants {
     public int getMAX_CONTRACT_SZIE() {
         //return Integer.MAX_VALUE;
         return 0x9000;
+    }
+
+    public long getINIT_MINERAL_APPLY_BLOCK() {
+        return INIT_MINERAL_APPLY_BLOCK;
     }
 
     /**
