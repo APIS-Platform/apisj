@@ -1,7 +1,5 @@
 package org.apis.rpc.template;
 
-import java.math.BigInteger;
-
 public class MasterNodeInfo {
     private long startBlock;
     private long lastBlock;
@@ -14,5 +12,15 @@ public class MasterNodeInfo {
         this.lastBlock = lastBlock;
         this.receiptAddress = receiptAddress;
         this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "MasterNodeInfo{" +
+                "startBlock=" + startBlock +
+                ", lastBlock=" + lastBlock +
+                ", receiptAddress='" + receiptAddress + '\'' +
+                ", balance='" + balance + '\'' +
+                '}';
     }
 }
