@@ -47,6 +47,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public AccountState createAccount(byte[] addr, long blockNumber) {
+        return blockchain.getRepository().createAccount(addr, blockNumber);
+    }
+
+    @Override
     public boolean isExist(byte[] addr) {
         return blockchain.getRepository().isExist(addr);
     }
@@ -132,6 +137,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public BigInteger addBalance(byte[] addr, BigInteger value, long blockNumber) {
+        return blockchain.getRepository().addBalance(addr, value);
+    }
+
+    @Override
     public BigInteger addReward(byte[] addr, BigInteger reward) {
         return blockchain.getRepository().addReward(addr, reward);
     }
@@ -207,8 +217,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public void checkMasternodeCollateral(byte[] sender) {
-        blockchain.getRepository().checkMasternodeCollateral(sender);
+    public void checkMasternodeCollateral(byte[] sender, long blockNumber) {
+        blockchain.getRepository().checkMasternodeCollateral(sender, blockNumber);
     }
 
     @Override
