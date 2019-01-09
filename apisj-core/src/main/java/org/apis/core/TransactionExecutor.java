@@ -504,7 +504,11 @@ public class TransactionExecutor {
         }
 
         BigInteger endowment = toBI(tx.getValue());
-        transfer(cacheTrack, tx.getSender(), targetAddress, endowment);
+        if(currentBlock.getNumber() > config.getBlockchainConfig().getCommonConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            transfer(cacheTrack, tx.getSender(), targetAddress, endowment, currentBlock.getNumber());
+        } else {
+            transfer(cacheTrack, tx.getSender(), targetAddress, endowment);
+        }
 
         touchedAccounts.add(targetAddress);
     }
@@ -521,7 +525,11 @@ public class TransactionExecutor {
 
         //In case of hashing collisions (for TCK tests only), check for any balance before createAccount()
         BigInteger oldBalance = track.getBalance(newContractAddress);
-        cacheTrack.createAccount(newContractAddress);
+        if(currentBlock.getNumber() > config.getBlockchainConfig().getCommonConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            cacheTrack.createAccount(newContractAddress, currentBlock.getNumber());
+        } else {
+            cacheTrack.createAccount(newContractAddress);
+        }
         cacheTrack.addBalance(newContractAddress, oldBalance);
         if (blockchainConfig.eip161()) {
             cacheTrack.increaseNonce(newContractAddress);
@@ -534,11 +542,16 @@ public class TransactionExecutor {
             ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
 
             this.vm = new VM(config);
-            this.program = new Program(tx.getData(), programInvoke, tx, config).withCommonConfig(commonConfig);
+            this.program = new Program(tx.getData(), programInvoke, tx, config).withCommonConfig(commonConfig).withBlockNumber(currentBlock.getNumber());
         }
 
         BigInteger endowment = toBI(tx.getValue());
-        transfer(cacheTrack, tx.getSender(), newContractAddress, endowment);
+
+        if(currentBlock.getNumber() > config.getBlockchainConfig().getCommonConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            transfer(cacheTrack, tx.getSender(), newContractAddress, endowment, currentBlock.getNumber());
+        } else {
+            transfer(cacheTrack, tx.getSender(), newContractAddress, endowment);
+        }
 
         touchedAccounts.add(newContractAddress);
     }
