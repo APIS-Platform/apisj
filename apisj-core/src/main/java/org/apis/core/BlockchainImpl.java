@@ -1240,7 +1240,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 }
                 // 마스터노드 잔고가 참여시 잔고보다 낮아지면 해제시킨다
                 else {
-                    txTrack.checkMasternodeCollateral(tx.getSender());
+                    txTrack.checkMasternodeCollateral(tx.getSender(), block.getNumber());
                 }
             }
 
@@ -1329,17 +1329,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                 if(storedMnReward.compareTo(masternodeRewardData.getTotal()) >= 0 && FastByteComparisons.equal(block.getMnHash(), repoMnHash)) {
                     // 재단에 할당된 부분을 전송한다.
-                    distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), masternodeRewardData.getFoundation(), track, rewards);
+                    distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), masternodeRewardData.getFoundation(), track, rewards, block.getNumber());
 
                     // Normal distribute
-                    distributeMnReward(masternodeRewardData.getGeneralNormal(), mnGeneralNormalOnBLock, track, constants, rewards);
-                    distributeMnReward(masternodeRewardData.getMajorNormal(),   mnMajorNormalOnBlock, track, constants, rewards);
-                    distributeMnReward(masternodeRewardData.getPrivateNormal(), mnPrivateNormalOnBlock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getGeneralNormal(), mnGeneralNormalOnBLock, track, constants, rewards, block.getNumber());
+                    distributeMnReward(masternodeRewardData.getMajorNormal(),   mnMajorNormalOnBlock, track, constants, rewards, block.getNumber());
+                    distributeMnReward(masternodeRewardData.getPrivateNormal(), mnPrivateNormalOnBlock, track, constants, rewards, block.getNumber());
 
                     // Late distribute
-                    distributeMnReward(masternodeRewardData.getGeneralLate(),   mnGeneralLateOnBLock, track, constants, rewards);
-                    distributeMnReward(masternodeRewardData.getMajorLate(),     mnMajorLateOnBlock, track, constants, rewards);
-                    distributeMnReward(masternodeRewardData.getPrivateLate(),   mnPrivateLateOnBlock, track, constants, rewards);
+                    distributeMnReward(masternodeRewardData.getGeneralLate(),   mnGeneralLateOnBLock, track, constants, rewards, block.getNumber());
+                    distributeMnReward(masternodeRewardData.getMajorLate(),     mnMajorLateOnBlock, track, constants, rewards, block.getNumber());
+                    distributeMnReward(masternodeRewardData.getPrivateLate(),   mnPrivateLateOnBlock, track, constants, rewards, block.getNumber());
                 } else {
                     ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
                     logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
@@ -1382,22 +1382,26 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
 
-    private void distributeMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
+    private void distributeMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards, long blockNumber) {
         for(byte[] mn : listNode) {
             byte[] recipient = track.getMnRecipient(mn);
             if(recipient == null) {
                 recipient = mn;
             }
 
-            distributeReward(constants.getMASTERNODE_STORAGE(), recipient, wholeReward, track, rewards);
+            distributeReward(constants.getMASTERNODE_STORAGE(), recipient, wholeReward, track, rewards, blockNumber);
             // ConsoleUtil.printlnPurple("Normal     - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(wholeReward, ',', true));
         }
     }
 
 
 
-    private void distributeReward(byte[] rewardFrom, byte[] rewardTo, BigInteger rewardAmount, Repository track, Map<byte[], BigInteger> rewards) {
-        BIUtil.transfer(track, rewardFrom, rewardTo, rewardAmount);
+    private void distributeReward(byte[] rewardFrom, byte[] rewardTo, BigInteger rewardAmount, Repository track, Map<byte[], BigInteger> rewards, long blockNumber) {
+        if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            BIUtil.transfer(track, rewardFrom, rewardTo, rewardAmount, blockNumber);
+        } else {
+            BIUtil.transfer(track, rewardFrom, rewardTo, rewardAmount);
+        }
         track.addReward(rewardTo, rewardAmount);
         rewards.put(rewardTo, rewardAmount);
     }
