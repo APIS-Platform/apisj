@@ -862,7 +862,7 @@ public class AppManager {
         for(KeyStoreData listKey : keyStoreDataList) {
             boolean isExist = false;
             for(KeyStoreData key : keys) {
-                if(key.address.equalsIgnoreCase(listKey.address)) {
+                if(key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
                     isExist = true;
                     break;
                 }
