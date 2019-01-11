@@ -75,6 +75,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public synchronized AccountState createAccount(byte[] addr, long blockNumber) {
+        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, BigInteger.valueOf(blockNumber));
+        accountStateCache.put(addr, state);
+        return state;
+    }
+
+    @Override
     public synchronized boolean isExist(byte[] addr) {
         return getAccountState(addr) != null;
     }
@@ -88,6 +95,14 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         AccountState ret = accountStateCache.get(addr);
         if (ret == null) {
             ret = createAccount(addr);
+        }
+        return ret;
+    }
+
+    private synchronized AccountState getOrCreateAccountState(byte[] addr, long blockNumber) {
+        AccountState ret = accountStateCache.get(addr);
+        if (ret == null) {
+            ret = createAccount(addr, blockNumber);
         }
         return ret;
     }
@@ -191,6 +206,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     @Override
     public synchronized BigInteger addBalance(byte[] addr, BigInteger value) {
         AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withBalanceIncrement(value));
+        return accountState.getBalance();
+    }
+
+    @Override
+    public synchronized BigInteger addBalance(byte[] addr, BigInteger value, long blockNumber) {
+        AccountState accountState = getOrCreateAccountState(addr, blockNumber);
         accountStateCache.put(addr, accountState.withBalanceIncrement(value));
         return accountState.getBalance();
     }
@@ -506,20 +528,28 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      *
      * @param targetNode 마스터노드 정보를 제거하려는 주소
      */
-    private void removeMasternode(byte[] targetNode) {
+    private void removeMasternode(byte[] targetNode, long blockNumber) {
 
         AccountState targetState = getOrCreateAccountState(targetNode);
         byte[] prevNode = targetState.getMnPrevNode();
 
         if(prevNode == null) {
-            accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnNextNode(null));
+            if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withMnLastBlock(BigInteger.ZERO).withMnNextNode(null));
+            } else {
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnNextNode(null));
+            }
         }
 
         else {
             AccountState prevState = getOrCreateAccountState(prevNode);
 
             if(targetState.getMnNextNode() == null) {
-                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null));
+                if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                    accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withMnLastBlock(BigInteger.ZERO).withMnPrevNode(null));
+                } else {
+                    accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null));
+                }
 
                 if(prevState.getMnNextNode() != null && FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
                     accountStateCache.put(prevNode, prevState.withMnNextNode(null));
@@ -528,7 +558,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             else {
                 byte[] nextMn = targetState.getMnNextNode();
                 AccountState nextState = getOrCreateAccountState(nextMn);
-                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null).withMnNextNode(null));
+                if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                    accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withMnLastBlock(BigInteger.ZERO).withMnPrevNode(null).withMnNextNode(null));
+                } else {
+                    accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null).withMnNextNode(null));
+                }
 
                 if(prevState.getMnNextNode() != null && FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
                     accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
@@ -741,7 +775,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             else if(eventName.equals("MasternodeCancel")) {
                 byte[] masternode   = (byte[]) event.args[1];
 
-                removeMasternode(masternode);
+                removeMasternode(masternode, blockNumber);
                 return;
             }
         }
@@ -858,7 +892,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
 
     @Override
-    public void checkMasternodeCollateral(byte[] sender) {
+    public void checkMasternodeCollateral(byte[] sender, long blockNumber) {
         AccountState senderState = getAccountState(sender);
         if(senderState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
             // 마스터노드가 아닐 경우 별도로 체크할 것은 없다
@@ -867,7 +901,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         // 잔고가 마스터노드 참여 담보 금액보다 낮아지면 해제한다
         if(senderState.getBalance().compareTo(senderState.getMnStartBalance()) < 0) {
-            removeMasternode(sender);
+            removeMasternode(sender, blockNumber);
         }
     }
 
@@ -880,9 +914,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          * 마스터노드 얼리버드 접수가 시작되는 블록이 되면, 얼리버드 목록을 초기화한다
          */
         if(isMnEbStartBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
-            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY(), constants, blockNumber);
         }
 
         /*
@@ -890,17 +924,17 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          * 얼리버드 노드들을, 실행중인(RUN) 얼리버드 노드와 연결한다.
          */
         if(isMnStartBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getMASTERNODE_EARLYBIRD_PERIOD())) {
-            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_NORMAL(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_LATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_NORMAL(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL_BASE_LATE(), constants, blockNumber);
 
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_NORMAL(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_LATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_NORMAL(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR_BASE_LATE(), constants, blockNumber);
 
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_NORMAL(), constants);
-            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_LATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_NORMAL(), constants, blockNumber);
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE_BASE_LATE(), constants, blockNumber);
 
             connectEarlybirdToRun(constants.getMASTERNODE_GENERAL_BASE_EARLY(), constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN(), blockNumber);
             connectEarlybirdToRun(constants.getMASTERNODE_MAJOR_BASE_EARLY(), constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN(), blockNumber);
@@ -924,7 +958,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             expiredList.add(mn);
         }
 
-        finishMasterNodes(expiredList);
+        finishMasterNodes(expiredList, blockNumber);
     }
 
     /**
@@ -932,7 +966,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      * @param startingNode 마스터노드를 초기화하기 시작하는 노드 주소
      * @param constants 블록체인 상수
      */
-    private void removeAllLinkedMasternode(byte[] startingNode, Constants constants) {
+    private void removeAllLinkedMasternode(byte[] startingNode, Constants constants, long blockNumber) {
         List<byte[]> expiredNodes = new ArrayList<>();
         for(int i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
             if(startingNode == null) {
@@ -944,7 +978,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             startingNode = currMn.getMnNextNode();
         }
 
-        finishMasterNodes(expiredNodes);
+        finishMasterNodes(expiredNodes, blockNumber);
     }
 
     /**
@@ -964,7 +998,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 insertMnState(runningBaseNode, firstNode, blockNumber, firstNodeState.getMnStartBalance(), firstNodeState.getMnRecipient());
             }
 
-            removeMasternode(baseNode);
+            removeMasternode(baseNode, blockNumber);
         }
     }
 
@@ -1028,9 +1062,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
 
-    private void finishMasterNodes(List<byte[]> finishedList) {
+    private void finishMasterNodes(List<byte[]> finishedList, long blockNumber) {
         for(byte[] mnFinished : finishedList) {
-            removeMasternode(mnFinished);
+            removeMasternode(mnFinished, blockNumber);
         }
     }
 

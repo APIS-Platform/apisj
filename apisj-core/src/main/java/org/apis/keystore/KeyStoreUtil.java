@@ -3,6 +3,7 @@ package org.apis.keystore;
 import com.google.gson.Gson;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,12 @@ import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Date;
@@ -33,26 +39,33 @@ public class KeyStoreUtil {
     private static final int DEFAULT_VERSION = 3;
     private static final String DEFAULT_CIPHER = "aes-128-ctr";
     private static final String DEFAULT_KDF = "scrypt";
+    private static final String KDF_PBKDF2 = "pbkdf2";
 
     private final static Logger logger = LoggerFactory.getLogger("keyStoreUtil");
 
     public static byte[] decryptPrivateKey(String keyStore, String pwd) throws KeystoreVersionException, NotSupportKdfException, NotSupportCipherException, InvalidPasswordException {
         KeyStoreData keyStoreData = new Gson().fromJson(keyStore.toLowerCase(), KeyStoreData.class);
 
+        if(!keyStoreData.crypto.kdf.equals(DEFAULT_KDF) && !keyStoreData.crypto.kdf.equals(KDF_PBKDF2)) {
+            logger.error("kdf is " + keyStoreData.crypto.kdf, new NotSupportKdfException(keyStoreData.crypto.kdf));
+            throw new NotSupportKdfException(keyStoreData.crypto.kdf);
+        }
+
         if(keyStoreData.version != DEFAULT_VERSION) {
             logger.error("Support on V3. This is V" + keyStoreData.version, new KeystoreVersionException());
             throw new KeystoreVersionException();
-        }
-
-        else if(!keyStoreData.crypto.kdf.equals(DEFAULT_KDF)) {
-            logger.error("kdf is " + keyStoreData.crypto.kdf, new NotSupportKdfException(keyStoreData.crypto.kdf));
-            throw new NotSupportKdfException(keyStoreData.crypto.kdf);
         }
 
         else if(!keyStoreData.crypto.cipher.equals(DEFAULT_CIPHER)) {
             logger.error("cipher is " + keyStoreData.crypto.cipher, new NotSupportCipherException(keyStoreData.crypto.kdf));
             throw new NotSupportCipherException(keyStoreData.crypto.cipher);
         }
+
+
+        if(keyStoreData.crypto.kdf.equals(KDF_PBKDF2)) {
+            return decryptPbkdf2PrivateKey(keyStoreData, pwd);
+        }
+
 
         byte[] pwdBytes = pwd.getBytes(StandardCharsets.UTF_8);
 
@@ -89,8 +102,51 @@ public class KeyStoreUtil {
         return decryptAES(cipherBytes, ivBytes, Hex.decode(keyString));
     }
 
+    private static byte[] decryptPbkdf2PrivateKey(KeyStoreData keyStoreData, String pwd) throws InvalidPasswordException {
+        byte[] generatedHash = hashPasswordPBKDF2(
+                pwd.toCharArray(),
+                ByteUtil.hexStringToBytes(keyStoreData.crypto.kdfparams.salt),
+                keyStoreData.crypto.kdfparams.c,
+                keyStoreData.crypto.kdfparams.dklen);
 
-    private static byte[] decryptAES(byte[] cipherBytes, byte[] ivBytes, byte[] keyBytes) {
+        String generatedStr = Hex.toHexString(generatedHash);
+        String generatedRightStr = generatedStr.substring(generatedStr.length()/2);
+
+        byte[] cipherBytes = Hex.decode(keyStoreData.crypto.ciphertext);
+
+        byte[] inputMac = new byte[generatedHash.length/2 + cipherBytes.length];
+        System.arraycopy(Hex.decode(generatedRightStr), 0, inputMac, 0, generatedHash.length/2);
+        System.arraycopy(cipherBytes, 0, inputMac, generatedHash.length/2, cipherBytes.length);
+
+        byte[] macGenerated = HashUtil.sha3(inputMac);
+        byte[] macKeystore = Hex.decode(keyStoreData.crypto.mac);
+
+        // 비밀번호가 일치하지 않는다
+        if(!FastByteComparisons.equal(macGenerated, macKeystore)) {
+            throw new InvalidPasswordException();
+        }
+
+        byte[] ivBytes = Hex.decode(keyStoreData.crypto.cipherparams.iv);
+
+        String keyString = generatedStr.substring(0, generatedStr.length()/2);
+        return decryptAES(cipherBytes, ivBytes, Hex.decode(keyString));
+    }
+
+
+    private static byte[] hashPasswordPBKDF2( final char[] password, final byte[] salt, final int iterations, final int keyBytesLength ) {
+        int keyBitsLength = keyBytesLength*8;
+        try {
+            SecretKeyFactory skf = SecretKeyFactory.getInstance( "PBKDF2WithHmacSHA256" );
+            PBEKeySpec spec = new PBEKeySpec( password, salt, iterations, keyBitsLength );
+            SecretKey key = skf.generateSecret( spec );
+            byte[] res = key.getEncoded( );
+            return res;
+        } catch ( NoSuchAlgorithmException | InvalidKeySpecException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static byte[] decryptAES(byte[] cipherBytes, byte[] ivBytes, byte[] keyBytes) {
         KeyParameter key = new KeyParameter(keyBytes);
         ParametersWithIV params = new ParametersWithIV(key, ivBytes);
 

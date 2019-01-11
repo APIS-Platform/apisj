@@ -1,5 +1,6 @@
 package org.apis.rpc.template;
 
+import org.apis.core.AccountState;
 import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
@@ -16,43 +17,44 @@ public class WalletInfo {
     private String nonce;
     private String APIS;
     private String MNR;
+    private String Reward;
+    private String aReward;
     private String proofKey;
-    private boolean isMasternode;
-    private String isContract;
+    private Boolean isMasternode;
+    private Boolean isContract;
 
-    public WalletInfo(int index, byte[] address, String mask, BigInteger aAPIS, BigInteger amineral, BigInteger nonce, byte[] proofKey, String isContract, boolean isMasternode) {
+    public WalletInfo (long index, byte[] address, AccountState state, long blockNumber, BigInteger nonce) {
         if(index >= 0) {
             this.index = String.valueOf(index);
         }
-
-        this.address = ByteUtil.toHexString0x(address);
-
+        this.address = ByteUtil.toHexString(address);
+        String mask = state.getAddressMask();
         if(mask != null && !mask.isEmpty()) {
-            this.mask = mask;
-        } else {
-            this.mask = "";
+            this.mask = state.getAddressMask();
+        }
+        this.APIS = ApisUtil.readableApis(state.getBalance(), ',', true);
+        this.aAPIS = state.getBalance().toString();
+        this.MNR = ApisUtil.readableApis(state.getMineral(blockNumber), ',', true);
+        this.aMNR = state.getMineral(blockNumber).toString();
+        BigInteger totalReward = state.getTotalReward();
+        if(totalReward.compareTo(BigInteger.ZERO) > 0) {
+            this.Reward = ApisUtil.readableApis(totalReward, ',', true);
+            this.aReward = state.getTotalReward().toString();
         }
 
-        this.aAPIS = aAPIS.toString();
-        this.APIS = ApisUtil.readableApis(aAPIS, ',', true);
-        this.aMNR = amineral.toString();
-        this.MNR = ApisUtil.readableApis(amineral, ',', true);
+        if(proofKey != null && !FastByteComparisons.equal(state.getProofKey(), HashUtil.EMPTY_DATA_HASH)) {
+            this.proofKey = ByteUtil.toHexString(state.getProofKey());
+        }
 
+        byte[] codeHash = state.getCodeHash();
+        if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
+            this.isContract = true;
+        }
+        if (state.getMnStartBalance().compareTo(BigInteger.ZERO) > 0) {
+            this.isMasternode = true;
+        }
         this.nonce = nonce.toString();
-
-        if(proofKey != null && !FastByteComparisons.equal(proofKey, HashUtil.EMPTY_DATA_HASH)) {
-            this.proofKey = ByteUtil.toHexString0x(proofKey);
-        } else {
-            this.proofKey = "";
-        }
-
-        if(isContract != null && !isContract.isEmpty()) {
-            this.isContract = isContract;
-        }
-
-        this.isMasternode = isMasternode;
     }
-
 
     @Override
     public String toString() {
@@ -65,6 +67,8 @@ public class WalletInfo {
                 ", nonce='" + nonce + '\'' +
                 ", APIS='" + APIS + '\'' +
                 ", MNR='" + MNR + '\'' +
+                ", Reward='" + Reward + '\'' +
+                ", aReward='" + aReward + '\'' +
                 ", proofKey='" + proofKey + '\'' +
                 ", isMasternode=" + isMasternode +
                 ", isContract='" + isContract + '\'' +

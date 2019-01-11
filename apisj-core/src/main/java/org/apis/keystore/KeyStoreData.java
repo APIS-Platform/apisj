@@ -61,6 +61,12 @@ public class KeyStoreData {
 
         @SerializedName("p")
         public int p;
+
+        @SerializedName("c")
+        public int c;
+
+        @SerializedName("prf")
+        public String prf;
     }
 
     @Override

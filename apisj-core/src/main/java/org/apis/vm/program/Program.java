@@ -18,10 +18,6 @@
 package org.apis.vm.program;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apis.db.ContractDetails;
-import org.apis.vm.*;
-import org.apis.vm.trace.ProgramTrace;
-import org.apis.vm.trace.ProgramTraceListener;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
@@ -29,18 +25,24 @@ import org.apis.core.AccountState;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.crypto.HashUtil;
+import org.apis.db.ContractDetails;
 import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.Utils;
-import org.apis.vm.*;
+import org.apis.vm.DataWord;
+import org.apis.vm.MessageCall;
+import org.apis.vm.OpCode;
 import org.apis.vm.PrecompiledContracts.PrecompiledContract;
+import org.apis.vm.VM;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.apis.vm.program.listener.CompositeProgramListener;
 import org.apis.vm.program.listener.ProgramListenerAware;
 import org.apis.vm.program.listener.ProgramStorageChangeListener;
+import org.apis.vm.trace.ProgramTrace;
+import org.apis.vm.trace.ProgramTraceListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -105,6 +107,7 @@ public class Program {
     private ProgramPrecompile programPrecompile;
 
     CommonConfig commonConfig = CommonConfig.getDefault();
+    private long blockNumber = 0;
 
     private final SystemProperties config;
 
@@ -156,6 +159,11 @@ public class Program {
 
     public Program withCommonConfig(CommonConfig commonConfig) {
         this.commonConfig = commonConfig;
+        return this;
+    }
+
+    public Program withBlockNumber(long blockNumber) {
+        this.blockNumber = blockNumber;
         return this;
     }
 
@@ -386,7 +394,11 @@ public class Program {
             // if owner == obtainer just zeroing account according to Yellow Paper
             getStorage().addBalance(owner, balance.negate());
         } else {
-            transfer(getStorage(), owner, obtainer, balance);
+            if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                transfer(getStorage(), owner, obtainer, balance, blockNumber);
+            } else {
+                transfer(getStorage(), owner, obtainer, balance);
+            }
         }
 
         getResult().addDeleteAccount(this.getOwnerAddress());
@@ -447,7 +459,11 @@ public class Program {
 
         //In case of hashing collisions, check for any balance before createAccount()
         BigInteger oldBalance = track.getBalance(newAddress);
-        track.createAccount(newAddress);
+        if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            track.createAccount(newAddress, blockNumber);
+        } else {
+            track.createAccount(newAddress);
+        }
         if (blockchainConfig.eip161()) {
             track.increaseNonce(newAddress);
         }
@@ -1162,7 +1178,11 @@ public class Program {
                 msg.getInDataSize().intValue());
 
         // Charge for endowment - is not reversible by rollback
-        transfer(track, senderAddress, contextAddress, msg.getEndowment().value());
+        if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+            transfer(track, senderAddress, contextAddress, msg.getEndowment().value(), blockNumber);
+        } else {
+            transfer(track, senderAddress, contextAddress, msg.getEndowment().value());
+        }
 
         if (byTestingSuite()) {
             // This keeps track of the calls created for a test

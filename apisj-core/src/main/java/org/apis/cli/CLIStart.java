@@ -479,9 +479,9 @@ public class CLIStart {
     private static final int SELECT_SERVERCHECK_CHANGE_ALLOWIP = 6;
 
     public void startRpcServerCheck() throws IOException {
-        File keystore = new File("config");
-        if(!keystore.exists()) {
-            keystore.mkdirs();
+        File configDir = new File(config.configDir());
+        if(!configDir.exists()) {
+            configDir.mkdirs();
         }
 
         ConsoleUtil.printlnBlue("You can interact with this program remotely through a Web socket-based RPC server.");
@@ -493,6 +493,8 @@ public class CLIStart {
             }
         };
 
+        InputStream input = new FileInputStream(dirRpc);
+        prop.load(input);
 
 
         while(true) {
@@ -540,6 +542,7 @@ public class CLIStart {
                     break;
 
                 case 7:
+                    storeRpcConfig(prop);
                     ConsoleUtil.printlnGreen("Bye");
                     System.exit(0);
                     break;
@@ -634,5 +637,11 @@ public class CLIStart {
         }
 
         prop.setProperty("allow_ip", ipList);
+    }
+
+    private void storeRpcConfig(Properties prop) throws IOException {
+        OutputStream daemonOutput = new FileOutputStream(dirRpc);
+        prop.store(daemonOutput, null);
+        daemonOutput.close();
     }
 }

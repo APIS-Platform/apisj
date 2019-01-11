@@ -132,6 +132,10 @@ public class AccountState {
         this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, "", EMPTY_DATA_HASH, BigInteger.ZERO, BigInteger.ZERO, EMPTY_DATA_HASH, BigInteger.ZERO, EMPTY_DATA_HASH, EMPTY_DATA_HASH, BigInteger.ZERO);
     }
 
+    public AccountState(BigInteger nonce, BigInteger balance, BigInteger lastBlock) {
+        this(nonce, balance, BigInteger.ZERO, lastBlock, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, "", EMPTY_DATA_HASH, BigInteger.ZERO, BigInteger.ZERO, EMPTY_DATA_HASH, BigInteger.ZERO, EMPTY_DATA_HASH, EMPTY_DATA_HASH, BigInteger.ZERO);
+    }
+
     public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, String addressMask, byte[] proofKey, BigInteger mnStartBlock, BigInteger mnLastBlock, byte[] mnRecipient, BigInteger mnStartBalance, byte[] mnPrevNode, byte[] mnNextNode, BigInteger totalReward) {
         this.nonce = nonce;
         this.balance = balance;
