@@ -837,7 +837,7 @@ public class AppManager {
         for(KeyStoreData key : keys){
             boolean isExist = false;
             for(int i = 0; i<keyStoreDataList.size(); i++) {
-                if(key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
+                if(key.address != null && key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
                     isExist = true;
 
                     // alias update

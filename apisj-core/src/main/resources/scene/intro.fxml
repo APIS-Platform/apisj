@@ -25,7 +25,7 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ImageView fx:id="bgImage" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="bgImage" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true" translateY="8.0">
          <image>
             <Image url="@../image/bg_1280x720@2x.jpg" />
          </image>
