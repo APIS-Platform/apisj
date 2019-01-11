@@ -61,18 +61,18 @@ public class Constants {
     /*
      * 블록타임이 8초 일 경우 : 6일마다 이자 지급 : 64_800 Blocks
      */
-    private static final long MASTERNODE_REWARD_PERIOD = 64_800L;
+    private static final long MASTERNODE_REWARD_PERIOD = 100;
 
     /** 마스터노드가 초기화되는 주기 */
     /*
      * 블록타임이 8초 일 경우 : 90일마다 초기화 : 972_000 Blocks
      */
-    private static final long MASTERNODE_RESET_PERIOD = 972_000L;
+    private static final long MASTERNODE_RESET_PERIOD = 1000;
 
     /*
      * 블록타임이 8초일 경우 : 1일 동안 진행 : 10_800 Blocks (24*60*60*1000/BLOCK_TIME_MS)
      */
-    private static final long MASTERNODE_EARLYBIRD_PERIOD = 10_800L;
+    private static final long MASTERNODE_EARLYBIRD_PERIOD = 100;
 
 
     private static final long CONTINUOUS_MINING_LIMIT = 3;
