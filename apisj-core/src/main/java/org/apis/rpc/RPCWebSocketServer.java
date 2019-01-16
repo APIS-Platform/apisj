@@ -263,6 +263,7 @@ public class RPCWebSocketServer extends WebSocketServer {
         // 특정아이피만 허용
         if(allowedAddressList.indexOf("0.0.0.0") < 0) {
             String guestAddress = conn.getRemoteSocketAddress().getAddress().toString();
+            guestAddress = guestAddress.replaceAll("[^0-9.]", "");
 
             if(allowedAddressList.indexOf(guestAddress) < 0) {
                 errorCode = RPCCommand.ERROR_CODE_WITHOUT_PERMISSION_IP;
