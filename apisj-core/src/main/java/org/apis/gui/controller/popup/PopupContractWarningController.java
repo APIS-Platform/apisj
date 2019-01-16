@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.module.MessageLineController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.textfield.ApisTextFieldGroup;
@@ -29,10 +30,11 @@ import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
 
-    @FXML private AnchorPane rootPane, walletPasswordPane, knowledgeKeyPane;
+    @FXML private AnchorPane rootPane, walletPasswordPane, messagePane, knowledgeKeyPane;
     @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn, knowledgeKeyLabel;
     @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private TextArea rawTxArea, signedTxArea;
+    @FXML private MessageLineController ledgerConnectionMessageController;
 
     private String address, value, gasPrice, gasLimit;
     private byte[] data, toAddress, toMask;
@@ -235,6 +237,17 @@ public class PopupContractWarningController extends BasePopupController {
 
 
         this.data = data;
+
+        // 렛저 여부 체크
+        if(AppManager.getInstance().isLedger(address)) {
+            this.walletPasswordPane.setVisible(false);
+            this.walletPasswordPane.setPrefHeight(0);
+            this.messagePane.setPrefHeight(-1);
+        } else {
+            this.walletPasswordPane.setVisible(true);
+            this.walletPasswordPane.setPrefHeight(-1);
+            this.messagePane.setPrefHeight(0);
+        }
 
         // 보안키 여부 체크
         if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))){

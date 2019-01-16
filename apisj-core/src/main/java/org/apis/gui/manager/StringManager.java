@@ -1160,6 +1160,8 @@ public class StringManager {
         public SimpleStringProperty signedTxLabel = new SimpleStringProperty();
         public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
         public SimpleStringProperty knowledgeKeyLabel = new SimpleStringProperty();
+        public SimpleStringProperty emptyContractLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty emptyContractLabel2 = new SimpleStringProperty();
 
 
         @Override
@@ -1183,7 +1185,8 @@ public class StringManager {
             signedTxLabel.set(StringManager.this.getString("contract_popup_signed_tx_label", "Signed Transaction"));
             walletPasswordLabel.set(StringManager.this.getString("contract_popup_wallet_password_label", "Wallet Password"));
             knowledgeKeyLabel.set(StringManager.this.getString("contract_popup_knowledge_key_label", "Knowledge Key"));
-
+            emptyContractLabel1.set(StringManager.this.getString("contract_popup_empty_label_1", "You have no contract here."));
+            emptyContractLabel2.set(StringManager.this.getString("contract_popup_empty_label_2", "click \"+\" button on top to add contract."));
 
         }
     }
