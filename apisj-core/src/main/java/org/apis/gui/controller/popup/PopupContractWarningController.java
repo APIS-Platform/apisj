@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
 
-    @FXML private AnchorPane rootPane, knowledgeKeyPane;
+    @FXML private AnchorPane rootPane, walletPasswordPane, knowledgeKeyPane;
     @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn, knowledgeKeyLabel;
     @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private TextArea rawTxArea, signedTxArea;

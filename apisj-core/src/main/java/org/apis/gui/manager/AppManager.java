@@ -901,6 +901,7 @@ public class AppManager {
                 Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
 
                 for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    keyExp = keyStoreDataExpList.get(i);
                     keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
                 }
 
