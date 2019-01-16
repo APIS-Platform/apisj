@@ -34,7 +34,7 @@ testnetSampleDb
 sampleDB*
 
 # Config
-config
+#config
 
 # Chain Data
 storage
