@@ -92,7 +92,7 @@ public class AppManager {
     private boolean isSyncDone = false;
     private String miningAddress, masternodeAddress, recipientAddress, masternodeState;
     private SimpleStringProperty searchToken = new SimpleStringProperty();
-    private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
+    private AudioClip coinSound = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
     private CallTransaction.Contract tokenContract = null;
     private ArrayList<TokenModel> tokens = new ArrayList<>();
 
@@ -228,7 +228,7 @@ public class AppManager {
                 if(AppManager.this.getTotalReward().toString().equals(totalReward.toString())){
                 }else{
                     if("true".equals(getGeneralPropertiesData("reward_sound"))){
-                        coinSount.play();
+                        coinSound.play();
                     }
                 }
                 AppManager.this.setTotalReward(totalReward);
@@ -893,9 +893,17 @@ public class AppManager {
                     keyExp.mask = getMaskWithAddress(keyExp.address);
                     keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
                     keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
-                    keyExp.rewards = repo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
                     keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
                 }
+
+                long confirmBlockNum = bestBlock.getNumber() - 6;
+                Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
+                Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
+
+                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                }
+
             }
         }
 
