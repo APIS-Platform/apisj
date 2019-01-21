@@ -144,7 +144,6 @@ public class WebViewFX extends Application {
 
 
                     byte[] to = ByteUtil.hexStringToBytes((String) params.get("to"));
-                    to = ByteUtil.hexStringToBytes("866962b19d403a712f2c6bca390f9f295ba2dfe9");
                     byte[] gasPrice = ByteUtil.hexStringToBytes((String) params.get("gasPrice"));
                     byte[] nonce;
                     byte[] value;
