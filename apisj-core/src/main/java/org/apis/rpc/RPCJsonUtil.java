@@ -2,7 +2,7 @@ package org.apis.rpc;
 
 import com.google.gson.*;
 import org.apis.crypto.HashUtil;
-import org.apis.rpc.template.MessageWeb3;
+import org.apis.rpc.template.MessageApp3;
 import org.apis.util.AesUtil;
 import org.apis.util.ByteUtil;
 import org.json.simple.JSONObject;
@@ -75,7 +75,7 @@ public class RPCJsonUtil {
      * @return 고유 해시 값
      */
     static String createTokenHash(String payload, String token) {
-        MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
+        MessageApp3 message = new GsonBuilder().create().fromJson(payload, MessageApp3.class);
 
         byte[] methodByte = message.getMethodBytes();
         byte[] paramsByte = message.getMergedParamsBytes();

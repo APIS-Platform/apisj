@@ -187,7 +187,7 @@ public class RPCCommand {
 
 
     public static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) {
-        MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
+        MessageApp3 message = parseMessage(payload);
         long id = message.getId();
         String method = message.getMethod();
         Object[] params = message.getParams().toArray();
@@ -201,7 +201,7 @@ public class RPCCommand {
     }
 
     public static String conduct(Apis apis, String payload) {
-        MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
+        MessageApp3 message = parseMessage(payload);
         long id = message.getId();
         String method = message.getMethod();
         Object[] params = message.getParams().toArray();
@@ -212,6 +212,11 @@ public class RPCCommand {
         }
 
         return getCommand(apis, id, method, params);
+    }
+
+    public static MessageApp3 parseMessage(String payload) {
+        ConsoleUtil.printlnCyan("Payload:" + payload);
+        return new GsonBuilder().create().fromJson(payload, MessageApp3.class);
     }
 
 
