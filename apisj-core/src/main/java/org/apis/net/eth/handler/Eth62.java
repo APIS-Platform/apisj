@@ -656,9 +656,15 @@ public class Eth62 extends EthHandler {
             }
         }
 
+        //updateBestBlock
+        if(receivedBlocks.size() > 0) {
+            Block peerBest = receivedBlocks.get(receivedBlocks.size() - 1);
+            updateBestBlock(peerBest);
+            updateTotalRewardPoint(peerBest.getCumulativeRewardPoint());
+        }
 
 
-       MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
+        MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
         boolean changed = minedBlockCache.compareMinedBlocks(receivedBlocks);
 
         // 변경된 리스트를 전파해야한다.
