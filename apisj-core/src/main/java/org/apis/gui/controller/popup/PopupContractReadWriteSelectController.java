@@ -27,7 +27,7 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
 
     // Multilingual Support Label
     @FXML private AnchorPane rootPane;
-    @FXML private Label readWriteTitle, readWriteSelect, addrLabel, newLabel, listLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn;
+    @FXML private Label readWriteTitle, readWriteSelect, addrLabel, newLabel, listLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn, emptyContractLabel1, emptyContractLabel2;
     @FXML private VBox list;
     @FXML private ScrollPane listPane;
 
@@ -72,6 +72,8 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
         selectLabel.textProperty().bind(StringManager.getInstance().common.selectLabel);
         noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
         yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
+        emptyContractLabel1.textProperty().bind(StringManager.getInstance().contractPopup.emptyContractLabel1);
+        emptyContractLabel2.textProperty().bind(StringManager.getInstance().contractPopup.emptyContractLabel2);
     }
 
     public void addItem(ContractModel model){
