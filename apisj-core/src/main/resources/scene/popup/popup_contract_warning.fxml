@@ -158,7 +158,7 @@
                                           </Label>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="messagePane" GridPane.rowIndex="3">
+                                    <AnchorPane fx:id="messagePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="3">
                                        <children>
                                           <fx:include fx:id="ledgerConnectionMessage" source="../module/message_line.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0" />
                                        </children>

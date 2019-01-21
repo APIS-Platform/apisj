@@ -21,11 +21,19 @@ import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
+import org.apis.hid.HIDDevice;
+import org.apis.hid.HIDModule;
+import org.apis.hid.template.DeviceData;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
+import org.omg.IOP.Encoding;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.usb.UsbException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
@@ -105,6 +113,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
+                ledgerConnectionMessageController.setVisible(false);
                 yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
                 tx = null;
                 rawTxArea.setText("");
@@ -132,6 +141,7 @@ public class PopupContractWarningController extends BasePopupController {
 
         apisTextFieldGroup.add(passwordController);
         apisTextFieldGroup.add(knowledgeKeyController);
+        this.messagePane.setVisible(false);
     }
 
 
@@ -150,44 +160,162 @@ public class PopupContractWarningController extends BasePopupController {
 
         }
     }
-
+    PopupLedgerNoticeController ledgerNoticeController;
     public void generateTx() {
-        char[] password = passwordController.getText().toCharArray();
-        char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
+        // Ledger address
+        if(AppManager.getInstance().isLedger(address)) {
+            HIDModule module = HIDModule.getInstance();
+            HIDDevice ledger = AppManager.getInstance().getLedger();
+            module.loadDeviceList();
 
-        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
-        tx = null;
-        rawTxArea.setText("");
+            List<DeviceData> devices = module.getDeviceList();
 
-        if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
-            byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(address));
-            if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
-                knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                return;
-            } else {
-                knowledgeKeyController.succeededForm();
-            }
-        }
+            ledgerConnectionMessageController.setVisible(false);
+            StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cd8d8d8);
+            tx = null;
+            rawTxArea.setText("");
 
-        if (password == null || password.equals("")) {
-            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-        } else {
-            passwordController.succeededForm();
-            try {
-                if (this.toAddress == null || this.toAddress.length <= 0) {
-                    tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], new byte[0], this.data, password, knowledgeKey);
-                } else {
-                    tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.toMask, this.data, password, knowledgeKey);
+            if(devices.size() == 1) {
+                // Check knowledge key
+                char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();;
+
+                if (AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
+                    byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(address));
+                    if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+                        knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                        return;
+                    } else {
+                        knowledgeKeyController.succeededForm();
+                    }
                 }
 
-                rawTxArea.setText(tx.toString());
-                signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
+                // Check ledger connection
+                if(ledger == null) {
+                    try {
+                        AppManager.getInstance().closeLedger();
+                        AppManager.getInstance().setLedger(new HIDDevice(devices.get(0).getDevice()));
+                        ledger = AppManager.getInstance().getLedger();
+                    } catch (UsbException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                this.yesBtn.requestFocus();
+                String path = AppManager.getInstance().getDerivationPath(address);
+                if(path.length() != 0) {
+                    byte[] tempAddress = null;
+                    tempAddress = ledger.getAddress(path, false, false);
 
-            } catch (Exception e) {
-                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                    // Exception handling for disconnecting while proceeding
+                    if(tempAddress == null) {
+                        ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedDisconn);
+                        ledgerConnectionMessageController.setVisible(true);
+                        AppManager.getInstance().closeLedger();
+                        AppManager.getInstance().setLedger(null);
+                        return;
+                    }
+
+                    // Correct ledger address
+                    if(ByteUtil.toHexString(tempAddress).equals(address)) {
+                        ledgerConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
+                        ledgerConnectionMessageController.setVisible(true);
+                        ledgerNoticeController = (PopupLedgerNoticeController)PopupManager.getInstance().showMainPopup(rootPane, "popup_ledger_notice.fxml",this.zIndex + 1);
+
+                        if (this.toAddress == null || this.toAddress.length <= 0) {
+                            tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], new byte[0], this.data);
+                        } else {
+                            tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.toMask, this.data);
+                        }
+                        rawTxArea.setText(tx.toString());
+
+                        HIDDevice finalLedger = ledger;
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    // Generate ledger signed tx
+                                    Transaction signedTx = null;
+                                    ConsoleUtil.printlnPurple(tx.toString());
+
+                                    signedTx = new Transaction(finalLedger.signTransaction(path, tx, ByteUtil.hexStringToBytes(address)));
+                                    tx = signedTx;
+                                    Transaction newTx = new Transaction(signedTx.getEncoded());
+                                    if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
+                                        tx = AppManager.getInstance().apisGenerateTransactionWithLedgerTx(signedTx, knowledgeKey);
+                                    }
+                                    signedTxArea.setText(String.format("%s\n------\n%s\n------\n%s", ByteUtil.toHexString(signedTx.getEncoded()), signedTx.toString().replaceAll(" ", "\n"), newTx.toString().replaceAll(" ", "\n")));
+
+                                    yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
+                                    yesBtn.requestFocus();
+                                // Confirm ledger error
+                                } catch (Exception e) {
+                                    ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedCancel);
+                                    ledgerConnectionMessageController.setVisible(true);
+                                    AppManager.getInstance().closeLedger();
+                                    AppManager.getInstance().setLedger(null);
+                                    signedTxArea.setText(e.getMessage());
+                                    tx = null;
+
+                                    yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+                                } finally {
+                                    ledgerNoticeController.exit();
+                                }
+                            }
+                        });
+                    }
+                }
+
+            } else if(devices.size() > 1) {
+                ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
+                ledgerConnectionMessageController.setVisible(true);
+                AppManager.getInstance().closeLedger();
+                AppManager.getInstance().setLedger(null);
+
+            } else {
+                ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
+                ledgerConnectionMessageController.setVisible(true);
+                AppManager.getInstance().closeLedger();
+                AppManager.getInstance().setLedger(null);
+            }
+
+        // Non-Ledger Address
+        } else {
+            char[] password = passwordController.getText().toCharArray();
+            char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
+
+            yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+            tx = null;
+            rawTxArea.setText("");
+
+            if (AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
+                byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(address));
+                if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                    return;
+                } else {
+                    knowledgeKeyController.succeededForm();
+                }
+            }
+
+            if (password == null || password.equals("")) {
+                passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+            } else {
+                passwordController.succeededForm();
+                try {
+                    if (this.toAddress == null || this.toAddress.length <= 0) {
+                        tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], new byte[0], this.data, password, knowledgeKey);
+                    } else {
+                        tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.toMask, this.data, password, knowledgeKey);
+                    }
+
+                    rawTxArea.setText(tx.toString());
+                    signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
+                    yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
+
+                    this.yesBtn.requestFocus();
+
+                } catch (Exception e) {
+                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                }
             }
         }
     }
@@ -242,10 +370,13 @@ public class PopupContractWarningController extends BasePopupController {
         if(AppManager.getInstance().isLedger(address)) {
             this.walletPasswordPane.setVisible(false);
             this.walletPasswordPane.setPrefHeight(0);
+            this.messagePane.setVisible(true);
+            this.ledgerConnectionMessageController.setVisible(false);
             this.messagePane.setPrefHeight(-1);
         } else {
             this.walletPasswordPane.setVisible(true);
             this.walletPasswordPane.setPrefHeight(-1);
+            this.messagePane.setVisible(false);
             this.messagePane.setPrefHeight(0);
         }
 

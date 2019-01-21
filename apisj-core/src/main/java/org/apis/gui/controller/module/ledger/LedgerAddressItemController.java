@@ -17,6 +17,7 @@ public class LedgerAddressItemController implements Initializable {
     @FXML private Label address, balance;
     @FXML private ImageView checkImg;
 
+    private String path;
     private LedgerAddressItemImpl handler;
     private boolean checked = false;
 
@@ -54,6 +55,14 @@ public class LedgerAddressItemController implements Initializable {
 
     public void setAddress(String address) {
         this.address.setText(address);
+    }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getBalance() {

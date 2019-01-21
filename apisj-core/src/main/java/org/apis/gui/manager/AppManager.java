@@ -41,6 +41,7 @@ import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
 import org.apis.gui.controller.wallet.WalletController;
 import org.apis.gui.model.TokenModel;
+import org.apis.hid.HIDDevice;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
@@ -100,6 +101,9 @@ public class AppManager {
 
     // totalBalance
     private Map<String, BigInteger> totalValue = new HashMap<>();
+
+    // Ledger device
+    private HIDDevice ledger = null;
 
 
     /* ==============================================
@@ -673,6 +677,34 @@ public class AppManager {
         return false;
     }
 
+    public String getDerivationPath(String address) {
+        String path = "";
+        for(int i=0; i<keyStoreDataExpList.size(); i++) {
+            if(keyStoreDataList.get(i).address.equals(address) && keyStoreDataExpList.get(i).ledgerPath.length() != 0) {
+                path = keyStoreDataExpList.get(i).ledgerPath;
+            }
+        }
+        return path;
+    }
+
+    public void setLedger(HIDDevice device) {
+        this.ledger = device;
+    }
+
+    public HIDDevice getLedger() {
+        return this.ledger;
+    }
+
+    public void closeLedger() {
+        try {
+            if(ledger != null) {
+                this.ledger.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private CallTransaction.Contract getTokenContract() {
         if(tokenContract == null) {
             tokenContract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
@@ -878,36 +910,7 @@ public class AppManager {
             keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
         }
 
-        // 목록에 있는 데이터들의 값을 갱신한다.
-        if(mApis != null) {
-            Block bestBlock = mApis.getBlockchain().getBestBlock();
-            Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
-
-            if(bestBlock.getNumber() >= 10) {
-
-                Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
-
-                KeyStoreDataExp keyExp = null;
-                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
-                    keyExp = keyStoreDataExpList.get(i);
-                    keyExp.mask = getMaskWithAddress(keyExp.address);
-                    keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
-                    keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
-                    keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
-                }
-
-                long confirmBlockNum = bestBlock.getNumber() - 6;
-                Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
-                Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
-
-                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
-                    keyExp = keyStoreDataExpList.get(i);
-                    keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
-                }
-
-            }
-        }
-
+        // Add ledger address to list
         for(LedgerRecord ledger : ledgers) {
             boolean isExist = false;
             KeyStoreData key = new KeyStoreData();
@@ -936,6 +939,36 @@ public class AppManager {
 
                 keyStoreDataList.add(key);
                 keyStoreDataExpList.add(keyExp);
+            }
+        }
+
+        // 목록에 있는 데이터들의 값을 갱신한다.
+        if(mApis != null) {
+            Block bestBlock = mApis.getBlockchain().getBestBlock();
+            Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+
+            if(bestBlock.getNumber() >= 10) {
+
+                Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+
+                KeyStoreDataExp keyExp = null;
+                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    keyExp = keyStoreDataExpList.get(i);
+                    keyExp.mask = getMaskWithAddress(keyExp.address);
+                    keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
+                    keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
+                    keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
+                }
+
+                long confirmBlockNum = bestBlock.getNumber() - 6;
+                Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
+                Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
+
+                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    keyExp = keyStoreDataExpList.get(i);
+                    keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                }
+
             }
         }
 
@@ -1294,9 +1327,48 @@ public class AppManager {
         return tx;
     }
 
+    // Generate tx for ledger
+    public Transaction apisGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data){
+        sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
+        sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
+        sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
+
+        byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
+        byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
+        byte[] value = new BigInteger(sValue).toByteArray();
+
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce), // none
+                gasPrice,   //price
+                gasLimit,   //gasLimit
+                toAddress,  //reciveAddress
+                toMask, //mask
+                value,  //value
+                data, // data - smart contract data
+                this.mApis.getChainIdForNextBlock());
+
+        // For raw transaction byte code
+        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + ByteUtil.toHexString(tx.getHash()));
+        return tx;
+    }
+
+    // Generate tx for ledger
+    public Transaction apisGenerateTransactionWithLedgerTx(Transaction tx, char[] knowledgeKey){
+        if(knowledgeKey != null && knowledgeKey.length > 0){
+            tx.authorize(String.valueOf(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+        }
+        return tx;
+    }
+
     public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data, char[] passwd, char[] knowledgeKey){
         BigInteger nonce = this.mApis.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
         return apisGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data, passwd, knowledgeKey);
+    }
+
+    // Generate tx for ledger
+    public Transaction generateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] toMask, byte[] data){
+        BigInteger nonce = this.mApis.getPendingState().getNonce(ByteUtil.hexStringToBytes(addr));
+        return apisGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, toMask, data);
     }
 
     public void apisSendTransactions(Transaction tx){
@@ -1723,7 +1795,6 @@ public class AppManager {
     }
 
 
-    public static String getGeneralPropertiesData(String key){ return getGeneralProperties().getProperty(key); }
     public static Properties getGeneralProperties(){
         if(prop == null) {
             createProperties();
@@ -1769,6 +1840,7 @@ public class AppManager {
 
         return prop;
     }
+    public static String getGeneralPropertiesData(String key){ return getGeneralProperties().getProperty(key); }
 
     public static void saveGeneralProperties(String key, String value){
         Properties prop = getGeneralProperties();

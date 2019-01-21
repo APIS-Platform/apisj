@@ -381,6 +381,8 @@ public class StringManager {
         public SimpleStringProperty checkConnectionFailedInit = new SimpleStringProperty();
         public SimpleStringProperty checkConnectionFailedEmpty = new SimpleStringProperty();
         public SimpleStringProperty checkConnectionFailedMulti = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionFailedDisconn = new SimpleStringProperty();
+        public SimpleStringProperty checkConnectionFailedCancel = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseFourRightTitle2 = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseFourRightSubTitle2 = new SimpleStringProperty();
         public SimpleStringProperty addWallet = new SimpleStringProperty();
@@ -453,6 +455,8 @@ public class StringManager {
             checkConnectionFailedInit.set(StringManager.this.getString("check_connection_failed_init", "Check connection first."));
             checkConnectionFailedEmpty.set(StringManager.this.getString("check_connection_failed_empty", "No wallet found."));
             checkConnectionFailedMulti.set(StringManager.this.getString("check_connection_failed_multi", "2 or more wallet found. Please connect only one wallet."));
+            checkConnectionFailedDisconn.set(StringManager.this.getString("check_connection_failed_disconn", "Please check the connection of ledger."));
+            checkConnectionFailedCancel.set(StringManager.this.getString("check_connection_failed_cancel", "Try again to generate transaction."));
             lwPhaseFourRightTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_title", "Select HD derivation path"));
             lwPhaseFourRightSubTitle2.set(StringManager.this.getString("intro_lw_phase_four_right_sub_title", "Select the address"));
             addWallet.set(StringManager.this.getString("add_wallet", "Add your wallet"));

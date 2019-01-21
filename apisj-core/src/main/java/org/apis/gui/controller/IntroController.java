@@ -61,8 +61,8 @@ public class IntroController extends BaseViewController {
     private static final int CHECK_CONNECTION_FLAG_NULL = 1;
     private static final int CHECK_CONNECTION_FLAG_MORE = 2;
     private static final int CHECK_CONNECTION_FLAG_SUCCESS = 3;
+    private static final int CHECK_CONNECTION_FLAG_DISCONN = 4;
     private static int CHECK_CONNECTION_FLAG = CHECK_CONNECTION_FLAG_INIT;
-    private HIDDevice ledger = null;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
@@ -876,6 +876,8 @@ public class IntroController extends BaseViewController {
     }
 
     private void ledgerAddressControl(String path, int currentPage) {
+        HIDDevice ledger = AppManager.getInstance().getLedger();
+
         ledgerAddrVBox.getChildren().clear();
         ledgerPathList.clear();
         ledgerAddressList.clear();
@@ -917,6 +919,7 @@ public class IntroController extends BaseViewController {
                     LedgerAddressItemController controller = loader.getController();
 
                     controller.setAddress(ByteUtil.toHexString(ledgerAddressList.get(i)));
+                    controller.setPath(ledgerPathList.get(i));
                     // Change balance representation
                     String balance = ApisUtil.readableApis(AppManager.getInstance().getBalance(controller.getAddress()), true);
                     if(balance.indexOf(".") != -1) {
@@ -1541,7 +1544,8 @@ public class IntroController extends BaseViewController {
             return;
         }
 
-        if(checkOnlyConncection() == CHECK_CONNECTION_FLAG_SUCCESS) {
+        checkConnection();
+        if(CHECK_CONNECTION_FLAG == CHECK_CONNECTION_FLAG_SUCCESS) {
             this.introLoadWalletPhaseThreeTypeLedger.setVisible(false);
             this.introLoadWalletPhaseFourTypeLedger.setVisible(true);
             this.introNaviThree.setImage(introNaviCircle);
@@ -1551,13 +1555,14 @@ public class IntroController extends BaseViewController {
             this.apisPathController.getHandler().clicked();
             ((DerivationPathTextItemController)this.customPathController).clear();
             this.introPhaseTab.getSelectionModel().select(9);
-        } else {
-            checkConnection();
         }
     }
 
     public void checkConnection() {
-        switch(CHECK_CONNECTION_FLAG = checkOnlyConncection()) {
+        HIDDevice ledger = AppManager.getInstance().getLedger();
+        byte[] tempAddress = null;
+
+        switch(CHECK_CONNECTION_FLAG = checkOnlyConnection()) {
             case CHECK_CONNECTION_FLAG_SUCCESS :
                 checkConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
                 StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cb01e1e);
@@ -1566,10 +1571,20 @@ public class IntroController extends BaseViewController {
                 if(ledger == null) {
                     try {
                         HIDModule module = HIDModule.getInstance();
-                        ledger = new HIDDevice(module.getDeviceList().get(0).getDevice());
+                        AppManager.getInstance().setLedger(new HIDDevice(module.getDeviceList().get(0).getDevice()));
                     } catch (UsbException e) {
                         e.printStackTrace();
                     }
+                }
+
+                // Exception handling for disconnecting while proceeding
+                tempAddress = AppManager.getInstance().getLedger().getAddress(apisPathController.getPathLabel(), false, false);
+                if(tempAddress == null) {
+                    checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedDisconn);
+                    StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
+                    AppManager.getInstance().closeLedger();
+                    AppManager.getInstance().setLedger(null);
+                    CHECK_CONNECTION_FLAG = CHECK_CONNECTION_FLAG_DISCONN;
                 }
                 break;
 
@@ -1577,21 +1592,23 @@ public class IntroController extends BaseViewController {
                 checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedMulti);
                 StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
                 checkConnectionMessageController.setVisible(true);
-                ledger = null;
+                AppManager.getInstance().closeLedger();
+                AppManager.getInstance().setLedger(null);
                 break;
 
             case CHECK_CONNECTION_FLAG_NULL :
                 checkConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedEmpty);
                 StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeLedgerNext, StyleManager.AColor.Cd8d8d8);
                 checkConnectionMessageController.setVisible(true);
-                ledger = null;
+                AppManager.getInstance().closeLedger();
+                AppManager.getInstance().setLedger(null);
                 break;
 
             default : break;
         }
     }
 
-    public int checkOnlyConncection() {
+    public int checkOnlyConnection() {
         HIDModule module = HIDModule.getInstance();
         module.loadDeviceList();
 
@@ -1620,13 +1637,9 @@ public class IntroController extends BaseViewController {
         String path = "";
         String address = "";
 
-        for(int i=0; i<pathItemControllers.size(); i++) {
-            if(pathItemControllers.get(i).isChecked()) {
-                path = pathItemControllers.get(i).getPathLabel();
-            }
-        }
         for(int i=0; i<addressItemControllers.size(); i++) {
             if(addressItemControllers.get(i).isChecked()) {
+                path = addressItemControllers.get(i).getPath();
                 address = addressItemControllers.get(i).getAddress();
             }
         }
