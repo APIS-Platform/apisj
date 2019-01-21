@@ -24,7 +24,6 @@ import org.apis.util.FileUtil;
 import org.iq80.leveldb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -38,8 +37,8 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static org.fusesource.leveldbjni.JniDBFactory.factory;
 import static org.apis.util.ByteUtil.toHexString;
+import static org.fusesource.leveldbjni.JniDBFactory.factory;
 
 /**
  * @author Roman Mandeleil
@@ -194,6 +193,10 @@ public class LevelDbDataSource implements DbSource<byte[]> {
                 return ret;
             } catch (DBException e) {
                 logger.warn("Exception. Retrying again...", e);
+
+                // DB가 close 되서 catch 된거라면, 다시 init를 실행한다
+                init();
+
                 byte[] ret = db.get(key);
                 if (logger.isTraceEnabled()) logger.trace("<~ LevelDbDataSource.get(): " + name + ", key: " + toHexString(key) + ", " + (ret == null ? "null" : ret.length));
                 return ret;
