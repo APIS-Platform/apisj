@@ -45,6 +45,8 @@ public class WebViewFX extends Application {
     private static final Logger logger = LoggerFactory.getLogger("webViewFx");
     private static Apis mApis;
 
+    private byte[] from;
+
     private WebEngine webEngine;
 
     public void start(Stage stage) {
@@ -118,6 +120,13 @@ public class WebViewFX extends Application {
         return null;
     }
 
+    public byte[] getFrom() {
+        return from;
+    }
+
+    public void setFrom(byte[] from) {
+        this.from = from;
+    }
 
     private void onMessage(String result) {
         webEngine.executeScript("canvasProvider.onMessage('" + result + "');");
@@ -140,7 +149,7 @@ public class WebViewFX extends Application {
 
                     // TODO 사용자가 어떤 주소로 트랜잭션을 전송할지 sender 변수에 주소를 선택해둬야 한다.
                     ECKey sender = ECKey.DUMMY;
-                    byte[] from = sender.getAddress();
+                    from = sender.getAddress();
 
 
                     byte[] to = ByteUtil.hexStringToBytes((String) params.get("to"));
