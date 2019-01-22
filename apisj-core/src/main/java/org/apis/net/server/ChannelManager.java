@@ -27,6 +27,7 @@ import org.apis.facade.Apis;
 import org.apis.net.message.ReasonCode;
 import org.apis.sync.SyncManager;
 import org.apis.sync.SyncPool;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,7 +216,7 @@ public class ChannelManager {
     public boolean isRecentlyDisconnected(InetAddress peerAddr) {
         Date disconnectTime = recentlyDisconnected.get(peerAddr);
         if (disconnectTime != null &&
-                System.currentTimeMillis() - disconnectTime.getTime() < INBOUND_CONNECTION_BAN_TIMEOUT) {
+                TimeUtils.getRealTimestamp() - disconnectTime.getTime() < INBOUND_CONNECTION_BAN_TIMEOUT) {
             return true;
         } else {
             recentlyDisconnected.remove(peerAddr);

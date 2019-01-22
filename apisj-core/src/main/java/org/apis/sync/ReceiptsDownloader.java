@@ -23,20 +23,18 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.crypto.HashUtil;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.DbFlushManager;
 import org.apis.db.IndexedBlockStore;
 import org.apis.db.TransactionStore;
 import org.apis.net.eth.handler.Eth63;
 import org.apis.net.server.Channel;
-import org.apis.core.*;
-import org.apis.crypto.HashUtil;
-import org.apis.datasource.DataSourceArray;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -171,9 +169,9 @@ public class ReceiptsDownloader {
             try {
 
                 if (toDownload.isEmpty()) {
-                    if (fillBlockQueue() > 0 || System.currentTimeMillis() - t > REQUEST_TIMEOUT) {
+                    if (fillBlockQueue() > 0 || TimeUtils.getRealTimestamp() - t > REQUEST_TIMEOUT) {
                         toDownload = getToDownload();
-                        t = System.currentTimeMillis();
+                        t = TimeUtils.getRealTimestamp();
                     }
                 }
 

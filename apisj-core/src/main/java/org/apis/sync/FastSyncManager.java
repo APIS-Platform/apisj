@@ -21,33 +21,28 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.crypto.HashUtil;
+import org.apis.datasource.DbSource;
 import org.apis.datasource.NodeKeyCompositor;
 import org.apis.datasource.rocksdb.RocksDbDataSource;
 import org.apis.db.DbFlushManager;
 import org.apis.db.HeaderStore;
 import org.apis.db.IndexedBlockStore;
 import org.apis.db.StateSource;
-import org.apis.net.client.Capability;
-import org.apis.net.eth.handler.Eth63;
-import org.apis.net.message.ReasonCode;
-import org.apis.net.server.Channel;
-import org.apis.config.SystemProperties;
-import org.apis.trie.TrieKey;
-import org.apis.util.ByteArrayMap;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.Value;
-import org.apis.core.*;
-import org.apis.crypto.HashUtil;
-import org.apis.datasource.DbSource;
 import org.apis.facade.SyncStatus;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.client.Capability;
+import org.apis.net.eth.handler.Eth63;
+import org.apis.net.message.ReasonCode;
+import org.apis.net.server.Channel;
+import org.apis.trie.TrieKey;
 import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -61,12 +56,10 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static org.apis.listener.EthereumListener.SyncState.COMPLETE;
-import static org.apis.listener.EthereumListener.SyncState.SECURE;
-import static org.apis.listener.EthereumListener.SyncState.UNSECURE;
-import static org.apis.util.CompactEncoder.hasTerminator;
+import static org.apis.listener.EthereumListener.SyncState.*;
 import static org.apis.trie.TrieKey.fromPacked;
 import static org.apis.util.ByteUtil.toHexString;
+import static org.apis.util.CompactEncoder.hasTerminator;
 
 /**
  * Created by Anton Nashatyrev on 24.10.2016.
@@ -303,7 +296,7 @@ public class FastSyncManager {
 
         public void reqSent(Long requestId) {
             synchronized (FastSyncManager.this) {
-                Long timestamp = System.currentTimeMillis();
+                Long timestamp = TimeUtils.getRealTimestamp();
                 requestSent.put(requestId, timestamp);
             }
         }
@@ -355,7 +348,7 @@ public class FastSyncManager {
     }
 
     synchronized void processTimeouts() {
-        long cur = System.currentTimeMillis();
+        long cur = TimeUtils.getRealTimestamp();
         for (TrieNodeRequest request : new ArrayList<>(pendingNodes.values())) {
             Iterator<Map.Entry<Long, Long>> reqIterator = request.requestSent.entrySet().iterator();
             while (reqIterator.hasNext()) {
@@ -410,7 +403,7 @@ public class FastSyncManager {
             if (hashes.size() > 0) {
                 logger.trace("Requesting " + hashes.size() + " nodes from peer: " + idle);
                 ListenableFuture<List<Pair<byte[], byte[]>>> nodes = ((Eth63) idle.getEthHandler()).requestTrieNodes(hashes);
-                final long reqTime = System.currentTimeMillis();
+                final long reqTime = TimeUtils.getRealTimestamp();
                 Futures.addCallback(nodes, new FutureCallback<List<Pair<byte[], byte[]>>>() {
                     @Override
                     public void onSuccess(List<Pair<byte[], byte[]>> result) {
@@ -418,11 +411,11 @@ public class FastSyncManager {
                             synchronized (FastSyncManager.this) {
                                 logger.trace("Received " + result.size() + " nodes (of " + hashes.size() + ") from peer: " + idle);
                                 idle.getNodeStatistics().eth63NodesRequested.add(hashes.size());
-                                idle.getNodeStatistics().eth63NodesRetrieveTime.add(System.currentTimeMillis() - reqTime);
+                                idle.getNodeStatistics().eth63NodesRetrieveTime.add(TimeUtils.getRealTimestamp() - reqTime);
                                 for (Pair<byte[], byte[]> pair : result) {
                                     TrieNodeRequest request = pendingNodes.get(pair.getKey());
                                     if (request == null) {
-                                        long t = System.currentTimeMillis();
+                                        long t = TimeUtils.getRealTimestamp();
                                         logger.debug("Received node which was not requested: " + toHexString(pair.getKey()) + " from " + idle);
                                         idle.disconnect(ReasonCode.TOO_MANY_PEERS); // We need better peers for this stage
                                         return;
@@ -450,7 +443,7 @@ public class FastSyncManager {
                     public void onFailure(Throwable t) {
                         logger.warn("Error with Trie Node request: " + t);
                         idle.getNodeStatistics().eth63NodesRequested.add(hashes.size());
-                        idle.getNodeStatistics().eth63NodesRetrieveTime.add(System.currentTimeMillis() - reqTime);
+                        idle.getNodeStatistics().eth63NodesRetrieveTime.add(TimeUtils.getRealTimestamp() - reqTime);
                         synchronized (FastSyncManager.this) {
                             for (byte[] hash : hashes) {
                                 final TrieNodeRequest request = pendingNodes.get(hash);
@@ -511,7 +504,7 @@ public class FastSyncManager {
     long lastNodeCount = 0;
 
     private void logStat() {
-        long cur = System.currentTimeMillis();
+        long cur = TimeUtils.getRealTimestamp();
         if (cur - last > 5000) {
             logger.info("FastSync: received: " + nodesInserted + ", known: " + nodesQueue.size() + ", pending: " + pendingNodes.size()
                     + String.format(", nodes/sec: %1$.2f", 1000d * (nodesInserted - lastNodeCount) / (cur - last)));
@@ -772,7 +765,7 @@ public class FastSyncManager {
         byte[] pivotBlockHash = config.getFastSyncPivotBlockHash();
         long pivotBlockNumber = 0;
 
-        long start = System.currentTimeMillis();
+        long start = TimeUtils.getRealTimestamp();
         long s = start;
 
         if (pivotBlockHash != null) {
@@ -784,7 +777,7 @@ public class FastSyncManager {
             while (true) {
                 List<Channel> allIdle = pool.getAllIdle();
 
-                forceSyncRemains = FORCE_SYNC_TIMEOUT - (System.currentTimeMillis() - start);
+                forceSyncRemains = FORCE_SYNC_TIMEOUT - (TimeUtils.getRealTimestamp() - start);
 
                 if (allIdle.size() >= MIN_PEERS_FOR_PIVOT_SELECTION || forceSyncRemains < 0 && !allIdle.isEmpty()) {
                     Channel bestPeer = allIdle.get(0);
@@ -800,7 +793,7 @@ public class FastSyncManager {
                     }
                 }
 
-                long t = System.currentTimeMillis();
+                long t = TimeUtils.getRealTimestamp();
                 if (t - s > 5000) {
                     logger.info("FastSync: waiting for at least " + MIN_PEERS_FOR_PIVOT_SELECTION + " peers or " + forceSyncRemains / 1000 + " sec to select pivot block... ("
                             + allIdle.size() + " peers so far)");
@@ -836,7 +829,7 @@ public class FastSyncManager {
 
                 if (result != null) return result;
 
-                long t = System.currentTimeMillis();
+                long t = TimeUtils.getRealTimestamp();
                 if (t - s > 5000) {
                     logger.info("FastSync: waiting for a peer to fetch pivot block...");
                     s = t;

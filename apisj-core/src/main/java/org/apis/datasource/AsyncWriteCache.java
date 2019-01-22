@@ -19,6 +19,7 @@ package org.apis.datasource;
 
 import com.google.common.util.concurrent.*;
 import org.apis.util.ALock;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +128,9 @@ public abstract class AsyncWriteCache<Key, Value> extends AbstractCachedSource<K
         logger.debug("AsyncWriteCache (" + name + "): flush submitted");
         lastFlush = flushExecutor.submit(() -> {
             logger.debug("AsyncWriteCache (" + name + "): flush started");
-            long s = System.currentTimeMillis();
+            long s = TimeUtils.getRealTimestamp();
             boolean ret = flushingCache.flush();
-            logger.debug("AsyncWriteCache (" + name + "): flush completed in " + (System.currentTimeMillis() - s) + " ms");
+            logger.debug("AsyncWriteCache (" + name + "): flush completed in " + (TimeUtils.getRealTimestamp() - s) + " ms");
             return ret;
         });
         return lastFlush;

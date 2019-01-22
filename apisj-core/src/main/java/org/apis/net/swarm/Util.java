@@ -17,10 +17,7 @@
  */
 package org.apis.net.swarm;
 
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPElement;
-import org.apis.util.Utils;
+import org.apis.util.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -88,7 +85,7 @@ public class Util {
 
     public static class Timer {
         public long curTime() {
-            return System.currentTimeMillis();
+            return TimeUtils.getRealTimestamp();
         }
     }
 

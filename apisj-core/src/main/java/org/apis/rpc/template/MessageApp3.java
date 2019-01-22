@@ -6,7 +6,7 @@ import org.apis.util.ByteUtil;
 import java.nio.charset.Charset;
 import java.util.*;
 
-public class MessageWeb3 {
+public class MessageApp3 {
     private final String UTF8 = "UTF-8";
     private String jsonrpc;
     private long id;
@@ -82,7 +82,7 @@ public class MessageWeb3 {
 
     @Override
     public String toString() {
-        return "MessageWeb3{" +
+        return "MessageApp3{" +
                 "jsonrpc='" + jsonrpc + '\'' +
                 ", id=" + id +
                 ", method='" + method + '\'' +

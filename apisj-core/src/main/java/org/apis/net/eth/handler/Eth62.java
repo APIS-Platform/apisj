@@ -123,7 +123,7 @@ public class Eth62 extends EthHandler {
 
     private Map<Long, BlockHeaderValidator> validatorMap;
     protected long lastReqSentTime;
-    protected long connectedTime = System.currentTimeMillis();
+    protected long connectedTime = TimeUtils.getRealTimestamp();
     protected long processingTime = 0;
 
 
@@ -312,7 +312,7 @@ public class Eth62 extends EthHandler {
         headerRequest = messageWrapper;
 
         sendNextHeaderRequest();
-        lastReqSentTime = System.currentTimeMillis();
+        lastReqSentTime = TimeUtils.getRealTimestamp();
 
         return messageWrapper.getFutureHeaders();
     }
@@ -339,7 +339,7 @@ public class Eth62 extends EthHandler {
         GetBlockBodiesMessage msg = new GetBlockBodiesMessage(hashes);
 
         sendMessage(msg);
-        lastReqSentTime = System.currentTimeMillis();
+        lastReqSentTime = TimeUtils.getRealTimestamp();
 
         futureBlocks = SettableFuture.create();
         return futureBlocks;
@@ -656,9 +656,15 @@ public class Eth62 extends EthHandler {
             }
         }
 
+        //updateBestBlock
+        if(receivedBlocks.size() > 0) {
+            Block peerBest = receivedBlocks.get(receivedBlocks.size() - 1);
+            updateBestBlock(peerBest);
+            updateTotalRewardPoint(peerBest.getCumulativeRewardPoint());
+        }
 
 
-       MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
+        MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
         boolean changed = minedBlockCache.compareMinedBlocks(receivedBlocks);
 
         // 변경된 리스트를 전파해야한다.
@@ -752,7 +758,7 @@ public class Eth62 extends EthHandler {
         // 여기까지
 
 
-        processingTime += lastReqSentTime > 0 ? (System.currentTimeMillis() - lastReqSentTime) : 0;
+        processingTime += lastReqSentTime > 0 ? (TimeUtils.getRealTimestamp() - lastReqSentTime) : 0;
         lastReqSentTime = 0;
         peerState = IDLE;
     }
@@ -807,7 +813,7 @@ public class Eth62 extends EthHandler {
         futureBlocks.set(blocks);
         futureBlocks = null;
 
-        processingTime += (System.currentTimeMillis() - lastReqSentTime);
+        processingTime += (TimeUtils.getRealTimestamp() - lastReqSentTime);
         lastReqSentTime = 0;
         peerState = IDLE;
     }
@@ -862,7 +868,7 @@ public class Eth62 extends EthHandler {
 
         wrapper.send();
         sendMessage(wrapper.getMessage());
-        lastReqSentTime = System.currentTimeMillis();
+        lastReqSentTime = TimeUtils.getRealTimestamp();
     }
 
     protected synchronized void processInitHeaders(List<BlockHeader> received) {
@@ -1192,8 +1198,8 @@ public class Eth62 extends EthHandler {
 
     @Override
     public String getSyncStats() {
-        int waitResp = lastReqSentTime > 0 ? (int) (System.currentTimeMillis() - lastReqSentTime) / 1000 : 0;
-        long lifeTime = System.currentTimeMillis() - connectedTime;
+        int waitResp = lastReqSentTime > 0 ? (int) (TimeUtils.getRealTimestamp() - lastReqSentTime) / 1000 : 0;
+        long lifeTime = TimeUtils.getRealTimestamp() - connectedTime;
         return String.format(
                 "Peer %s: [ %s %15s, %8s, %18s, ping %6s ms, best block %s(%s), rewardPoint %s, %s]: (idle %s of %s) %s",
                 getVersion(),
