@@ -977,6 +977,9 @@ public class StringManager {
         public SimpleStringProperty yesBtn = new SimpleStringProperty();
         public SimpleStringProperty noBtn = new SimpleStringProperty();
 
+        public SimpleStringProperty ledgerNoticeTitle = new SimpleStringProperty();
+        public SimpleStringProperty ledgerNoticeSubTitle = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1100,6 +1103,9 @@ public class StringManager {
             completeCancel.set(StringManager.this.getString("popup_complete_cancel", "Cancellation can take up to 24 hours from request. Would you like to proceed?"));
             yesBtn.set(StringManager.this.getString("popup_yes_btn", "Yes"));
             noBtn.set(StringManager.this.getString("popup_no_btn", "No"));
+
+            ledgerNoticeTitle.set(StringManager.this.getString("popup_ledger_notice_title", "Confirm Transaction"));
+            ledgerNoticeSubTitle.set(StringManager.this.getString("popup_ledger_notice_sub_title", "Please check your ledger to generate transaction."));
         }
     }
 
