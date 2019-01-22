@@ -5,6 +5,7 @@ import org.apis.crypto.HashUtil;
 import org.apis.rpc.template.MessageApp3;
 import org.apis.util.AesUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.TimeUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -59,7 +60,7 @@ public class RPCJsonUtil {
      ***********************/
     // auth키 를 받아 토큰 생성
     public static byte[] createToken(String auth, String ip) {
-        long current = System.currentTimeMillis();
+        long current = TimeUtils.getRealTimestamp();
         return HashUtil.sha3(
                 ByteUtil.merge(auth.getBytes(), ip.getBytes(), ByteUtil.longToBytes(current))
         );

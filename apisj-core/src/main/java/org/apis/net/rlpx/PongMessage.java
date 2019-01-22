@@ -18,10 +18,7 @@
 package org.apis.net.rlpx;
 
 import org.apis.crypto.ECKey;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPItem;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 import org.spongycastle.util.encoders.Hex;
 
 import static org.apis.util.ByteUtil.longToBytes;
@@ -34,7 +31,7 @@ public class PongMessage extends Message {
 
     public static PongMessage create(byte[] token, Node toNode, ECKey privKey) {
 
-        long expiration = 90 * 60 + System.currentTimeMillis() / 1000;
+        long expiration = 90 * 60 + TimeUtils.getRealTimestamp() / 1000;
 
         byte[] rlpToList = toNode.getBriefRLP();
 
@@ -56,7 +53,7 @@ public class PongMessage extends Message {
     }
 
     public static PongMessage create(byte[] token, ECKey privKey) {
-        return create(token, privKey, 3 + System.currentTimeMillis() / 1000);
+        return create(token, privKey, 3 + TimeUtils.getRealTimestamp() / 1000);
     }
 
     static PongMessage create(byte[] token, ECKey privKey, long expiration) {
@@ -98,7 +95,7 @@ public class PongMessage extends Message {
 
     @Override
     public String toString() {
-        long currTime = System.currentTimeMillis() / 1000;
+        long currTime = TimeUtils.getRealTimestamp() / 1000;
 
         String out = String.format("[PongMessage] \n token: %s \n expires in %d seconds \n %s\n",
                 Hex.toHexString(token), (expires - currTime), super.toString());

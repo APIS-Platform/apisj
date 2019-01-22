@@ -18,17 +18,13 @@
 package org.apis.core;
 
 import org.apis.datasource.MemSizeEstimator;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPElement;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apis.util.TimeUtils.secondsToMillis;
-import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
 
 /**
  * <p> Wraps {@link Block} </p>
@@ -123,7 +119,7 @@ public class BlockWrapper {
 
     public void importFailed() {
         if (importFailedAt == 0) {
-            importFailedAt = System.currentTimeMillis();
+            importFailedAt = TimeUtils.getRealTimestamp();
         }
     }
 
@@ -135,12 +131,12 @@ public class BlockWrapper {
         if(importFailedAt == 0) {
             return 0;
         } else {
-            return System.currentTimeMillis() - importFailedAt;
+            return TimeUtils.getRealTimestamp() - importFailedAt;
         }
     }
 
     public long timeSinceReceiving() {
-        return System.currentTimeMillis() - receivedAt;
+        return TimeUtils.getRealTimestamp() - receivedAt;
     }
 
     public byte[] getBytes() {

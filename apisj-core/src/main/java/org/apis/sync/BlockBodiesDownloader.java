@@ -22,19 +22,17 @@ import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.BlockHeaderWrapper;
 import org.apis.core.BlockWrapper;
+import org.apis.crypto.HashUtil;
 import org.apis.db.DbFlushManager;
 import org.apis.db.HeaderStore;
 import org.apis.db.IndexedBlockStore;
 import org.apis.net.server.Channel;
-import org.apis.core.*;
-import org.apis.crypto.HashUtil;
-import org.apis.datasource.DataSourceArray;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -162,7 +160,7 @@ public class BlockBodiesDownloader extends BlockDownloader {
             logger.debug("{}: header queue size {} (~{}mb)", name, syncQueue.getHeadersCount(),
                     syncQueue.getHeadersCount() * getEstimatedBlockSize() / 1024 / 1024);
 
-            long c = System.currentTimeMillis();
+            long c = TimeUtils.getRealTimestamp();
             if (c - t > 5000) {
                 t = c;
                 logger.info("FastSync: downloaded blocks. Last: " + blockWrappers.get(blockWrappers.size() - 1).getBlock().getShortDescr());

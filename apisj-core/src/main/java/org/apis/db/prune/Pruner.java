@@ -6,6 +6,7 @@ import org.apis.datasource.JournalSource;
 import org.apis.datasource.QuotientFilter;
 import org.apis.datasource.Source;
 import org.apis.util.ByteArraySet;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +162,7 @@ public class Pruner {
 
         logger.trace("prune " + segment);
 
-        long t = System.currentTimeMillis();
+        long t = TimeUtils.getRealTimestamp();
         Pruning pruning = new Pruning();
         // important for fork management, check Pruning#insertedInMainChain and Pruning#insertedInForks for details
         segment.forks.sort((f1, f2) -> Long.compare(f1.startNumber(), f2.startNumber()));
@@ -211,7 +212,7 @@ public class Pruner {
             }
         }
 
-        logger.trace(segment + " pruned in {}ms", System.currentTimeMillis() - t);
+        logger.trace(segment + " pruned in {}ms", TimeUtils.getRealTimestamp() - t);
     }
 
     public void persist(byte[] hash) {
@@ -219,7 +220,7 @@ public class Pruner {
 
         logger.trace("persist [{}]", toHexString(hash));
 
-        long t = System.currentTimeMillis();
+        long t = TimeUtils.getRealTimestamp();
         JournalSource.Update update = journal.get(hash);
         if (update == null) {
             logger.debug("skip [{}]: can't fetch update", HashUtil.shortHash(hash));
@@ -260,7 +261,7 @@ public class Pruner {
         }
 
         if (logger.isTraceEnabled()) logger.trace("[{}] persisted in {}ms: {}/{} ({}%) nodes deleted, filter load: {}/{}: {}, distinct collisions: {}",
-                HashUtil.shortHash(hash), System.currentTimeMillis() - t, nodesDeleted, update.getDeletedKeys().size(),
+                HashUtil.shortHash(hash), TimeUtils.getRealTimestamp() - t, nodesDeleted, update.getDeletedKeys().size(),
                 nodesDeleted * 100 / update.getDeletedKeys().size(),
                 ((CountingQuotientFilter) distantFilter).getEntryNumber(),
                 ((CountingQuotientFilter) distantFilter).getMaxInsertions(),

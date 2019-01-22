@@ -24,6 +24,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.DatagramPacket;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -71,7 +72,7 @@ public class WireTrafficStats  implements Runnable  {
         AtomicLong inSize = new AtomicLong();
         AtomicLong outPackets = new AtomicLong();
         AtomicLong inPackets = new AtomicLong();
-        long lastTime = System.currentTimeMillis();
+        long lastTime = TimeUtils.getRealTimestamp();
 
         public String stats() {
             long out = outSize.getAndSet(0);
@@ -80,7 +81,7 @@ public class WireTrafficStats  implements Runnable  {
             long inPac = inPackets.getAndSet(0);
             outSizeTot += out;
             inSizeTot += in;
-            long curTime = System.currentTimeMillis();
+            long curTime = TimeUtils.getRealTimestamp();
             long d = (curTime - lastTime);
             long outSpeed = out * 1000 / d;
             long inSpeed = in * 1000 / d;

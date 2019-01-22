@@ -21,21 +21,16 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.db.StateSource;
-import org.apis.net.eth.EthVersion;
-import org.apis.config.SystemProperties;
-import org.apis.core.*;
 import org.apis.listener.CompositeEthereumListener;
-import org.apis.net.eth.message.EthMessage;
-import org.apis.net.eth.message.GetNodeDataMessage;
-import org.apis.net.eth.message.GetReceiptsMessage;
-import org.apis.net.eth.message.NodeDataMessage;
-import org.apis.net.eth.message.ReceiptsMessage;
-
+import org.apis.net.eth.EthVersion;
+import org.apis.net.eth.message.*;
 import org.apis.sync.PeerState;
 import org.apis.util.ByteArraySet;
+import org.apis.util.TimeUtils;
 import org.apis.util.Value;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +40,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static org.apis.crypto.HashUtil.sha3;
 
 /**
  * Fast synchronization (PV63) Handler
@@ -154,7 +147,7 @@ public class Eth63 extends Eth62 {
 
         requestNodesFuture = SettableFuture.create();
         sendMessage(msg);
-        lastReqSentTime = System.currentTimeMillis();
+        lastReqSentTime = TimeUtils.getRealTimestamp();
 
         peerState = PeerState.NODE_RETRIEVING;
         return requestNodesFuture;
@@ -169,7 +162,7 @@ public class Eth63 extends Eth62 {
 
         requestReceiptsFuture = SettableFuture.create();
         sendMessage(msg);
-        lastReqSentTime = System.currentTimeMillis();
+        lastReqSentTime = TimeUtils.getRealTimestamp();
 
         return requestReceiptsFuture;
     }
@@ -200,7 +193,7 @@ public class Eth63 extends Eth62 {
 
         requestedNodes = null;
         requestNodesFuture = null;
-        processingTime += (System.currentTimeMillis() - lastReqSentTime);
+        processingTime += (TimeUtils.getRealTimestamp() - lastReqSentTime);
         lastReqSentTime = 0;
         peerState = PeerState.IDLE;
     }
@@ -224,7 +217,7 @@ public class Eth63 extends Eth62 {
 
         requestedReceipts = null;
         requestReceiptsFuture = null;
-        processingTime += (System.currentTimeMillis() - lastReqSentTime);
+        processingTime += (TimeUtils.getRealTimestamp() - lastReqSentTime);
         lastReqSentTime = 0;
         peerState = PeerState.IDLE;
     }
@@ -240,7 +233,7 @@ public class Eth63 extends Eth62 {
     public String getSyncStats() {
         double nodesPerSec = 1000d * channel.getNodeStatistics().eth63NodesReceived.get() / channel.getNodeStatistics().eth63NodesRetrieveTime.get();
         double missNodesRatio = 1 - (double) channel.getNodeStatistics().eth63NodesReceived.get() / channel.getNodeStatistics().eth63NodesRequested.get();
-        long lifeTime = System.currentTimeMillis() - connectedTime;
+        long lifeTime = TimeUtils.getRealTimestamp() - connectedTime;
         return super.getSyncStats() + String.format("\tNodes/sec: %1$.2f, miss: %2$.2f", nodesPerSec, missNodesRatio);
     }
 }

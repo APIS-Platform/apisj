@@ -21,6 +21,7 @@ import org.apis.db.ByteArrayWrapper;
 import org.apis.samples.EventListenerSample;
 import org.apis.sync.BlockDownloader;
 import org.apis.util.ByteArrayMap;
+import org.apis.util.TimeUtils;
 import org.apis.util.Utils;
 import org.apis.vm.LogInfo;
 import org.apis.core.Block;
@@ -250,7 +251,7 @@ public abstract class EventListener<EventData> {
         boolean newEvent = false;
         if (event == null) {
             // new Tx
-            event = new PendingEvent(state.isPending() ? Utils.toUnixTime(System.currentTimeMillis()) : block.getTimestamp());
+            event = new PendingEvent(state.isPending() ? Utils.toUnixTime(TimeUtils.getRealTimestamp()) : block.getTimestamp());
             pendings.put(txHash, event);
             newEvent = true;
         }

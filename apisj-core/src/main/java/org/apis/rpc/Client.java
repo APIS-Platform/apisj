@@ -1,10 +1,9 @@
 package org.apis.rpc;
 
+import org.apis.util.TimeUtils;
 import org.java_websocket.WebSocket;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Client {
     private WebSocket webSocket;
@@ -27,7 +26,7 @@ public class Client {
     }
 
     void refreshLastDiscoveredTime() {
-        lastDiscoveredTime = System.currentTimeMillis();
+        lastDiscoveredTime = TimeUtils.getRealTimestamp();
     }
 
     public WebSocket getWebSocket() {

@@ -21,6 +21,7 @@ import org.apis.core.BlockHeader;
 import org.apis.core.BlockHeaderWrapper;
 import org.apis.core.BlockWrapper;
 import org.apis.db.IndexedBlockStore;
+import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class FastSyncDownloader extends BlockDownloader {
                 }
             }
 
-            long c = System.currentTimeMillis();
+            long c = TimeUtils.getRealTimestamp();
             if (c - t > 5000) {
                 t = c;
                 logger.info("FastSync: downloaded " + counter + " blocks so far. Last: " +
