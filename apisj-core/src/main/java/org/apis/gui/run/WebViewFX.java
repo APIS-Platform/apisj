@@ -133,7 +133,6 @@ public class WebViewFX extends Application {
         webEngine.executeScript("console.log('" + result + "');");
     }
 
-
     public class JavaConnector {
 
         public void send(String payload) {
@@ -143,7 +142,9 @@ public class WebViewFX extends Application {
                 // method를 확인해야한다. 서명 관련된 method일 경우, 서명 팝업을 띄워줘야한다.
                 // 새로 서명 후, 로우 트랜잭션을 교체해서 집어넣어야한다.
                 MessageApp3 message = RPCCommand.parseMessage(payload);
+
                 if(message.getMethod() != null && message.getMethod().equalsIgnoreCase("apis_sendTransaction")) {
+
                     Repository repo = ((Repository)mApis.getRepository()).getSnapshotTo(mApis.getBlockchain().getBestBlock().getStateRoot());
                     LinkedTreeMap params = (LinkedTreeMap) message.getParams().get(0);
 
@@ -223,7 +224,7 @@ public class WebViewFX extends Application {
                             // TODO 이 시점에 팝업을 띄워서 서명할 수 있도록 해야한다.
                             tx.sign(sender);
 
-                            mApis.submitTransaction(tx);
+                            //mApis.submitTransaction(tx);
 
                             // txHash 전달
                             String response = createJson(message.getId(), message.getMethod(), ByteUtil.toHexString0x(tx.getHash()));
