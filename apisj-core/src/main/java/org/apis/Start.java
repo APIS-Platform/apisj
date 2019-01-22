@@ -36,15 +36,24 @@ public class Start {
      */
     private static long timeLastBlockReceived = 0;
 
+    /**
+     * 프로그램이 종료된 시간을 기록했다가, 일정 시간이 경과하면 프로그램을 시작시킨다.
+     */
     private static long timeLastProgramClosed = 0;
 
     /**
-     * 블록 싱크가 멈춘 후, 프로그램을 재시작하기까지 대기하는 시간
+     * 블록 싱크가 멈춘 후, 프로그램을 종료하기까지 대기하는 시간
      */
     private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
 
+    /**
+     * 프로그램 종료 후 다시 시작하기까지 대기하는 시간
+     */
     private static final long TIME_RESTART_WAIT = 30*1_000L;
 
+    /**
+     * 프로그램이 종료된 상태인지를 나타내는 플래그
+     */
     private static boolean isClosed = false;
 
 
@@ -118,7 +127,7 @@ public class Start {
                     isClosed = false;
                 }
 
-            }, 30, 1, TimeUnit.SECONDS);
+            }, 60, 1, TimeUnit.SECONDS);
         }
 
         @Override
