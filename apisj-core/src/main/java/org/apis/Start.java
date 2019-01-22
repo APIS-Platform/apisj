@@ -43,7 +43,7 @@ public class Start {
      */
     private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
 
-    private static final long TIME_RESTART_WAIT = 10*1_000L;
+    private static final long TIME_RESTART_WAIT = 30*1_000L;
 
     private static boolean isClosed = false;
 
@@ -115,6 +115,7 @@ public class Start {
                 // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
                 if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
                     startAPIS();
+                    isClosed = false;
                 }
 
             }, 30, 1, TimeUnit.SECONDS);
