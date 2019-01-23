@@ -78,7 +78,7 @@
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextField fx:id="derivationTextField1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="48.0" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" GridPane.columnIndex="1">
+                  <TextField fx:id="derivationTextField1" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="48.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" text="44" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>

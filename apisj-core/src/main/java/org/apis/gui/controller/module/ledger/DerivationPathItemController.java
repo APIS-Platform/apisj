@@ -55,7 +55,7 @@ public class DerivationPathItemController implements Initializable {
     }
 
     public String getPathLabel() {
-        return pathLabel.getText();
+        return pathLabel.getText() + "/0";
     }
 
     public void setHandler(DerivationPathItemImpl handler) {

@@ -53,7 +53,7 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
         derivationTextField4.textProperty().addListener(textListener);
 
         // Set textField style
-        AppManager.settingTextFieldStyle(derivationTextField1);
+//        AppManager.settingTextFieldStyle(derivationTextField1);
         AppManager.settingTextFieldStyle(derivationTextField2);
         AppManager.settingTextFieldStyle(derivationTextField3);
         AppManager.settingTextFieldStyle(derivationTextField4);
@@ -73,7 +73,7 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
     }
 
     public void clear() {
-        derivationTextField1.setText("");
+//        derivationTextField1.setText("");
         derivationTextField2.setText("");
         derivationTextField3.setText("");
         derivationTextField4.setText("");
@@ -119,7 +119,7 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
     public String getPathLabel() {
         String path = "";
         if(derivationTextField1.getText().length() != 0 && derivationTextField2.getText().length() != 0 && derivationTextField3.getText().length() != 0 && derivationTextField4.getText().length() != 0) {
-            path =derivationTextField1.getText() + "'/" + derivationTextField2.getText() + "'/" + derivationTextField3.getText() + "'/" + derivationTextField4.getText();
+            path =derivationTextField1.getText() + "'/" + derivationTextField2.getText() + "'/" + derivationTextField3.getText() + "'/" + derivationTextField4.getText() + "/0";
         }
 
         return path;
