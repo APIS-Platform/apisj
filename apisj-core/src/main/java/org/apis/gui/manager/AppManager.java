@@ -112,16 +112,11 @@ public class AppManager {
     private long timeLastBlockReceived = 0;
     private long timeLastProgramClosed = 0;
     private boolean isClosed = false;
-    private boolean isFirst = true;
 
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
     // File Read
-    public void setFirst() {
-        this.isFirst = true;
-    }
-
     public File openFileReader(){
         File selectFile = null;
 
@@ -161,7 +156,6 @@ public class AppManager {
             isSyncDone = true;
 
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                System.out.println("!!!!!!!!!!!!!!!THREAD ON");
                 long now = TimeUtils.getRealTimestamp();
 
                 // 싱크가 지연된 경우 프로그램을 종료한다.
@@ -169,15 +163,13 @@ public class AppManager {
                     timeLastProgramClosed = now;
                     isClosed = true;
                     mApis.close();
-                    System.out.println("################CLOSED");
                 }
 
                 // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
                 if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                    startAPIS();
-                    isClosed = false;
-                    System.out.println("@@@@@@@@@@@@@@@@STARTED");
                     timeLastBlockReceived = now;
+                    isClosed = false;
+                    startAPIS();
                 }
 
             }, 60, 1, TimeUnit.SECONDS);
@@ -225,12 +217,7 @@ public class AppManager {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
-            if(isFirst && !isClosed) {
-                timeLastBlockReceived = TimeUtils.getRealTimestamp() - (TIME_CLOSE_WAIT + 5000);
-                isFirst = false;
-            } else {
-                timeLastBlockReceived = TimeUtils.getRealTimestamp();
-            }
+            timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
             // DB Sync Start
             DBSyncManager.getInstance(mApis).syncThreadStart();
