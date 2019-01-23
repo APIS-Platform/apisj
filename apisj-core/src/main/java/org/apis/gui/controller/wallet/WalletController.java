@@ -648,7 +648,7 @@ public class WalletController extends BaseViewController {
     }
 
     public void onClickSortWalletName(){
-
+        AppManager.getInstance().setFirst();
         Sort sortType = walletListController.getWalletSort();
         if(sortType != Sort.ALIAS_ASC){
             walletSort(Sort.ALIAS_ASC);

@@ -50,6 +50,7 @@ import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.*;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.ProgramResult;
@@ -105,16 +106,22 @@ public class AppManager {
     // Ledger device
     private HIDDevice ledger = null;
 
-    private static long timeLastBlockReceived = 0;
-    private static long timeLastProgramClosed = 0;
+    // Reboot function when sync stopped
     private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
     private static final long TIME_RESTART_WAIT = 30*1_000L;
-    private static boolean isClosed = false;
+    private long timeLastBlockReceived = 0;
+    private long timeLastProgramClosed = 0;
+    private boolean isClosed = false;
+    private boolean isFirst = true;
 
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
     // File Read
+    public void setFirst() {
+        this.isFirst = true;
+    }
+
     public File openFileReader(){
         File selectFile = null;
 
@@ -152,6 +159,28 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
+
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                System.out.println("!!!!!!!!!!!!!!!THREAD ON");
+                long now = TimeUtils.getRealTimestamp();
+
+                // 싱크가 지연된 경우 프로그램을 종료한다.
+                if(!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                    timeLastProgramClosed = now;
+                    isClosed = true;
+                    mApis.close();
+                    System.out.println("################CLOSED");
+                }
+
+                // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                    startAPIS();
+                    isClosed = false;
+                    System.out.println("@@@@@@@@@@@@@@@@STARTED");
+                    timeLastBlockReceived = now;
+                }
+
+            }, 60, 1, TimeUnit.SECONDS);
 
             // start rpc server
             AppManager.getInstance().startRPC();
@@ -193,11 +222,15 @@ public class AppManager {
             });
         }
 
-        long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
-            timeLastBlockReceived = TimeUtils.getRealTimestamp();
+            if(isFirst && !isClosed) {
+                timeLastBlockReceived = TimeUtils.getRealTimestamp() - (TIME_CLOSE_WAIT + 5000);
+                isFirst = false;
+            } else {
+                timeLastBlockReceived = TimeUtils.getRealTimestamp();
+            }
 
             // DB Sync Start
             DBSyncManager.getInstance(mApis).syncThreadStart();
@@ -1059,6 +1092,11 @@ public class AppManager {
 
     }//start
 
+    private void startAPIS() {
+        mApis = ApisFactory.createEthereum();
+        mApis.addListener(mListener);
+        mApis.getBlockMiner().setMinGasPrice(ApisUtil.convert(50, ApisUtil.Unit.nAPIS));
+    }
 
     public BigInteger getBalance(String address){
         return mApis.getRepository().getBalance(ByteUtil.hexStringToBytes(address));
