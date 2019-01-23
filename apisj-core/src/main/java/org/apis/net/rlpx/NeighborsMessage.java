@@ -18,10 +18,7 @@
 package org.apis.net.rlpx;
 
 import org.apis.crypto.ECKey;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPItem;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class NeighborsMessage extends Message {
 
     public static NeighborsMessage create(List<Node> nodes, ECKey privKey) {
 
-        long expiration = 90 * 60 + System.currentTimeMillis() / 1000;
+        long expiration = 90 * 60 + TimeUtils.getRealTimestamp() / 1000;
 
         byte[][] nodeRLPs = null;
 
@@ -93,7 +90,7 @@ public class NeighborsMessage extends Message {
     @Override
     public String toString() {
 
-        long currTime = System.currentTimeMillis() / 1000;
+        long currTime = TimeUtils.getRealTimestamp() / 1000;
 
         String out = String.format("[NeighborsMessage] \n nodes [%d]: %s \n expires in %d seconds \n %s\n",
                 this.getNodes().size(), this.getNodes(), (expires - currTime), super.toString());

@@ -18,8 +18,7 @@
 package org.apis.net.rlpx.discover.table;
 
 import org.apis.net.rlpx.Node;
-
-import static org.apis.crypto.HashUtil.sha3;
+import org.apis.util.TimeUtils;
 
 /**
  * Created by kest on 5/25/15.
@@ -48,7 +47,7 @@ public class NodeEntry {
     }
 
     public void touch() {
-        modified = System.currentTimeMillis();
+        modified = TimeUtils.getRealTimestamp();
     }
 
     public int getDistance() {

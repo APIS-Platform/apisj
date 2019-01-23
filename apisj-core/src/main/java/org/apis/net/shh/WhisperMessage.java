@@ -20,7 +20,6 @@ package org.apis.net.shh;
 import org.apis.crypto.ECIESCoder;
 import org.apis.crypto.ECKey;
 import org.apis.util.*;
-import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.math.ec.ECPoint;
@@ -299,7 +298,7 @@ public class WhisperMessage extends ShhMessage {
 
     public WhisperMessage setTtl(int ttl) {
         this.ttl = ttl;
-        expire = (int) (Utils.toUnixTime(System.currentTimeMillis()) + ttl);
+        expire = (int) (Utils.toUnixTime(TimeUtils.getRealTimestamp()) + ttl);
         return this;
     }
 
@@ -349,9 +348,9 @@ public class WhisperMessage extends ShhMessage {
         ByteBuffer byteBuffer = ByteBuffer.wrap(d);
         System.arraycopy(sha3(encoded), 0, d, 0, 32);
 
-        long then = System.currentTimeMillis() + pow;
+        long then = TimeUtils.getRealTimestamp() + pow;
         int nonce = 0;
-        for (int bestBit = 0; System.currentTimeMillis() < then;) {
+        for (int bestBit = 0; TimeUtils.getRealTimestamp() < then;) {
             for (int i = 0; i < 1024; ++i, ++nonce) {
                 byteBuffer.putInt(32, nonce);
                 int fbs = getFirstBitSet(sha3(d));

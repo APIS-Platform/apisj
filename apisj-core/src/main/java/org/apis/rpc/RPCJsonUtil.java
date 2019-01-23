@@ -2,9 +2,10 @@ package org.apis.rpc;
 
 import com.google.gson.*;
 import org.apis.crypto.HashUtil;
-import org.apis.rpc.template.MessageWeb3;
+import org.apis.rpc.template.MessageApp3;
 import org.apis.util.AesUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.TimeUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -59,7 +60,7 @@ public class RPCJsonUtil {
      ***********************/
     // auth키 를 받아 토큰 생성
     public static byte[] createToken(String auth, String ip) {
-        long current = System.currentTimeMillis();
+        long current = TimeUtils.getRealTimestamp();
         return HashUtil.sha3(
                 ByteUtil.merge(auth.getBytes(), ip.getBytes(), ByteUtil.longToBytes(current))
         );
@@ -75,7 +76,7 @@ public class RPCJsonUtil {
      * @return 고유 해시 값
      */
     static String createTokenHash(String payload, String token) {
-        MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
+        MessageApp3 message = new GsonBuilder().create().fromJson(payload, MessageApp3.class);
 
         byte[] methodByte = message.getMethodBytes();
         byte[] paramsByte = message.getMergedParamsBytes();

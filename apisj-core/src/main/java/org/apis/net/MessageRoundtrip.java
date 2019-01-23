@@ -57,12 +57,10 @@ public class MessageRoundtrip {
     }
 
     public void saveTime() {
-        //lastTimestamp = System.currentTimeMillis();
         lastTimestamp = TimeUtils.getRealTimestamp();
     }
 
     public boolean hasToRetry() {
-        //return 20000 < System.currentTimeMillis() - lastTimestamp;
         return TimeUtils.getRealTimestamp() - lastTimestamp > 10*1000;
     }
 

@@ -4,6 +4,7 @@ import org.apis.core.Block;
 import org.apis.facade.Apis;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class DBSyncManager {
 
 
         while(isSyncing) {
-            long tt = System.currentTimeMillis();
+            long tt = TimeUtils.getRealTimestamp();
 
             if(currentBlockNumber <= apis.getBlockchain().getBestBlock().getNumber()) {
                 Block currentBlock = apis.getBlockchain().getBlockByNumber(currentBlockNumber);
@@ -80,7 +81,7 @@ public class DBSyncManager {
             blocks.clear();
             currentBlockNumber += 1;
 
-            ConsoleUtil.printlnPurple(currentBlockNumber + " synced : " + (System.currentTimeMillis() - tt) + "ms");
+            ConsoleUtil.printlnPurple(currentBlockNumber + " synced : " + (TimeUtils.getRealTimestamp() - tt) + "ms");
         }
 
         isSyncing = false;

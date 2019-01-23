@@ -21,11 +21,6 @@ package org.apis.manager;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.db.DbFlushManager;
-import org.apis.util.ExecutorPipeline;
-import org.apis.util.RLP;
-import org.apis.util.RLPElement;
-import org.apis.util.RLPList;
-import org.apis.core.*;
 import org.apis.util.*;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
@@ -40,7 +35,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Scanner;
 import java.util.function.Function;
 
 @Component
@@ -70,13 +66,13 @@ public class BlockLoader {
                 throw new RuntimeException();
             }
 
-            long s = System.currentTimeMillis();
+            long s = TimeUtils.getRealTimestamp();
             ImportResult result = blockchain.tryToConnect(block);
 
             if (block.getNumber() % 10 == 0) {
                 System.out.println(df.format(new Date()) + " Imported block " + block.getShortDescr() + ": " + result + " (prework: "
                         + exec1.getQueue().size() + ", work: " + exec2.getQueue().size() + ", blocks: " + exec1.getOrderMap().size() + ") in " +
-                        (System.currentTimeMillis() - s) + " ms");
+                        (TimeUtils.getRealTimestamp() - s) + " ms");
             }
 
         } else {

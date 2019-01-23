@@ -23,6 +23,8 @@ import org.apis.net.client.Capability;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.swarm.Statter;
 import org.apis.util.ByteUtil;
+import org.apis.util.TimeUtils;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,11 +150,11 @@ public class NodeStatistics {
     private boolean isReputationPenalized() {
         if (wrongFork) return true;
         if (wasDisconnected() && rlpxLastRemoteDisconnectReason == ReasonCode.TOO_MANY_PEERS &&
-                System.currentTimeMillis() - lastDisconnectedTime < TOO_MANY_PEERS_PENALIZE_TIMEOUT) {
+                TimeUtils.getRealTimestamp() - lastDisconnectedTime < TOO_MANY_PEERS_PENALIZE_TIMEOUT) {
             return true;
         }
         if (wasDisconnected() && rlpxLastRemoteDisconnectReason == ReasonCode.DUPLICATE_PEER &&
-                System.currentTimeMillis() - lastDisconnectedTime < TOO_MANY_PEERS_PENALIZE_TIMEOUT) {
+                TimeUtils.getRealTimestamp() - lastDisconnectedTime < TOO_MANY_PEERS_PENALIZE_TIMEOUT) {
             return true;
         }
         return  rlpxLastLocalDisconnectReason == ReasonCode.NULL_IDENTITY ||
@@ -166,17 +168,17 @@ public class NodeStatistics {
     }
 
     public void nodeDisconnectedRemote(ReasonCode reason) {
-        lastDisconnectedTime = System.currentTimeMillis();
+        lastDisconnectedTime = TimeUtils.getRealTimestamp();
         rlpxLastRemoteDisconnectReason = reason;
     }
 
     public void nodeDisconnectedLocal(ReasonCode reason) {
-        lastDisconnectedTime = System.currentTimeMillis();
+        lastDisconnectedTime = TimeUtils.getRealTimestamp();
         rlpxLastLocalDisconnectReason = reason;
     }
 
     public void disconnected() {
-        lastDisconnectedTime = System.currentTimeMillis();
+        lastDisconnectedTime = TimeUtils.getRealTimestamp();
     }
 
     public boolean wasDisconnected() {

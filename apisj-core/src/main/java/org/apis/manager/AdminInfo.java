@@ -17,10 +17,10 @@
  */
 package org.apis.manager;
 
+import org.apis.util.TimeUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class AdminInfo {
 
     @PostConstruct
     public void init() {
-        startupTimeStamp = System.currentTimeMillis();
+        startupTimeStamp = TimeUtils.getRealTimestamp();
     }
 
     public long getStartupTimeStamp() {

@@ -17,15 +17,15 @@
  */
 package org.apis.sync;
 
-import org.apis.core.*;
-import org.apis.net.server.Channel;
-import org.apis.net.server.ChannelManager;
 import org.apis.config.SystemProperties;
-import org.apis.core.Blockchain;
+import org.apis.core.*;
 import org.apis.facade.SyncStatus;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListener;
+import org.apis.net.server.Channel;
+import org.apis.net.server.ChannelManager;
 import org.apis.util.ExecutorPipeline;
+import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,6 @@ import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
@@ -49,8 +48,6 @@ import java.util.function.Consumer;
 import static java.lang.Math.max;
 import static java.util.Collections.singletonList;
 import static org.apis.util.Utils.longToTimePeriod;
-import static org.apis.core.ImportResult.*;
-import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * @author Mikhail Kalinin
@@ -137,7 +134,7 @@ public class SyncManager extends BlockDownloader {
                 try {
                     logger.info("Sync state: " + getSyncStatus() +
                             (isSyncDone() || importStart == 0 ? "" : "; Import idle time " +
-                                    longToTimePeriod(importIdleTime.get()) + " of total " + longToTimePeriod(System.currentTimeMillis() - importStart)));
+                                    longToTimePeriod(importIdleTime.get()) + " of total " + longToTimePeriod(TimeUtils.getRealTimestamp() - importStart)));
                 } catch (Exception e) {
                     logger.error("Unexpected", e);
                 }
@@ -280,7 +277,7 @@ public class SyncManager extends BlockDownloader {
                 if (stale > 0) {
                     importIdleTime.addAndGet((System.nanoTime() - stale) / 1_000_000);
                 }
-                if (importStart == 0) importStart = System.currentTimeMillis();
+                if (importStart == 0) importStart = TimeUtils.getRealTimestamp();
 
                 logger.debug("BlockQueue size: {}, headers queue size: {}, blocks in mem: {} (~{}mb)",
                         blockQueue.size(), syncQueue.getHeadersCount(), blocksInMem.get(),
@@ -418,7 +415,7 @@ public class SyncManager extends BlockDownloader {
             for (Block b : newBlocks) {
                 boolean newBlock = Arrays.equals(block.getHash(), b.getHash());
                 BlockWrapper wrapper = new BlockWrapper(b, newBlock, nodeId);
-                wrapper.setReceivedAt(System.currentTimeMillis());
+                wrapper.setReceivedAt(TimeUtils.getRealTimestamp());
                 wrappers.add(wrapper);
             }
 

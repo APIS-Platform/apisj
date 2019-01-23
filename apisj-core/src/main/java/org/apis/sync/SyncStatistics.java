@@ -17,6 +17,8 @@
  */
 package org.apis.sync;
 
+import org.apis.util.TimeUtils;
+
 /**
  * Manages sync measurements
  *
@@ -34,7 +36,7 @@ public class SyncStatistics {
     }
 
     public void reset() {
-        updatedAt = System.currentTimeMillis();
+        updatedAt = TimeUtils.getRealTimestamp();
         blocksCount = 0;
         headersCount = 0;
         headerBunchesCount = 0;
@@ -52,7 +54,7 @@ public class SyncStatistics {
     }
 
     private void fixCommon(long cnt) {
-        updatedAt = System.currentTimeMillis();
+        updatedAt = TimeUtils.getRealTimestamp();
     }
 
     public long getBlocksCount() {
@@ -64,7 +66,7 @@ public class SyncStatistics {
     }
 
     public long secondsSinceLastUpdate() {
-        return (System.currentTimeMillis() - updatedAt) / 1000;
+        return (TimeUtils.getRealTimestamp() - updatedAt) / 1000;
     }
 
     public int getHeaderBunchesCount() {

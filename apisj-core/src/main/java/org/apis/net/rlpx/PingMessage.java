@@ -18,10 +18,7 @@
 package org.apis.net.rlpx;
 
 import org.apis.crypto.ECKey;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPItem;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 
 import static org.apis.util.ByteUtil.bytesToIp;
 import static org.apis.util.ByteUtil.longToBytes;
@@ -42,7 +39,7 @@ public class PingMessage extends Message {
 
     public static PingMessage create(Node fromNode, Node toNode, ECKey privKey, int version) {
 
-        long expiration = 90 * 60 + System.currentTimeMillis() / 1000;
+        long expiration = 90 * 60 + TimeUtils.getRealTimestamp() / 1000;
 
         /* RLP Encode data */
         byte[] tmpExp = longToBytes(expiration);
@@ -111,7 +108,7 @@ public class PingMessage extends Message {
     @Override
     public String toString() {
 
-        long currTime = System.currentTimeMillis() / 1000;
+        long currTime = TimeUtils.getRealTimestamp() / 1000;
 
         String out = String.format("[PingMessage] \n %s:%d ==> %s:%d \n expires in %d seconds \n %s\n",
                 fromHost, fromPort, toHost, toPort, (expires - currTime), super.toString());
