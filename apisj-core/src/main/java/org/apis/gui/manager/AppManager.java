@@ -105,6 +105,11 @@ public class AppManager {
     // Ledger device
     private HIDDevice ledger = null;
 
+    private static long timeLastBlockReceived = 0;
+    private static long timeLastProgramClosed = 0;
+    private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
+    private static final long TIME_RESTART_WAIT = 30*1_000L;
+    private static boolean isClosed = false;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -192,6 +197,7 @@ public class AppManager {
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
+            timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
             // DB Sync Start
             DBSyncManager.getInstance(mApis).syncThreadStart();
