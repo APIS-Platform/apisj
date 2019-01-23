@@ -50,6 +50,7 @@ import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.*;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.ProgramResult;
@@ -105,11 +106,12 @@ public class AppManager {
     // Ledger device
     private HIDDevice ledger = null;
 
-    private static long timeLastBlockReceived = 0;
-    private static long timeLastProgramClosed = 0;
+    // Reboot function when sync stopped
     private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
     private static final long TIME_RESTART_WAIT = 30*1_000L;
-    private static boolean isClosed = false;
+    private long timeLastBlockReceived = 0;
+    private long timeLastProgramClosed = 0;
+    private boolean isClosed = false;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -153,6 +155,25 @@ public class AppManager {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
 
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                long now = TimeUtils.getRealTimestamp();
+
+                // 싱크가 지연된 경우 프로그램을 종료한다.
+                if(!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                    timeLastProgramClosed = now;
+                    isClosed = true;
+                    mApis.close();
+                }
+
+                // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                    timeLastBlockReceived = now;
+                    isClosed = false;
+                    startAPIS();
+                }
+
+            }, 60, 1, TimeUnit.SECONDS);
+
             // start rpc server
             AppManager.getInstance().startRPC();
 
@@ -193,7 +214,6 @@ public class AppManager {
             });
         }
 
-        long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
@@ -1059,6 +1079,11 @@ public class AppManager {
 
     }//start
 
+    private void startAPIS() {
+        mApis = ApisFactory.createEthereum();
+        mApis.addListener(mListener);
+        mApis.getBlockMiner().setMinGasPrice(ApisUtil.convert(50, ApisUtil.Unit.nAPIS));
+    }
 
     public BigInteger getBalance(String address){
         return mApis.getRepository().getBalance(ByteUtil.hexStringToBytes(address));
@@ -1324,8 +1349,6 @@ public class AppManager {
                 this.mApis.getChainIdForNextBlock());
 
         // For raw transaction byte code
-        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + ByteUtil.toHexString(tx.getHash()));
-
         tx.sign(senderKey);
         if(knowledgeKey != null && knowledgeKey.length > 0){
             tx.authorize(String.valueOf(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
@@ -1354,7 +1377,6 @@ public class AppManager {
                 this.mApis.getChainIdForNextBlock());
 
         // For raw transaction byte code
-        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + ByteUtil.toHexString(tx.getHash()));
         return tx;
     }
 
