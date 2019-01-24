@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.HintMaskAddressController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
@@ -28,18 +29,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransferApisController extends BaseViewController {
-    private Image hintImageCheck = ImageManager.hintImageCheck;
-    private Image hintImageError = ImageManager.hintImageError;
-
     @FXML private AnchorPane hintMaskAddress;
-    @FXML private ImageView hintIcon;
     @FXML
-    private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel,
-            lowLabel, ReceivingAddressLabel
+    private Label btnMyAddress, btnRecentAddress, lowLabel, ReceivingAddressLabel
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisAddressFieldController ReceivingFieldController;
+    @FXML private HintMaskAddressController hintController;
 
     public void languageSetting() {
         this.ReceivingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.ReceivingAddress);
@@ -48,6 +45,7 @@ public class TransferApisController extends BaseViewController {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        hideHintMaskAddress();
         languageSetting();
 
         walletAndAmountController.setHandler(apisAmountImpl);
@@ -57,14 +55,11 @@ public class TransferApisController extends BaseViewController {
                 if(mask != null && mask.length() > 0){
                     //use masking address
                     if(address != null) {
-                        hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
-                        hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
-                        hintIcon.setImage(hintImageCheck);
+                        hintController.setHintMaskAddressLabel(mask + " = " + address);
+                        hintController.setSuccessed();
 
                     }else{
-                        hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
-                        hintMaskAddressLabel.setTextFill(Color.web("#b01e1e"));
-                        hintIcon.setImage(hintImageError);
+                        hintController.setFailed(StringManager.getInstance().common.addressNotMath);
                     }
                     showHintMaskAddress();
                 }else{

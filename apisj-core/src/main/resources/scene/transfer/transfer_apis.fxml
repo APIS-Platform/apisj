@@ -4,8 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -93,18 +91,13 @@
                   <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="hintMaskAddress" visible="false" GridPane.rowIndex="7">
-               <children>
-                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
-                     <image>
-                        <Image url="@../../image/ic_check_green@2x.png" />
-                     </image>
-                  </ImageView>
-               </children>
+            <AnchorPane fx:id="hintMaskAddress" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets top="8.0" />
                </GridPane.margin>
+               <children>
+                  <fx:include fx:id="hint" source="../module/hint_mask_address.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
             </AnchorPane>
             <AnchorPane>
                <children>

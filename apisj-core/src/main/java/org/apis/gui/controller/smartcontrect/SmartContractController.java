@@ -43,7 +43,6 @@ public class SmartContractController extends BaseViewController {
     @FXML private ReceiptController deployReceiptController;
     @FXML private ReceiptController callSendReceiptController;
     @FXML private ReceiptController updaterReceiptController;
-    @FXML private ReceiptController canvasReceiptController;
 
     private boolean isMyAddressSelected1 = true;
     private boolean isScrolling = false;
@@ -56,7 +55,6 @@ public class SmartContractController extends BaseViewController {
         initializeDeployReceipt();
         initializeCallSendReceipt();
         initializeUpdateReceipt();
-        initializeCanvasReceipt();
 
         initializeScrollSpeed();
 
@@ -71,7 +69,6 @@ public class SmartContractController extends BaseViewController {
         deployReceiptController.setVisibleNoFees(false);
         callSendReceiptController.setVisibleNoFees(true);
         updaterReceiptController.setVisibleNoFees(false);
-        canvasReceiptController.setVisibleNoFees(false);
 
         // setting init
         tabMenuController.selectedMenu(TAB_DEPLOY);
@@ -215,15 +212,6 @@ public class SmartContractController extends BaseViewController {
         updaterReceiptController.setSuccessed(false);
     }
 
-    public void initializeCanvasReceipt(){
-
-        canvasReceiptController.setHandler(new ReceiptController.ReceiptImpl() {
-            @Override
-            public void send() {
-            }
-        });
-    }
-
 
     @FXML
     private void onMouseClicked(InputEvent event) {
@@ -356,7 +344,6 @@ public class SmartContractController extends BaseViewController {
         this.deployReceiptController.setVisible(false);
         this.callSendReceiptController.setVisible(false);
         this.updaterReceiptController.setVisible(false);
-        this.canvasReceiptController.setVisible(false);
         if(index == TAB_DEPLOY) {
             this.tabLeftDeploy.setVisible(true);
             this.tabLeftDeploy.setPrefHeight(-1);

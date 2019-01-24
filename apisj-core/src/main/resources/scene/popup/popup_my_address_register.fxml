@@ -88,6 +88,9 @@
                                     <Pane prefHeight="1.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" />
                                  </children>
                               </AnchorPane>
+                              <AnchorPane fx:id="hintMaskAddress" GridPane.rowIndex="2">
+                                 <fx:include fx:id="hint" source="../module/hint_mask_address.fxml" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="8.0" />
+                              </AnchorPane>
                               <Label fx:id="walletNameLabel" styleClass="font_semibold_12" text="Wallet Name" textFill="#292929" GridPane.rowIndex="3" />
                               <AnchorPane GridPane.rowIndex="4">
                                  <children>

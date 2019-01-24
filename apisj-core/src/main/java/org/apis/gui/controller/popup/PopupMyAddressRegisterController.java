@@ -14,11 +14,11 @@ import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
-import org.apis.gui.manager.StyleManager;
+import org.apis.gui.controller.module.HintMaskAddressController;
+import org.apis.gui.manager.*;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupMyAddressRegisterController extends BasePopupController {
-    @FXML private AnchorPane rootPane;
+    @FXML private AnchorPane rootPane, hintMaskAddress;
     @FXML private FlowPane groupList;
     @FXML private TextField addressTextField, aliasTextField;
     @FXML private Label titleLabel, subTitleLabel, walletAddressLabel, walletNameLabel, groupLabel, noBtn, yesBtn;
@@ -39,8 +39,14 @@ public class PopupMyAddressRegisterController extends BasePopupController {
     private ArrayList<ApisTagItemController> groupControllerList = new ArrayList<>();  // 선택할 수 있는 그룹 리스트 (Object)
     private MyAddressModel model;
 
+    @FXML private HintMaskAddressController hintController;
+
+    private String address;
+    private String mask;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        hintMaskAddress.setVisible(false);
         languageSetting();
 
         List<AddressGroupRecord> groups = DBManager.getInstance().selectAddressGroups();
@@ -53,13 +59,38 @@ public class PopupMyAddressRegisterController extends BasePopupController {
         addressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!addressTextField.getText().matches("[0-9a-fA-F]*")) {
-                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+                address = newValue;
+                mask = null;
+
+                // Not masked address '0x' exception handling
+                if(newValue != null && newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
+                    newValue = newValue.replaceAll("0x","");
+                    addressTextField.setText(newValue);
+                    return;
                 }
 
-                int maxlength = 40;
-                if(addressTextField.getText().length() > maxlength){
-                    addressTextField.setText(addressTextField.getText().substring(0, maxlength));
+                if(newValue != null && newValue.indexOf("@") >= 0){
+                    mask = newValue;
+                }else if(AddressUtil.isAddress(newValue)){
+                    mask = AppManager.getInstance().getMaskWithAddress(newValue);
+                }
+
+                address = newValue;
+                // Set hint pane visibility
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    address = AppManager.getInstance().getAddressWithMask(mask);
+                    if(address != null) {
+                        hintController.setHintMaskAddressLabel(mask + " = " + address);
+                        hintController.setSuccessed();
+
+                    }else{
+                        hintController.setFailed(StringManager.getInstance().common.addressNotMath);
+                    }
+                    hintMaskAddress.setVisible(true);
+                }else{
+                    //use hex address
+                    hintMaskAddress.setVisible(false);
                 }
 
                 settingLayoutData();
@@ -140,10 +171,11 @@ public class PopupMyAddressRegisterController extends BasePopupController {
     }
 
     public void settingLayoutData(){
-        String address = addressTextField.getText();
+        String address = this.address;
         String name = aliasTextField.getText();
 
-        if(address != null && address.length() > 0 && name != null && name.length() > 0){
+        if(address != null && address.length() > 0 && AddressUtil.isAddress(address)
+            && name != null && name.length() > 0){
             StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cb01e1e);
         }else{
             StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cd8d8d8);
@@ -155,7 +187,10 @@ public class PopupMyAddressRegisterController extends BasePopupController {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("yesBtn")){
-            byte[] address = ByteUtil.hexStringToBytes(addressTextField.getText().trim());
+            byte[] address = null;
+            if(AddressUtil.isAddress(this.address)) {
+                address = ByteUtil.hexStringToBytes(this.address);
+            }
             String alias = aliasTextField.getText().trim();
 
             if(address != null && address.length > 0 && alias != null && alias.length() > 0) {
