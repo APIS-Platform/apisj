@@ -2,6 +2,7 @@
 
 <?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.DropShadow?>
@@ -18,8 +19,6 @@
          <columnConstraints>
             <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
             <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
@@ -58,9 +57,10 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <GridPane fx:id="receiptGrid" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                  <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints vgrow="SOMETIMES" />
@@ -102,11 +102,6 @@
                                           <fx:include fx:id="smartContractUpdater" source="smart_contract_updater.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="tabLeftCanvas" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <children>
-                                          <fx:include fx:id="smartContractCanvas" source="smart_contract_canvas.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
                                  </children>
                               </GridPane>
                            </content>
@@ -121,22 +116,40 @@
                         <DropShadow color="#0000001a" offsetY="3.0" />
                      </effect>
                   </AnchorPane>
+                  <GridPane minWidth="-Infinity" prefWidth="360.0" GridPane.columnIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <fx:include fx:id="deployReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <fx:include fx:id="callSendReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <fx:include fx:id="updaterReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </GridPane>
                </children>
             </GridPane>
-            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <GridPane fx:id="canvasGrid" GridPane.columnIndex="1" GridPane.rowIndex="3">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints minWidth="10.0" />
+                <ColumnConstraints hgrow="SOMETIMES" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <AnchorPane>
+                  <AnchorPane fx:id="tabLeftCanvas">
                      <children>
-                        <fx:include fx:id="deployReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <fx:include fx:id="callSendReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <fx:include fx:id="updaterReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <fx:include fx:id="canvasReceipt" source="../module/receipt/receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <fx:include fx:id="smartContractCanvas" source="smart_contract_canvas.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
