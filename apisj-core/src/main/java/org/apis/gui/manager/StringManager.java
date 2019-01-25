@@ -222,7 +222,7 @@ public class StringManager {
             restartButton.set(StringManager.this.getString("common_restart_button","Restart"));
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
-            addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
+            addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching address found."));
             estimateGasLimitButton.set(StringManager.this.getString("common_estimate_gas_limit_button","Estimate gas limit"));
             selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
             contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));

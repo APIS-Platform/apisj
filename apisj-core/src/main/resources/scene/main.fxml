@@ -38,7 +38,7 @@
             <Tab text="Untitled Tab">
               <content>
                 <AnchorPane fx:id="tabSmartContractPane" minHeight="0.0" minWidth="0.0">
-                   <fx:include source="smartcontrect/smart_contract.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                   <fx:include source="smartcontract/smart_contract.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </AnchorPane>
               </content>
             </Tab>

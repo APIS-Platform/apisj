@@ -36,7 +36,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
-import org.apis.gui.controller.smartcontrect.SmartContractController;
+import org.apis.gui.controller.smartcontract.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
 import org.apis.gui.controller.wallet.WalletController;
@@ -826,7 +826,7 @@ public class AppManager {
 
     public Image getTokenIcon(String tokenAddress) {
         if(tokenAddress == null || tokenAddress.length() == 0){
-            return ImageManager.icCrcleNone;
+            return ImageManager.icCircleNone;
         }
         tokenAddress = tokenAddress.replace("0x", "");
         if(tokenAddress.equals("-1")){
@@ -836,7 +836,7 @@ public class AppManager {
         }else if(AddressUtil.isAddress(tokenAddress)){
             return getTokenImage(tokenAddress);
         }else{
-            return ImageManager.icCrcleNone;
+            return ImageManager.icCircleNone;
         }
     }
 
