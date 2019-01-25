@@ -27,7 +27,7 @@
         <file>./apisData/logs/apis.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover hourly -->
-            <fileNamePattern>./logs/apis-%d{yyyy-MM-dd-'h'HH}.log.zip</fileNamePattern>
+            <fileNamePattern>./apisData/logs/apis-%d{yyyy-MM-dd-'h'HH}.log.zip</fileNamePattern>
             <!-- ~1 month -->
             <maxHistory>720</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
