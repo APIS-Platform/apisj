@@ -9,6 +9,7 @@ import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.AddressUtil;
 
 import java.net.URL;
@@ -25,11 +26,16 @@ public class ApisAddressFieldController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
 
         AppManager.settingTextFieldStyle(addressField);
         AppManager.settingIdenticonStyle(icon);
 
         addressField.textProperty().addListener(addressFieldListener());
+    }
+
+    private void languageSetting() {
+        addressField.promptTextProperty().bind(StringManager.getInstance().popup.masternodeRecipientPlaceholder);
     }
 
     public ChangeListener<String> addressFieldListener() {

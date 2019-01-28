@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
@@ -26,7 +27,13 @@ public class SelectContractController extends BaseViewController {
         AppManager.getInstance().settingNodeStyle(bgAnchor);
         ImageManager.imageViewRectangle30(icon);
 
+        languageSetting();
+
         addressLabel.textProperty().addListener(addressTextListener);
+    }
+
+    private void languageSetting() {
+        placeholderLabel.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
     }
 
     private ChangeListener<String> addressTextListener = new ChangeListener<String>() {

@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,8 +25,14 @@ public class InputContractController extends BaseViewController {
         AppManager.getInstance().settingTextFieldStyle(textField);
         ImageManager.imageViewRectangle30(icon);
 
+        languageSetting();
+
         // Contract Constructor Address Listener
         textField.textProperty().addListener(ctrtKeyListener);
+    }
+
+    private void languageSetting() {
+        textField.promptTextProperty().bind(StringManager.getInstance().smartContract.enterContractAddr);
     }
 
     private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {

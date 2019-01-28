@@ -37,7 +37,8 @@ public class SmartContractController extends BaseViewController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid;
     @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane, inputContractPane, hintMaskAddress;
-    @FXML private Label tabTitle, selectContractToggleButton, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel, selectWalletLabel;
+    @FXML private Label tabTitle, selectContractToggleButton, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel, selectWalletLabel,
+                        contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel;
 
     @FXML private TabMenuController tabMenuController;
 
@@ -91,8 +92,11 @@ public class SmartContractController extends BaseViewController {
         selectContractToggleButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
         btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         selectContractLabel.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
-        //여기여기여기여기
-//        selectWalletLabel.textProperty().bind();
+        selectWalletLabel.textProperty().bind(StringManager.getInstance().module.selectWallet);
+        contractMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.contractMaskTitleLabel);
+        canvasURLTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.canvasURLTitleLabel);
+        walletMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.walletMaskTitleLabel);
+        balanceTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.balanceTitleLabel);
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
