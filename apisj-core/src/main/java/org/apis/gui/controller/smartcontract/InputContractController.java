@@ -11,6 +11,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +20,11 @@ public class InputContractController extends BaseViewController {
     @FXML private AnchorPane bgAnchor;
     @FXML private TextField textField;
     @FXML private ImageView icon;
+
+    private InputContractImpl handler;
+
+    private String address;
+    private String mask;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -38,23 +44,31 @@ public class InputContractController extends BaseViewController {
     private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!textField.getText().matches("[0-9a-fA-F]*")) {
-                textField.setText(textField.getText().replaceAll("[^0-9a-fA-F]", ""));
+            address = newValue;
+            mask = null;
+
+            if(newValue != null && newValue.indexOf("@") < 0 && newValue.indexOf("0x") >= 0){
+                newValue = newValue.replaceAll("0x","");
+                textField.setText(newValue);
+                return;
             }
 
-            int maxlangth = 40;
-            if (textField.getText().trim().length() > maxlangth) {
-                textField.setText(textField.getText().trim().substring(0, maxlangth));
+            if(newValue != null && newValue.indexOf("@") >= 0){
+                mask = newValue;
+            }else if(AddressUtil.isAddress(newValue)){
+                mask = AppManager.getInstance().getMaskWithAddress(newValue);
             }
 
-            if (textField.getText() == null || textField.getText().trim().length() < maxlangth) {
+            address = newValue;
+            if(mask != null && mask.length() > 0){
+                //use masking address
+                address = AppManager.getInstance().getAddressWithMask(mask);
+            }
 
-                icon.setImage(ImageManager.icCircleNone);
-            } else {
-                Image image = ImageManager.getIdenticons(textField.getText().trim());
-                if (image != null) {
-                    icon.setImage(image);
-                }
+            icon.setImage(ImageManager.getIdenticons(address));
+
+            if(handler != null){
+                handler.change(address, mask);
             }
         }
     };
@@ -69,5 +83,13 @@ public class InputContractController extends BaseViewController {
 
     public void setText(String text) {
         this.textField.setText(text);
+    }
+
+    public void setHandler(InputContractImpl handler) {
+        this.handler = handler;
+    }
+
+    public interface InputContractImpl {
+        void change(String address, String mask);
     }
 }

@@ -70,6 +70,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     private ApisCodeArea solidityTextArea = new ApisCodeArea();
 
     private boolean isCompiled = false;
+    private String contractAddress = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -84,6 +85,22 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         // Contract Constructor Address Listener
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
+
+        inputContractController.setHandler(new InputContractController.InputContractImpl() {
+            @Override
+            public void change(String address, String mask) {
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    if(address != null) {
+                        contractAddress = address;
+                    }else{
+                        contractAddress = null;
+                    }
+                }else{
+                    contractAddress = null;
+                }
+            }
+        });
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
@@ -188,7 +205,7 @@ public class SmartContractUpdaterController extends BaseViewController {
             solidityCodeTabPane.setVisible(false);
             solidityCodeTabPane.setPrefHeight(0);
 
-            if(contractAddress.length > 0){
+            if(contractAddress != null && contractAddress.length > 0){
                 cautionLabel.textProperty().unbind();
                 cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.creatorNotMatch);
             }else{
@@ -613,8 +630,6 @@ public class SmartContractUpdaterController extends BaseViewController {
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-
             if(oldValue){
                 update();
             }
@@ -625,7 +640,9 @@ public class SmartContractUpdaterController extends BaseViewController {
         if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT){
             return ByteUtil.hexStringToBytes(selectContractController.getAddress().trim());
         }else if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT){
-            return ByteUtil.hexStringToBytes(this.contractAddressTextField.getText().trim());
+            if(this.contractAddress != null) {
+                return ByteUtil.hexStringToBytes(this.contractAddress.trim());
+            }
         }
         return null;
     }

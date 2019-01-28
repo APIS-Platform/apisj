@@ -39,17 +39,19 @@ public class SelectContractController extends BaseViewController {
     private ChangeListener<String> addressTextListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if(AppManager.getInstance().isFrozen(addressLabel.getText())) {
-                frozenImg.setVisible(true);
-                StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
-            } else {
-                frozenImg.setVisible(false);
-                StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
-            }
+            if(addressLabel.getText() != null && addressLabel.getText().length() > 0) {
+                if (AppManager.getInstance().isFrozen(addressLabel.getText())) {
+                    frozenImg.setVisible(true);
+                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
+                } else {
+                    frozenImg.setVisible(false);
+                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
+                }
 
-            Image image = ImageManager.getIdenticons(addressLabel.textProperty().get());
-            if (image != null) {
-                icon.setImage(image);
+                Image image = ImageManager.getIdenticons(addressLabel.textProperty().get());
+                if (image != null) {
+                    icon.setImage(image);
+                }
             }
         }
     };
