@@ -498,7 +498,7 @@ public class TransactionExecutor {
 
                     programInvoke.getMinGasPrice();
                     this.vm = new VM(config);
-                    this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
+                    this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig).withBlockNumber(currentBlock.getNumber());
                 }
             }
         }

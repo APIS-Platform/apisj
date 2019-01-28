@@ -461,19 +461,25 @@ public class Program {
         BigInteger oldBalance = track.getBalance(newAddress);
         if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
             track.createAccount(newAddress, blockNumber);
+            track.addBalance(newAddress, oldBalance, blockNumber);
         } else {
             track.createAccount(newAddress);
+            track.addBalance(newAddress, oldBalance);
         }
         if (blockchainConfig.eip161()) {
             track.increaseNonce(newAddress);
         }
-        track.addBalance(newAddress, oldBalance);
 
         // [4] TRANSFER THE BALANCE
         BigInteger newBalance = ZERO;
         if (!byTestingSuite()) {
-            track.addBalance(senderAddress, endowment.negate());
-            newBalance = track.addBalance(newAddress, endowment);
+            if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                track.addBalance(senderAddress, endowment.negate(), blockNumber);
+                newBalance = track.addBalance(newAddress, endowment, blockNumber);
+            } else {
+                track.addBalance(senderAddress, endowment.negate());
+                newBalance = track.addBalance(newAddress, endowment);
+            }
         }
 
 
@@ -489,7 +495,7 @@ public class Program {
             result.setException(new BytecodeExecutionException("Trying to create a contract with existing contract address: 0x" + toHexString(newAddress)));
         } else if (isNotEmpty(programCode)) {
             VM vm = new VM(config);
-            Program program = new Program(programCode, programInvoke, internalTx, config).withCommonConfig(commonConfig);
+            Program program = new Program(programCode, programInvoke, internalTx, config).withCommonConfig(commonConfig).withBlockNumber(blockNumber);
             vm.play(program);
             result = program.getResult();
 
@@ -603,8 +609,13 @@ public class Program {
                     msg.getGas().getNoLeadZeroesData(),
                     msg.getEndowment().getNoLeadZeroesData());
         } else {
-            track.addBalance(senderAddress, endowment.negate());
-            contextBalance = track.addBalance(contextAddress, endowment);
+            if(blockNumber > config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants().getINIT_MINERAL_APPLY_BLOCK()) {
+                track.addBalance(senderAddress, endowment.negate(), blockNumber);
+                contextBalance = track.addBalance(contextAddress, endowment, blockNumber);
+            } else {
+                track.addBalance(senderAddress, endowment.negate());
+                contextBalance = track.addBalance(contextAddress, endowment);
+            }
         }
 
         // CREATE CALL INTERNAL TRANSACTION
@@ -620,7 +631,7 @@ public class Program {
                     msg.getType().callIsStatic() || isStaticCall(), byTestingSuite());
 
             VM vm = new VM(config);
-            Program program = new Program(getStorage().getCodeHash(codeAddress), programCode, programInvoke, internalTx, config).withCommonConfig(commonConfig);
+            Program program = new Program(getStorage().getCodeHash(codeAddress), programCode, programInvoke, internalTx, config).withCommonConfig(commonConfig).withBlockNumber(blockNumber);
             vm.play(program);
             result = program.getResult();
 
