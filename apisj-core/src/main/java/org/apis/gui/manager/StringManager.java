@@ -635,6 +635,7 @@ public class StringManager {
         public SimpleStringProperty canvasURLTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty walletMaskTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty balanceTitleLabel = new SimpleStringProperty();
+        public SimpleStringProperty canvasNotExist = new SimpleStringProperty();
 
 
 
@@ -669,6 +670,7 @@ public class StringManager {
             canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL : "));
             walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask : "));
             balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance : "));
+            canvasNotExist.set(StringManager.this.getString("smart_contract_canvas_not_exist", "Canvas URL does not exist."));
         }
     }
 

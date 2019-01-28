@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -152,7 +154,7 @@
             </GridPane>
             <GridPane fx:id="canvasGrid" GridPane.columnIndex="1" GridPane.rowIndex="3">
               <columnConstraints>
-                <ColumnConstraints minWidth="10.0" />
+                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                 <ColumnConstraints hgrow="SOMETIMES" />
               </columnConstraints>
               <rowConstraints>
@@ -191,13 +193,14 @@
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints />
                                         <RowConstraints />
                                         <RowConstraints />
                                           <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                           <RowConstraints minHeight="10.0" prefHeight="50.0" />
                                           <RowConstraints minHeight="10.0" />
                                           <RowConstraints minHeight="10.0" />
@@ -283,7 +286,32 @@
                                                 <Insets bottom="8.0" left="8.0" />
                                              </GridPane.margin>
                                           </GridPane>
-                                          <GridPane layoutX="10.0" layoutY="10.0" GridPane.rowIndex="5">
+                                          <AnchorPane fx:id="cautionPane" GridPane.rowIndex="4">
+                                             <GridPane.margin>
+                                                <Insets bottom="8.0" left="8.0" />
+                                             </GridPane.margin>
+                                             <children>
+                                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints />
+                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <ImageView fx:id="cautionImg" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../../image/ic_caution@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                      <Label fx:id="cautionLabel" styleClass="font_semibold_12" text="Canvas URL does not exist." textFill="#b01e1e" GridPane.columnIndex="2" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                          <GridPane layoutX="10.0" layoutY="10.0" GridPane.rowIndex="6">
                                              <columnConstraints>
                                                 <ColumnConstraints />
                                                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -318,7 +346,7 @@
                                                 <Insets bottom="8.0" />
                                              </GridPane.margin>
                                           </GridPane>
-                                          <AnchorPane fx:id="selectWalletPane" GridPane.rowIndex="6">
+                                          <AnchorPane fx:id="selectWalletPane" GridPane.rowIndex="7">
                                              <children>
                                                 <fx:include fx:id="selectWallet" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
@@ -326,15 +354,7 @@
                                                 <Insets bottom="8.0" />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="hintMaskAddress" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="9">
-                                             <children>
-                                                <fx:include fx:id="hint" source="../module/hint_mask_address.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                             </children>
-                                             <GridPane.margin>
-                                                <Insets bottom="8.0" left="8.0" />
-                                             </GridPane.margin>
-                                          </AnchorPane>
-                                          <GridPane layoutX="18.0" layoutY="103.0" GridPane.rowIndex="7">
+                                          <GridPane layoutX="18.0" layoutY="103.0" GridPane.rowIndex="8">
                                              <columnConstraints>
                                                 <ColumnConstraints minWidth="10.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -350,7 +370,7 @@
                                                 <Insets bottom="8.0" left="8.0" />
                                              </GridPane.margin>
                                           </GridPane>
-                                          <GridPane layoutX="18.0" layoutY="296.0" GridPane.rowIndex="8">
+                                          <GridPane layoutX="18.0" layoutY="296.0" GridPane.rowIndex="9">
                                              <columnConstraints>
                                                 <ColumnConstraints minWidth="10.0" />
                                                 <ColumnConstraints />
@@ -368,6 +388,14 @@
                                                 <Insets bottom="8.0" left="8.0" />
                                              </GridPane.margin>
                                           </GridPane>
+                                          <AnchorPane fx:id="hintMaskAddress" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="10">
+                                             <children>
+                                                <fx:include fx:id="hint" source="../module/hint_mask_address.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets bottom="8.0" left="8.0" />
+                                             </GridPane.margin>
+                                          </AnchorPane>
                                        </children>
                                     </GridPane>
                                  </children>

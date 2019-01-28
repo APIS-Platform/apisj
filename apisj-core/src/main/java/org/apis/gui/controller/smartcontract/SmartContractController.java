@@ -17,6 +17,7 @@ import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.ContractModel;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -36,9 +37,10 @@ public class SmartContractController extends BaseViewController {
 
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid;
-    @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane, inputContractPane, hintMaskAddress;
-    @FXML private Label tabTitle, selectContractToggleButton, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel, selectWalletLabel,
-                        contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel;
+    @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane,
+                             inputContractPane, cautionPane, hintMaskAddress;
+    @FXML private Label tabTitle, selectContractToggleButton, contractMaskLabel, canvasURLLabel, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel,
+                        selectWalletLabel, contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel, cautionLabel;
 
     @FXML private TabMenuController tabMenuController;
 
@@ -97,6 +99,7 @@ public class SmartContractController extends BaseViewController {
         canvasURLTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.canvasURLTitleLabel);
         walletMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.walletMaskTitleLabel);
         balanceTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.balanceTitleLabel);
+        cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.canvasNotExist);
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
@@ -105,8 +108,47 @@ public class SmartContractController extends BaseViewController {
     }
 
     public void initializeCanvas() {
+        contractMaskLabel.setText("");
+        canvasURLLabel.setText("");
         walletMaskLabel.setText("");
         hintMaskAddress.setVisible(false);
+        cautionPane.setVisible(false);
+
+        inputContractController.setHandler(new InputContractController.InputContractImpl() {
+            @Override
+            public void change(String address, String mask) {
+                String canvasURL = null;
+
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    if(address != null) {
+                        contractMaskLabel.setText(mask);
+                    }else{
+                        contractMaskLabel.setText("");
+                    }
+
+                }else{
+                    contractMaskLabel.setText("");
+                }
+
+                if(address != null) {
+                    try {
+                        canvasURL = AppManager.getInstance().getCanvasURL(ByteUtil.hexStringToBytes(address));
+                    } catch(Exception e) {
+                    }
+                }
+
+                if(canvasURL != null && canvasURL.length() > 0) {
+                    canvasURLLabel.setText(canvasURL);
+                    cautionPane.setVisible(false);
+                } else {
+                    canvasURLLabel.setText("");
+                    cautionPane.setVisible(true);
+                }
+
+                settingLayoutData();
+            }
+        });
 
         selectWalletController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
             @Override
@@ -119,6 +161,7 @@ public class SmartContractController extends BaseViewController {
                         hintController.setSuccessed();
 
                     }else{
+                        walletMaskLabel.setText("");
                         hintController.setFailed(StringManager.getInstance().common.addressNotMath);
                     }
                     showHintMaskAddress();
@@ -153,6 +196,15 @@ public class SmartContractController extends BaseViewController {
                 selectContractController.setAlias(model.getName());
                 selectContractController.setAddress(model.getAddress());
                 selectContractController.setPlaceHolderVisible(false);
+                contractMaskLabel.setText(AppManager.getInstance().getMaskWithAddress(model.getAddress()));
+                String canvasURL = AppManager.getInstance().getCanvasURL(model.getAddressByte());
+                if(canvasURL != null && canvasURL.length() > 0) {
+                    canvasURLLabel.setText(canvasURL);
+                    cautionPane.setVisible(false);
+                } else {
+                    canvasURLLabel.setText("");
+                    cautionPane.setVisible(true);
+                }
 
                 update();
             }
@@ -299,8 +351,11 @@ public class SmartContractController extends BaseViewController {
                 StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
                 StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
                 StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.Cffffff);
+                contractMaskLabel.setText("");
+                canvasURLLabel.setText("");
                 inputContractController.setText("");
                 inputContractController.setImage(ImageManager.icCircleNone);
+                cautionPane.setVisible(false);
                 selectContractPane.setVisible(false);
                 inputContractPane.setVisible(true);
             } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
@@ -309,6 +364,13 @@ public class SmartContractController extends BaseViewController {
                 StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.Cf8f8fb);
                 StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
                 StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
+                contractMaskLabel.setText("");
+                canvasURLLabel.setText("");
+                selectContractController.setAlias("");
+                selectContractController.setAddress("");
+                selectContractController.setIconImage(ImageManager.icCircleNone);
+                selectContractController.setPlaceHolderVisible(true);
+                cautionPane.setVisible(false);
                 selectContractPane.setVisible(true);
                 inputContractPane.setVisible(false);
             }

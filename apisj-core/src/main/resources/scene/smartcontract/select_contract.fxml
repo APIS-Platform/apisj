@@ -29,13 +29,14 @@
                   <Image url="@../../image/ic_circle_grey@2x.png" />
                </image>
             </ImageView>
-            <AnchorPane GridPane.columnIndex="1">
+            <AnchorPane prefWidth="271.0" GridPane.columnIndex="1">
                <children>
-                  <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
-                  <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0">
+                  <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" maxWidth="253.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                  <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <columnConstraints>
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />

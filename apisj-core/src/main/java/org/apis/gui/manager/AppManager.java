@@ -604,11 +604,24 @@ public class AppManager {
     public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
         long maxNonce = Long.parseLong(mApis.getRepository().getNonce(addr).toString());
         for(long nonce = maxNonce; nonce >=0 ; nonce-- ) {
-            if(FastByteComparisons.equal(contractAddress, HashUtil.calcNewAddr(addr, ByteUtil.longToBytes(nonce)))){
-                return nonce;
+            if(contractAddress != null) {
+                if (FastByteComparisons.equal(contractAddress, HashUtil.calcNewAddr(addr, ByteUtil.longToBytes(nonce)))) {
+                    return nonce;
+                }
             }
         }
         return -1;
+    }
+
+    public String getCanvasURL(byte[] address) {
+        if(address != null) {
+            try {
+                return DBManager.getInstance().selectContract(address).getCanvas_url();
+            } catch(Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     public void loadDBTokens(){
