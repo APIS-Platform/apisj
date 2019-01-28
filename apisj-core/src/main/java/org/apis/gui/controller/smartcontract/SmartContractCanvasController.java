@@ -1,4 +1,4 @@
-package org.apis.gui.controller.smartcontrect;
+package org.apis.gui.controller.smartcontract;
 
 import org.apis.gui.controller.base.BaseViewController;
 

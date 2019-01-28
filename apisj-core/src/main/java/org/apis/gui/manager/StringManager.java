@@ -222,7 +222,7 @@ public class StringManager {
             restartButton.set(StringManager.this.getString("common_restart_button","Restart"));
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
-            addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
+            addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching address found."));
             estimateGasLimitButton.set(StringManager.this.getString("common_estimate_gas_limit_button","Estimate gas limit"));
             selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
             contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));
@@ -629,6 +629,12 @@ public class StringManager {
         public SimpleStringProperty noSelectAFunctionTitle = new SimpleStringProperty();
         public SimpleStringProperty noSelectAFunctionSubTitle = new SimpleStringProperty();
         public SimpleStringProperty creatorNotMatch = new SimpleStringProperty();
+        public SimpleStringProperty selectContractAddr = new SimpleStringProperty();
+        public SimpleStringProperty enterContractAddr = new SimpleStringProperty();
+        public SimpleStringProperty contractMaskTitleLabel = new SimpleStringProperty();
+        public SimpleStringProperty canvasURLTitleLabel = new SimpleStringProperty();
+        public SimpleStringProperty walletMaskTitleLabel = new SimpleStringProperty();
+        public SimpleStringProperty balanceTitleLabel = new SimpleStringProperty();
 
 
 
@@ -657,6 +663,12 @@ public class StringManager {
             noSelectAFunctionTitle.set(StringManager.this.getString("smart_contract_no_select_function_title", "'There is no selected function'"));
             noSelectAFunctionSubTitle.set(StringManager.this.getString("smart_contract_no_select_function_sub_title", "Please click a 'Select a function' button"));
             creatorNotMatch.set(StringManager.this.getString("smart_contract_creator_not_match", "Address of contract creator does not match."));
+            selectContractAddr.set(StringManager.this.getString("smart_contract_select_contract_addr", "select contract address"));
+            enterContractAddr.set(StringManager.this.getString("smart_contract_enter_contract_addr", "please enter your contract address"));
+            contractMaskTitleLabel.set(StringManager.this.getString("smart_contract_contract_mask_title_label", "Address Mask : "));
+            canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL : "));
+            walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask : "));
+            balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance : "));
         }
     }
 

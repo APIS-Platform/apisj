@@ -1,4 +1,4 @@
-package org.apis.gui.controller.smartcontrect;
+package org.apis.gui.controller.smartcontract;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,9 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import org.apis.core.CallTransaction;
-import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisButtonEstimateGasLimitController;
@@ -33,7 +31,6 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -49,12 +46,13 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
-    @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
+    @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, selectContractLabel, readWriteContract;
     @FXML private Label noSelectAFunctionTitle, noSelectAFunctionSubTitle;
-    @FXML private ImageView icon, cSelectHeadImg, frozenImg;
+    @FXML private ImageView cSelectHeadImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEstimateGasLimitController btnByteCodePreGasUsedController;
+    @FXML private SelectContractController selectContractController;
 
     private CallTransaction.Function selectFunction;
     private ContractModel selectContractModel;
@@ -68,13 +66,6 @@ public class SmartContractCallSendController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
-
-        Rectangle clip = new Rectangle( this.icon.getFitWidth()-0.5, this.icon.getFitHeight()-0.5 );
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        icon.setClip(clip);
-
-        AppManager.getInstance().settingNodeStyle(selectPopupPane);
 
         searchText.textProperty().addListener(searchTextImpl);
         walletAndAmountController.setHandler(walletAndAmountImpl);
@@ -91,12 +82,12 @@ public class SmartContractCallSendController extends BaseViewController {
         });
 
         warningLabel.setVisible(false);
-        frozenImg.setVisible(false);
+        selectContractController.setFrozenImgVisible(false);
     }
 
     public void languageSetting() {
 
-        selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
+        selectContractLabel.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
 
         cSelectHeadText.textProperty().bind(StringManager.getInstance().common.selectFunction);
@@ -258,23 +249,9 @@ public class SmartContractCallSendController extends BaseViewController {
                 searchText.setText("");
                 searchText.setDisable(false);
 
-                aliasLabel.setText(model.getName());
-                addressLabel.setText(model.getAddress());
-                placeholderLabel.setVisible(false);
-
-                if(AppManager.getInstance().isFrozen(addressLabel.getText())) {
-                    frozenImg.setVisible(true);
-                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
-                } else {
-                    frozenImg.setVisible(false);
-                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
-                }
-
-                Image image = IdenticonGenerator.createIcon(addressLabel.textProperty().get());
-                if (image != null) {
-                    icon.setImage(image);
-                    image = null;
-                }
+                selectContractController.setAlias(model.getName());
+                selectContractController.setAddress(model.getAddress());
+                selectContractController.setPlaceHolderVisible(false);
 
                 // get contract method list
                 cSelectList.getChildren().clear();
@@ -460,7 +437,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 dataType = ContractMethodListItemController.DATA_TYPE_INT;
             }
 
-            URL methodListItem = getClass().getClassLoader().getResource("scene/smartcontrect/contract_method_list_item.fxml");
+            URL methodListItem = getClass().getClassLoader().getResource("scene/smartcontract/contract_method_list_item.fxml");
             FXMLLoader loader = new FXMLLoader(methodListItem);
             Node node = loader.load();
             ContractMethodListItemController itemController = (ContractMethodListItemController)loader.getController();

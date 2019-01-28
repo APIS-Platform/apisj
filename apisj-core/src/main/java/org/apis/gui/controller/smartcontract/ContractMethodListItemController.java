@@ -1,4 +1,4 @@
-package org.apis.gui.controller.smartcontrect;
+package org.apis.gui.controller.smartcontract;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

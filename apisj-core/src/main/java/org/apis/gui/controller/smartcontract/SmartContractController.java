@@ -1,4 +1,4 @@
-package org.apis.gui.controller.smartcontrect;
+package org.apis.gui.controller.smartcontract;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,8 +12,11 @@ import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.receipt.ReceiptController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
+import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
+import org.apis.gui.controller.popup.PopupMyAddressController;
+import org.apis.gui.manager.*;
+import org.apis.gui.model.ContractModel;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -21,6 +24,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SmartContractController extends BaseViewController {
+    private final int CONTRACT_ADDRESS_TYPE_SELECT = 0;
+    private final int CONTRACT_ADDRESS_TYPE_INPUT = 1;
+    private int contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
 
     private final int TAB_DEPLOY = 0;
     private final int TAB_CALL_SEND = 1;
@@ -29,9 +35,10 @@ public class SmartContractController extends BaseViewController {
     private int selectedTabIndex = 0;
 
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane scrollGridContent;
-    @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, tabLeftCanvas;
-    @FXML private Label tabTitle;
+    @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid;
+    @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane, inputContractPane, hintMaskAddress;
+    @FXML private Label tabTitle, selectContractToggleButton, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel, selectWalletLabel,
+                        contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel;
 
     @FXML private TabMenuController tabMenuController;
 
@@ -43,6 +50,10 @@ public class SmartContractController extends BaseViewController {
     @FXML private ReceiptController deployReceiptController;
     @FXML private ReceiptController callSendReceiptController;
     @FXML private ReceiptController updaterReceiptController;
+    @FXML private SelectContractController selectContractController;
+    @FXML private InputContractController inputContractController;
+    @FXML private ApisAddressFieldController selectWalletController;
+    @FXML private HintMaskAddressController hintController;
 
     private boolean isMyAddressSelected1 = true;
     private boolean isScrolling = false;
@@ -55,6 +66,7 @@ public class SmartContractController extends BaseViewController {
         initializeDeployReceipt();
         initializeCallSendReceipt();
         initializeUpdateReceipt();
+        initializeCanvas();
 
         initializeScrollSpeed();
 
@@ -77,11 +89,74 @@ public class SmartContractController extends BaseViewController {
 
     public void languageSetting() {
         tabTitle.textProperty().bind(StringManager.getInstance().smartContract.tabTitle);
+        selectContractToggleButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
+        btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
+        selectContractLabel.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
+        selectWalletLabel.textProperty().bind(StringManager.getInstance().module.selectWallet);
+        contractMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.contractMaskTitleLabel);
+        canvasURLTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.canvasURLTitleLabel);
+        walletMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.walletMaskTitleLabel);
+        balanceTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.balanceTitleLabel);
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
-        //tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+    }
+
+    public void initializeCanvas() {
+        walletMaskLabel.setText("");
+        hintMaskAddress.setVisible(false);
+
+        selectWalletController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+            @Override
+            public void change(String address, String mask) {
+                if(mask != null && mask.length() > 0){
+                    //use masking address
+                    if(address != null) {
+                        walletMaskLabel.setText(mask);
+                        hintController.setHintMaskAddressLabel(mask + " = " + address);
+                        hintController.setSuccessed();
+
+                    }else{
+                        hintController.setFailed(StringManager.getInstance().common.addressNotMath);
+                    }
+                    showHintMaskAddress();
+
+                }else{
+                    walletMaskLabel.setText("");
+                    //use hex address
+                    hideHintMaskAddress();
+                }
+
+                settingLayoutData();
+            }
+        });
+    }
+
+    private void showHintMaskAddress(){
+        this.hintMaskAddress.setVisible(true);
+        this.hintMaskAddress.prefHeightProperty().setValue(-1);
+    }
+    private void hideHintMaskAddress(){
+        this.hintMaskAddress.setVisible(false);
+        this.hintMaskAddress.prefHeightProperty().setValue(0);
+    }
+
+    public void openSelectContractPopup(){
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(null, "popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
+            @Override
+            public void onClickSelect(ContractModel model) {
+                ContractModel contractModel = model;
+
+                selectContractController.setAlias(model.getName());
+                selectContractController.setAddress(model.getAddress());
+                selectContractController.setPlaceHolderVisible(false);
+
+                update();
+            }
+        });
     }
 
     private void initializeScrollSpeed(){
@@ -216,6 +291,37 @@ public class SmartContractController extends BaseViewController {
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("selectContractToggleButton")) {
+            if(contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT) {
+                contractAddressType = CONTRACT_ADDRESS_TYPE_INPUT;
+
+                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
+                StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
+                StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.Cffffff);
+                inputContractController.setText("");
+                inputContractController.setImage(ImageManager.icCircleNone);
+                selectContractPane.setVisible(false);
+                inputContractPane.setVisible(true);
+            } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
+                contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
+
+                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.Cf8f8fb);
+                StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
+                selectContractPane.setVisible(true);
+                inputContractPane.setVisible(false);
+            }
+
+        } else if(fxid.equals("btnMyAddress")) {
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(null, "popup_my_address.fxml", 0);
+            controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
+                @Override
+                public void onClickYes(String address) {
+                    selectWalletController.setText(address);
+                }
+            });
+        }
     }
 
     @FXML
@@ -332,7 +438,17 @@ public class SmartContractController extends BaseViewController {
 
     }
     public void settingLayoutDataCanvas(){
+        String address = selectWalletController.getAddress();
+        String balance = "0";
 
+        if(address != null) {
+            balance = ApisUtil.readableApis(AppManager.getInstance().getBalance(address), ',', true);
+            if (balance.indexOf(".") != -1) {
+                String[] balanceSplit = balance.split("\\.");
+                balance = balanceSplit[0];
+            }
+        }
+        balanceLabel.setText(balance);
     }
 
     public void initStyleTab(int index) {
@@ -345,6 +461,7 @@ public class SmartContractController extends BaseViewController {
         this.callSendReceiptController.setVisible(false);
         this.updaterReceiptController.setVisible(false);
         if(index == TAB_DEPLOY) {
+            this.receiptGrid.setVisible(true);
             this.tabLeftDeploy.setVisible(true);
             this.tabLeftDeploy.setPrefHeight(-1);
 
@@ -352,6 +469,7 @@ public class SmartContractController extends BaseViewController {
             this.deployReceiptController.setVisibleTransferButton(true);
 
         } else if(index == TAB_CALL_SEND) {
+            this.receiptGrid.setVisible(true);
             this.tabLeftCallSend.setVisible(true);
             this.tabLeftCallSend.setPrefHeight(-1);
 
@@ -360,6 +478,7 @@ public class SmartContractController extends BaseViewController {
             this.callSendReceiptController.setVisibleNoFees(this.smartContractCallSendController.isReadMethod());
 
         } else if(index == TAB_CONTRACT_UPDATER) {
+            this.receiptGrid.setVisible(true);
             this.tabLeftUpdater.setVisible(true);
             this.tabLeftUpdater.setPrefHeight(-1);
 
@@ -368,26 +487,24 @@ public class SmartContractController extends BaseViewController {
 
 
         } else if(index == TAB_CANVAS) {
-            this.tabLeftCanvas.setVisible(true);
-            this.tabLeftCanvas.setPrefHeight(-1);
-            this.updaterReceiptController.setVisibleTransferButton(true);
+            this.canvasGrid.setVisible(true);
         }
 
         settingLayoutData();
     }
 
     public void initStyleTabClean() {
+        receiptGrid.setVisible(false);
+        canvasGrid.setVisible(false);
         tabLeftDeploy.setVisible(false);
         tabLeftCallSend.setVisible(false);
         tabLeftFreezer.setVisible(false);
         tabLeftUpdater.setVisible(false);
-        tabLeftCanvas.setVisible(false);
 
         tabLeftDeploy.setPrefHeight(0);
         tabLeftCallSend.setPrefHeight(0);
         tabLeftFreezer.setPrefHeight(0);
         tabLeftUpdater.setPrefHeight(0);
-        tabLeftCanvas.setPrefHeight(0);
 
         //receiptController.hideNoFees();
 

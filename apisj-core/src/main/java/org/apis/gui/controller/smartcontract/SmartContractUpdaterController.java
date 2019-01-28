@@ -1,4 +1,4 @@
-package org.apis.gui.controller.smartcontrect;
+package org.apis.gui.controller.smartcontract;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,8 +10,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -52,17 +50,18 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane, solidityCodeTabPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
-    @FXML private ImageView selectContractIcon, inputContractIcon, frozenImg;
-    @FXML private TextField contractAddressTextField, nonceTextField;
+    @FXML private TextField nonceTextField;
     @FXML private TextFlow solidityTextFlow;
-    @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel, btnStartCompile;
-    @FXML private Label selectContract, contractCnstAddr, nonceLabel, cautionLabel;
+    @FXML private Label selectContractToggleButton, textareaMessage, apisTotal, apisTotalLabel, btnStartCompile;
+    @FXML private Label selectContractLabel, contractCnstAddr, nonceLabel, cautionLabel;
 
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ApisButtonEstimateGasLimitController btnStartPreGasUsedController;
+    @FXML private InputContractController inputContractController;
+    @FXML private SelectContractController selectContractController;
 
-    private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
+    private TextField contractAddressTextField;
 
     private CompilationResult res;
     private CompilationResult.ContractMetadata metadata;
@@ -76,18 +75,15 @@ public class SmartContractUpdaterController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        ImageManager.imageViewRectangle30(selectContractIcon);
-        ImageManager.imageViewRectangle30(inputContractIcon);
-        frozenImg.setVisible(false);
+        contractAddressTextField = inputContractController.getTextField();
+        inputContractPane.setVisible(false);
+        selectContractController.setFrozenImgVisible(false);
 
         AppManager.getInstance().settingTextFieldStyle(nonceTextField);
-        AppManager.getInstance().settingTextFieldStyle(contractAddressTextField);
-        AppManager.getInstance().settingNodeStyle(selectContractPane);
 
 
         // Contract Constructor Address Listener
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
-        contractAddressTextField.textProperty().addListener(ctrtKeyListener);
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, false);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
@@ -162,7 +158,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     public void languageSetting() {
         btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
         selectContractToggleButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
-        selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
+        selectContractLabel.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
         contractCnstAddr.textProperty().bind(StringManager.getInstance().smartContract.selectContractConstructor);
         nonceLabel.textProperty().bind(StringManager.getInstance().smartContract.nonce);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
@@ -252,7 +248,7 @@ public class SmartContractUpdaterController extends BaseViewController {
                 StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
                 StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.Cffffff);
                 contractAddressTextField.setText("");
-                inputContractIcon.setImage(greyCircleAddrImg);
+                inputContractController.setImage(ImageManager.icCircleNone);
                 selectContractPane.setVisible(false);
                 inputContractPane.setVisible(true);
             } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
@@ -597,22 +593,9 @@ public class SmartContractUpdaterController extends BaseViewController {
             public void onClickSelect(ContractModel model) {
                 ContractModel contractModel = model;
 
-                contractAliasLabel.setText(model.getName());
-                contractAddressLabel.setText(model.getAddress());
-                placeholderLabel.setVisible(false);
-
-                if(AppManager.getInstance().isFrozen(contractAddressLabel.getText())) {
-                    frozenImg.setVisible(true);
-                    StyleManager.fontColorStyle(contractAddressLabel, StyleManager.AColor.C4871ff);
-                } else {
-                    frozenImg.setVisible(false);
-                    StyleManager.fontColorStyle(contractAddressLabel, StyleManager.AColor.C999999);
-                }
-
-                Image image = ImageManager.getIdenticons(contractAddressLabel.textProperty().get());
-                if (image != null) {
-                    selectContractIcon.setImage(image);
-                }
+                selectContractController.setAlias(model.getName());
+                selectContractController.setAddress(model.getAddress());
+                selectContractController.setPlaceHolderVisible(false);
 
                 update();
             }
@@ -638,33 +621,9 @@ public class SmartContractUpdaterController extends BaseViewController {
         }
     };
 
-    private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!contractAddressTextField.getText().matches("[0-9a-fA-F]*")) {
-                contractAddressTextField.setText(contractAddressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
-            }
-
-            int maxlangth = 40;
-            if (contractAddressTextField.getText().trim().length() > maxlangth) {
-                contractAddressTextField.setText(contractAddressTextField.getText().trim().substring(0, maxlangth));
-            }
-
-            if (contractAddressTextField.getText() == null || contractAddressTextField.getText().trim().length() < maxlangth) {
-
-                inputContractIcon.setImage(greyCircleAddrImg);
-            } else {
-                Image image = ImageManager.getIdenticons(contractAddressTextField.getText().trim());
-                if (image != null) {
-                    inputContractIcon.setImage(image);
-                }
-            }
-        }
-    };
-
     private byte[]  getContractAddress(){
         if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT){
-            return ByteUtil.hexStringToBytes(this.contractAddressLabel.getText().trim());
+            return ByteUtil.hexStringToBytes(selectContractController.getAddress().trim());
         }else if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT){
             return ByteUtil.hexStringToBytes(this.contractAddressTextField.getText().trim());
         }

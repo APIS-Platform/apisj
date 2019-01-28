@@ -17,24 +17,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
-import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
-import org.apis.gui.controller.smartcontrect.SmartContractController;
-import org.apis.gui.controller.transaction.TransactionNativeController;
-import org.apis.gui.controller.transfer.TransferController;
-import org.apis.gui.controller.wallet.WalletController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -169,7 +160,7 @@ public class MainController extends BaseViewController {
             case SMART_CONTRECT :
 //                if(AppManager.getInstance().guiFx.getSmartContract() == null){
 //                    try {
-//                        BaseFxmlController fxmlController = new BaseFxmlController("smartcontrect/smart_contract.fxml");
+//                        BaseFxmlController fxmlController = new BaseFxmlController("smartcontract/smart_contract.fxml");
 //                        Node node = fxmlController.getNode();
 //                        AppManager.getInstance().guiFx.setSmartContract((SmartContractController)fxmlController.getController());
 //                        tabSmartContractPane.getChildren().clear();

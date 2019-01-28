@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractCallSendController">
+<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontract.SmartContractCallSendController">
    <children>
       <GridPane layoutX="100.0" layoutY="110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -69,7 +69,7 @@
                   </Label>
                </children>
             </AnchorPane>
-            <Label fx:id="selectContract" styleClass="font_semibold_14" text="Select Contract" textFill="#2b2b2b">
+            <Label fx:id="selectContractLabel" styleClass="font_semibold_14" text="Select Contract" textFill="#2b2b2b">
                <GridPane.margin>
                   <Insets bottom="8.0" />
                </GridPane.margin>
@@ -92,54 +92,9 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="selectPopupPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#contractSelectPopup" prefHeight="56.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="1">
+            <AnchorPane fx:id="selectPopupPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#contractSelectPopup" prefHeight="56.0" GridPane.rowIndex="1">
                <children>
-                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
-                     </rowConstraints>
-                     <children>
-                        <ImageView fx:id="icon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <GridPane.margin>
-                              <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
-                           </GridPane.margin>
-                           <image>
-                              <Image url="@../../image/ic_circle_grey@2x.png" />
-                           </image>
-                        </ImageView>
-                        <AnchorPane GridPane.columnIndex="1">
-                           <children>
-                              <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
-                              <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                    <ColumnConstraints />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label fx:id="addressLabel" styleClass="font_regular_12" textFill="#999999" />
-                                    <ImageView fx:id="frozenImg" fitHeight="14.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                                       <image>
-                                          <Image url="@../../image/ic_freeze@2x.png" />
-                                       </image>
-                                       <GridPane.margin>
-                                          <Insets left="4.0" />
-                                       </GridPane.margin>
-                                    </ImageView>
-                                 </children>
-                              </GridPane>
-                              <Label fx:id="placeholderLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_14" text="select contract address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </GridPane>
+                  <fx:include fx:id="selectContract" source="select_contract.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <GridPane fx:id="walletInputView" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="9">

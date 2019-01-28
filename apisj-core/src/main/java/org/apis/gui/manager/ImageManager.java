@@ -1,15 +1,10 @@
 package org.apis.gui.manager;
 
-import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.util.AddressUtil;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ImageManager {
     public static final Image apisIcon = new Image("image/ic_apis@2x.png");
@@ -87,7 +82,7 @@ public class ImageManager {
     public static final Image icEstimateGasLimit = new Image("image/ic_estimate_gaslimit@2x.png");
     public static final Image icEstimateGasLimitHover = new Image("image/ic_estimate_gaslimit_hover@2x.png");
 
-    public static final Image icCrcleNone = new Image("image/ic_circle_grey@2x.png");
+    public static final Image icCircleNone = new Image("image/ic_circle_grey@2x.png");
     public static final Image circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
     public static final Image circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");
     public static final Image errorRed = new Image("image/ic_error_red@2x.png");
@@ -120,7 +115,7 @@ public class ImageManager {
     public static Image getIdenticons(String address) {
 
         if(address == null || !AddressUtil.isAddress(address)){
-            return ImageManager.icCrcleNone;
+            return ImageManager.icCircleNone;
         }else{
             return IdenticonGenerator.createIcon(address);
         }
