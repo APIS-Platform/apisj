@@ -1616,7 +1616,7 @@
                                                 <RowConstraints prefHeight="24.0" valignment="CENTER" />
                                                 <RowConstraints valignment="CENTER" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="CENTER" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
                                              </rowConstraints>
                                              <GridPane.margin>
                                                 <Insets left="8.0" top="47.0" />

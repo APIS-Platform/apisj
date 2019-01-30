@@ -27,12 +27,14 @@ public class MainModel extends BaseModel {
         String sBlock = lastBlock.toString();
         if(block.toString().equals("0") == false){
             if(block.toString().indexOf("-") >= 0){
-                sBlock = sBlock + "("+block.toString()+")";
+                sBlock = AppManager.comma(sBlock) + "("+AppManager.comma(block.toString())+")";
             }else{
-                sBlock = sBlock + "(+"+block.toString()+")";
+                sBlock = AppManager.comma(sBlock) + "("+AppManager.comma(block.toString())+")";
             }
         }else if(lastBlock.toString().equals("0") && bestBlock.toString().equals("0")){
             sBlock = "-";
+        }else{
+            sBlock = AppManager.comma(sBlock);
         }
         this.block.setValue(sBlock);
     }
