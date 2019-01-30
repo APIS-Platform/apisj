@@ -78,6 +78,9 @@ public class DBSyncManager {
 
             dbManager.insertBlocks(blocks, apis);
 
+            // 중복된 블록을 정리한다.
+            dbManager.trimBlocks(apis);
+
             blocks.clear();
             currentBlockNumber += 1;
 
