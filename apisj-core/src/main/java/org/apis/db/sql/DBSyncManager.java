@@ -81,10 +81,10 @@ public class DBSyncManager {
             // 중복된 블록을 정리한다.
             dbManager.trimBlocks(apis);
 
+            ConsoleUtil.printlnYellow("The last block inserted into the SQL database : %d (%d ms takes)", currentBlockNumber, (TimeUtils.getRealTimestamp() - tt));
+
             blocks.clear();
             currentBlockNumber += 1;
-
-            ConsoleUtil.printlnPurple(currentBlockNumber + " synced : " + (TimeUtils.getRealTimestamp() - tt) + "ms");
         }
 
         isSyncing = false;
