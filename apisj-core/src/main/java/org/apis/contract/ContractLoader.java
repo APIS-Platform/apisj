@@ -8,6 +8,7 @@ import org.apis.facade.Apis;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.ResourceFileUtil;
 import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,23 +134,7 @@ public class ContractLoader {
 
     private static String loadContractSource(int contractType) throws RuntimeException {
         String contractFileName = getContractFileName(contractType);
-
-        // #1 try to find genesis at passed location
-        try (InputStream is = ContractLoader.class.getClassLoader().getResourceAsStream("contract/" + contractFileName)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder out = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null) {
-                out.append(line).append("\n");
-            }
-
-            return out.toString();
-        } catch (Exception e) {
-            logger.error("Problem loading contract file from " + contractFileName);
-            e.printStackTrace();
-        }
-
-        return null;
+        return ResourceFileUtil.readFile("contract/" + contractFileName);
     }
 
     private static String getContractFileName(int contractIndex) {
