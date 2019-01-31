@@ -18,6 +18,7 @@ import org.apis.keystore.*;
 import org.apis.listener.BlockReplay;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.rpc.adapter.CanvasAdapter;
 import org.apis.rpc.listener.LastLogListener;
 import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
@@ -186,7 +187,7 @@ public class RPCCommand {
 
 
 
-    public static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) {
+    static void conduct(Apis apis, WebSocket conn, String token, String payload, boolean isEncrypt) {
         MessageApp3 message = parseMessage(payload);
         long id = message.getId();
         String method = message.getMethod();
@@ -200,7 +201,7 @@ public class RPCCommand {
         conduct(apis, conn, token, id, method, params, isEncrypt);
     }
 
-    public static String conduct(Apis apis, String payload) {
+    public static String conduct(Apis apis, String payload, CanvasAdapter canvasAdapter) {
         MessageApp3 message = parseMessage(payload);
         long id = message.getId();
         String method = message.getMethod();
@@ -211,7 +212,13 @@ public class RPCCommand {
             apis.addListener(pendingTxListener);
         }
 
-        return getCommand(apis, id, method, params);
+        String command = getCommand(apis, id, method, params);
+
+        if(command != null) {
+            return command;
+        } else {
+            return subscribe(apis, id, method, params, canvasAdapter);
+        }
     }
 
     public static MessageApp3 parseMessage(String payload) {
@@ -1259,7 +1266,34 @@ public class RPCCommand {
         return command;
     }
 
+    /*
+     * app3js 라이브러리의 WebsocketProvider를 통해서 구독한 경우를 처리한다.
+     */
     private static String subscribe (Apis apis, WebSocket conn, String token, long id, String method, Object[] params, boolean isEncrypt) {
+        return subscribe (apis, id, method, params, conn, token, isEncrypt, null);
+    }
+
+
+    /*
+     * WebView를 통해 구현된 Smart Contract on Canvas를 통해서 구독한 경우를 처리한다.
+     */
+    private static String subscribe (Apis apis, long id, String method, Object[] params, CanvasAdapter canvasAdapter) {
+        return subscribe(apis, id, method, params, null, null, false, canvasAdapter);
+    }
+
+    private static final int SUBSCRIBE_TYPE_WEBSOCKET = 0;
+    private static final int SUBSCRIBE_TYPE_SCC = 1;
+
+    private static String subscribe (Apis apis, long id, String method, Object[] params, WebSocket conn, String token, boolean isEncrypt, CanvasAdapter canvasAdapter) {
+        int subscribeType;
+        if(conn != null && conn.isOpen()) {
+            subscribeType = SUBSCRIBE_TYPE_WEBSOCKET;
+        }
+        else if(canvasAdapter != null) {
+            subscribeType = SUBSCRIBE_TYPE_SCC;
+        } else {
+            return null;
+        }
 
         switch(method) {
             case COMMAND_APIS_SUBSCRIBE: {
@@ -1274,7 +1308,18 @@ public class RPCCommand {
                 BigInteger key = ByteUtil.bytesToBigInteger(keyBytes);
 
                 if(type.equalsIgnoreCase("newheads")) {
-                    NewBlockListener listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
+                    NewBlockListener listener;
+
+                    switch(subscribeType) {
+                        case SUBSCRIBE_TYPE_WEBSOCKET:
+                            listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
+                            break;
+                        case SUBSCRIBE_TYPE_SCC:
+                            listener = new NewBlockListener(keyStr, canvasAdapter);
+                            break;
+                        default:
+                            return null;
+                    }
 
                     mListeners.put(key, listener);
                     apis.addListener(listener);
@@ -1283,7 +1328,18 @@ public class RPCCommand {
                 }
 
                 else if(type.equalsIgnoreCase("newPendingTransactions")) {
-                    PendingTransactionListener listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
+                    PendingTransactionListener listener;
+
+                    switch(subscribeType) {
+                        case SUBSCRIBE_TYPE_WEBSOCKET:
+                            listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
+                            break;
+                        case SUBSCRIBE_TYPE_SCC:
+                            listener = new PendingTransactionListener(keyStr, canvasAdapter);
+                            break;
+                        default:
+                            return null;
+                    }
 
                     mListeners.put(key, listener);
                     apis.addListener(listener);
@@ -1302,7 +1358,17 @@ public class RPCCommand {
                     List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
 
 
-                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, apis);
+                    LogListener listener;
+                    switch(subscribeType) {
+                        case SUBSCRIBE_TYPE_WEBSOCKET:
+                            listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, apis);
+                            break;
+                        case SUBSCRIBE_TYPE_SCC:
+                            listener = new LogListener(keyStr, addresses, topics, apis, canvasAdapter);
+                            break;
+                        default:
+                            return null;
+                    }
 
                     mListeners.put(key, listener);
                     apis.addListener(listener);
@@ -1337,7 +1403,17 @@ public class RPCCommand {
                     toBlockNumber = getBlockNumber(apis, toBlock);
                 }
 
-                LastLogListener listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, apis);
+                LastLogListener listener;
+                switch(subscribeType) {
+                    case SUBSCRIBE_TYPE_WEBSOCKET:
+                        listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, apis);
+                        break;
+                    case SUBSCRIBE_TYPE_SCC:
+                        listener = new LastLogListener(method, id, addresses, topics, apis, canvasAdapter);
+                        break;
+                    default:
+                        return null;
+                }
 
                 BlockReplay blockReplay = new BlockReplay(apis.getBlockchain().getBlockStore(), apis.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
                 blockReplay.replayAsync();
@@ -1480,29 +1556,6 @@ public class RPCCommand {
         send(conn, token, text, false);
     }
 
-    private static String contractRun(long id, String method, Apis apis, Transaction transaction) {
-        EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
-        EstimateTransactionResult estimateResult = estimator.estimate(transaction);
-
-        boolean isSuccessful = estimateResult.isSuccess();
-        String preRunError = estimateResult.getReceipt().getError();
-        String returnCommand;
-
-        // run
-        if(isSuccessful) {
-            ConsoleUtil.printlnRed("[contractRun] success send transaction");
-
-            apis.submitTransaction(transaction); // send
-            returnCommand = createJson(id, method, ByteUtil.toHexString0x(transaction.getHash()));
-        }
-        else {
-            ConsoleUtil.printlnRed("[contractRun] fail send transaction");
-
-            returnCommand = createJson(id, method, null, preRunError);
-        }
-
-        return returnCommand;
-    }
 
 
     private static LinkedHashMap<BigInteger, TransactionPendingResult> txPendingResults = new LinkedHashMap<BigInteger, TransactionPendingResult>() {
