@@ -1,9 +1,9 @@
 package org.apis.rpc.listener;
 
 import org.apis.core.BlockSummary;
-import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCCommand;
+import org.apis.rpc.adapter.CanvasAdapter;
 import org.apis.rpc.template.BlockHeaderData;
 import org.java_websocket.WebSocket;
 
@@ -15,6 +15,7 @@ public class NewBlockListener extends EthereumListenerAdapter {
     private WebSocket conn;
     private String token;
     private boolean isEncrypt;
+    private CanvasAdapter canvasAdapter;
 
 
     public NewBlockListener(String subscription, WebSocket conn, String token, boolean isEncrypt) {
@@ -24,11 +25,20 @@ public class NewBlockListener extends EthereumListenerAdapter {
         this.isEncrypt = isEncrypt;
     }
 
+    public NewBlockListener(String subscription, CanvasAdapter canvasAdapter) {
+        this.canvasAdapter = canvasAdapter;
+        this.subscription = subscription;
+    }
+
     @Override
     public void onBlock(BlockSummary blockSummary) {
-        if(conn.isOpen()) {
-            String command = createSubscriptJson(subscription, "apis_subscription", new BlockHeaderData(blockSummary.getBlock()), null);
+        String command = createSubscriptJson(subscription, "apis_subscription", new BlockHeaderData(blockSummary.getBlock()), null);
+        if(conn != null && conn.isOpen()) {
             RPCCommand.send(conn, token, command, isEncrypt);
+        }
+
+        if(canvasAdapter != null) {
+            canvasAdapter.send(command);
         }
     }
 }
