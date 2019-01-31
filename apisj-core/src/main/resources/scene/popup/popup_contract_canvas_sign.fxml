@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="580.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractCanvasSignController">
+   <children>
+      <GridPane layoutX="333.0" layoutY="223.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="104.0" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints />
+        </rowConstraints>
+         <children>
+            <GridPane style="-fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                <RowConstraints />
+                <RowConstraints />
+                  <RowConstraints vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                     <image>
+                        <Image url="@../../image/btn_close@2x.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <GridPane.margin>
+                        <Insets right="22.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <Label fx:id="titleLabel" styleClass="font_semibold_18" text="Sign Transaction" textFill="#2b2b2b" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="subTitleLabel" layoutX="217.0" layoutY="44.0" styleClass="font_regular_12" text="Sign Transaction" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="1.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <AnchorPane GridPane.rowIndex="2">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <children>
+                              <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <styleClass>
+                                    <String fx:value="font_semibold_14" />
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
+                           <children>
+                              <Label fx:id="confirmBtn" alignment="CENTER" style="-fx-background-color: #d8d8d8;" text="Confirm" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <styleClass>
+                                    <String fx:value="font_semibold_14" />
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="1">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints prefHeight="8.0" />
+                            <RowConstraints />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="dataLabel" styleClass="font_semibold_12" text="Data" textFill="#2b2b2b" />
+                              <AnchorPane style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextArea fx:id="dataTextArea" prefHeight="72.0" style="-fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="mono_font_regular_10" />
+                                          <String fx:value="text_area_transparent" />
+                                          <String fx:value="listview" />
+                                       </styleClass>
+                                    </TextArea>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="24.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                         <AnchorPane fx:id="gas" GridPane.rowIndex="2">
+                             <children>
+                                 <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator_mini.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                             </children>
+                         </AnchorPane>
+                        <GridPane GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints prefHeight="10.0" />
+                            <RowConstraints />
+                              <RowConstraints prefHeight="10.0" />
+                              <RowConstraints />
+                          </rowConstraints>
+                           <children>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="selectWalletLabel" styleClass="font_semibold_12" text="Select Wallet" textFill="#2b2b2b" />
+                                    <Label fx:id="directInputLabel" layoutX="10.0" layoutY="10.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" text="direct input" textFill="#999999" GridPane.columnIndex="1">
+                                       <styleClass>
+                                          <String fx:value="font_semibold_12" />
+                                          <String fx:value="border_radius_4444" />
+                                       </styleClass>
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                       <padding>
+                                          <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
+                                       </padding>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor></Label>
+                                 </children>
+                              </GridPane>
+                              <GridPane layoutX="10.0" layoutY="10.0" GridPane.rowIndex="4">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="totalLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="*Total assets : " textFill="#999999" />
+                                    <Label fx:id="totalBalance" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="20201230.1231231" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                       <GridPane.margin>
+                                          <Insets left="4.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                               <AnchorPane fx:id="selectWalletPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
+                                   <children>
+                                       <fx:include fx:id="selectWallet" source="../module/selectbox/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                   </children>
+                               </AnchorPane>
+                               <AnchorPane fx:id="inputWalletPane" visible="false" GridPane.rowIndex="2">
+                                   <children>
+                                       <fx:include fx:id="inputWallet" source="../module/textfield/apis_addressfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                   </children>
+                               </AnchorPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="24.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/common.css" />
+      <URL value="@../css/scroll.css" />
+   </stylesheets>
+</AnchorPane>

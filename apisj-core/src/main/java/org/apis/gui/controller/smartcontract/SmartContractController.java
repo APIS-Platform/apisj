@@ -2,6 +2,7 @@ package org.apis.gui.controller.smartcontract;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.receipt.ReceiptController;
 import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
+import org.apis.gui.controller.popup.PopupContractCanvasSignController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.manager.*;
@@ -36,11 +38,11 @@ public class SmartContractController extends BaseViewController {
     private int selectedTabIndex = 0;
 
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid;
+    @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid, signBtnGrid;
     @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane,
                              inputContractPane, cautionPane, hintMaskAddress;
     @FXML private Label tabTitle, selectContractToggleButton, contractMaskLabel, canvasURLLabel, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel,
-                        selectWalletLabel, contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel, cautionLabel;
+                        selectWalletLabel, contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel, cautionLabel, signLabel;
 
     @FXML private TabMenuController tabMenuController;
 
@@ -173,6 +175,20 @@ public class SmartContractController extends BaseViewController {
                 }
 
                 settingLayoutData();
+            }
+        });
+
+        // Click sign button
+        signBtnGrid.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                PopupContractCanvasSignController controller = (PopupContractCanvasSignController)PopupManager.getInstance().showMainPopup(null, "popup_contract_canvas_sign.fxml", 0);
+                controller.setHandler(new PopupContractCanvasSignController.PopupContractCanvasSignImpl() {
+                    @Override
+                    public void onClickConfirm() {
+
+                    }
+                });
             }
         });
     }

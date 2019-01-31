@@ -666,10 +666,10 @@ public class StringManager {
             creatorNotMatch.set(StringManager.this.getString("smart_contract_creator_not_match", "Address of contract creator does not match."));
             selectContractAddr.set(StringManager.this.getString("smart_contract_select_contract_addr", "select contract address"));
             enterContractAddr.set(StringManager.this.getString("smart_contract_enter_contract_addr", "please enter your contract address"));
-            contractMaskTitleLabel.set(StringManager.this.getString("smart_contract_contract_mask_title_label", "Address Mask : "));
-            canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL : "));
-            walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask : "));
-            balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance : "));
+            contractMaskTitleLabel.set(StringManager.this.getString("smart_contract_contract_mask_title_label", "Address Mask"));
+            canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL"));
+            walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask"));
+            balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance"));
             canvasNotExist.set(StringManager.this.getString("smart_contract_canvas_not_exist", "Canvas URL does not exist."));
         }
     }
