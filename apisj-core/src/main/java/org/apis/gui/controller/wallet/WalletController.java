@@ -1012,7 +1012,6 @@ public class WalletController extends BaseViewController {
             }
 
             showToolGroup(isPossibleMining, isPossibleMasternode);
-            System.out.println(AppManager.getInstance().isLedger(model.getAddress()));
             if(AppManager.getInstance().isLedger(model.getAddress())) {
                 showLedgerToolGroup();
             }

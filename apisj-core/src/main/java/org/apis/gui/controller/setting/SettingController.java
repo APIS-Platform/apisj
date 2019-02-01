@@ -15,29 +15,22 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import org.apis.config.SystemProperties;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
-import org.apis.rpc.RPCServerManager;
-import org.apis.util.ConsoleUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
-    @FXML private Label userNumLabel, cancelBtn, saveBtn;
+    @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning;
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
@@ -126,6 +119,7 @@ public class SettingController extends BasePopupController {
     public void languageSetting() {
         this.settingsTitle.textProperty().bind(StringManager.getInstance().setting.settingsTitle);
         this.settingsDesc.textProperty().bind(StringManager.getInstance().setting.settingsDesc);
+        this.settingsWarning.textProperty().bind(StringManager.getInstance().setting.settingWarning);
         this.userNumTitle.textProperty().bind(StringManager.getInstance().setting.userNumTitle);
         this.userNumDesc.textProperty().bind(StringManager.getInstance().setting.userNumDesc);
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
@@ -153,6 +147,7 @@ public class SettingController extends BasePopupController {
             enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
         }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
+        userNumLabel.setText(prop.getProperty("peer_num"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
@@ -464,6 +459,12 @@ public class SettingController extends BasePopupController {
                 prop.setProperty("enable_event_log", "" + enableLogEventBtnController.isSelected());
             }
             prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
+            // Limit number of peer
+            prop.setProperty("peer_num", userNumLabel.getText());
+            Map<String, Object> cliOptions = new HashMap<>();
+            cliOptions.put("peer.maxActivePeers", userNumLabel.getText());
+            SystemProperties.getDefault().overrideParams(cliOptions);
+
             AppManager.saveGeneralProperties();
 
             prop = AppManager.getWindowProperties();

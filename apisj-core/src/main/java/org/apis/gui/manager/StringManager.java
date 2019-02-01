@@ -666,10 +666,10 @@ public class StringManager {
             creatorNotMatch.set(StringManager.this.getString("smart_contract_creator_not_match", "Address of contract creator does not match."));
             selectContractAddr.set(StringManager.this.getString("smart_contract_select_contract_addr", "select contract address"));
             enterContractAddr.set(StringManager.this.getString("smart_contract_enter_contract_addr", "please enter your contract address"));
-            contractMaskTitleLabel.set(StringManager.this.getString("smart_contract_contract_mask_title_label", "Address Mask : "));
-            canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL : "));
-            walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask : "));
-            balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance : "));
+            contractMaskTitleLabel.set(StringManager.this.getString("smart_contract_contract_mask_title_label", "Address Mask"));
+            canvasURLTitleLabel.set(StringManager.this.getString("smart_contract_canvas_url_title_label", "Canvas URL"));
+            walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask"));
+            balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance"));
             canvasNotExist.set(StringManager.this.getString("smart_contract_canvas_not_exist", "Canvas URL does not exist."));
         }
     }
@@ -1126,6 +1126,7 @@ public class StringManager {
     public class Setting implements StringManagerImpl {
         public SimpleStringProperty settingsTitle = new SimpleStringProperty();
         public SimpleStringProperty settingsDesc = new SimpleStringProperty();
+        public SimpleStringProperty settingWarning = new SimpleStringProperty();
         public SimpleStringProperty userNumTitle = new SimpleStringProperty();
         public SimpleStringProperty userNumDesc = new SimpleStringProperty();
         public SimpleStringProperty rpcTitle = new SimpleStringProperty();
@@ -1146,6 +1147,7 @@ public class StringManager {
         public void update() {
             settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
             settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can make APIS PC wallet even more easier"));
+            settingWarning.set(StringManager.this.getString("setting_warning", "Items requiring restart"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));

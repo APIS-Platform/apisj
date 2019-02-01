@@ -3,6 +3,7 @@ package org.apis.gui.controller.module.textfield;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.common.IdenticonGenerator;
@@ -77,6 +78,10 @@ public class ApisAddressFieldController extends BaseViewController {
 
     public String getText() {
         return addressField.getText();
+    }
+
+    public void setImage(Image image) {
+        this.icon.setImage(image);
     }
 
     public String getAddress(){
