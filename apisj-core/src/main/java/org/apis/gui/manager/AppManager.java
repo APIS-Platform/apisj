@@ -1044,6 +1044,9 @@ public class AppManager {
         // Coinbase를 생성하기 위해 선택하도록 해야한다.
         // keystore 폴더가 존재하는지, 파일들이 존재하는지 확인한다.
         String keystoreDir = config.keystoreDir();
+        Map<String, Object> cliOptions = new HashMap<>();
+        cliOptions.put("peer.maxActivePeers", getGeneralProperties().getProperty("peer_num"));
+        config.overrideParams(cliOptions);
 
         final boolean actionBlocksLoader = !config.blocksLoader().equals("");
 
@@ -1843,7 +1846,7 @@ public class AppManager {
         prop.clear();
 
         try {
-            InputStream input = new FileInputStream("config/general.properties");
+            InputStream input = new FileInputStream(SystemProperties.getDefault().configDir() + "/general.properties");
             prop.load(input);
             if (prop.getProperty("in_system_log") == null) { prop.setProperty("in_system_log", "false"); }
             if (prop.getProperty("enable_event_log") == null) { prop.setProperty("enable_event_log", "false"); }
@@ -1854,6 +1857,7 @@ public class AppManager {
             if (prop.getProperty("language") == null) { prop.setProperty("language", "ENG"); }
             if (prop.getProperty("footer_total_unit") == null) { prop.setProperty("footer_total_unit", "APIS"); }
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
+            if (prop.getProperty("peer_num") == null) { prop.setProperty("peer_num", "30"); };
             input.close();
 
         } catch (IOException e) {
@@ -1866,12 +1870,13 @@ public class AppManager {
             prop.setProperty("language","ENG");
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
+            prop.setProperty("peer_num", "30");
             File config = new File("config");
             if(!config.exists()) {
                 config.mkdirs();
             }
             try {
-                OutputStream output = new FileOutputStream("config/general.properties");
+                OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);
                 output.close();
             }catch (IOException err){
@@ -1894,7 +1899,7 @@ public class AppManager {
             if(!config.exists()) {
                 config.mkdirs();
             }
-            OutputStream output = new FileOutputStream("config/general.properties");
+            OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
             prop.store(output, null);
             output.close();
         }catch (IOException e){
@@ -1910,7 +1915,7 @@ public class AppManager {
         prop.clear();
 
         try {
-            InputStream input = new FileInputStream("config/window.properties");
+            InputStream input = new FileInputStream(SystemProperties.getDefault().configDir() + "/window.properties");
             prop.load(input);
             if(prop.getProperty("minimize_to_tray") == null) { prop.setProperty("minimize_to_tray", "false"); }
             input.close();
@@ -1922,7 +1927,7 @@ public class AppManager {
                 if(!config.exists()) {
                     config.mkdirs();
                 }
-                OutputStream output = new FileOutputStream("config/window.properties");
+                OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
                 prop.store(output, null);
                 output.close();
             }catch (IOException err){
@@ -1943,7 +1948,7 @@ public class AppManager {
             if(!config.exists()) {
                 config.mkdirs();
             }
-            OutputStream output = new FileOutputStream("config/window.properties");
+            OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
             prop.store(output, null);
             output.close();
         }catch (IOException e){

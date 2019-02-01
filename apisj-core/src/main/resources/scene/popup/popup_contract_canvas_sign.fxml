@@ -22,7 +22,6 @@
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="104.0" />
           <RowConstraints vgrow="SOMETIMES" />
-          <RowConstraints />
         </rowConstraints>
          <children>
             <GridPane style="-fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;">
@@ -55,61 +54,20 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane GridPane.rowIndex="2">
+            <AnchorPane GridPane.rowIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" />
-                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints />
-                    </rowConstraints>
-                     <children>
-                        <AnchorPane prefHeight="48.0" prefWidth="218.0">
-                           <GridPane.margin>
-                              <Insets />
-                           </GridPane.margin>
-                           <children>
-                              <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <styleClass>
-                                    <String fx:value="font_semibold_14" />
-                                    <String fx:value="border_radius_24_24_24_24" />
-                                 </styleClass>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
-                           <children>
-                              <Label fx:id="confirmBtn" alignment="CENTER" style="-fx-background-color: #d8d8d8;" text="Confirm" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <styleClass>
-                                    <String fx:value="font_semibold_14" />
-                                    <String fx:value="border_radius_24_24_24_24" />
-                                 </styleClass>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </GridPane>
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.rowIndex="1">
-               <children>
-                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints />
                       <RowConstraints />
-                      <RowConstraints vgrow="SOMETIMES" />
+                      <RowConstraints />
+                        <RowConstraints minHeight="8.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints minHeight="8.0" vgrow="SOMETIMES" />
+                        <RowConstraints />
                     </rowConstraints>
                      <children>
                         <GridPane>
@@ -137,6 +95,55 @@
                            </children>
                            <GridPane.margin>
                               <Insets bottom="24.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <AnchorPane GridPane.rowIndex="4">
+                           <children>
+                              <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#b01e1e" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <GridPane GridPane.rowIndex="6">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <children>
+                                    <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="font_semibold_14" />
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                       </styleClass>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label fx:id="confirmBtn" alignment="CENTER" style="-fx-background-color: #d8d8d8;" text="Confirm" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="font_semibold_14" />
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                       </styleClass>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
                            </GridPane.margin>
                         </GridPane>
                          <AnchorPane fx:id="gas" GridPane.rowIndex="2">

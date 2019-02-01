@@ -2,9 +2,14 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
+import org.apis.gui.controller.module.textfield.ApisAddressFieldController;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -13,14 +18,22 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupContractCanvasSignController extends BasePopupController {
-    @FXML Label totalBalance, confirmBtn;
-    @FXML ApisSelectBoxController selectWalletController;
-    @FXML GasCalculatorMiniController gasCalculatorMiniController;
+    private final int WALLET_ADDRESS_TYPE_SELECT = 0;
+    private final int WALLET_ADDRESS_TYPE_INPUT = 1;
+    private int walletAddressType = WALLET_ADDRESS_TYPE_SELECT;
+
+    @FXML private AnchorPane selectWalletPane, inputWalletPane;
+    @FXML private Label totalBalance, confirmBtn, directInputLabel, errorLabel;
+    @FXML private ApisSelectBoxController selectWalletController;
+    @FXML private ApisAddressFieldController inputWalletController;
+    @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
     private PopupContractCanvasSignImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         gasCalculatorMiniController.setDisable(false);
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS, true);
@@ -34,6 +47,13 @@ public class PopupContractCanvasSignController extends BasePopupController {
             public void onSelectItem() {
                 StyleManager.backgroundColorStyle(confirmBtn, StyleManager.AColor.Cd8d8d8);
                 gasCalculatorMiniController.setGasLimit("0");
+                settingLayoutData();
+            }
+        });
+
+        inputWalletController.setHandler(new ApisAddressFieldController.ApisAddressFieldImpl() {
+            @Override
+            public void change(String address, String mask) {
                 settingLayoutData();
             }
         });
@@ -61,10 +81,35 @@ public class PopupContractCanvasSignController extends BasePopupController {
 
             @Override
             public void clickPreGasUsed() {
-                System.out.println("11111111111111111");
+                confirmBtn.setDisable(false);
                 StyleManager.backgroundColorStyle(confirmBtn, StyleManager.AColor.Cb01e1e);
-                System.out.println("2222222222222");
                 estimateGasLimit();
+                settingLayoutData();
+            }
+        });
+
+        directInputLabel.setOnMouseClicked(event -> {
+            if(walletAddressType == WALLET_ADDRESS_TYPE_SELECT) {
+                walletAddressType = WALLET_ADDRESS_TYPE_INPUT;
+
+                StyleManager.backgroundColorStyle(directInputLabel, StyleManager.AColor.C000000);
+                StyleManager.borderColorStyle(directInputLabel, StyleManager.AColor.C000000);
+                StyleManager.fontColorStyle(directInputLabel, StyleManager.AColor.Cffffff);
+                totalBalance.setText("0");
+                inputWalletController.setText("");
+                inputWalletController.setImage(ImageManager.icCircleNone);
+                selectWalletPane.setVisible(false);
+                inputWalletPane.setVisible(true);
+                settingLayoutData();
+
+            } else if(walletAddressType == WALLET_ADDRESS_TYPE_INPUT){
+                walletAddressType = WALLET_ADDRESS_TYPE_SELECT;
+
+                StyleManager.backgroundColorStyle(directInputLabel, StyleManager.AColor.Cf8f8fb);
+                StyleManager.borderColorStyle(directInputLabel, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(directInputLabel, StyleManager.AColor.C999999);
+                selectWalletPane.setVisible(true);
+                inputWalletPane.setVisible(false);
                 settingLayoutData();
             }
         });
@@ -72,13 +117,55 @@ public class PopupContractCanvasSignController extends BasePopupController {
         settingLayoutData();
     }
 
+    public void languageSetting() {
+        errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
+    }
+
     public void settingLayoutData() {
-        String address = selectWalletController.getAddress();
-        BigInteger balance = selectWalletController.getBalance();
-        BigInteger mineral = selectWalletController.getMineral();
+        String address = null;
+        BigInteger balance = BigInteger.ZERO;
+        BigInteger mineral = BigInteger.ZERO;
+
+        if(selectWalletPane.isVisible()) {
+            address = selectWalletController.getAddress();
+            balance = selectWalletController.getBalance();
+            mineral = selectWalletController.getMineral();
+
+        } else {
+            address = inputWalletController.getAddress();
+            if(address != null) {
+                balance = AppManager.getInstance().getBalance(address);
+                mineral = AppManager.getInstance().getMineral(address);
+            }
+        }
 
         this.gasCalculatorMiniController.setMineral(mineral);
         this.totalBalance.setText(ApisUtil.readableApis(balance.toString(), ',', ApisUtil.Unit.aAPIS, true));
+
+        if(!confirmBtn.isDisable()){
+            errorLabel.setVisible(false);
+            errorLabel.setPrefHeight(0);
+
+            if(balance.compareTo(BigInteger.valueOf(10)) >= 0){
+                if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
+                    BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
+                    if(fee.compareTo(BigInteger.ZERO) < 0){
+                        StyleManager.backgroundColorStyle(confirmBtn, StyleManager.AColor.Cd8d8d8);
+                        confirmBtn.setDisable(true);
+
+                        errorLabel.setVisible(true);
+                        errorLabel.setPrefHeight(-1);
+                    }
+                }
+
+            }else{
+                StyleManager.backgroundColorStyle(confirmBtn, StyleManager.AColor.Cd8d8d8);
+                confirmBtn.setDisable(true);
+
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
+            }
+        }
     }
 
 
