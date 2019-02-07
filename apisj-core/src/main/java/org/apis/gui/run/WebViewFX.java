@@ -9,7 +9,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
-import org.apis.contract.ContractLoader;
 import org.apis.contract.EstimateTransaction;
 import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Repository;
@@ -19,16 +18,13 @@ import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
 import org.apis.facade.ApisImpl;
 import org.apis.rpc.RPCCommand;
+import org.apis.rpc.adapter.CanvasAdapter;
 import org.apis.rpc.template.MessageApp3;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apis.util.ResourceFileUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
@@ -42,12 +38,12 @@ public class WebViewFX extends Application {
 
     private JavaConnector javaConnector = new JavaConnector();
 
-    private static final Logger logger = LoggerFactory.getLogger("webViewFx");
     private static Apis mApis;
 
     private byte[] from;
 
     private WebEngine webEngine;
+    private CanvasAdapter canvasAdapter;
 
     public void start(Stage stage) {
         stage.setTitle("Smart Contract on Canvas");
@@ -56,6 +52,7 @@ public class WebViewFX extends Application {
 
         WebView webView = new WebView();
         webEngine = webView.getEngine();
+        canvasAdapter = new CanvasAdapter(webEngine, true);
 
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             ConsoleUtil.printlnBlue("WebEngine newValue : " + newValue);
@@ -74,15 +71,14 @@ public class WebViewFX extends Application {
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("apisProvider", javaConnector);
 
+                webEngine.executeScript(loadUnderscoreJS());
                 webEngine.executeScript(loadCanvasProviderJS());
             }
 
             // if(Worker.State.SUCCEEDED == newValue) {}
         });
 
-
-
-        webEngine.load("http://192.168.0.63:3000");
+        webEngine.load("http://192.168.0.63:3001");
         //webEngine.load("http://207.148.108.113/floro.php");
 
         AnchorPane anchorPane = new AnchorPane(webView);
@@ -103,21 +99,13 @@ public class WebViewFX extends Application {
      * @return javascript source code
      */
     private String loadCanvasProviderJS() {
-        try (InputStream is = ContractLoader.class.getClassLoader().getResourceAsStream("js/CanvasProvider.js")) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder out = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null) {
-                out.append(line).append("\n");
-            }
+        String filename = "js/CanvasProvider.js";
+        return ResourceFileUtil.readFile(filename);
+    }
 
-            return out.toString();
-        } catch (Exception e) {
-            logger.error("Problem loading contract file from js/CanvasProvider.js");
-            e.printStackTrace();
-        }
-
-        return null;
+    private String loadUnderscoreJS() {
+        String filename = "js/underscore-min.js";
+        return ResourceFileUtil.readFile(filename);
     }
 
     public byte[] getFrom() {
@@ -126,11 +114,6 @@ public class WebViewFX extends Application {
 
     public void setFrom(byte[] from) {
         this.from = from;
-    }
-
-    private void onMessage(String result) {
-        webEngine.executeScript("canvasProvider.onMessage('" + result + "');");
-        webEngine.executeScript("console.log('" + result + "');");
     }
 
     public class JavaConnector {
@@ -209,7 +192,7 @@ public class WebViewFX extends Application {
                     if(!result.isSuccess()) {
                         // 에러 메시지 전달
                         String response = createJson(message.getId(), message.getMethod(), null, "This transactions is highly likely to fail.\n" + result.getError());
-                        onMessage(response);
+                        canvasAdapter.send(response);
                     }
                     else {
                         if (FastByteComparisons.equal(gasLimit, ByteUtil.EMPTY_BYTE_ARRAY)) {
@@ -228,15 +211,18 @@ public class WebViewFX extends Application {
 
                             // txHash 전달
                             String response = createJson(message.getId(), message.getMethod(), ByteUtil.toHexString0x(tx.getHash()));
-                            onMessage(response);
+                            canvasAdapter.send(response);
                         }
                     }
                 }
 
                 else {
-                    String response = RPCCommand.conduct(mApis, payload);
-                    ConsoleUtil.printlnRed(response);
-                    onMessage(response);
+                    String response = RPCCommand.conduct(mApis, payload, canvasAdapter);
+                    if(response != null) {
+                        ConsoleUtil.printlnRed(response);
+                    }
+
+                    canvasAdapter.send(response);
                 }
             });
         }

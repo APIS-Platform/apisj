@@ -1195,37 +1195,29 @@ public class DBManager {
         try {
             connection.setAutoCommit(false);
 
-            PreparedStatement insertBlock   = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
-            PreparedStatement insertTx      = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
+            PreparedStatement insertBlock   = connection.prepareStatement("INSERT OR IGNORE INTO blocks (hash, blockNumber) VALUES (?, ?)");
+            PreparedStatement insertTx      = connection.prepareStatement("INSERT OR REPLACE INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, (SELECT uid FROM blocks WHERE hash = ?))");
             PreparedStatement insertEvent   = connection.prepareStatement("INSERT OR REPLACE INTO events (tx_hash, address, topic) VALUES (?, ?, ?)");
             PreparedStatement updateSync    = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
-            ResultSet blockInsertResult     = null;
 
             // block이 존재하면 패스
             try {
-                for (Block block : blocks) {
-                    if (isExistBlock(block)) {
-                        continue;
-                    }
-
+                long lastBlockNumber = 0;
+                for(Block block : blocks) {
                     // Block Insert
-                    long blockUid = 0;
                     insertBlock.setBytes(1, block.getHash());
                     insertBlock.setLong(2, block.getNumber());
-                    insertBlock.execute();
+                    insertBlock.addBatch();
+                }
+                insertBlock.executeBatch();
 
-                    blockInsertResult = insertBlock.getGeneratedKeys();
-                    if (blockInsertResult.next()) {
-                        blockUid = blockInsertResult.getLong(1);
-                    }
-
-
+                for (Block block : blocks) {
                     // Transaction Insert
                     for (Transaction tx : block.getTransactionsList()) {
                         insertTx.setBytes(1, tx.getHash());            // txHash
                         insertTx.setBytes(2, tx.getReceiveAddress());  // receiver
                         insertTx.setBytes(3, tx.getSender());          // sender
-                        insertTx.setLong(4, blockUid);
+                        insertTx.setBytes(4, block.getHash());
                         insertTx.addBatch();
 
                         TransactionReceipt txReceipt = apis.getTransactionInfo(tx.getHash()).getReceipt();
@@ -1241,13 +1233,14 @@ public class DBManager {
                         }
                     }
 
-                    // Sync status update
-                    updateSync.setLong(1, blockUid);
-                    updateSync.execute();
+                    lastBlockNumber = block.getNumber();
                 }
                 insertTx.executeBatch();
                 insertEvent.executeBatch();
 
+                // Sync status update
+                updateSync.setLong(1, lastBlockNumber);
+                updateSync.execute();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1257,7 +1250,6 @@ public class DBManager {
                 connection.setAutoCommit(true);
 
                 close(insertBlock);
-                close(blockInsertResult);
                 close(insertTx);
                 close(insertEvent);
                 close(updateSync);
@@ -1268,26 +1260,76 @@ public class DBManager {
         }
     }
 
-    private void deleteBlock(byte[] hash) {
+    /**
+     * onBlock 이벤트로 전달받은 블록들을 INSERT 하다보면
+     * 더 우수한 체인의 블록을 전달받아서 같은 번호의 다른 블록이 저장될 수 있다.
+     * 한 번호에 다수의 블록이 저장된 경우, 최고가 아닌 블록 정보는 삭제하도록 한다.
+     */
+    void trimBlocks(Apis apis) {
+        PreparedStatement selectDuplicatedBlocks = null;
+        PreparedStatement selectNotBestBlocks = null;
+        ResultSet result = null;
+
         try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM blocks WHERE hash = ?");
-            state.setBytes(1, hash);
-            boolean deleteResult = state.execute();
-            state.close();
+            selectDuplicatedBlocks = connection.prepareStatement("SELECT blockNumber, COUNT(blockNumber) AS count FROM blocks where blockNumber > ? GROUP BY blockNumber HAVING COUNT(blockNumber) > 1");
+            selectNotBestBlocks = connection.prepareStatement("SELECT uid, blockNumber, hash FROM blocks WHERE blockNumber = ? AND hash != ?");
+
+            long startCondition = Math.max(apis.getBlockchain().getBestBlock().getNumber() - 100, 0);
+            selectDuplicatedBlocks.setLong(1, startCondition);
+
+            result = selectDuplicatedBlocks.executeQuery();
+
+            while(result.next()) {
+                long blockNumber = result.getLong(1);
+                Block bestBlock = apis.getBlockchain().getBlockByNumber(blockNumber);
+
+                selectNotBestBlocks.setLong(1, bestBlock.getNumber());
+                selectNotBestBlocks.setBytes(2, bestBlock.getHash());
+                ResultSet notBestResult = selectNotBestBlocks.executeQuery();
+
+                while(notBestResult.next()) {
+                    long blockUid = notBestResult.getLong(1);
+                    byte[] blockHash = notBestResult.getBytes(3);
+
+                    deleteTxInBlock(blockUid);
+                    deleteBlock(blockHash);
+                }
+
+                close(notBestResult);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(selectDuplicatedBlocks);
+            close(selectNotBestBlocks);
+            close(result);
         }
+    }
 
+    private void deleteBlock(byte[] hash) {
+        PreparedStatement state = null;
+        try {
+            state = this.connection.prepareStatement("DELETE FROM blocks WHERE hash = ?");
+            state.setBytes(1, hash);
+            state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+        }
     }
 
     private void deleteTxInBlock(long blockUid) {
+        PreparedStatement state = null;
         try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE blockUid = ?");
+            state = this.connection.prepareStatement("DELETE FROM transactions WHERE blockUid = ?");
             state.setLong(1, blockUid);
-            boolean deleteResult = state.execute();
-            state.close();
+            state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
         }
 
     }

@@ -5,6 +5,7 @@ import org.apis.crypto.HashUtil;
 import org.apis.facade.Apis;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCCommand;
+import org.apis.rpc.adapter.CanvasAdapter;
 import org.apis.rpc.template.LogInfoData;
 import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
@@ -16,7 +17,6 @@ import org.java_websocket.WebSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apis.rpc.RPCJsonUtil.createJson;
 import static org.apis.rpc.RPCJsonUtil.createSubscriptJson;
 
 public class LogListener extends EthereumListenerAdapter {
@@ -28,6 +28,7 @@ public class LogListener extends EthereumListenerAdapter {
     private List<byte[]> addresses;
     private List<TopicBloom> tbs;
     private Apis core;
+    private CanvasAdapter canvasAdapter;
 
 
     public LogListener(String subscription, WebSocket conn, String token, boolean isEncrypt, List<byte[]> addresses, List<byte[]> topics, Apis core) {
@@ -46,9 +47,24 @@ public class LogListener extends EthereumListenerAdapter {
         this.core = core;
     }
 
+    public LogListener(String subscription, List<byte[]> addresses, List<byte[]> topics, Apis core, CanvasAdapter canvasAdapter) {
+        this.subscription = subscription;
+        this.addresses = addresses;
+        tbs = new ArrayList<>();
+        if(topics != null) {
+            for(byte[] topic : topics) {
+                this.tbs.add(new TopicBloom(topic));
+            }
+        }
+
+        this.core = core;
+        this.canvasAdapter = canvasAdapter;
+    }
+
+
     @Override
     public void onBlock(Block block, List<TransactionReceipt> receipts) {
-        if(conn == null || !conn.isOpen()) {
+        if(canvasAdapter == null && (conn == null || !conn.isOpen() || conn.isClosed())) {
             return;
         }
 
@@ -150,7 +166,13 @@ public class LogListener extends EthereumListenerAdapter {
 
         String command = createSubscriptJson(subscription, "apis_subscription", new TransactionReceiptData(info, block), null);
 
-        RPCCommand.send(conn, token, command, isEncrypt);
+        if(conn != null && conn.isOpen()) {
+            RPCCommand.send(conn, token, command, isEncrypt);
+        }
+
+        if(canvasAdapter != null) {
+            canvasAdapter.send(command);
+        }
     }
 
     private void sendCommand(TransactionReceipt receipt, LogInfo logInfo, Block block, int logIndex) {
@@ -168,7 +190,15 @@ public class LogListener extends EthereumListenerAdapter {
 
         LogInfoData data = new LogInfoData(logInfo, ByteUtil.toHexString0x(block.getHash()), ByteUtil.toHexString0x(tx.getHash()), logIndex, block.getNumber(), (txExist ? txIndex : 0));
         String command = createSubscriptJson(subscription, "apis_subscription", data, null);
-        RPCCommand.send(conn, token, command, isEncrypt);
+
+
+        if(conn != null && conn.isOpen()) {
+            RPCCommand.send(conn, token, command, isEncrypt);
+        }
+
+        if(canvasAdapter != null) {
+            canvasAdapter.send(command);
+        }
     }
 
     class TopicBloom {
