@@ -111,7 +111,7 @@
                               <Label fx:id="recipientLabel" styleClass="font_semibold_12" text="Recipient" textFill="#2b2b2b" />
                               <AnchorPane GridPane.columnIndex="2">
                                  <children>
-                                    <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="Direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>

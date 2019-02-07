@@ -99,6 +99,12 @@ public class ImageManager {
     public static final Image checkGrey = new Image("image/ledger_btn_uncheck@2x.png");
     public static final Image checkRed = new Image("image/ledger_btn_check@2x.png");
 
+    public static final Image icPcClicked = new Image("image/btn_pc_click@2x.png");
+    public static final Image icPcNotClicked = new Image("image/btn_pc_unclick@2x.png");
+    public static final Image icMobileClicked = new Image("image/btn_mobile_click@2x.png");
+    public static final Image icMobileNotClicked = new Image("image/btn_mobile_unclick@2x.png");
+    public static final Image icBlankPagePc = new Image("image/ic_blankpage_pc@2x.png");
+    public static final Image icBlankPageMobile = new Image("image/ic_blankpage_mobile@2x.png");
 
 
     public static ImageView imageViewRectangle30(ImageView imageView){

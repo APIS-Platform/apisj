@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -38,11 +39,12 @@ public class SmartContractController extends BaseViewController {
     private int selectedTabIndex = 0;
 
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid, signBtnGrid;
+    @FXML private GridPane scrollGridContent, receiptGrid, canvasGrid, signBtnGrid, pcBtnGrid, mobileBtnGrid;
     @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, selectContractPane,
-                             inputContractPane, cautionPane, hintMaskAddress;
+                             inputContractPane, hintMaskAddress;
     @FXML private Label tabTitle, selectContractToggleButton, contractMaskLabel, canvasURLLabel, walletMaskLabel, balanceLabel, btnMyAddress, selectContractLabel,
-                        selectWalletLabel, contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel, cautionLabel, signLabel;
+                        selectWalletLabel, contractMaskTitleLabel, canvasURLTitleLabel, walletMaskTitleLabel, balanceTitleLabel, cautionLabel, signLabel, pcLabel, mobileLabel;
+    @FXML private ImageView pcIcon, mobileIcon;
 
     @FXML private TabMenuController tabMenuController;
 
@@ -114,7 +116,9 @@ public class SmartContractController extends BaseViewController {
         canvasURLLabel.setText("");
         walletMaskLabel.setText("");
         hintMaskAddress.setVisible(false);
-        cautionPane.setVisible(false);
+        canvasURLLabel.setVisible(true);
+        cautionLabel.setVisible(false);
+        hideHintMaskAddress();
 
         inputContractController.setHandler(new InputContractController.InputContractImpl() {
             @Override
@@ -142,10 +146,12 @@ public class SmartContractController extends BaseViewController {
 
                 if(canvasURL != null && canvasURL.length() > 0) {
                     canvasURLLabel.setText(canvasURL);
-                    cautionPane.setVisible(false);
+                    canvasURLLabel.setVisible(true);
+                    cautionLabel.setVisible(false);
                 } else {
                     canvasURLLabel.setText("");
-                    cautionPane.setVisible(true);
+                    canvasURLLabel.setVisible(false);
+                    cautionLabel.setVisible(true);
                 }
 
                 settingLayoutData();
@@ -175,6 +181,37 @@ public class SmartContractController extends BaseViewController {
                 }
 
                 settingLayoutData();
+            }
+        });
+
+        // Change resolution of canvas webview
+        pcBtnGrid.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                pcIcon.setImage(ImageManager.icPcClicked);
+                mobileIcon.setImage(ImageManager.icMobileNotClicked);
+                pcIcon.setFitWidth(60);
+                mobileIcon.setFitWidth(50);
+                StyleManager.fontColorStyle(pcLabel, StyleManager.AColor.Cb01e1e);
+                StyleManager.fontColorStyle(mobileLabel, StyleManager.AColor.Cd8d8d8);
+                smartContractCanvasController.setBgAnchorWidth(750);
+                smartContractCanvasController.setBlankIconImage(ImageManager.icBlankPagePc);
+                smartContractCanvasController.setBlankIconWidth(180);
+            }
+        });
+
+        mobileBtnGrid.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                pcIcon.setImage(ImageManager.icPcNotClicked);
+                mobileIcon.setImage(ImageManager.icMobileClicked);
+                pcIcon.setFitWidth(50);
+                mobileIcon.setFitWidth(60);
+                StyleManager.fontColorStyle(pcLabel, StyleManager.AColor.Cd8d8d8);
+                StyleManager.fontColorStyle(mobileLabel, StyleManager.AColor.Cb01e1e);
+                smartContractCanvasController.setBgAnchorWidth(385);
+                smartContractCanvasController.setBlankIconImage(ImageManager.icBlankPageMobile);
+                smartContractCanvasController.setBlankIconWidth(53);
             }
         });
 
@@ -216,10 +253,12 @@ public class SmartContractController extends BaseViewController {
                 String canvasURL = AppManager.getInstance().getCanvasURL(model.getAddressByte());
                 if(canvasURL != null && canvasURL.length() > 0) {
                     canvasURLLabel.setText(canvasURL);
-                    cautionPane.setVisible(false);
+                    canvasURLLabel.setVisible(true);
+                    cautionLabel.setVisible(false);
                 } else {
                     canvasURLLabel.setText("");
-                    cautionPane.setVisible(true);
+                    canvasURLLabel.setVisible(false);
+                    cautionLabel.setVisible(true);
                 }
 
                 update();
@@ -371,7 +410,8 @@ public class SmartContractController extends BaseViewController {
                 canvasURLLabel.setText("");
                 inputContractController.setText("");
                 inputContractController.setImage(ImageManager.icCircleNone);
-                cautionPane.setVisible(false);
+                canvasURLLabel.setVisible(true);
+                cautionLabel.setVisible(false);
                 selectContractPane.setVisible(false);
                 inputContractPane.setVisible(true);
             } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
@@ -386,7 +426,8 @@ public class SmartContractController extends BaseViewController {
                 selectContractController.setAddress("");
                 selectContractController.setIconImage(ImageManager.icCircleNone);
                 selectContractController.setPlaceHolderVisible(true);
-                cautionPane.setVisible(false);
+                canvasURLLabel.setVisible(true);
+                cautionLabel.setVisible(false);
                 selectContractPane.setVisible(true);
                 inputContractPane.setVisible(false);
             }

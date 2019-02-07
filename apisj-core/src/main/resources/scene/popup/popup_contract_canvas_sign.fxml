@@ -83,7 +83,7 @@
                               <Label fx:id="dataLabel" styleClass="font_semibold_12" text="Data" textFill="#2b2b2b" />
                               <AnchorPane style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2">
                                  <children>
-                                    <TextArea fx:id="dataTextArea" prefHeight="72.0" style="-fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TextArea fx:id="dataTextArea" editable="false" prefHeight="72.0" style="-fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="mono_font_regular_10" />
                                           <String fx:value="text_area_transparent" />
@@ -173,7 +173,7 @@
                                  </rowConstraints>
                                  <children>
                                     <Label fx:id="selectWalletLabel" styleClass="font_semibold_12" text="Select Wallet" textFill="#2b2b2b" />
-                                    <Label fx:id="directInputLabel" layoutX="10.0" layoutY="10.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" text="direct input" textFill="#999999" GridPane.columnIndex="1">
+                                    <Label fx:id="directInputLabel" layoutX="10.0" layoutY="10.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" text="Direct input" textFill="#999999" GridPane.columnIndex="1">
                                        <styleClass>
                                           <String fx:value="font_semibold_12" />
                                           <String fx:value="border_radius_4444" />
