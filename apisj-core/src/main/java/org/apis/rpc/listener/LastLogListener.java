@@ -5,6 +5,7 @@ import org.apis.crypto.HashUtil;
 import org.apis.facade.Apis;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCCommand;
+import org.apis.rpc.adapter.CanvasAdapter;
 import org.apis.rpc.template.LogInfoData;
 import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
@@ -28,6 +29,7 @@ public class LastLogListener extends EthereumListenerAdapter {
     private List<TopicBloom> tbs;
     private Apis core;
     private long id;
+    private CanvasAdapter canvasAdapter;
 
     private List<TransactionReceiptData> listTransactionReceipt = null;
     private List<LogInfoData> listLogInfo = null;
@@ -49,9 +51,24 @@ public class LastLogListener extends EthereumListenerAdapter {
         this.core = core;
     }
 
+    public LastLogListener(String method, long id, List<byte[]> addresses, List<byte[]> topics, Apis core, CanvasAdapter canvasAdapter) {
+        this.method = method;
+        this.id = id;
+        this.addresses = addresses;
+        tbs = new ArrayList<>();
+        if(topics != null) {
+            for(byte[] topic : topics) {
+                this.tbs.add(new TopicBloom(topic));
+            }
+        }
+
+        this.core = core;
+        this.canvasAdapter = canvasAdapter;
+    }
+
     @Override
     public void onBlock(Block block, List<TransactionReceipt> receipts) {
-        if(conn == null || !conn.isOpen()) {
+        if(canvasAdapter == null && (conn == null || !conn.isOpen() || conn.isClosed())) {
             return;
         }
 
@@ -111,6 +128,10 @@ public class LastLogListener extends EthereumListenerAdapter {
 
     @Override
     public void onNoConnections() {
+        if(canvasAdapter == null && (conn == null || !conn.isOpen() || conn.isClosed())) {
+            return;
+        }
+
         // 전송한다
         String command;
         if(listTransactionReceipt != null) {
@@ -118,7 +139,14 @@ public class LastLogListener extends EthereumListenerAdapter {
         } else {
             command = createJson(id, method, listLogInfo);
         }
-        RPCCommand.send(conn, token, command, isEncrypt);
+
+        if(conn != null && conn.isOpen()) {
+            RPCCommand.send(conn, token, command, isEncrypt);
+        }
+
+        if(canvasAdapter != null) {
+            canvasAdapter.send(command);
+        }
     }
 
     /**

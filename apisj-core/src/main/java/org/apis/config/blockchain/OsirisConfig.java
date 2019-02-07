@@ -75,7 +75,6 @@ public class OsirisConfig extends AbstractConfig {
 
         /**
          * @return 다음 블록이 생성될 때까지 소요되는 시간, 난이도 결정에 이용된다
-         * TODO POS로 동작하기 때문에, 일정 시간 이전까지는 블록을 만들 수 없도록 제한해야한다.
          */
         @Override
         public int getDURATION_LIMIT() {
@@ -117,13 +116,18 @@ public class OsirisConfig extends AbstractConfig {
         public boolean hasDelegateCallOpcode() {
             return true;
         }
-    };
+
+        @Override
+        public long getINIT_MINERAL_APPLY_BLOCK() {
+            return super.getINIT_MINERAL_APPLY_BLOCK();
+        }
+    }
 
     public OsirisConfig() {
         this(new OsirisConstants());
     }
 
-    public OsirisConfig(Constants constants) {
+    private OsirisConfig(Constants constants) {
         super(constants);
     }
 
@@ -199,6 +203,6 @@ public class OsirisConfig extends AbstractConfig {
          * 이더리움에서는 EIP-155에서 특정 블록부터는 chainId가 트랜잭션에 명시되도록 하였으나
          * APIS는 최초부터 chainId를 적용하고 있으며, networkId 값이 chainId가 되도록 한다.
          */
-        return SystemProperties.getDefault().networkId();
+        return Objects.requireNonNull(SystemProperties.getDefault()).networkId();
     }
 }

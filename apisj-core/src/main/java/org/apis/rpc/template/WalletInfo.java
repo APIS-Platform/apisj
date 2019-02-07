@@ -42,7 +42,7 @@ public class WalletInfo {
             this.aReward = state.getTotalReward().toString();
         }
 
-        if(proofKey != null && !FastByteComparisons.equal(state.getProofKey(), HashUtil.EMPTY_DATA_HASH)) {
+        if(state.getProofKey() != null && !FastByteComparisons.equal(state.getProofKey(), HashUtil.EMPTY_DATA_HASH)) {
             this.proofKey = ByteUtil.toHexString(state.getProofKey());
         }
 
