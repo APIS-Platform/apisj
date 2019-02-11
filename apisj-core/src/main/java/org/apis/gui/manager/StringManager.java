@@ -1149,7 +1149,7 @@ public class StringManager {
         public void update() {
             settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
             settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can make APIS PC wallet even more easier"));
-            settingWarning.set(StringManager.this.getString("setting_warning", "Items requiring restart"));
+            settingWarning.set(StringManager.this.getString("setting_warning", "Must restart program to apply"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));

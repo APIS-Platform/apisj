@@ -34,7 +34,7 @@ public class DBManager {
     
     
     private Logger logger = LoggerFactory.getLogger("SQLiteDBManager");
-    private static int DB_VERSION = 1;
+    private static int DB_VERSION = 2;
     private Connection connection;
     private static final String DB_URL = "jdbc:sqlite:" + SystemProperties.getDefault().databaseDir() + "/storage.db";
     private boolean isOpen = false;
@@ -168,6 +168,18 @@ public class DBManager {
     }
 
     private void update(Connection conn) throws SQLException {
+        String queryCreateLedgers = "CREATE TABLE IF NOT EXISTS \"ledgers\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `path` TEXT NOT NULL, `alias` TEXT DEFAULT 'Unnamed' )";
+
+        PreparedStatement createLedgers = conn.prepareStatement(queryCreateLedgers);
+        createLedgers.execute();
+        createLedgers.close();
+
+        PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
+        state.setInt(1, DB_VERSION);
+        state.setInt(2, 0);
+        state.execute();
+        state.close();
+
         logger.debug("Database Update!");
     }
 
