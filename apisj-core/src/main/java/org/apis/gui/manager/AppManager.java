@@ -905,7 +905,8 @@ public class AppManager {
         List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
         List<LedgerRecord> ledgers = DBManager.getInstance().selectLedgers();
 
-        for(KeyStoreData key : keys){
+        for(int k =0 ; k<keys.size(); k++){
+            KeyStoreData key = keys.get(k);
             boolean isExist = false;
             for(int i = 0; i<keyStoreDataList.size(); i++) {
                 if(key.address != null && key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {

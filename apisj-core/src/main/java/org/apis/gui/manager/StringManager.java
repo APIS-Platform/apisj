@@ -196,7 +196,7 @@ public class StringManager {
             searchApisAndTokens.set(StringManager.this.getString("common_search_apis_and_tokens", "Search by APIS & Tokens"));
             requestButton.set(StringManager.this.getString("common_request_button","Request"));
             suggestingButton.set(StringManager.this.getString("common_suggesting_button","Suggesting"));
-            directInputButton.set(StringManager.this.getString("common_direct_input_button","direct input"));
+            directInputButton.set(StringManager.this.getString("common_direct_input_button","Direct input"));
             transferAmount.set(StringManager.this.getString("common_transfer_amount_label","Transfer Amount"));
             transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+)Fee"));
             withdrawal.set(StringManager.this.getString("common_transfer_withdrawal","Total Withdrawal"));
@@ -636,6 +636,7 @@ public class StringManager {
         public SimpleStringProperty walletMaskTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty balanceTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty canvasNotExist = new SimpleStringProperty();
+        public SimpleStringProperty canvasBlankLabel = new SimpleStringProperty();
 
 
 
@@ -671,6 +672,7 @@ public class StringManager {
             walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask"));
             balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance"));
             canvasNotExist.set(StringManager.this.getString("smart_contract_canvas_not_exist", "Canvas URL does not exist."));
+            canvasBlankLabel.set(StringManager.this.getString("smart_contract_canvas_blank_label", "Browse for an Smart Contract"));
         }
     }
 
@@ -1038,7 +1040,7 @@ public class StringManager {
             masternodePasswordLabel.set(StringManager.this.getString("popup_masternode_password_label", "Password"));
             masternodeKnowledgeKeyLabel.set(StringManager.this.getString("popup_masternode_knowledgekey_label", "Knowledge Key"));
             masternodeRecipientLabel.set(StringManager.this.getString("popup_masternode_recipient_label", "Recipient"));
-            masternodeDirectInput.set(StringManager.this.getString("popup_masternode_direct_input", "direct input"));
+            masternodeDirectInput.set(StringManager.this.getString("popup_masternode_direct_input", "Direct input"));
             masternodeRecipientPlaceholder.set(StringManager.this.getString("popup_masternode_recipient_placeholder", "please enter your address"));
             masternodeRecipientDesc1.set(StringManager.this.getString("popup_masternode_recipient_desc_1", "To be a masternode,"));
             masternodeRecipientDesc2.set(StringManager.this.getString("popup_masternode_recipient_desc_2", "please set your balance to exact 50,000, 200,000, 500,000 APIS."));
@@ -1147,7 +1149,7 @@ public class StringManager {
         public void update() {
             settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
             settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can make APIS PC wallet even more easier"));
-            settingWarning.set(StringManager.this.getString("setting_warning", "Items requiring restart"));
+            settingWarning.set(StringManager.this.getString("setting_warning", "Must restart program to apply"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));

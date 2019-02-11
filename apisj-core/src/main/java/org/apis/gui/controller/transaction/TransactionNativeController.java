@@ -71,6 +71,7 @@ public class TransactionNativeController extends BaseViewController {
     private ArrayList<BaseFxmlController> items = new ArrayList<>();
     private ArrayList<BaseFxmlController> pages = new ArrayList<>();
     private ArrayList<BaseFxmlController> bannerDetails = new ArrayList<>();
+    private boolean isSearch = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -185,7 +186,8 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     public void update() {
-        refreshPage(currentPage);
+        // Refresh result of research every 8 seconds
+        //refreshPage(currentPage);
     }
 
     public void addPageList(int startPage, int endPage) {
@@ -495,32 +497,18 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     public void refreshPage(int currentPage) {
-        String searchText = searchTextField.getText();
+        // Block trying search until complete previous search
+        if(isSearch) {
+            return;
+        }
+        isSearch = true;
 
-//        if(searchTextField.getText() != null && searchTextField.getText().length() > 0) {
-//            try {
-//                if ( AddressUtil.isAddress(searchText) ) {
-//                    searchText =
-//                } else {
-//
-//                    String mask = AppManager.getInstance().getAddressWithMask(searchTextField.getText());
-//                    if(mask != null){
-//                        address = ByteUtil.hexStringToBytes(mask);
-//                    }else{
-//                        address = ByteUtil.hexStringToBytes(searchTextField.getText());
-//                    }
-//                }
-//            }catch (DecoderException e){
-//                e.printStackTrace();
-//                address = null;
-//            }
-//        }
-//
-//        if(address != null){
-//            System.out.println("address : " + ByteUtil.toHexString(address));
-//        }else{
-//            System.out.println("address = null");
-//        }
+        String searchText = searchTextField.getText();
+        String mask = AppManager.getInstance().getAddressWithMask(searchText);
+
+        if(mask != null) {
+            searchText = mask;
+        }
 
         long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(searchText);
         long rowSize = selectRowSizeController.getSelectSize();
@@ -586,6 +574,8 @@ public class TransactionNativeController extends BaseViewController {
                 controller.setAddress("");
             }
         }
+
+        isSearch = false;
     }
 
     public void showDetail(){

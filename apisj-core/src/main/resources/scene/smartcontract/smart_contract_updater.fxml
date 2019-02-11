@@ -56,7 +56,7 @@
                   <Label fx:id="selectContractLabel" styleClass="font_semibold_14" text="Select Contract" textFill="#2b2b2b" />
                   <AnchorPane GridPane.columnIndex="2">
                      <children>
-                        <Label fx:id="selectContractToggleButton" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f8f8fb; -fx-border-color: #999999;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="selectContractToggleButton" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f8f8fb; -fx-border-color: #999999;" text="Direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <styleClass>
                               <String fx:value="font_semibold_12" />
                               <String fx:value="border_radius_4444" />
