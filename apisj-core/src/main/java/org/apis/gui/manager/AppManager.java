@@ -913,12 +913,15 @@ public class AppManager {
                     isExist = true;
 
                     // alias update
-                    keyStoreDataList.get(i).alias = key.alias;
                     keyStoreDataExpList.get(i).alias = key.alias;
 
                     // password update
-                    keyStoreDataList.get(i).crypto = key.crypto;
                     keyStoreDataExpList.get(i).crypto = key.crypto;
+
+                    if(keyStoreDataList.size() > i){
+                        keyStoreDataList.get(i).alias = key.alias;
+                        keyStoreDataList.get(i).crypto = key.crypto;
+                    }
                     break;
                 }
             }
@@ -931,7 +934,9 @@ public class AppManager {
 
         // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
         List<byte[]> removeAddressList = new ArrayList<>();
-        for(KeyStoreData listKey : keyStoreDataExpList) {
+
+        for(int i=0; i<keyStoreDataExpList.size(); i++) {
+            KeyStoreData listKey = keyStoreDataExpList.get(i);
             boolean isExist = false;
             for(KeyStoreData key : keys) {
                 if(key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
@@ -945,13 +950,15 @@ public class AppManager {
             }
         }
 
-        for(byte[] address : removeAddressList) {
+        for(int i=0; i<removeAddressList.size(); i++) {
+            byte[] address = removeAddressList.get(i);
             keyStoreDataList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
             keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
         }
 
         // Add ledger address to list
-        for(LedgerRecord ledger : ledgers) {
+        for(int i=0; i<ledgers.size(); i++) {
+            LedgerRecord ledger = ledgers.get(i);
             boolean isExist = false;
             KeyStoreData key = new KeyStoreData();
             KeyStoreDataExp keyExp = null;
