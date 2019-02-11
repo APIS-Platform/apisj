@@ -270,8 +270,7 @@ public class SmartContractDeployController extends BaseViewController {
                     textField.textProperty().addListener((observable, oldValue, newValue) -> {
                         if(newValue.indexOf("0x") >= 0){
                             textField.setText(newValue.replaceAll("0x",""));
-                        }
-                        if (!newValue.matches("[0-9a-fA-F]*")) {
+                        } else if (!newValue.matches("[0-9a-fA-F]*")) {
                             textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                         }
                         if(textField.getText().length() > 40){

@@ -908,7 +908,7 @@ public class AppManager {
         for(int k =0 ; k<keys.size(); k++){
             KeyStoreData key = keys.get(k);
             boolean isExist = false;
-            for(int i = 0; i<keyStoreDataList.size(); i++) {
+            for(int i = 0; i<keyStoreDataExpList.size(); i++) {
                 if(key.address != null && key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
                     isExist = true;
 
@@ -931,7 +931,7 @@ public class AppManager {
 
         // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
         List<byte[]> removeAddressList = new ArrayList<>();
-        for(KeyStoreData listKey : keyStoreDataList) {
+        for(KeyStoreData listKey : keyStoreDataExpList) {
             boolean isExist = false;
             for(KeyStoreData key : keys) {
                 if(key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
@@ -956,11 +956,11 @@ public class AppManager {
             KeyStoreData key = new KeyStoreData();
             KeyStoreDataExp keyExp = null;
 
-            for(int j=0; j<keyStoreDataList.size(); j++) {
+            for(int j=0; j<keyStoreDataExpList.size(); j++) {
                 key.address = ByteUtil.toHexString(ledger.getAddress());
                 key.alias = ledger.getAlias();
 
-                if (key.address.equalsIgnoreCase(keyStoreDataList.get(j).address)) {
+                if (key.address.equalsIgnoreCase(keyStoreDataExpList.get(j).address)) {
                     isExist = true;
 
                     keyStoreDataList.get(j).alias = ledger.getAlias();
@@ -1013,7 +1013,7 @@ public class AppManager {
         }
 
         //sort : alias asc
-        if(keyStoreDataList.size() > 1) {
+        if(keyStoreDataExpList.size() > 1) {
             try {
                 keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
                 keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));

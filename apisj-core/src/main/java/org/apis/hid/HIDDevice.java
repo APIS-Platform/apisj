@@ -121,6 +121,7 @@ public class HIDDevice {
         if(StateCode.isError(sw)) {
             throw new Exception(StateCode.stateMessage(sw));
         }
+        ConsoleUtil.printlnRed(ByteUtil.toHexString(response));
 
         return response;
     }
