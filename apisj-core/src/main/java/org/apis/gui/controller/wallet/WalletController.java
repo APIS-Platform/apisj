@@ -471,8 +471,19 @@ public class WalletController extends BaseViewController {
                 walletItemModel.setAddress(dataExp.address);
                 walletItemModel.setApis(apis);
                 walletItemModel.setMineral(mineral);
-                if(AppManager.getInstance().getKeystoreExpList().get(i) != null) {
-                    walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreExpList().get(i).toString());
+
+                /* 비밀번호 변경을 위해 JSON 추가
+                 * 렛저 지갑은 JSON을 사용하지 않기 때문에 예외처리
+                 */
+                if(!AppManager.getInstance().isLedger(dataExp.address)){
+                    for(int k=0; k<AppManager.getInstance().getKeystoreList().size(); k++){
+                        if(AppManager.getInstance().getKeystoreList().get(k).address.equals(dataExp.address)){
+                            walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(k).toString());
+                            break;
+                        }
+                    }
+                }else{
+                    walletItemModel.setKeystoreJsonData("");
                 }
                 walletItemModel.setMining(address.equals(AppManager.getInstance().getMiningWalletAddress()));
                 walletItemModel.setMasterNode(AppManager.getInstance().isMasterNode(dataExp.address));
