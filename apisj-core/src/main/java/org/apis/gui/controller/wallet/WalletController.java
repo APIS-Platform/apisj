@@ -471,8 +471,8 @@ public class WalletController extends BaseViewController {
                 walletItemModel.setAddress(dataExp.address);
                 walletItemModel.setApis(apis);
                 walletItemModel.setMineral(mineral);
-                if(AppManager.getInstance().getKeystoreList().get(i) != null) {
-                    walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
+                if(AppManager.getInstance().getKeystoreExpList().get(i) != null) {
+                    walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreExpList().get(i).toString());
                 }
                 walletItemModel.setMining(address.equals(AppManager.getInstance().getMiningWalletAddress()));
                 walletItemModel.setMasterNode(AppManager.getInstance().isMasterNode(dataExp.address));
