@@ -527,6 +527,10 @@ public class SmartContractCallSendController extends BaseViewController {
             }else if(param.type instanceof SolidityType.BytesType){
                 // BytesType
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue.indexOf("0x") >= 0){
+                        itemController.setItemText(newValue.replaceAll("0x",""));
+                        return;
+                    }
                     if (!newValue.matches("[0-9a-fA-F]*")) {
                         itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                     }
@@ -542,6 +546,10 @@ public class SmartContractCallSendController extends BaseViewController {
             }else if(param.type instanceof SolidityType.Bytes32Type){
                 // Bytes32Type
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue.indexOf("0x") >= 0){
+                        itemController.setItemText(newValue.replaceAll("0x",""));
+                        return;
+                    }
                     if (!newValue.matches("[0-9a-fA-F]*")) {
                         itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                     }

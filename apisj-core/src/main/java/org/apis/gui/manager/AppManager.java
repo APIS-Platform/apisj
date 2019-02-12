@@ -908,17 +908,20 @@ public class AppManager {
         for(int k =0 ; k<keys.size(); k++){
             KeyStoreData key = keys.get(k);
             boolean isExist = false;
-            for(int i = 0; i<keyStoreDataList.size(); i++) {
-                if(key.address != null && key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
+            for(int i = 0; i<keyStoreDataExpList.size(); i++) {
+                if(key != null && key.address != null && key.address.equalsIgnoreCase(keyStoreDataExpList.get(i).address)) {
                     isExist = true;
 
                     // alias update
-                    keyStoreDataList.get(i).alias = key.alias;
                     keyStoreDataExpList.get(i).alias = key.alias;
 
                     // password update
-                    keyStoreDataList.get(i).crypto = key.crypto;
                     keyStoreDataExpList.get(i).crypto = key.crypto;
+
+                    if(keyStoreDataList.size() > i){
+                        keyStoreDataList.get(i).alias = key.alias;
+                        keyStoreDataList.get(i).crypto = key.crypto;
+                    }
                     break;
                 }
             }
@@ -931,7 +934,9 @@ public class AppManager {
 
         // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
         List<byte[]> removeAddressList = new ArrayList<>();
-        for(KeyStoreData listKey : keyStoreDataList) {
+
+        for(int i=0; i<keyStoreDataExpList.size(); i++) {
+            KeyStoreData listKey = keyStoreDataExpList.get(i);
             boolean isExist = false;
             for(KeyStoreData key : keys) {
                 if(key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
@@ -945,22 +950,24 @@ public class AppManager {
             }
         }
 
-        for(byte[] address : removeAddressList) {
+        for(int i=0; i<removeAddressList.size(); i++) {
+            byte[] address = removeAddressList.get(i);
             keyStoreDataList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
             keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
         }
 
         // Add ledger address to list
-        for(LedgerRecord ledger : ledgers) {
+        for(int i=0; i<ledgers.size(); i++) {
+            LedgerRecord ledger = ledgers.get(i);
             boolean isExist = false;
             KeyStoreData key = new KeyStoreData();
             KeyStoreDataExp keyExp = null;
 
-            for(int j=0; j<keyStoreDataList.size(); j++) {
+            for(int j=0; j<keyStoreDataExpList.size(); j++) {
                 key.address = ByteUtil.toHexString(ledger.getAddress());
                 key.alias = ledger.getAlias();
 
-                if (key.address.equalsIgnoreCase(keyStoreDataList.get(j).address)) {
+                if (key.address.equalsIgnoreCase(keyStoreDataExpList.get(j).address)) {
                     isExist = true;
 
                     keyStoreDataList.get(j).alias = ledger.getAlias();
@@ -1013,7 +1020,7 @@ public class AppManager {
         }
 
         //sort : alias asc
-        if(keyStoreDataList.size() > 1) {
+        if(keyStoreDataExpList.size() > 1) {
             try {
                 keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
                 keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
@@ -1806,10 +1813,6 @@ public class AppManager {
             prop.setProperty("use_rpc", "false");
 
             try {
-                File config = new File("config");
-                if(!config.exists()) {
-                    config.mkdirs();
-                }
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
                 prop.store(output, null);
                 output.close();
@@ -1827,10 +1830,6 @@ public class AppManager {
     }
     public static void saveRPCProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
             prop.store(output, null);
             output.close();
@@ -1872,10 +1871,6 @@ public class AppManager {
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
             prop.setProperty("peer_num", "30");
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);
@@ -1896,10 +1891,6 @@ public class AppManager {
     }
     public static void saveGeneralProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
             prop.store(output, null);
             output.close();
@@ -1924,10 +1915,6 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("minimize_to_tray", "false");
             try {
-                File config = new File("config");
-                if(!config.exists()) {
-                    config.mkdirs();
-                }
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
                 prop.store(output, null);
                 output.close();
@@ -1945,10 +1932,6 @@ public class AppManager {
     }
     public static void saveWindowProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
             prop.store(output, null);
             output.close();

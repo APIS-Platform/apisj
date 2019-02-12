@@ -127,6 +127,10 @@ public class SmartContractFreezerController extends BaseViewController {
     private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if(newValue.indexOf("0x") >= 0){
+                ctrtAddrTextField.setText(newValue.replaceAll("0x",""));
+                return;
+            }
             if (!ctrtAddrTextField.getText().matches("[0-9a-fA-F]*")) {
                 ctrtAddrTextField.setText(ctrtAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
             }

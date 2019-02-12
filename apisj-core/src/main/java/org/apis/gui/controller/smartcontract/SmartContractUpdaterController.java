@@ -456,6 +456,10 @@ public class SmartContractUpdaterController extends BaseViewController {
 
                     // Only Hex, maxlength : 40
                     textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if(newValue.indexOf("0x") >= 0){
+                            textField.setText(newValue.replaceAll("0x",""));
+                            return;
+                        }
                         if (!newValue.matches("[0-9a-fA-F]*")) {
                             textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                         }
@@ -516,6 +520,10 @@ public class SmartContractUpdaterController extends BaseViewController {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            if(newValue.indexOf("0x") >= 0){
+                                textField.setText(newValue.replaceAll("0x",""));
+                                return;
+                            }
                             if (!newValue.matches("[0-9a-fA-F]*")) {
                                 textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                             }
@@ -538,6 +546,10 @@ public class SmartContractUpdaterController extends BaseViewController {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            if(newValue.indexOf("0x") >= 0){
+                                textField.setText(newValue.replaceAll("0x",""));
+                                return;
+                            }
                             if (!newValue.matches("[0-9a-fA-F]*")) {
                                 textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                             }
