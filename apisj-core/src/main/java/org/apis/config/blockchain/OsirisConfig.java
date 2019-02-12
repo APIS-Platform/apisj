@@ -119,7 +119,7 @@ public class OsirisConfig extends AbstractConfig {
 
         @Override
         public long getINIT_MINERAL_APPLY_BLOCK() {
-            return super.getINIT_MINERAL_APPLY_BLOCK();
+            return 600_000L;
         }
     }
 

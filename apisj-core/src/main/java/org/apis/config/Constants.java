@@ -80,7 +80,7 @@ public class Constants {
     /**
      * 최초 잔고가 생겼을 때 미네랄이 생성되는 시점을 현재로 지정하는 내용을 적용할 블록 번호
      */
-    private static final long INIT_MINERAL_APPLY_BLOCK = 999_999_999L;  // 400_000L
+    private static final long INIT_MINERAL_APPLY_BLOCK = 999_999_999L;
 
 
 
