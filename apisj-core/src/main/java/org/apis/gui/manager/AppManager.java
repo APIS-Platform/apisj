@@ -901,135 +901,137 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
-        List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
-        List<LedgerRecord> ledgers = DBManager.getInstance().selectLedgers();
+        synchronized (keyStoreDataList) {
+            KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+            List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
+            List<LedgerRecord> ledgers = DBManager.getInstance().selectLedgers();
 
-        for(int k =0 ; k<keys.size(); k++){
-            KeyStoreData key = keys.get(k);
-            boolean isExist = false;
-            for(int i = 0; i<keyStoreDataExpList.size(); i++) {
-                if(key != null && key.address != null && key.address.equalsIgnoreCase(keyStoreDataExpList.get(i).address)) {
-                    isExist = true;
+            for (int k = 0; k < keys.size(); k++) {
+                KeyStoreData key = keys.get(k);
+                boolean isExist = false;
+                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                    if (key != null && key.address != null && key.address.equalsIgnoreCase(keyStoreDataExpList.get(i).address)) {
+                        isExist = true;
 
-                    // alias update
-                    keyStoreDataExpList.get(i).alias = key.alias;
+                        // alias update
+                        keyStoreDataExpList.get(i).alias = key.alias;
 
-                    // password update
-                    keyStoreDataExpList.get(i).crypto = key.crypto;
+                        // password update
+                        keyStoreDataExpList.get(i).crypto = key.crypto;
 
-                    if(keyStoreDataList.size() > i){
-                        keyStoreDataList.get(i).alias = key.alias;
-                        keyStoreDataList.get(i).crypto = key.crypto;
+                        if (keyStoreDataList.size() > i) {
+                            keyStoreDataList.get(i).alias = key.alias;
+                            keyStoreDataList.get(i).crypto = key.crypto;
+                        }
+                        break;
                     }
-                    break;
+                }
+
+                if (!isExist) {
+                    keyStoreDataList.add(key);
+                    keyStoreDataExpList.add(new KeyStoreDataExp(key));
                 }
             }
 
-            if(!isExist) {
-                keyStoreDataList.add(key);
-                keyStoreDataExpList.add(new KeyStoreDataExp(key));
-            }
-        }
+            // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
+            List<byte[]> removeAddressList = new ArrayList<>();
 
-        // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
-        List<byte[]> removeAddressList = new ArrayList<>();
+            for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                KeyStoreData listKey = keyStoreDataExpList.get(i);
+                boolean isExist = false;
+                for (KeyStoreData key : keys) {
+                    if (key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
+                        isExist = true;
+                        break;
+                    }
+                }
 
-        for(int i=0; i<keyStoreDataExpList.size(); i++) {
-            KeyStoreData listKey = keyStoreDataExpList.get(i);
-            boolean isExist = false;
-            for(KeyStoreData key : keys) {
-                if(key.address != null && key.address.equalsIgnoreCase(listKey.address)) {
-                    isExist = true;
-                    break;
+                if (!isExist) {
+                    removeAddressList.add(ByteUtil.hexStringToBytes(listKey.address));
                 }
             }
 
-            if(!isExist) {
-                removeAddressList.add(ByteUtil.hexStringToBytes(listKey.address));
-            }
-        }
-
-        for(int i=0; i<removeAddressList.size(); i++) {
-            byte[] address = removeAddressList.get(i);
-            keyStoreDataList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
-            keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
-        }
-
-        // Add ledger address to list
-        for(int i=0; i<ledgers.size(); i++) {
-            LedgerRecord ledger = ledgers.get(i);
-            boolean isExist = false;
-            KeyStoreData key = new KeyStoreData();
-            KeyStoreDataExp keyExp = null;
-
-            for(int j=0; j<keyStoreDataExpList.size(); j++) {
-                key.address = ByteUtil.toHexString(ledger.getAddress());
-                key.alias = ledger.getAlias();
-
-                if (key.address.equalsIgnoreCase(keyStoreDataExpList.get(j).address)) {
-                    isExist = true;
-
-                    keyStoreDataList.get(j).alias = ledger.getAlias();
-                    keyStoreDataExpList.get(j).alias = ledger.getAlias();
-                    keyStoreDataExpList.get(j).ledgerPath = ledger.getPath();
-                }
+            for (int i = 0; i < removeAddressList.size(); i++) {
+                byte[] address = removeAddressList.get(i);
+                keyStoreDataList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
+                keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
             }
 
-            if(!isExist) {
-                key.address = ByteUtil.toHexString(ledger.getAddress());
-                key.alias = ledger.getAlias();
-
-                keyExp = new KeyStoreDataExp(key);
-                keyExp.isLedger = true;
-                keyExp.ledgerPath = ledger.getPath();
-
-                keyStoreDataList.add(key);
-                keyStoreDataExpList.add(keyExp);
-            }
-        }
-
-        // 목록에 있는 데이터들의 값을 갱신한다.
-        if(mApis != null) {
-            Block bestBlock = mApis.getBlockchain().getBestBlock();
-            Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
-
-            if(bestBlock.getNumber() >= 10) {
-
-                Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
-
+            // Add ledger address to list
+            for (int i = 0; i < ledgers.size(); i++) {
+                LedgerRecord ledger = ledgers.get(i);
+                boolean isExist = false;
+                KeyStoreData key = new KeyStoreData();
                 KeyStoreDataExp keyExp = null;
-                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
-                    keyExp = keyStoreDataExpList.get(i);
-                    keyExp.mask = getMaskWithAddress(keyExp.address);
-                    keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
-                    keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
-                    keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
+
+                for (int j = 0; j < keyStoreDataExpList.size(); j++) {
+                    key.address = ByteUtil.toHexString(ledger.getAddress());
+                    key.alias = ledger.getAlias();
+
+                    if (key.address.equalsIgnoreCase(keyStoreDataExpList.get(j).address)) {
+                        isExist = true;
+
+                        keyStoreDataList.get(j).alias = ledger.getAlias();
+                        keyStoreDataExpList.get(j).alias = ledger.getAlias();
+                        keyStoreDataExpList.get(j).ledgerPath = ledger.getPath();
+                    }
                 }
 
-                long confirmBlockNum = bestBlock.getNumber() - 6;
-                Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
-                Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
+                if (!isExist) {
+                    key.address = ByteUtil.toHexString(ledger.getAddress());
+                    key.alias = ledger.getAlias();
 
-                for (int i = 0; i < keyStoreDataExpList.size(); i++) {
-                    keyExp = keyStoreDataExpList.get(i);
-                    keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                    keyExp = new KeyStoreDataExp(key);
+                    keyExp.isLedger = true;
+                    keyExp.ledgerPath = ledger.getPath();
+
+                    keyStoreDataList.add(key);
+                    keyStoreDataExpList.add(keyExp);
                 }
-
             }
-        }
 
-        //sort : alias asc
-        if(keyStoreDataExpList.size() > 1) {
-            try {
-                keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
-                keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
-            }catch (Exception e){
-                // sort error
+            // 목록에 있는 데이터들의 값을 갱신한다.
+            if (mApis != null) {
+                Block bestBlock = mApis.getBlockchain().getBestBlock();
+                Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+
+                if (bestBlock.getNumber() >= 10) {
+
+                    Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+
+                    KeyStoreDataExp keyExp = null;
+                    for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                        keyExp = keyStoreDataExpList.get(i);
+                        keyExp.mask = getMaskWithAddress(keyExp.address);
+                        keyExp.balance = repo.getBalance(ByteUtil.hexStringToBytes(keyExp.address));
+                        keyExp.mineral = repo.getMineral(ByteUtil.hexStringToBytes(keyExp.address), mApis.getBlockchain().getBestBlock().getNumber());
+                        keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
+                    }
+
+                    long confirmBlockNum = bestBlock.getNumber() - 6;
+                    Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
+                    Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
+
+                    for (int i = 0; i < keyStoreDataExpList.size(); i++) {
+                        keyExp = keyStoreDataExpList.get(i);
+                        keyExp.rewards = rewardRepo.getTotalReward(ByteUtil.hexStringToBytes(keyExp.address));
+                    }
+
+                }
             }
-        }
 
-        return this.keyStoreDataList;
+            //sort : alias asc
+            if (keyStoreDataExpList.size() > 1) {
+                try {
+                    keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+                    keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+                } catch (Exception e) {
+                    // sort error
+                }
+            }
+
+            return this.keyStoreDataList;
+        }
     }
 
     public boolean isFrozen(String address) {
