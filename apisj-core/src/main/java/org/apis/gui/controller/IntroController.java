@@ -449,7 +449,8 @@ public class IntroController extends BaseViewController {
             @Override
             public void onFocusOut() {
                 if(loadWalletPrivateKeyController.getText().indexOf("0x") >= 0){
-                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().substring(2, loadWalletPrivateKeyController.getText().length()));
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("0x", ""));
+                    return;
                 }
 
                 if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {
@@ -480,7 +481,8 @@ public class IntroController extends BaseViewController {
             @Override
             public void change(String old_text, String new_text) {
                 if(loadWalletPrivateKeyController.getText().indexOf("0x") >= 0){
-                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().substring(2, loadWalletPrivateKeyController.getText().length()));
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("0x", ""));
+                    return;
                 }
 
                 if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {

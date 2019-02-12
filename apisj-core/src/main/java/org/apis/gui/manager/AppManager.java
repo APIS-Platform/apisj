@@ -909,7 +909,7 @@ public class AppManager {
             KeyStoreData key = keys.get(k);
             boolean isExist = false;
             for(int i = 0; i<keyStoreDataExpList.size(); i++) {
-                if(key.address != null && key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
+                if(key != null && key.address != null && key.address.equalsIgnoreCase(keyStoreDataExpList.get(i).address)) {
                     isExist = true;
 
                     // alias update
@@ -1813,10 +1813,6 @@ public class AppManager {
             prop.setProperty("use_rpc", "false");
 
             try {
-                File config = new File("config");
-                if(!config.exists()) {
-                    config.mkdirs();
-                }
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
                 prop.store(output, null);
                 output.close();
@@ -1834,10 +1830,6 @@ public class AppManager {
     }
     public static void saveRPCProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
             prop.store(output, null);
             output.close();
@@ -1879,10 +1871,6 @@ public class AppManager {
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
             prop.setProperty("peer_num", "30");
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);
@@ -1903,10 +1891,6 @@ public class AppManager {
     }
     public static void saveGeneralProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
             prop.store(output, null);
             output.close();
@@ -1931,10 +1915,6 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("minimize_to_tray", "false");
             try {
-                File config = new File("config");
-                if(!config.exists()) {
-                    config.mkdirs();
-                }
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
                 prop.store(output, null);
                 output.close();
@@ -1952,10 +1932,6 @@ public class AppManager {
     }
     public static void saveWindowProperties(){
         try {
-            File config = new File("config");
-            if(!config.exists()) {
-                config.mkdirs();
-            }
             OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/window.properties");
             prop.store(output, null);
             output.close();
