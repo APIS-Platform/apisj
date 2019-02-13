@@ -4,6 +4,7 @@ import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.util.AddressUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,11 @@ public class MinedBlockCache {
 
             // 블록들이 서로 연결되어있지 않으면 빠져나간다.
             if(i > 0 && !FastByteComparisons.equal(receivedBlock.getParentHash(), receivedBlocks.get(i - 1).getHash())) {
+                return false;
+            }
+
+            // 현재 시간보다 빠른 블록을 받았을 경우 검증하지 않는다
+            if(receivedBlock.getTimestamp()*1_000L > TimeUtils.getRealTimestamp()) {
                 return false;
             }
         }
