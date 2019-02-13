@@ -996,6 +996,8 @@ public class StringManager {
         public SimpleStringProperty ledgerNoticeTitle = new SimpleStringProperty();
         public SimpleStringProperty ledgerNoticeSubTitle = new SimpleStringProperty();
 
+        public SimpleStringProperty changePwNotice = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1122,6 +1124,8 @@ public class StringManager {
 
             ledgerNoticeTitle.set(StringManager.this.getString("popup_ledger_notice_title", "Confirm Transaction"));
             ledgerNoticeSubTitle.set(StringManager.this.getString("popup_ledger_notice_sub_title", "Please check your ledger to generate transaction."));
+
+            changePwNotice.set(StringManager.this.getString("popup_change_pw_notice", "You can’t change its password once a Keystore file is backed up. Please make sure to back up a Keystore file once you change the password."));
         }
     }
 

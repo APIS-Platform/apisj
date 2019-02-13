@@ -243,6 +243,7 @@ public class PopupChangePasswordController extends BasePopupController {
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+            controller.setSubTitle(StringManager.getInstance().popup.changePwNotice);
             controller.requestFocusYesButton();
         }else{
             failedForm();
