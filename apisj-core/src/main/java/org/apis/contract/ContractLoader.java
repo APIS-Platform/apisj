@@ -38,7 +38,7 @@ public class ContractLoader {
     private static final String OWNER_GENESIS_5 = "88371729cDFdb771fac419E68499b899de0C343a";
 
     private static final String PLATFORM_WORKER = "c5f590c1035ae780906514ff8e76dd86b89b97dc"; //Mainnet
-    //private static final String PLATFORM_WORKER = "57EB338a5424Ae6611E4d3fE0eFfdD55b06792E2";   //Testnet
+//    private static final String PLATFORM_WORKER = "57EB338a5424Ae6611E4d3fE0eFfdD55b06792E2";   //Testnet
 
 
 

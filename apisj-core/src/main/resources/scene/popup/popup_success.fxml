@@ -32,6 +32,7 @@
                     <rowConstraints>
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                       <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                     </rowConstraints>
                      <children>
@@ -45,7 +46,7 @@
                               <Label fx:id="subTitle" alignment="TOP_LEFT" prefWidth="390.0" styleClass="font_regular_14" text="Your request has been received successfully." textFill="#999999" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="2">
+                        <AnchorPane minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="3">
                            <children>
                               <Label fx:id="yesBtn" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#exit" prefHeight="48.0" style="-fx-background-color: #b01e1e;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
