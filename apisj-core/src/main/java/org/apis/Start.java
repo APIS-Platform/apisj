@@ -18,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -76,7 +78,6 @@ public class Start {
             config.setDiscoveryEnabled(false);
         }
 
-        startAPIS();
 
         if (actionBlocksLoader) {
             mApis.getBlockLoader().loadBlocks();
@@ -89,10 +90,19 @@ public class Start {
                 rpcServerManager.startServer();
                 isRunRpc = true;
             }
+
+            // Max Peers
+            int maxPeers = rpcServerManager.getMaxPeers();
+            Map<String, Object> cliOptions = new HashMap<>();
+            cliOptions.put("peer.maxActivePeers", String.valueOf(maxPeers));
+            SystemProperties.getDefault().overrideParams(cliOptions);
+
         } catch (IOException e) {
             logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));
             System.exit(0);
         }
+
+        startAPIS();
     }
 
     private static void startAPIS() {

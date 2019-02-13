@@ -10,8 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupLedgerNoticeController extends BasePopupController {
-    @FXML
-    Label title, subTitle;
+    @FXML Label title, subTitle;
 
     @FXML
     public void exit() {

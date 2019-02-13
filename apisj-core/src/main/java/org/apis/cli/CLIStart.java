@@ -8,6 +8,7 @@ import org.apis.crypto.ECKey;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
+import org.apis.rpc.RPCServerManager;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
@@ -22,6 +23,8 @@ public class CLIStart {
     private Properties daemonProp;
     private String dirDaemon;
     private String dirRpc;
+
+    private final String DEFAULT_MAX_PEERS = "30";
 
     public CLIStart() throws IOException {
         config = SystemProperties.getDefault();
@@ -44,7 +47,10 @@ public class CLIStart {
         try {
             File configDir = new File(config.configDir());
             if(!configDir.exists()) {
-                configDir.mkdirs();
+                if(!configDir.mkdirs()) {
+                    ConsoleUtil.printlnRed("Failed to create configuration file.");
+                    System.exit(1);
+                }
             }
 
             InputStream input = new FileInputStream(dirDaemon);
@@ -71,7 +77,7 @@ public class CLIStart {
             daemonProp.setProperty("recipient", "");
             daemonProp.setProperty("autoStart", "false");
 
-            OutputStream output = null;
+            OutputStream output;
             try {
                 output = new FileOutputStream(dirDaemon);
                 daemonProp.store(output, null);
@@ -89,16 +95,20 @@ public class CLIStart {
             InputStream input = new FileInputStream(dirRpc);
             prop.load(input);
         } catch (IOException e) {
-            prop.setProperty("use_rpc", String.valueOf(false));
-            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
-            prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
-            prop.setProperty("max_connections", String.valueOf(1));
-            prop.setProperty("allow_ip", "127.0.0.1");
+            prop.setProperty(RPCServerManager.KEY_AVAILABLE_RPC, String.valueOf(false));
+            prop.setProperty(RPCServerManager.KEY_PORT, String.valueOf(new Random().nextInt(10000) + 40000));
+            prop.setProperty(RPCServerManager.KEY_ID, ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty(RPCServerManager.KEY_PASSWORD, ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty(RPCServerManager.KEY_MAX_CONNECTION, String.valueOf(1));
+            prop.setProperty(RPCServerManager.KEY_ALLOW_IP, "127.0.0.1");
+            prop.setProperty(RPCServerManager.KEY_MAX_PEERS, DEFAULT_MAX_PEERS);
 
             File configDir = new File(config.configDir());
             if(!configDir.exists()) {
-                configDir.mkdirs();
+                if(!configDir.mkdirs()) {
+                    ConsoleUtil.printlnRed("Failed to create configuration file.");
+                    System.exit(1);
+                }
             }
             OutputStream output = new FileOutputStream(dirRpc);
             prop.store(output, null);
@@ -106,7 +116,7 @@ public class CLIStart {
         }
     }
 
-    public void startKeystoreCheck() throws IOException {
+    void startKeystoreCheck() throws IOException {
         ConsoleUtil.printlnGreen("You can get rewards through APIS Block mining.");
         ConsoleUtil.printlnGreen("You should input Private key of a miner to start mining.");
         ConsoleUtil.printlnGreen("The chance of getting reward goes higher with the registered miner's balance.");
@@ -477,11 +487,15 @@ public class CLIStart {
     private static final int SELECT_SERVERCHECK_CHANGE_PASSWORD = 4;
     private static final int SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS = 5;
     private static final int SELECT_SERVERCHECK_CHANGE_ALLOWIP = 6;
+    private static final int SELECT_SERVERCHECK_CHANGE_MAXPEERS = 7;
 
-    public void startRpcServerCheck() throws IOException {
+    void startRpcServerCheck() throws IOException {
         File configDir = new File(config.configDir());
         if(!configDir.exists()) {
-            configDir.mkdirs();
+            if(!configDir.mkdirs()) {
+                ConsoleUtil.printlnRed("Failed to create configuration file.");
+                System.exit(1);
+            }
         }
 
         ConsoleUtil.printlnBlue("You can interact with this program remotely through a Web socket-based RPC server.");
@@ -499,12 +513,13 @@ public class CLIStart {
 
         while(true) {
             ConsoleUtil.printlnBlue("The current setting is as follows.\n");
-            printProp("use_rpc", prop);;
-            printProp("port", prop);
-            printProp("id", prop);
-            printProp("password", prop);
-            printProp("max_connections", prop);
-            printProp("allow_ip", prop);
+            printProp(RPCServerManager.KEY_AVAILABLE_RPC, prop);;
+            printProp(RPCServerManager.KEY_PORT, prop);
+            printProp(RPCServerManager.KEY_ID, prop);
+            printProp(RPCServerManager.KEY_PASSWORD, prop);
+            printProp(RPCServerManager.KEY_MAX_CONNECTION, prop);
+            printProp(RPCServerManager.KEY_ALLOW_IP, prop);
+            printProp(RPCServerManager.KEY_MAX_PEERS, prop);
 
 
             ConsoleUtil.printlnBlue("\nDo you want to change the settings?");
@@ -513,9 +528,11 @@ public class CLIStart {
             ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_PORT + ". Change port");
             ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_ID + ". Change id");
             ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_PASSWORD + ". Change password");
-            ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS + ". Change max_connections");
+            ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS + ". Change max_rpc_connections");
             ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_ALLOWIP + ". Change allow_ip");
-            ConsoleUtil.printlnGreen( "7. Exit");
+            ConsoleUtil.printlnGreen("\n* About APIS Nodes ----------");
+            ConsoleUtil.printlnGreen( SELECT_SERVERCHECK_CHANGE_MAXPEERS + ". Change max_peers\n");
+            ConsoleUtil.printlnGreen( "8. Exit");
 
             switch (readNumber(">> ")) {
 
@@ -540,8 +557,11 @@ public class CLIStart {
                 case SELECT_SERVERCHECK_CHANGE_ALLOWIP:
                     changeAllowIp(prop);
                     break;
+                case SELECT_SERVERCHECK_CHANGE_MAXPEERS:
+                    changeMaxPeers(prop);
+                    break;
 
-                case 7:
+                case 8:
                     storeRpcConfig(prop);
                     ConsoleUtil.printlnGreen("Bye");
                     System.exit(0);
@@ -562,7 +582,11 @@ public class CLIStart {
     }
 
     private void printProp(String key, Properties prop) {
-        ConsoleUtil.printlnPurple(Strings.padEnd(key, 20, ' ') + ": " + prop.getProperty(key));
+        String value = prop.getProperty(key);
+        if(key.equalsIgnoreCase(RPCServerManager.KEY_MAX_PEERS) && value == null) {
+            value = DEFAULT_MAX_PEERS;
+        }
+        ConsoleUtil.printlnPurple(Strings.padEnd(key, 20, ' ') + ": " + value);
     }
 
     private void changePort(Properties prop) throws IOException {
@@ -637,6 +661,17 @@ public class CLIStart {
         }
 
         prop.setProperty("allow_ip", ipList);
+    }
+
+    private void changeMaxPeers(Properties prop) throws IOException {
+        int max_connections = readNumber("Please enter the maximum number of peers\n(If more peers attempt to connect, they will not accept the connection) : ");
+
+        if(max_connections <= 0) {
+            ConsoleUtil.printlnRed("Please enter the correct number.");
+            return;
+        }
+
+        prop.setProperty(RPCServerManager.KEY_MAX_PEERS, String.valueOf(max_connections));
     }
 
     private void storeRpcConfig(Properties prop) throws IOException {
