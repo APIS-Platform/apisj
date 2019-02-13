@@ -32,7 +32,7 @@
                     <rowConstraints>
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                       <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
+                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                     </rowConstraints>
                      <children>
