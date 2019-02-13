@@ -78,31 +78,29 @@ public class Start {
             config.setDiscoveryEnabled(false);
         }
 
+        RPCServerManager rpcServerManager = RPCServerManager.getInstance();
+
+        // Max Peers
+        int maxPeers = rpcServerManager.getMaxPeers();
+        Map<String, Object> cliOptions = new HashMap<>();
+        cliOptions.put("peer.maxActivePeers", String.valueOf(maxPeers));
+        SystemProperties.getDefault().overrideParams(cliOptions);
+
+        // Start APIS
+        startAPIS();
+
+        // Set Max Peers
+        rpcServerManager.setApis(mApis);
 
         if (actionBlocksLoader) {
             mApis.getBlockLoader().loadBlocks();
         }
 
         // start server
-        try {
-            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mApis);
-            if(rpcServerManager.isAvailable()) {
-                rpcServerManager.startServer();
-                isRunRpc = true;
-            }
-
-            // Max Peers
-            int maxPeers = rpcServerManager.getMaxPeers();
-            Map<String, Object> cliOptions = new HashMap<>();
-            cliOptions.put("peer.maxActivePeers", String.valueOf(maxPeers));
-            SystemProperties.getDefault().overrideParams(cliOptions);
-
-        } catch (IOException e) {
-            logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));
-            System.exit(0);
+        if(rpcServerManager.isAvailable()) {
+            rpcServerManager.startServer();
+            isRunRpc = true;
         }
-
-        startAPIS();
     }
 
     private static void startAPIS() {
