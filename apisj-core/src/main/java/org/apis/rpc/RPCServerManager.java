@@ -21,16 +21,18 @@ public class RPCServerManager {
     private String password;
     private boolean isAvailable;
     private int maxConnection;
+    private int maxPeers;
     private String whitelist;
 
     private String PATH_PROPERTIES = "config/rpc.properties";
 
-    private final String KEY_PORT = "port";
-    private final String KEY_ID = "id";
-    private final String KEY_PASSWORD = "password";
-    private final String KEY_AVAILABLE_RPC = "use_rpc";
-    private final String KEY_ALLOW_IP = "allow_ip";
-    private final String KEY_MAX_CONNECTION = "max_connections";
+    public static final String KEY_PORT = "port";
+    public static final String KEY_ID = "id";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_AVAILABLE_RPC = "use_rpc";
+    public static final String KEY_ALLOW_IP = "allow_ip";
+    public static final String KEY_MAX_CONNECTION = "max_connections";
+    public static final String KEY_MAX_PEERS = "max_peers";
 
     private RPCWebSocketServer rpcServer = null;
     private boolean isRun = false;
@@ -73,6 +75,11 @@ public class RPCServerManager {
         } catch(NumberFormatException e) {
             this.maxConnection = -1;
         }
+        try {
+            this.maxPeers = Integer.parseInt(prop.getProperty(KEY_MAX_PEERS));
+        } catch(NumberFormatException e) {
+            this.maxPeers = 30;
+        }
     }
 
     /**
@@ -97,6 +104,10 @@ public class RPCServerManager {
 
     public int getMaxConnection() {
         return maxConnection;
+    }
+
+    public int getMaxPeers() {
+        return maxPeers;
     }
 
     public void setMaxConnection(int maxConnection) {
