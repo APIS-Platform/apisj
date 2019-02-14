@@ -16,6 +16,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apis.cli.CLIStart;
+import org.apis.config.SystemProperties;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.manager.AppManager;
@@ -116,7 +117,7 @@ public class MainFX extends Application  {
                             int width = 1280, height = 760;
 
                             Parent root = FXMLLoader.load(fileUrl);
-                            primaryStage.setTitle("APIS Core Wallet");
+                            primaryStage.setTitle("APIS Core Wallet v" + SystemProperties.getDefault().projectVersion());
                             primaryStage.setScene(new Scene(root));
                             primaryStage.setResizable(false);
                             primaryStage.setMaxWidth(width);
