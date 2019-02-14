@@ -73,9 +73,11 @@ public class RPCWebSocketServer extends WebSocketServer {
             // close
             conn.close();
 
-            String hostAddress = conn.getRemoteSocketAddress().toString();
-            logger.debug(ConsoleUtil.colorYellow("[onClose] client host:" + hostAddress));
-            logger.debug(ConsoleUtil.colorYellow("[onClose] client error (code:" + errorCode + ") " + errorMsg));
+            try {
+                String hostAddress = conn.getRemoteSocketAddress().toString();
+                logger.debug(ConsoleUtil.colorYellow("[onClose] client host:" + hostAddress));
+                logger.debug(ConsoleUtil.colorYellow("[onClose] client error (code:" + errorCode + ") " + errorMsg));
+            } catch (Exception ignored) {}
         }
     }
 

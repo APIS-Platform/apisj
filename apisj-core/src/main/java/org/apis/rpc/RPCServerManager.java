@@ -37,6 +37,13 @@ public class RPCServerManager {
     private RPCWebSocketServer rpcServer = null;
     private boolean isRun = false;
 
+    public static RPCServerManager getInstance() throws IOException {
+        if(sManager == null) {
+            sManager = new RPCServerManager();
+        }
+        return sManager;
+    }
+
     public static RPCServerManager getInstance(Apis apis) throws IOException {
         if(sManager == null) {
             sManager = new RPCServerManager(apis);
@@ -44,10 +51,17 @@ public class RPCServerManager {
         return sManager;
     }
 
+    private RPCServerManager() throws IOException {
+        loadProperties();
+    }
+
     private RPCServerManager(Apis apis) throws IOException {
         this.apis = apis;
-
         loadProperties();
+    }
+
+    public void setApis(Apis apis) {
+        this.apis = apis;
     }
 
     public void loadProperties() throws IOException {
