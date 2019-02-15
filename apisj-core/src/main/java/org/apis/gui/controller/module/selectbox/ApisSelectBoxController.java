@@ -260,8 +260,8 @@ public class ApisSelectBoxController extends BaseViewController {
                 headerFxml = new BaseFxmlController(fxmlUrl);
             }
             BaseSelectBoxHeaderController headerController = (BaseSelectBoxHeaderController)headerFxml.getController();
-            headerController.setModel(model);
             headerController.setReadableApisKMBT(isReadableApisKMBT);
+            headerController.setModel(model);
 
             header.getChildren().clear();
             header.add(headerFxml.getNode(),0,0);
