@@ -31,7 +31,7 @@ public class SmartContractCanvasController extends BaseViewController {
         webEngine = webView.getEngine();
         webEngine.load("http://www.google.com");
 
-//        webView.getEngine().setUserStyleSheetLocation(getClass().getResource());
+        webView.getEngine().setUserStyleSheetLocation(getClass().getClassLoader().getResource("scene/css/webView.css").toString());
 
         blankIcon.setImage(ImageManager.icBlankPagePc);
         blankIcon.setFitWidth(180);
