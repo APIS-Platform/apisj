@@ -132,14 +132,18 @@ public class Start {
                 // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
                 if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
                     startAPIS();
+                    timeLastBlockReceived = now;
                     isClosed = false;
                 }
 
             }, 60, 1, TimeUnit.SECONDS);
         }
 
+        long blockNumber = 0;
+
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
+            blockNumber = block.getNumber();
             logger.debug(ConsoleUtil.colorBBlue("\nOnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
             timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
