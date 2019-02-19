@@ -58,6 +58,7 @@ public class Start {
      */
     private static boolean isClosed = false;
 
+    static private boolean processRestartThreadCreated = false;
 
 
     public static void main(String args[]) throws IOException {
@@ -119,27 +120,34 @@ public class Start {
             /*
              * 싱크가 완료된 이후, 현재의 싱크 상태를 확인해서 프로그램 재시작 여부를 판단한다.
              */
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                long now = TimeUtils.getRealTimestamp();
+            if(!processRestartThreadCreated) {
+                processRestartThreadCreated = true;
+                Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                    long now = TimeUtils.getRealTimestamp();
 
-                // 싱크가 지연된 경우 프로그램을 종료한다.
-                if(!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                    timeLastProgramClosed = now;
-                    isClosed = true;
-                    mApis.close();
-                }
+                    // 싱크가 지연된 경우 프로그램을 종료한다.
+                    if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                        timeLastProgramClosed = now;
+                        isClosed = true;
+                        mApis.close();
+                    }
 
-                // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                    startAPIS();
-                    isClosed = false;
-                }
+                    // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                    if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                        startAPIS();
+                        timeLastBlockReceived = now;
+                        isClosed = false;
+                    }
 
-            }, 60, 1, TimeUnit.SECONDS);
+                }, 60, 1, TimeUnit.SECONDS);
+            }
         }
+
+        long blockNumber = 0;
 
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
+            blockNumber = block.getNumber();
             logger.debug(ConsoleUtil.colorBBlue("\nOnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
             timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
