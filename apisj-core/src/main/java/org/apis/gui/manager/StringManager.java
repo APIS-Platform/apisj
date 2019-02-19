@@ -768,6 +768,8 @@ public class StringManager {
         public SimpleStringProperty registerAddressMsg3 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg4 = new SimpleStringProperty();
         public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
+        public SimpleStringProperty fromAddressLabel = new SimpleStringProperty();
+        public SimpleStringProperty toAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
         public SimpleStringProperty selectHandedToDesc = new SimpleStringProperty();
         public SimpleStringProperty selectAddressDesc = new SimpleStringProperty();
@@ -825,7 +827,9 @@ public class StringManager {
             registerAddressMsg2.set(StringManager.this.getString("address_masking_register_address_msg2", "This address is already in use"));
             registerAddressMsg3.set(StringManager.this.getString("address_masking_register_address_msg3", "Please enter a valid address"));
             registerAddressMsg4.set(StringManager.this.getString("address_masking_register_address_msg4", "Mask must be 24 bytes or less."));
-            selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
+            selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Domain"));
+            fromAddressLabel.set(StringManager.this.getString("address_masking_from_address_label", "From"));
+            toAddressLabel.set(StringManager.this.getString("address_masking_to_address_label", "To"));
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
             selectHandedToDesc.set(StringManager.this.getString("address_masking_select_hand_to_desc", "Please enter your address to receive the mask."));
             selectAddressDesc.set(StringManager.this.getString("address_masking_select_address_desc", "Please address a wallet to transfer the mask."));

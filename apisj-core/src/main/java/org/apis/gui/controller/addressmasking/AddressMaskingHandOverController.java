@@ -91,8 +91,8 @@ public class AddressMaskingHandOverController extends BaseViewController {
     }
 
     public void languageSetting(){
-        registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressLabel);
-        selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
+        registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.fromAddressLabel);
+        selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.toAddressLabel);
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         selectHandedToDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectHandedToDesc);
         registerAddressDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectAddressDesc);
