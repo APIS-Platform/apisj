@@ -112,6 +112,7 @@ public class AppManager {
     private long timeLastBlockReceived = 0;
     private long timeLastProgramClosed = 0;
     private boolean isClosed = false;
+    static private boolean processRestartThreadCreated = false;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -155,24 +156,28 @@ public class AppManager {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
 
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                long now = TimeUtils.getRealTimestamp();
+            if(!processRestartThreadCreated) {
+                processRestartThreadCreated = true;
 
-                // 싱크가 지연된 경우 프로그램을 종료한다.
-                if(!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                    timeLastProgramClosed = now;
-                    isClosed = true;
-                    mApis.close();
-                }
+                Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                    long now = TimeUtils.getRealTimestamp();
 
-                // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                if(isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                    timeLastBlockReceived = now;
-                    isClosed = false;
-                    startAPIS();
-                }
+                    // 싱크가 지연된 경우 프로그램을 종료한다.
+                    if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                        timeLastProgramClosed = now;
+                        isClosed = true;
+                        mApis.close();
+                    }
 
-            }, 60, 1, TimeUnit.SECONDS);
+                    // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                    if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                        timeLastBlockReceived = now;
+                        isClosed = false;
+                        startAPIS();
+                    }
+
+                }, 60, 1, TimeUnit.SECONDS);
+            }
 
             // start rpc server
             AppManager.getInstance().startRPC();
