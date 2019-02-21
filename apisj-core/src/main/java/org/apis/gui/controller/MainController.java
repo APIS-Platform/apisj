@@ -377,9 +377,6 @@ public class MainController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logo.setOnMouseClicked(event -> {
-            PopupResetController controller = (PopupResetController)PopupManager.getInstance().showMainPopup(null,"popup_reset.fxml", 0);
-        });
 
         AppManager.getInstance().guiFx.setMain(this);
 
