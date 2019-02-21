@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
+import org.apis.gui.controller.popup.PopupResetController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.*;
@@ -376,6 +377,10 @@ public class MainController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logo.setOnMouseClicked(event -> {
+            PopupResetController controller = (PopupResetController)PopupManager.getInstance().showMainPopup(null,"popup_reset.fxml", 0);
+        });
+
         AppManager.getInstance().guiFx.setMain(this);
 
         // 언어 설정

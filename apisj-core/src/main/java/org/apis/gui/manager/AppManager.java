@@ -36,6 +36,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
+import org.apis.gui.controller.popup.PopupResetController;
 import org.apis.gui.controller.smartcontract.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
@@ -45,6 +46,7 @@ import org.apis.hid.HIDDevice;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.server.Channel;
 import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
@@ -107,12 +109,13 @@ public class AppManager {
     private HIDDevice ledger = null;
 
     // Reboot function when sync stopped
-    private static final long TIME_CLOSE_WAIT = 3*60*1_000L;
+    private static final long TIME_CLOSE_WAIT = 1*53*1_000L;
     private static final long TIME_RESTART_WAIT = 30*1_000L;
     private long timeLastBlockReceived = 0;
     private long timeLastProgramClosed = 0;
     private boolean isClosed = false;
     static private boolean processRestartThreadCreated = false;
+    private PopupResetController resetController;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -166,6 +169,12 @@ public class AppManager {
                     if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
                         timeLastProgramClosed = now;
                         isClosed = true;
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                resetController = (PopupResetController)PopupManager.getInstance().showMainPopup(null,"popup_reset.fxml", 0);
+                            }
+                        });
                         mApis.close();
                     }
 
@@ -173,6 +182,12 @@ public class AppManager {
                     if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
                         timeLastBlockReceived = now;
                         isClosed = false;
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                exitResetPopup();
+                            }
+                        });
                         startAPIS();
                     }
 
@@ -217,6 +232,12 @@ public class AppManager {
                     }
                 }
             });
+        }
+
+        @Override
+        public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
+            super.onEthStatusUpdated(channel, statusMessage);
+            System.out.println("@@@@@" + statusMessage);
         }
 
         @Override
@@ -1680,6 +1701,13 @@ public class AppManager {
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+    }
+
+    public void exitResetPopup(){
+        if(this.resetController != null){
+            this.resetController.exit();
+            this.resetController = null;
+        }
     }
 
     /* ==============================================
