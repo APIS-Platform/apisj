@@ -154,6 +154,7 @@ public class Start {
             // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.
             if(synced && isRunRpc) {
                 // DB Sync Start
+                DBSyncManager.getInstance(mApis).setApis(mApis);
                 DBSyncManager.getInstance(mApis).syncThreadStart();
             }
         }
