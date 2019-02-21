@@ -28,7 +28,7 @@
             <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="TOP" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fx:id="gif" fitWidth="72.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+            <ImageView fx:id="gif" fitWidth="72.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
                   <Image url="@../../image/dual_ring_200px.gif" />
                </image>
