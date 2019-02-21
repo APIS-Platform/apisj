@@ -157,6 +157,12 @@ public class AppManager {
         @Override
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    exitResetPopup();
+                }
+            });
             isSyncDone = true;
 
             if(!processRestartThreadCreated) {
@@ -166,9 +172,10 @@ public class AppManager {
                     long now = TimeUtils.getRealTimestamp();
 
                     // 싱크가 지연된 경우 프로그램을 종료한다.
-                    if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                    if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
                         timeLastProgramClosed = now;
                         isClosed = true;
+                        isSyncDone = false;
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -182,12 +189,6 @@ public class AppManager {
                     if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
                         timeLastBlockReceived = now;
                         isClosed = false;
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                exitResetPopup();
-                            }
-                        });
                         startAPIS();
                     }
 
@@ -235,17 +236,12 @@ public class AppManager {
         }
 
         @Override
-        public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
-            super.onEthStatusUpdated(channel, statusMessage);
-            System.out.println("@@@@@" + statusMessage);
-        }
-
-        @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
             timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
             // DB Sync Start
+            DBSyncManager.getInstance(mApis).setApis(mApis);
             DBSyncManager.getInstance(mApis).syncThreadStart();
 
             // constants

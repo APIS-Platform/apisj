@@ -21,7 +21,7 @@ public class DBSyncManager {
     }
 
 
-    private final Apis apis;
+    private Apis apis;
 
     private static boolean isSyncing = false;
 
@@ -30,6 +30,12 @@ public class DBSyncManager {
     private DBSyncManager(Apis apis) {
         this.apis = apis;
         this.dbManager = DBManager.getInstance();
+    }
+
+    public void setApis(Apis apis) {
+        if(apis != null) {
+            this.apis = apis;
+        }
     }
 
 

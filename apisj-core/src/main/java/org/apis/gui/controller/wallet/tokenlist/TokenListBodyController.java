@@ -1,6 +1,7 @@
 package org.apis.gui.controller.wallet.tokenlist;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -190,19 +191,23 @@ public class TokenListBodyController extends BaseViewController{
                 StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
                 icKnowledgekey.setFitWidth(14);
+                GridPane.setMargin(icKnowledgekey, new Insets(0, 0, 0, 4));
             }else{
                 StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
-                icKnowledgekey.setFitWidth(1);
+                icKnowledgekey.setFitWidth(0.1);
+                GridPane.setMargin(icKnowledgekey, new Insets(0, 0, 0, 0));
             }
 
             // 렛저 체크
             if(AppManager.getInstance().isLedger(itemModel.getAddress())){
                 icLedger.setVisible(true);
                 icLedger.setFitWidth(25);
+                GridPane.setMargin(icLedger, new Insets(2, 0, 2, 4));
             }else{
                 icLedger.setVisible(false);
-                icLedger.setFitWidth(1);
+                icLedger.setFitWidth(0.1);
+                GridPane.setMargin(icLedger, new Insets(0, 0, 0, 0));
             }
 
             setMask(itemModel.getMask());
