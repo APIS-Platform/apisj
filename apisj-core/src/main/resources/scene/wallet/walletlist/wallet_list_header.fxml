@@ -119,14 +119,14 @@
                            <children>
                               <Label fx:id="labelWalletAddress" styleClass="mono_font_regular_12" text="00000000..00000000" textFill="#999999">
                                  <GridPane.margin>
-                                    <Insets right="4.0" />
+                                    <Insets />
                                  </GridPane.margin></Label>
                               <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                  <image>
                                     <Image url="@../../../image/ic_knowledgekey@2x.png" />
                                  </image>
                                  <GridPane.margin>
-                                    <Insets />
+                                    <Insets left="4.0" />
                                  </GridPane.margin>
                               </ImageView>
                               <ImageView fx:id="icLedger" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">

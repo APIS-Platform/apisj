@@ -454,6 +454,11 @@ public class SmartContractController extends BaseViewController {
 
     }
 
+    @FXML
+    private void showHideView() {
+        smartContractCanvasController.showHideView();
+    }
+
     public void update(){
         smartContractDeployController.update();
         smartContractCallSendController.update();

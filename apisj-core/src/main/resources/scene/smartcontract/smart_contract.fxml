@@ -163,7 +163,7 @@
                <children>
                   <AnchorPane fx:id="tabLeftCanvas" minHeight="-Infinity">
                      <children>
-                        <GridPane minWidth="750.0" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <GridPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="750.0" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
                             <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                           </columnConstraints>
@@ -391,7 +391,7 @@
                                                       <Insets right="8.0" />
                                                    </GridPane.margin></Label>
                                                 <Label fx:id="balanceLabel" styleClass="mono_font_medium_12" text="123,456,789" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                                                <Label fx:id="apisUnitLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+                                                <Label fx:id="apisUnitLabel" layoutX="10.0" layoutY="10.0" onMouseClicked="#showHideView" styleClass="font_semibold_12" text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
                                              </children>
                                              <GridPane.margin>
                                                 <Insets bottom="5.0" />

@@ -1001,6 +1001,8 @@ public class StringManager {
         public SimpleStringProperty ledgerNoticeSubTitle = new SimpleStringProperty();
 
         public SimpleStringProperty changePwNotice = new SimpleStringProperty();
+        public SimpleStringProperty resetFirstLabel = new SimpleStringProperty();
+        public SimpleStringProperty resetSecondLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1130,6 +1132,8 @@ public class StringManager {
             ledgerNoticeSubTitle.set(StringManager.this.getString("popup_ledger_notice_sub_title", "Please check your ledger to generate transaction."));
 
             changePwNotice.set(StringManager.this.getString("popup_change_pw_notice", "You can’t change its password once a Keystore file is backed up. Please make sure to back up a Keystore file once you change the password."));
+            resetFirstLabel.set(StringManager.this.getString("popup_reset_first_label", "Connection is being reset."));
+            resetSecondLabel.set(StringManager.this.getString("popup_reset_second_label", "Please wait a moment."));
         }
     }
 

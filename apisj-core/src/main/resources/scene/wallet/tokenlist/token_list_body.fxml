@@ -86,7 +86,7 @@
                                        <children>
                                           <Label fx:id="walletAddress" styleClass="mono_font_regular_12" text="00000000..00000000" textFill="#999999">
                                              <GridPane.margin>
-                                                <Insets right="4.0" />
+                                                <Insets />
                                              </GridPane.margin></Label>
                                           <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="3">
                                              <padding>
@@ -108,7 +108,7 @@
                                           </Label>
                                           <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                              <GridPane.margin>
-                                                <Insets />
+                                                <Insets left="4.0" />
                                              </GridPane.margin>
                                              <image>
                                                 <Image url="@../../../image/ic_knowledgekey@2x.png" />
