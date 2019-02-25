@@ -821,32 +821,37 @@ public class RPCCommand {
             case COMMAND_APIS_GET_TRANSACTION_COUNT_ON_BLOCKS: {
                 long fromBlock = 1;
                 long toBlock = apis.getBlockchain().getBestBlock().getNumber() - 1;
+                long txCount = 0;
 
                 if(params.length > 0 && params[0] != null) {
                     try {
                         fromBlock = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[0]));
                     } catch (NumberFormatException | DecoderException ignored) {}
-                }
-                if(params.length > 1 && params[1] != null) {
-                    try {
-                        long _toBlock = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
-                        if(_toBlock > 0) {
-                            toBlock = _toBlock;
-                        }
-                    } catch (NumberFormatException | DecoderException ignored) {}
-                }
-                if(fromBlock < 1) {
-                    fromBlock = 1;
-                }
-                if(toBlock <= fromBlock) {
-                    toBlock = fromBlock + 1;
-                }
 
-                long txCount = 0;
-                Block parentBlock = apis.getBlockchain().getBlockByNumber(toBlock);
-                while(parentBlock.getNumber() > fromBlock) {
-                    txCount += parentBlock.getTransactionsList().size();
-                    parentBlock = apis.getBlockchain().getBlockByHash(parentBlock.getParentHash());
+                    if(params.length > 1 && params[1] != null) {
+                        try {
+                            long _toBlock = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes((String) params[1]));
+                            if(_toBlock > 0) {
+                                toBlock = _toBlock;
+                            }
+                        } catch (NumberFormatException | DecoderException ignored) {}
+                    }
+                    if(fromBlock < 1) {
+                        fromBlock = 1;
+                    }
+                    if(toBlock <= fromBlock) {
+                        toBlock = fromBlock + 1;
+                    }
+
+                    Block parentBlock = apis.getBlockchain().getBlockByNumber(toBlock);
+                    while(parentBlock.getNumber() > fromBlock) {
+                        txCount += parentBlock.getTransactionsList().size();
+                        parentBlock = apis.getBlockchain().getBlockByHash(parentBlock.getParentHash());
+                    }
+                }
+                // 인자 없이 조회할 경우, SQL DB에서 카운트를 조회해서 반환한다
+                else {
+                    txCount = DBManager.getInstance().selectTransactionsAllCount(null);
                 }
 
                 command = createJson(id, method, new TransactionCountData(fromBlock, toBlock, txCount));
@@ -1549,7 +1554,12 @@ public class RPCCommand {
         if (isEncrypt) {
             text = RPCJsonUtil.AESEncrypt(token, text);
         }
-        conn.send(text);
+
+        if (conn.isOpen()) {
+            conn.send(text);
+        } else {
+            ConsoleUtil.printlnRed("HAHAHAHT " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+        }
     }
 
     public static void send(WebSocket conn, String token, String text) {

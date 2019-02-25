@@ -576,7 +576,7 @@ public class DBManager {
 
         try {
             if(searchText == null || searchText.length() == 0) {
-                query = "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
+                query = "SELECT COUNT(*) as cnt FROM transactions";
                 state = this.connection.prepareStatement(query);
             } else {
                 byte[] searchBytes = ByteUtil.hexStringToBytes(searchText);
