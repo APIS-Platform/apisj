@@ -483,6 +483,7 @@ public class DBManager {
         String query;
         PreparedStatement state = null;
         ResultSet result = null;
+        long countResult = 0;
 
         try {
             switch(type) {
@@ -507,7 +508,7 @@ public class DBManager {
             result = state.executeQuery();
 
             if(result.next()) {
-                return result.getLong(0);
+                countResult = result.getLong(1);
             }
 
         } catch (SQLException | DecoderException ignored) {
@@ -516,7 +517,7 @@ public class DBManager {
             close(result);
         }
 
-        return 0;
+        return countResult;
     }
 
 
