@@ -109,7 +109,7 @@ public class AppManager {
     private HIDDevice ledger = null;
 
     // Reboot function when sync stopped
-    private static final long TIME_CLOSE_WAIT = 1*53*1_000L;
+    private static final long TIME_CLOSE_WAIT = 1*60*1_000L;
     private static final long TIME_RESTART_WAIT = 30*1_000L;
     private long timeLastBlockReceived = 0;
     private long timeLastProgramClosed = 0;
