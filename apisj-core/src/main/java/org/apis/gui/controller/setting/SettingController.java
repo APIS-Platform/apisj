@@ -31,9 +31,9 @@ public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning;
-    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
+    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
-    @FXML private VBox rpcVBox, generalVBox, windowVBox;
+    @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
     @FXML private ScrollPane bodyScrollPane;
@@ -317,9 +317,16 @@ public class SettingController extends BasePopupController {
 
     @FXML
     private void onMouseClicked(InputEvent event) {
-        String fxid = ((Node)event.getSource()).getId();
+        String fxid = ((Node) event.getSource()).getId();
 
-        if(fxid.equals("rpcHeader")) {
+        if(fxid.equals("networkHeader")) {
+            if(networkVBox.isVisible()) {
+                closeNetwork();
+            } else {
+                openNetwork();
+            }
+
+        } else if(fxid.equals("rpcHeader")) {
             if(rpcVBox.isVisible()) {
                 closeRpc();
             } else {
@@ -521,6 +528,17 @@ public class SettingController extends BasePopupController {
     }
 
 
+    public void openNetwork() {
+        networkBtnIcon.setImage(upGrayIcon);
+        networkVBox.setVisible(true);
+        networkVBox.prefHeightProperty().setValue(-1);
+    }
+
+    public void closeNetwork() {
+        networkBtnIcon.setImage(downGrayIcon);
+        networkVBox.setVisible(false);
+        networkVBox.prefHeightProperty().setValue(0);
+    }
 
     public void openRpc() {
         rpcBtnIcon.setImage(upGrayIcon);
