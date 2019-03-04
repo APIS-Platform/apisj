@@ -1143,6 +1143,12 @@ public class StringManager {
         public SimpleStringProperty settingWarning = new SimpleStringProperty();
         public SimpleStringProperty userNumTitle = new SimpleStringProperty();
         public SimpleStringProperty userNumDesc = new SimpleStringProperty();
+        public SimpleStringProperty networkTitle = new SimpleStringProperty();
+        public SimpleStringProperty networkIdLabel = new SimpleStringProperty();
+        public SimpleStringProperty networkIdLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty mainnetLabel = new SimpleStringProperty();
+        public SimpleStringProperty testnetLabel = new SimpleStringProperty();
+        public SimpleStringProperty customLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcTitle = new SimpleStringProperty();
         public SimpleStringProperty rpcPortLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
@@ -1164,6 +1170,12 @@ public class StringManager {
             settingWarning.set(StringManager.this.getString("setting_warning", "Must restart program to apply"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
+            networkTitle.set(StringManager.this.getString("setting_network_title", "Network"));
+            networkIdLabel.set(StringManager.this.getString("setting_network_id_label", "Network ID"));
+            networkIdLabel1.set(StringManager.this.getString("setting_network_id_label1", "Network ID : "));
+            mainnetLabel.set(StringManager.this.getString("setting_mainnet_label", "Mainnet"));
+            testnetLabel.set(StringManager.this.getString("setting_testnet_label", "Osiris - Testnet"));
+            customLabel.set(StringManager.this.getString("setting_custom_label", "Custom"));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
             rpcPortLabel.set(StringManager.this.getString("setting_rpc_port_label", "Port"));
             rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));

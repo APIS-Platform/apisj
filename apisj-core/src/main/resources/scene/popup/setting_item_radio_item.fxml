@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="bgAnchor" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingItemRadioItemController">
+   <children>
+      <GridPane prefHeight="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <GridPane fx:id="itemGrid">
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+               <children>
+                  <ImageView fx:id="checkImg" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../image/ledger_btn_uncheck@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets right="8.0" />
+                     </GridPane.margin>
+                  </ImageView>
+                  <GridPane fx:id="contentsGrid" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="name" styleClass="font_regular_12" text="Mainnet" textFill="#2b2b2b" />
+                        <GridPane fx:id="networkIdGrid" GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="networkIdLabel" styleClass="font_regular_10" text="Network ID : " textFill="#999999" />
+                              <Label fx:id="networkId" styleClass="font_regular_10" text="1" textFill="#999999" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <TextField fx:id="textField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="184.0" promptText="1 ~ 65535" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="2">
+                     <padding>
+                        <Insets left="16.0" right="16.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="border_radius_4444" />
+                        <String fx:value="font_semibold_12" />
+                     </styleClass>
+                     <GridPane.margin>
+                        <Insets left="8.0" />
+                     </GridPane.margin>
+                  </TextField>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </GridPane>
+         </children>
+      </GridPane>
+   </children>
+   <cursor>
+      <Cursor fx:constant="DEFAULT" />
+   </cursor>
+</AnchorPane>

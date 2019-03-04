@@ -119,7 +119,7 @@
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints />
-                                                <RowConstraints />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints />
                                               <RowConstraints />
                                                 <RowConstraints />
@@ -192,7 +192,7 @@
                                                       </ImageView>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane fx:id="networkHeader" layoutX="10.0" layoutY="141.0" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
+                                                <GridPane fx:id="networkHeader" layoutX="10.0" layoutY="141.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints hgrow="SOMETIMES" />

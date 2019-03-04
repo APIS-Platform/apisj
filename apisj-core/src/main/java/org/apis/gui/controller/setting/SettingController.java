@@ -32,10 +32,11 @@ public class SettingController extends BasePopupController {
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning;
     @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
-    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
+    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
+    @FXML private SettingItemRadioController networkIdController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
 
@@ -51,11 +52,14 @@ public class SettingController extends BasePopupController {
         downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
 
+        closeNetwork();
         closeRpc();
         openGeneral();
         openWindow();
 
         // Initiate items
+        addNetworkItem("Network ID");
+
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Max Connections");
@@ -122,6 +126,7 @@ public class SettingController extends BasePopupController {
         this.settingsWarning.textProperty().bind(StringManager.getInstance().setting.settingWarning);
         this.userNumTitle.textProperty().bind(StringManager.getInstance().setting.userNumTitle);
         this.userNumDesc.textProperty().bind(StringManager.getInstance().setting.userNumDesc);
+        this.networkTitle.textProperty().bind(StringManager.getInstance().setting.networkTitle);
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
@@ -151,6 +156,22 @@ public class SettingController extends BasePopupController {
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
+    }
+
+    private void addNetworkItem(String contentsId) {
+        if(contentsId.equals("Network ID")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_radio.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                networkVBox.getChildren().add(item);
+
+                this.networkIdController = (SettingItemRadioController)loader.getController();
+                this.networkIdController.setContents(StringManager.getInstance().setting.networkIdLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void addRpcItem(String inputFlag, String contentsId) {
