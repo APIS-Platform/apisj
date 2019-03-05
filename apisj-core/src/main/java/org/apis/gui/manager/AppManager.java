@@ -192,7 +192,7 @@ public class AppManager {
                         startAPIS();
                     }
 
-                }, 60, 1, TimeUnit.SECONDS);
+                }, 60*10, 1, TimeUnit.SECONDS);
             }
 
             // start rpc server
