@@ -1162,6 +1162,12 @@ public class StringManager {
         public SimpleStringProperty windowTitle = new SimpleStringProperty();
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
         public SimpleStringProperty rewardSoundLabel = new SimpleStringProperty();
+        public SimpleStringProperty versionUpdateLabel = new SimpleStringProperty();
+        public SimpleStringProperty latestVerLabel = new SimpleStringProperty();
+        public SimpleStringProperty versionUpToDate = new SimpleStringProperty();
+        public SimpleStringProperty versionNotUpToDate = new SimpleStringProperty();
+        public SimpleStringProperty updateLabel = new SimpleStringProperty();
+        public SimpleStringProperty updateNoticeLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1189,6 +1195,12 @@ public class StringManager {
             windowTitle.set(StringManager.this.getString("setting_window_title", "Window"));
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
             rewardSoundLabel.set(StringManager.this.getString("setting_reward_sound_on_off", "Reward Sound On/Off"));
+            versionUpdateLabel.set(StringManager.this.getString("setting_version_update_label", "Version update"));
+            latestVerLabel.set(StringManager.this.getString("setting_latest_ver_label", "Latest version"));
+            versionUpToDate.set(StringManager.this.getString("setting_version_up_to_date", "Software is up-to-date."));
+            versionNotUpToDate.set(StringManager.this.getString("setting_version_not_up_to_date", "Software is not up-to-date."));
+            updateLabel.set(StringManager.this.getString("setting_update_label", "UPDATE"));
+            updateNoticeLabel.set(StringManager.this.getString("setting_update_notice_label", "Update notice"));
         }
     }
 
