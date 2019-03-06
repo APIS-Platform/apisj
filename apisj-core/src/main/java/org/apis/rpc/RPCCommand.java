@@ -1483,7 +1483,8 @@ public class RPCCommand {
         Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
 
         EstimateTransaction estimateTransaction = EstimateTransaction.getInstance(ethereum);
-        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), BigInteger.ZERO, inputTx.getData());
+
+        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData());
     }
 
 
