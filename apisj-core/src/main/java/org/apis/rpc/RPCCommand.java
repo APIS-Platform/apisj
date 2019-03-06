@@ -1185,7 +1185,7 @@ public class RPCCommand {
 
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY());
+                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
                     List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
                     List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
