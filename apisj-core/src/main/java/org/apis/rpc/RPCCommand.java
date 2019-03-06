@@ -1197,19 +1197,16 @@ public class RPCCommand {
                     List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
                     List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-                    List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
-                    allGeneral.addAll(generalNormal);
-                    allGeneral.addAll(generalLate);
+                    List<byte[]> generalEN = new ArrayList<>(generalEarlybird);
+                    generalEN.addAll(generalNormal);
 
-                    List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
-                    allMajor.addAll(majorNormal);
-                    allMajor.addAll(majorLate);
+                    List<byte[]> majorEN = new ArrayList<>(majorEarlybird);
+                    majorEN.addAll(majorNormal);
 
-                    List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
-                    allPrivate.addAll(privateNormal);
-                    allPrivate.addAll(privateLate);
+                    List<byte[]> privateEN = new ArrayList<>(privateEarlybird);
+                    privateEN.addAll(privateNormal);
 
-                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(generalEN, majorEN, privateEN, generalLate, majorLate, privateLate);
                     command = createJson(id, method, masterNodeListInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
