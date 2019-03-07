@@ -115,7 +115,7 @@
                         <Label fx:id="jsonInterfaceLabel" layoutX="10.0" layoutY="93.0" styleClass="font_semibold_12" text="JSON Interface" textFill="#2b2b2b" GridPane.rowIndex="7" />
                         <AnchorPane style="-fx-background-color: f8f8fb;" GridPane.rowIndex="9">
                            <children>
-                              <ImageView fitWidth="60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.5" AnchorPane.rightAnchor="19.5">
+                              <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.5" AnchorPane.rightAnchor="19.5">
                                  <image>
                                     <Image url="@../../image/ic_logo_white@2x.png" />
                                  </image>

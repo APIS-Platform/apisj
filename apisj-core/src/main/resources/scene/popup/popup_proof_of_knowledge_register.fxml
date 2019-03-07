@@ -451,7 +451,7 @@
                                                       </Pane>
                                                    </children>
                                                 </HBox>
-                                                <ImageView fitHeight="97.0" fitWidth="141.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitWidth="90.0" pickOnBounds="true" preserveRatio="true" translateY="20.0">
                                                    <image>
                                                       <Image url="@../../image/logo_grey.png" />
                                                    </image>
@@ -484,7 +484,7 @@
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                    <children>
                                                       <Pane layoutX="85.0" layoutY="-77.0" prefHeight="1.0" style="-fx-background-color: #999999;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                      <ImageView fitHeight="21.0" fitWidth="31.0" layoutX="-52.0" layoutY="-52.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="8.0">
+                                                      <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="2.0">
                                                          <image>
                                                             <Image url="@../../image/logo_header.png" />
                                                          </image>

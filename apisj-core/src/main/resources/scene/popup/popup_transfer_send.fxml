@@ -322,7 +322,7 @@
                                              <children>
                                                 <Pane layoutX="109.0" layoutY="-64.0" prefHeight="1.0" style="-fx-background-color: #999999;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                 <Pane layoutX="119.0" layoutY="-54.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                <ImageView fitHeight="21.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="0.0">
+                                                <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="8.0">
                                                    <image>
                                                       <Image url="@../../image/logo_header.png" />
                                                    </image>

@@ -58,7 +58,7 @@
                 <RowConstraints maxHeight="80.0" minHeight="80.0" />
               </rowConstraints>
                <children>
-                  <ImageView fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <image>
                         <Image url="@../image/ic_logo_white@2x.png" />
                      </image>

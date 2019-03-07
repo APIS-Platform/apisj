@@ -28,7 +28,7 @@
           <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="TOP" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+            <ImageView fitWidth="100.0" pickOnBounds="true" preserveRatio="true" translateY="30.0" GridPane.columnIndex="1">
                <image>
                   <Image url="@../../image/logo_white@2x.png" />
                </image>
@@ -38,9 +38,9 @@
                   <Insets top="10.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="subMessageLabel" styleClass="font_regular_14" text="Processing block 241,352 of 243,666." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="subMessageLabel" styleClass="font_semibold_14" text="Processing block 241,352 of 243,666." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets top="43.0" />
+                  <Insets top="38.0" />
                </GridPane.margin>
             </Label>
          </children>
