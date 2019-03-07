@@ -38,30 +38,48 @@ public class Web3ParamTransaction {
         if(nonce == null || nonce.isEmpty()) {
             return 0;
         }
-        return Long.parseLong(nonce);
+        return ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes(nonce));
     }
 
     public long getGas() {
-        return toLong(gas);
+        if(gas == null || gas.isEmpty()) {
+            return 0;
+        }
+        return ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes(gas));
     }
 
     public BigInteger getGasPrice() {
-        return toBI(gasPrice);
+        if(gasPrice == null || gasPrice.isEmpty()) {
+            return BigInteger.ZERO;
+        }
+        return ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(gasPrice));
     }
 
     public byte[] getTo() {
+        if(to == null || to.isEmpty()) {
+            return null;
+        }
         return ByteUtil.hexStringToBytes(to);
     }
 
     public byte[] getFrom() {
+        if(from == null || from.isEmpty()) {
+            return null;
+        }
         return ByteUtil.hexStringToBytes(from);
     }
 
     public BigInteger getValue() {
-        return toBI(value);
+        if(value == null || value.isEmpty()) {
+            return BigInteger.ZERO;
+        }
+        return ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(value));
     }
 
     public byte[] getData() {
+        if(data == null || data.isEmpty()) {
+            return null;
+        }
         return ByteUtil.hexStringToBytes(data);
     }
 

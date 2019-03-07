@@ -173,6 +173,11 @@ public class EstimateTransaction {
         return estimate(tx);
     }
 
+    public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, long gasLimit, byte[] data) {
+        Transaction tx = makeTransaction(from, to, nonce, gasLimit, value, data);
+        return estimate(tx);
+    }
+
     public EstimateTransactionResult estimate(Transaction tx) {
         return estimate(tx, -1, -1);
     }

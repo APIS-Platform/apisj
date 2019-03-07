@@ -380,6 +380,7 @@ public class Eth62 extends EthHandler {
             if(channel.getNodeStatistics().getClientId().contains("v0.8.7")) {
                 ethState = EthState.STATUS_FAILED;
                 disconnect(ReasonCode.USELESS_PEER);
+                ctx.pipeline().remove(this);
                 return;
             }
 
