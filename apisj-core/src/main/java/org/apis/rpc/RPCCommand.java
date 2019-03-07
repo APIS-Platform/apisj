@@ -1185,7 +1185,7 @@ public class RPCCommand {
 
                     final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY());
+                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN());
                     List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL());
                     List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE());
 
@@ -1197,19 +1197,16 @@ public class RPCCommand {
                     List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL());
                     List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE());
 
-                    List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
-                    allGeneral.addAll(generalNormal);
-                    allGeneral.addAll(generalLate);
+                    List<byte[]> generalEN = new ArrayList<>(generalEarlybird);
+                    generalEN.addAll(generalNormal);
 
-                    List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
-                    allMajor.addAll(majorNormal);
-                    allMajor.addAll(majorLate);
+                    List<byte[]> majorEN = new ArrayList<>(majorEarlybird);
+                    majorEN.addAll(majorNormal);
 
-                    List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
-                    allPrivate.addAll(privateNormal);
-                    allPrivate.addAll(privateLate);
+                    List<byte[]> privateEN = new ArrayList<>(privateEarlybird);
+                    privateEN.addAll(privateNormal);
 
-                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(generalEN, majorEN, privateEN, generalLate, majorLate, privateLate);
                     command = createJson(id, method, masterNodeListInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1486,7 +1483,8 @@ public class RPCCommand {
         Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
 
         EstimateTransaction estimateTransaction = EstimateTransaction.getInstance(ethereum);
-        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), BigInteger.ZERO, inputTx.getData());
+
+        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData());
     }
 
 
