@@ -255,7 +255,7 @@ public class ChannelManager {
     public void sendMinedBlocks(List<Block> minedBlocks, Channel receivedFrom) {
         for (Channel channel : activePeers.values()) {
             if(channel != receivedFrom) {
-                channel.sendMinedBlocks(minedBlocks);
+                channel.sendMinedBlocks(minedBlocks, false);
             }
         }
     }
