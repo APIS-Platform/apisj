@@ -102,7 +102,7 @@ public interface Eth {
     void sendTransaction(List<Transaction> tx);
 
 
-    void sendMinedBlocks(List<Block> minedBlocks, boolean sendAll);
+    void sendMinedBlocks(List<Block> minedBlocks);
 
 
     /**

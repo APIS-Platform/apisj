@@ -93,7 +93,7 @@ public class EthAdapter implements Eth {
     }
 
     @Override
-    public void sendMinedBlocks(List<Block> minedBlocks, boolean sendAll) {
+    public void sendMinedBlocks(List<Block> minedBlocks) {
     }
 
     @Override

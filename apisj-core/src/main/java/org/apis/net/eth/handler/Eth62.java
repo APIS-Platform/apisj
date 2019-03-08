@@ -107,6 +107,7 @@ public class Eth62 extends EthHandler {
     ChannelHandlerContext ctx;
 
     private final HashMap <ByteArrayWrapper, Long> receivedBlocks = new HashMap<>();
+    private final HashMap <ByteArrayWrapper, Long> sendBlocks = new HashMap<>();
 
     /**
      * Header list sent in GET_BLOCK_BODIES message,
@@ -247,19 +248,31 @@ public class Eth62 extends EthHandler {
     }
 
     @Override
-    public void sendMinedBlocks(List<Block> minedBlocks, boolean sendAll) {
-        List<Block> blocks = new ArrayList<>(minedBlocks);
-
-        // 이미 상대방이 보유하고 있는 블록은 전송하지 않는다
-        if(sendAll == false) {
-            blocks.removeIf(block -> receivedBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+        if(minedBlocks == null || minedBlocks.isEmpty()) {
+            return;
         }
 
+        List<Block> blocks = new ArrayList<>(minedBlocks);
+        long latestBlockNumber = blocks.get(blocks.size() - 1).getNumber();
+
+
+        // 이미 상대방이 보유하고 있는(상대방에게서 전달받았던) 블록은 전송하지 않는다
+        blocks.removeIf(block -> receivedBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
+
+        // 같은 블록 번호에서, 이미 전송한 블록은 다시 전송하지 않는다
+        blocks.removeIf(block -> sendBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
+
+        // 전송한 블록의 정보를 저장한다
         for(Block block : blocks) {
-            receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
+            sendBlocks.put(new ByteArrayWrapper(block.getHash()), latestBlockNumber);
+        }
+        if (!sendBlocks.entrySet().isEmpty()) {
+            sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
         }
 
         MinedBlockMessage msg = new MinedBlockMessage(blocks);
+
         //ctx.writeAndFlush(msg);
         sendMessage(msg, true);
     }
@@ -476,9 +489,9 @@ public class Eth62 extends EthHandler {
         }
 
         // 예전에 이 노드에게서 전달받은 블록의 기록 중에서, 오래된 블록들을 제거한다
-        final long oldBlockNumber = minedBlocks.get(0).getNumber() - 50;
+        final long oldBlockNumber = minedBlocks.get(0).getNumber() - 10;
         synchronized (this.receivedBlocks) {
-            if (this.receivedBlocks.entrySet().isEmpty()) {
+            if (!this.receivedBlocks.entrySet().isEmpty()) {
                 this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
             }
         }
@@ -530,10 +543,10 @@ public class Eth62 extends EthHandler {
                     myBlocks.add(parentBlock);
                     parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
                 }
-                logger.warn(ConsoleUtil.colorBRed("%d : My ancestral blocks(%d) are sent because the other peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSyncStats()));
+                logger.warn(ConsoleUtil.colorBRed("%d : My ancestral blocks(count: %d) are sent because the this peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSyncStats()));
             }
 
-            sendMinedBlocks(myBlocks, true);
+            sendMinedBlocks(myBlocks);
             countUnlinkedBlockReceived += 1;
 
             // 1000개 블록까지 전송했는데도 연결이 안되면 연결을 끊는다
@@ -617,7 +630,7 @@ public class Eth62 extends EthHandler {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedLastHash, cachedBestHash)) {
                     //ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
-                    sendMinedBlocks(bestCachedBlocks, false);
+                    sendMinedBlocks(bestCachedBlocks);
                 }
             }
         }

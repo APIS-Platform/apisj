@@ -411,8 +411,8 @@ public class Channel {
         eth.sendTransaction(slicedTxs);
     }
 
-    public void sendMinedBlocks(List<Block> minedBlocks, boolean sendAll) {
-        eth.sendMinedBlocks(minedBlocks, sendAll);
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+        eth.sendMinedBlocks(minedBlocks);
     }
 
     public void sendNewBlock(Block block) {
