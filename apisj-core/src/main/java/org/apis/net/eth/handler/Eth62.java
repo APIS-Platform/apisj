@@ -530,7 +530,7 @@ public class Eth62 extends EthHandler {
                     myBlocks.add(parentBlock);
                     parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
                 }
-                logger.warn(ConsoleUtil.colorBRed("My ancestral blocks are sent because the other peer is not connected to my chain. \n%s", getSyncStats()));
+                logger.warn(ConsoleUtil.colorBRed("%d : My ancestral blocks(%d) are sent because the other peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSyncStats()));
             }
 
             sendMinedBlocks(myBlocks, true);
