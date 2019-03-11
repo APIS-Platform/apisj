@@ -267,8 +267,10 @@ public class Eth62 extends EthHandler {
         for(Block block : blocks) {
             sendBlocks.put(new ByteArrayWrapper(block.getHash()), latestBlockNumber);
         }
-        if (!sendBlocks.entrySet().isEmpty()) {
-            sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
+        synchronized (sendBlocks) {
+            if (!sendBlocks.entrySet().isEmpty()) {
+                sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
+            }
         }
 
         MinedBlockMessage msg = new MinedBlockMessage(blocks);
