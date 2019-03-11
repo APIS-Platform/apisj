@@ -3,6 +3,7 @@ package org.apis.gui.run;
 import de.codecentric.centerdevice.MenuToolkit;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import org.apis.cli.CLIStart;
 import org.apis.config.SystemProperties;
 import org.apis.gui.common.OSInfo;
@@ -59,6 +61,12 @@ public class MainFX extends Application  {
             setIcon(primaryStage);
             primaryStage.show();
             AppManager.getInstance().guiFx.setLoadingStage(primaryStage);
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.exit(0);
+                }
+            });
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -131,6 +139,12 @@ public class MainFX extends Application  {
                             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 
                             primaryStage.show();
+                            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                                @Override
+                                public void handle(WindowEvent event) {
+                                    System.exit(0);
+                                }
+                            });
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
