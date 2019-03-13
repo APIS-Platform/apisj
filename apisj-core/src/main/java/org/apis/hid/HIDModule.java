@@ -57,7 +57,7 @@ public class HIDModule {
             if (device.isUsbHub())
             {
                 findDevice((UsbHub) device, devices);
-                return devices;
+//                return devices;
             }
         }
         return devices;
