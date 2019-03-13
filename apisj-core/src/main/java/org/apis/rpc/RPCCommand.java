@@ -721,7 +721,7 @@ public class RPCCommand {
 
                     DBManager dbManager = DBManager.getInstance();
                     List<TransactionRecord> txRecords = dbManager.selectTransactions(txHashString, rowCount, offset);
-                    List<TransactionSearchData> txReceipts = new ArrayList<>();
+                    List<TransactionReceiptData> txReceipts = new ArrayList<>();
                     for(TransactionRecord txRecord : txRecords) {
                         byte[] txHash = ByteUtil.hexStringToBytes(txRecord.getHash());
                         TransactionInfo txInfo = apis.getTransactionInfo(txHash);
@@ -730,7 +730,7 @@ public class RPCCommand {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, block);
                         txReceiptData.setMask(latestRepo);
 
-                        txReceipts.add(new TransactionSearchData(txReceiptData));
+                        txReceipts.add(txReceiptData);
                     }
 
                     command = createJson(id, method, txReceipts);
