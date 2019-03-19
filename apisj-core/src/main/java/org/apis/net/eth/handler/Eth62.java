@@ -107,6 +107,7 @@ public class Eth62 extends EthHandler {
     ChannelHandlerContext ctx;
 
     private final HashMap <ByteArrayWrapper, Long> receivedBlocks = new HashMap<>();
+    private final HashMap <ByteArrayWrapper, Long> sendBlocks = new HashMap<>();
 
     /**
      * Header list sent in GET_BLOCK_BODIES message,
@@ -125,6 +126,11 @@ public class Eth62 extends EthHandler {
     protected long lastReqSentTime;
     protected long connectedTime = TimeUtils.getRealTimestamp();
     protected long processingTime = 0;
+
+    /**
+     * MinedBlockList를 전달받았을 때, 나와 연결되지 않는 블록을 연속적으로 전달한 횟수
+     */
+    private long countUnlinkedBlockReceived = 0;
 
 
 
@@ -243,16 +249,32 @@ public class Eth62 extends EthHandler {
 
     @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
-        List<Block> blocks = new ArrayList<>(minedBlocks);
+        if(minedBlocks == null || minedBlocks.isEmpty()) {
+            return;
+        }
 
-        // 이미 상대방이 보유하고 있는 블록은 전송하지 않는다
+        List<Block> blocks = new ArrayList<>(minedBlocks);
+        long latestBlockNumber = blocks.get(blocks.size() - 1).getNumber();
+
+
+        // 이미 상대방이 보유하고 있는(상대방에게서 전달받았던) 블록은 전송하지 않는다
         blocks.removeIf(block -> receivedBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
 
+        // 같은 블록 번호에서, 이미 전송한 블록은 다시 전송하지 않는다
+        blocks.removeIf(block -> sendBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
+
+        // 전송한 블록의 정보를 저장한다
         for(Block block : blocks) {
-            receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
+            sendBlocks.put(new ByteArrayWrapper(block.getHash()), latestBlockNumber);
+        }
+        synchronized (sendBlocks) {
+            if (!sendBlocks.entrySet().isEmpty()) {
+                sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
+            }
         }
 
         MinedBlockMessage msg = new MinedBlockMessage(blocks);
+
         //ctx.writeAndFlush(msg);
         sendMessage(msg, true);
     }
@@ -357,7 +379,7 @@ public class Eth62 extends EthHandler {
      *  Message Processing   *
      *************************/
 
-    protected synchronized void processStatus(StatusMessage msg, ChannelHandlerContext ctx) throws InterruptedException {
+    private synchronized void processStatus(StatusMessage msg, ChannelHandlerContext ctx) throws InterruptedException {
 
         try {
 
@@ -407,7 +429,7 @@ public class Eth62 extends EthHandler {
         }
     }
 
-    protected synchronized void processNewBlockHashes(NewBlockHashesMessage msg) {
+    synchronized void processNewBlockHashes(NewBlockHashesMessage msg) {
 
         if(logger.isTraceEnabled()) logger.trace(
                 "Peer {}: processing NewBlockHashes, size [{}]",
@@ -446,7 +468,7 @@ public class Eth62 extends EthHandler {
         }
     }
 
-    protected synchronized void processTransactions(TransactionsMessage msg) {
+    private synchronized void processTransactions(TransactionsMessage msg) {
         if(!processTransactions) {
             return;
         }
@@ -461,26 +483,28 @@ public class Eth62 extends EthHandler {
 
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
-        List<Block> receivedBlocks = msg.getBlocks();
+        List<Block> minedBlocks = msg.getBlocks();
 
         // 전달받은 블록에 추가한다.
-        if(receivedBlocks.isEmpty()) {
+        if(minedBlocks.isEmpty()) {
             return;
-        } else {
-            final long oldBlockNumber = receivedBlocks.get(0).getNumber() - 10;
-            synchronized (this.receivedBlocks) {
-                if (this.receivedBlocks.entrySet().isEmpty()) {
-                    this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
-                }
+        }
+
+        // 예전에 이 노드에게서 전달받은 블록의 기록 중에서, 오래된 블록들을 제거한다
+        final long oldBlockNumber = minedBlocks.get(0).getNumber() - 10;
+        synchronized (this.receivedBlocks) {
+            if (!this.receivedBlocks.entrySet().isEmpty()) {
+                this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
             }
         }
 
-        for(Block block : receivedBlocks) {
+        for(Block block : minedBlocks) {
             this.receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
         }
 
         if(!processTransactions) {
             // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
+            // 싱크가 완료된 이후부터, 전달받은 블록들을 연결하도록 한다.
             return;
         }
 
@@ -488,168 +512,73 @@ public class Eth62 extends EthHandler {
          * 전달받은 블록의 첫번째 블럭은 내가 보유한 체인에 존재해야 비교 검증이 가능하다.
          * 만약 첫번째 블록의 부모 블록이 내 체인에 존재하지 않는다면, 전달된 블록이 올바른 체인인지 검증이 필요하다.
          */
-        if(!blockstore.isBlockExist(receivedBlocks.get(0).getParentHash())) {
-            Block oldBlockFirst = blockstore.getChainBlockByNumber(receivedBlocks.get(0).getNumber());
-            BigInteger oldRP = BigInteger.ZERO;
-            if(oldBlockFirst != null) {
-                oldRP = oldBlockFirst.getCumulativeRewardPoint();
+        if(blockstore.isBlockExist(minedBlocks.get(0).getParentHash()) == false) {
+            Block myBlock = blockstore.getChainBlockByNumber(minedBlocks.get(0).getNumber());
+            BigInteger myCRP = BigInteger.ZERO;
+            if(myBlock != null) {
+                myCRP = myBlock.getCumulativeRewardPoint();
             }
 
-            BigInteger newRP = receivedBlocks.get(0).getCumulativeRewardPoint();
+            List<Block> myBlocks = new ArrayList<>();
 
-            if(newRP.compareTo(oldRP) > 0) {
-                /* TODO
-                 * 256개 조상들의 블럭해더 리스트를 요청하도록 한다.
-                 * 만약에 256번 전 조상의 블럭이 존재하지 않는다면 연결을 끊어버리도록 한다.
-                 * 존재한다면, 갈라지는 블럭부터 BlockBody를 요청한다.
-                 * 해당 블럭들을 DB에 저장한다.
+            BigInteger otherCRP = minedBlocks.get(0).getCumulativeRewardPoint();
+            if(otherCRP.compareTo(myCRP) > 0) {
+                /* 상대방에게 전달받은 블록이 나와 연결되어 있지 않은데
+                 * CRP 값이 내가 갖고있는 것보다 크다면, 일단 내 최신 블록을 전달해준다.
+                 * 상대방은 내가 보낸 블록의 CRP를 비교해보고, 아래 else 구문을 실행하여
+                 * 상대방이 갖고있는 부모 블록들을 나에게 전달해 줄 것이다.
                  */
-                sendGetBlockHeaders(receivedBlocks.get(0).getNumber(), 256, true);
+                myBlocks.add(blockstore.getBestBlock());
             } else {
-                return;
+                /* 상대방에게 전달받은 블록이 나와 연결되어있지 않은데
+                 * CRP 값이 내가 갖고 있는 것 보다 낮다면, 더 큰 RP를 갖는 블록으로 대체될 수 있도록
+                 * 내가 갖고있는 과거의 블록들을 추가로 전달해본다.
+                 */
+                long countBlockLoading;
+                if(countUnlinkedBlockReceived <= 3) {
+                    countBlockLoading = countUnlinkedBlockReceived*5;
+                } else {
+                    countBlockLoading = countUnlinkedBlockReceived*10;
+                }
+                Block parentBlock = blockstore.getBestBlock();
+                for(int i = 0; i < countBlockLoading; i++) {
+                    myBlocks.add(parentBlock);
+                    parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
+                }
+                logger.warn(ConsoleUtil.colorBRed("%d : My ancestral blocks(count: %d) are sent because the this peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSyncStats()));
+            }
+
+            sendMinedBlocks(myBlocks);
+            countUnlinkedBlockReceived += 1;
+
+            // 1000개 블록까지 전송했는데도 연결이 안되면 연결을 끊는다
+            if(countUnlinkedBlockReceived > 100) {
+                ctx.pipeline().remove(this);
             }
             return;
         }
+        countUnlinkedBlockReceived = 0;
 
         // 전달받은 블럭들을 검증한다.
         BlockHeaderValidator validator = new CommonConfig().headerValidator();
-        for(Block block : receivedBlocks) {
+        for(Block block : minedBlocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
                 logger.warn("Received minedBlocks is not valid");
                 return;
             }
-
-            /*Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
-
-            // 블록들의 nonce 값이 일치하는지 확인한다.
-            Repository repo = pendingState.getRepository();
-            if(repo != null) {
-
-                Block parentBlock = blockstore.getBlockByHash(block.getParentHash());
-                Block balanceBlock = parentBlock;
-                for(int i = 0 ; i < 10 && balanceBlock != null ; i++) {
-                    if(balanceBlock.getNumber() > 0) {
-                        balanceBlock = blockstore.getBlockByHash(balanceBlock.getParentHash());
-                        if(balanceBlock == null) {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                if(balanceBlock != null) {
-                    // 블록의 nonce 값이 유효하지 않다면 invalid block으로 등록시킨다
-                    Repository balanceRepo = repo.getSnapshotTo(balanceBlock.getStateRoot());
-                    if (balanceRepo != null && !FastByteComparisons.equal(ByteUtil.bigIntegerToBytes(balanceRepo.getBalance(block.getCoinbase())), block.getNonce())) {
-                        minedBlockCache.removeBestBlock(block);
-                        return;
-                    }
-                }
-
-                *//*
-                 * 블럭에 포함된 마스터노드의 수가 저장소의 수와 일치하는지 확인한다.
-                 *//*
-                if(constants.isMasternodeRewardBlock(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
-                    Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
-                    if (parentRepo != null) {
-                        List<byte[]> generalOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_EARLY_RUN()));
-                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_NORMAL()));
-                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL_BASE_LATE()));
-
-                        List<byte[]> majorOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_EARLY_RUN()));
-                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_NORMAL()));
-                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR_BASE_LATE()));
-
-                        List<byte[]> privateOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_EARLY_RUN()));
-                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_NORMAL()));
-                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE_BASE_LATE()));
-
-
-                        List<byte[]> generalOnBlock = block.getMnGeneralList();
-                        List<byte[]> majorOnBlock = block.getMnMajorList();
-                        List<byte[]> privateOnBlock = block.getMnPrivateList();
-
-                        // 저장소에서 불러온 마스터노드 갯수와 블록에서 불러온 마스터노드 갯수를 비교한다.
-                        if(generalOnRepo.size() != generalOnBlock.size() || majorOnRepo.size() != majorOnBlock.size() || privateOnRepo.size() != privateOnBlock.size()) {
-                            String errMsg = String.format("Masternode list in received block is invalid! Repo(G:%d, M:%d, P:%d) Block(G:%d, M:%d, P:%d)",
-                                    generalOnRepo.size(), majorOnRepo.size(), privateOnRepo.size(), generalOnBlock.size(), majorOnBlock.size(), privateOnBlock.size());
-                            logger.error(errMsg);
-                            ConsoleUtil.printlnRed(errMsg);
-
-                            minedBlockCache.removeBestBlock(block);
-                            return;
-                        }
-
-
-                        // 저장소에서 불러온 마스터노드 리스트와 블록에서 불러온 마스터노드 리스트를 비교한다.
-                        //generalOnRepo.addAll(majorOnRepo);
-                        //generalOnRepo.addAll(privateOnRepo);
-                        List<byte[]> mnOnBlock = new ArrayList<>(generalOnBlock);
-                        mnOnBlock.addAll(majorOnBlock);
-                        mnOnBlock.addAll(privateOnBlock);
-
-                        for(byte[] mn : mnOnBlock) {
-                            if(repo.getMnStartBalance(mn).compareTo(BigInteger.ZERO) == 0) {
-                            //if(generalOnRepo.indexOf(mn) < 0) {
-                                String errMsg = String.format("Cannot found Masternode from repository! Searching : %s", ByteUtil.toHexString(mn));
-                                logger.error(errMsg);
-                                ConsoleUtil.printlnRed(errMsg);
-
-                                minedBlockCache.removeBestBlock(block);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 마스터노드가 coinbase로 설정된 경우, invalid block으로 등록한다.
-            Block parent = blockstore.getBlockByHash(block.getParentHash());
-            if(parent != null && repo != null) {
-                Repository mnRepo = repo.getSnapshotTo(parent.getStateRoot());
-                if(mnRepo.isIncludedInMasternodes(block.getCoinbase())) {
-                    minedBlockCache.removeBestBlock(block);
-                    return;
-                }
-            }*/
         }
 
 
-
-        // 마지막 블럭에 대해서 nonce 값들을 확인힌다.
-        /*if(receivedBlocks.size() > 0) {
-            Block receivedLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
-            Block lastParentBlock = blockstore.getBlockByHash(receivedLastBlock.getParentHash());
-            HashMap<BigInteger, byte[]> checkedSender = new HashMap<>();
-            if(lastParentBlock != null) {
-                Repository repo = pendingState.getRepository().getSnapshotTo(lastParentBlock.getStateRoot());
-                if(repo != null) {
-                    for (Transaction tx : receivedLastBlock.getTransactionsList()) {
-                        byte[] sender = tx.getSender();
-                        BigInteger senderBi = ByteUtil.bytesToBigInteger(sender);
-                        if (checkedSender.get(senderBi) == null) {
-                            BigInteger expectedNonce = repo.getNonce(sender);
-                            if (!expectedNonce.equals(ByteUtil.bytesToBigInteger(tx.getNonce()))) {
-                                return;
-                            }
-                            checkedSender.put(senderBi, sender);
-                        }
-                    }
-                }
-            }
-        }*/
-
         // 3블록 이내에 같은 채굴자가 존재하는지 확인한다.
-        if(receivedBlocks.get(0).getNumber() > 33) {
-            int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getCONTINUOUS_MINING_LIMIT();
+        if(minedBlocks.get(0).getNumber() > 33) {
+            int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(minedBlocks.get(0).getNumber()).getConstants().getCONTINUOUS_MINING_LIMIT();
             ArrayList<byte[]> coinbaseList = new ArrayList<>();
-            Block parentBlock = blockstore.getBlockByHash(receivedBlocks.get(0).getParentHash());
+            Block parentBlock = blockstore.getBlockByHash(minedBlocks.get(0).getParentHash());
             for (int i = 0; i < preventDuplicateMiner; i++) {
                 coinbaseList.add(0, parentBlock.getCoinbase());
                 parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
             }
-            for (Block receivedBlock : receivedBlocks) {
+            for (Block receivedBlock : minedBlocks) {
                 coinbaseList.add(receivedBlock.getCoinbase());
             }
             for (int i = 0; i < coinbaseList.size() - preventDuplicateMiner; i++) {
@@ -664,36 +593,36 @@ public class Eth62 extends EthHandler {
         }
 
         //updateBestBlock
-        if(receivedBlocks.size() > 0) {
-            Block peerBest = receivedBlocks.get(receivedBlocks.size() - 1);
+        if(minedBlocks.size() > 0) {
+            Block peerBest = minedBlocks.get(minedBlocks.size() - 1);
             updateBestBlock(peerBest);
             updateTotalRewardPoint(peerBest.getCumulativeRewardPoint());
         }
 
 
         MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
-        boolean changed = minedBlockCache.compareMinedBlocks(receivedBlocks);
+        boolean changed = minedBlockCache.compareMinedBlocks(minedBlocks);
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
             float bytes = 0;
-            for(Block block : receivedBlocks) {
+            for(Block block : minedBlocks) {
                 bytes += block.getEncoded().length;
             }
-            ConsoleUtil.printlnCyan("Received Block size : %d (%.3f kB) %s", receivedBlocks.size(), bytes/1000f, receivedBlocks.size() > 0 ? receivedBlocks.get(receivedBlocks.size() - 1).getShortDescr() : "");
+            ConsoleUtil.printlnCyan("Received Block size : %d (%.3f kB) %s", minedBlocks.size(), bytes/1000f, minedBlocks.size() > 0 ? minedBlocks.get(minedBlocks.size() - 1).getShortDescr() : "");
             /*for(Block block : minedBlockCache.getBestMinedBlocks()) {
                 ConsoleUtil.printlnCyan(block.getShortDescr());
             }
             ConsoleUtil.printlnCyan(minedBlockCache.getBestMinedBlocks().size() + " __ " + channel.getInetSocketAddress().getHostString());*/
 
-            MinedBlockTask minedBlockTask = new MinedBlockTask(receivedBlocks, channel.getChannelManager(), channel);
+            MinedBlockTask minedBlockTask = new MinedBlockTask(minedBlocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
         // 최적의 값을 전달하지 않은 상대에게 블럭을 전달한다.
         else {
             byte[] receivedLastHash;
-            if(!receivedBlocks.isEmpty()) {
-                receivedLastHash = receivedBlocks.get(receivedBlocks.size() - 1).getHash();
+            if(!minedBlocks.isEmpty()) {
+                receivedLastHash = minedBlocks.get(minedBlocks.size() - 1).getHash();
             } else {
                 receivedLastHash = HashUtil.EMPTY_TRIE_HASH;
             }

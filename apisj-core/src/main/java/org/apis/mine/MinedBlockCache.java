@@ -3,6 +3,7 @@ package org.apis.mine;
 import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
@@ -118,11 +119,25 @@ public class MinedBlockCache {
         }
 
         /*
-         * 동일한 RP 값을 갖는 블록일 경우 추가하지 않는다.
-         * 이후의 자식 블록의 RP 값으로 비교하여 우열을 가리도록 한다.
+         * 동일한 RP 값을 갖는 블록일 경우
+         * 블록의 해시 값을 비교한다.
+         * 해시 값이 더 클 경우 받아들이고, 이하일 경우 받아들이지 않는다
          */
-        if(cachedLastNumber == receivedLastNumber && cachedLastBlock.getCumulativeRewardPoint().compareTo(receivedLastBlock.getCumulativeRewardPoint()) == 0) {
-            return false;
+        if(cachedLastNumber == receivedLastNumber) {
+            BigInteger lastCachedCRP = cachedLastBlock.getCumulativeRewardPoint();
+            BigInteger lastReceivedCRP = receivedLastBlock.getCumulativeRewardPoint();
+
+            if(lastReceivedCRP.compareTo(lastCachedCRP) == 0) {
+                BigInteger lastCachedHash = ByteUtil.bytesToBigInteger(cachedLastBlock.getHash());
+                BigInteger lastReceivedHash = ByteUtil.bytesToBigInteger(receivedLastBlock.getHash());
+
+                if (lastReceivedHash.compareTo(lastCachedHash) <= 0) {
+                    return false;
+                }
+            }
+            else if(lastReceivedCRP.compareTo(lastCachedCRP) < 0) {
+                return false;
+            }
         }
 
         int offset;
@@ -160,14 +175,7 @@ public class MinedBlockCache {
                 if (!FastByteComparisons.equal(cachedBlock.getParentHash(), receivedBlock.getParentHash())) {
                     return false;
                 }
-            }
-
-
-            BigInteger cachedRP = cachedBlock.getCumulativeRewardPoint();
-            BigInteger receivedRP = receivedBlock.getCumulativeRewardPoint();
-
-            if (cachedRP.compareTo(receivedRP) > 0) {
-                return false;
+                break;
             }
         }
 
