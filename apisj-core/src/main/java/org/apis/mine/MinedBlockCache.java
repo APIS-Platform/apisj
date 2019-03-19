@@ -48,10 +48,10 @@ public class MinedBlockCache {
     private MinedBlockCache() {}
 
 
-    public List<Block> getBestMinedBlocks() {
+    public List<Block> getBestMinedBlocks(int count) {
         List<Block> bestBlocks = new ArrayList<>(bestMinedBlocks);
 
-        for(int i = 0; i < 500 && bestBlocks.size() > 0; i++) {
+        for(int i = 0; i < 500 && i < count && bestBlocks.size() > 0; i++) {
             Block firstBlock = bestBlocks.get(0);
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
             if(blocks == null || blocks.isEmpty()) {
