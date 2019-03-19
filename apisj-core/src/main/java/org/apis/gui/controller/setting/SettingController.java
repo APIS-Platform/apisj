@@ -39,11 +39,11 @@ public class SettingController extends BasePopupController {
     @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
-    @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController,
-                                           updateNoticeController;
+    @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
+//                                           updateNoticeController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
     @FXML private SettingItemRadioController networkIdController;
-    @FXML private SettingItemUpdateController updateController;
+//    @FXML private SettingItemUpdateController updateController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
 
@@ -77,8 +77,8 @@ public class SettingController extends BasePopupController {
         addGeneralItem("startWalletWithLogIn");
         //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
-        addGeneralItem("updateNotice");
-        addGeneralItem("versionUpdate");
+//        addGeneralItem("updateNotice");
+//        addGeneralItem("versionUpdate");
         addWindowItem("minimizeToTray");
 
         setItemsUnderLine();
@@ -161,7 +161,7 @@ public class SettingController extends BasePopupController {
             enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
         }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
-        updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
+//        updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
         userNumLabel.setText(prop.getProperty("peer_num"));
 
         prop = AppManager.getWindowProperties();
@@ -314,8 +314,8 @@ public class SettingController extends BasePopupController {
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
 
-                this.updateNoticeController = loader.getController();
-                this.updateNoticeController.setContents(StringManager.getInstance().setting.updateNoticeLabel.get());
+//                this.updateNoticeController = loader.getController();
+//                this.updateNoticeController.setContents(StringManager.getInstance().setting.updateNoticeLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -326,7 +326,7 @@ public class SettingController extends BasePopupController {
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
 
-                this.updateController = (SettingItemUpdateController)loader.getController();
+//                this.updateController = (SettingItemUpdateController)loader.getController();
 
                 String jsonUrl = "https://gist.githubusercontent.com/Oxchild/c73c783b8054d9b85f7fdcdfbbc821b1/raw/android.json";
                 InputStream is = new URL(jsonUrl).openStream();
@@ -342,14 +342,13 @@ public class SettingController extends BasePopupController {
                     JSONParser parser = new JSONParser();
                     JSONObject jo = (JSONObject) parser.parse(jsonText);
                     String newestVer = jo.get("versionNewest").toString();
-                    System.out.println("@@@@@@@@@@@@" + newestVer);
                     if(SystemProperties.getDefault().projectVersion().equals(newestVer)) {
-                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
+//                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
                     } else {
-                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_NOT_UPDATED);
+//                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_NOT_UPDATED);
                     }
 
-                    this.updateController.setLatestVer(newestVer);
+//                    this.updateController.setLatestVer(newestVer);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -361,12 +360,12 @@ public class SettingController extends BasePopupController {
                 e.printStackTrace();
             }
 
-            this.updateController.setContents(StringManager.getInstance().setting.versionUpdateLabel.get());
-            if(this.updateController.isVersionStatus()) {
-                this.updateController.setVersionChk(StringManager.getInstance().setting.versionUpToDate.get());
-            } else {
-                this.updateController.setVersionChk(StringManager.getInstance().setting.versionNotUpToDate.get());
-            }
+//            this.updateController.setContents(StringManager.getInstance().setting.versionUpdateLabel.get());
+//            if(this.updateController.isVersionStatus()) {
+//                this.updateController.setVersionChk(StringManager.getInstance().setting.versionUpToDate.get());
+//            } else {
+//                this.updateController.setVersionChk(StringManager.getInstance().setting.versionNotUpToDate.get());
+//            }
         }
     }
 
@@ -563,7 +562,7 @@ public class SettingController extends BasePopupController {
             cliOptions.put("peer.maxActivePeers", userNumLabel.getText());
             SystemProperties.getDefault().overrideParams(cliOptions);
             // Update notice
-            prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
+//            prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
 
             AppManager.saveGeneralProperties();
 

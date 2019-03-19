@@ -192,7 +192,7 @@
                                                       </ImageView>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane fx:id="networkHeader" layoutX="10.0" layoutY="141.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
+                                                <GridPane fx:id="networkHeader" layoutX="10.0" layoutY="141.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="0.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" visible="false" GridPane.rowIndex="1">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints hgrow="SOMETIMES" />
@@ -222,7 +222,7 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <VBox fx:id="networkVBox" layoutX="10.0" layoutY="225.0" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="2">
+                                                <VBox fx:id="networkVBox" layoutX="10.0" layoutY="225.0" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" visible="false" GridPane.rowIndex="2">
                                                    <padding>
                                                       <Insets left="19.0" />
                                                    </padding>
