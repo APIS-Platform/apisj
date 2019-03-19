@@ -627,7 +627,7 @@ public class Eth62 extends EthHandler {
                 receivedLastHash = HashUtil.EMPTY_TRIE_HASH;
             }
 
-            List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks();
+            List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks(8);
             if(!bestCachedBlocks.isEmpty()) {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedLastHash, cachedBestHash)) {
