@@ -552,7 +552,7 @@ public class Eth62 extends EthHandler {
             countUnlinkedBlockReceived += 1;
 
             // 1000개 블록까지 전송했는데도 연결이 안되면 연결을 끊는다
-            if(countUnlinkedBlockReceived > 100) {
+            if(countUnlinkedBlockReceived > 30) {
                 ctx.pipeline().remove(this);
             }
             return;
