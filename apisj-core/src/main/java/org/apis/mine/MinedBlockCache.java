@@ -49,7 +49,23 @@ public class MinedBlockCache {
 
 
     public List<Block> getBestMinedBlocks() {
-        return new ArrayList<>(bestMinedBlocks);
+        List<Block> bestBlocks = new ArrayList<>(bestMinedBlocks);
+
+        for(int i = 0; i < 500 && bestBlocks.size() > 0; i++) {
+            Block firstBlock = bestBlocks.get(0);
+            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
+            if(blocks == null || blocks.isEmpty()) {
+                break;
+            }
+            Block parentBlock = blocks.get(new ByteArrayWrapper(firstBlock.getParentHash()));
+            if(parentBlock == null) {
+                break;
+            } else {
+                bestBlocks.add(0, parentBlock);
+            }
+        }
+
+        return bestBlocks;
     }
 
     /**
@@ -140,49 +156,12 @@ public class MinedBlockCache {
             }
         }
 
-        int offset;
-        try {
-            offset = (int) (receivedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-
-        for (int i = 0; i < receivedBlocks.size() && i < bestMinedBlocks.size(); i++) {
-            Block receivedBlock;
-            Block cachedBlock;
-
-            if(offset >= 0) {
-                if(i >= receivedBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
-                    break;
-                }
-                receivedBlock    = receivedBlocks.get(i);
-                cachedBlock   = bestMinedBlocks.get(i + offset);
-            } else {
-                if((i - offset) >= receivedBlocks.size() || i >= bestMinedBlocks.size()) {
-                    break;
-                }
-                receivedBlock    = receivedBlocks.get(i - offset);
-                cachedBlock   = bestMinedBlocks.get(i);
-            }
-
-            if (cachedBlock.getNumber() != receivedBlock.getNumber()) {
-                return false;
-            }
-
-
-            if (i == 0) {
-                // 최소한 하나의 조상은 일치해야만 한다.
-                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), receivedBlock.getParentHash())) {
-                    return false;
-                }
-                break;
-            }
-        }
 
         // 비교 결과, 전달받은 블록들로 체인을 연결해도 되는것으로 판단된다
-
         bestMinedBlocks.clear();
-        bestMinedBlocks.addAll(receivedBlocks);
+        if(receivedBlocks.size() > 0) {
+            bestMinedBlocks.add(receivedBlocks.get(receivedBlocks.size() - 1));
+        }
         while(bestMinedBlocks.size() < 8 && bestMinedBlocks.size() > 0) {
             Block firstBlock = bestMinedBlocks.get(0);
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
@@ -232,7 +211,7 @@ public class MinedBlockCache {
             Block firstBlock = receivedBlocks.get(0);
 
             if (!allKnownBlocks.isEmpty() && firstBlock != null) {
-                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 20);
+                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 333);
             }
         }
 
