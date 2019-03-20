@@ -1,11 +1,9 @@
 package org.apis.mine;
 
+import com.google.common.collect.Lists;
 import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.util.AddressUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.TimeUtils;
+import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +87,23 @@ public class MinedBlockCache {
             /*if(invalidMiners.indexOf(new ByteArrayWrapper(receivedBlock.getCoinbase())) >= 0) {
                 return false;
             }*/
+
+
+            // 블록 번호가 연속되지 않으면, 단절된 이후의 블록은 제거한다
+            List<Block> reverseBlocks = Lists.reverse(receivedBlocks);
+            if(reverseBlocks.size() > 1) {
+                Block child = reverseBlocks.get(0);
+                for (int k = 1; k < reverseBlocks.size(); k++) {
+                    Block parent = reverseBlocks.get(k);
+
+                    if(child.getNumber() - parent.getNumber() > 1) {
+                        Block finalChild = child;
+                        receivedBlocks.removeIf(b -> b.getNumber() < finalChild.getNumber());
+                        break;
+                    }
+                    child = parent;
+                }
+            }
 
             // 블록 번호가 연속되지 않았으면 빠져나간다.
             if(i > 0 && receivedBlock.getNumber() - receivedBlocks.get(i - 1).getNumber() != 1) {
