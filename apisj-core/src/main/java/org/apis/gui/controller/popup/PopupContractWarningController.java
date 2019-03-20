@@ -307,6 +307,8 @@ public class PopupContractWarningController extends BasePopupController {
                         tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.toMask, this.data, password, knowledgeKey);
                     }
 
+//                    System.out.println("RAW TX : " + Hex.toHexString(tx.getEncodedRaw()));
+//                    System.out.println("SIGNED TX : " + Hex.toHexString(tx.getEncoded()));
                     rawTxArea.setText(tx.toString());
                     signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
                     yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());

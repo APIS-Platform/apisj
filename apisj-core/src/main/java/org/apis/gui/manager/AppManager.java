@@ -1892,7 +1892,8 @@ public class AppManager {
             if (prop.getProperty("language") == null) { prop.setProperty("language", "ENG"); }
             if (prop.getProperty("footer_total_unit") == null) { prop.setProperty("footer_total_unit", "APIS"); }
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
-            if (prop.getProperty("peer_num") == null) { prop.setProperty("peer_num", "30"); };
+            if (prop.getProperty("peer_num") == null) { prop.setProperty("peer_num", "30"); }
+            if (prop.getProperty("update_notice") == null) { prop.setProperty("update_notice", "true"); }
             input.close();
 
         } catch (IOException e) {
@@ -1906,6 +1907,7 @@ public class AppManager {
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
             prop.setProperty("peer_num", "30");
+            prop.setProperty("update_notice", "true");
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);

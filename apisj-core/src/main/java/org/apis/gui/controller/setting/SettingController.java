@@ -20,22 +20,30 @@ import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
+import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning;
-    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
-    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
-    @FXML private VBox rpcVBox, generalVBox, windowVBox;
+    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
+    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
+    @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
+//                                           updateNoticeController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
+    @FXML private SettingItemRadioController networkIdController;
+//    @FXML private SettingItemUpdateController updateController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
 
@@ -51,11 +59,14 @@ public class SettingController extends BasePopupController {
         downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
 
+        closeNetwork();
         closeRpc();
         openGeneral();
         openWindow();
 
         // Initiate items
+        addNetworkItem("Network ID");
+
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Max Connections");
@@ -66,6 +77,8 @@ public class SettingController extends BasePopupController {
         addGeneralItem("startWalletWithLogIn");
         //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
+//        addGeneralItem("updateNotice");
+//        addGeneralItem("versionUpdate");
         addWindowItem("minimizeToTray");
 
         setItemsUnderLine();
@@ -122,6 +135,7 @@ public class SettingController extends BasePopupController {
         this.settingsWarning.textProperty().bind(StringManager.getInstance().setting.settingWarning);
         this.userNumTitle.textProperty().bind(StringManager.getInstance().setting.userNumTitle);
         this.userNumDesc.textProperty().bind(StringManager.getInstance().setting.userNumDesc);
+        this.networkTitle.textProperty().bind(StringManager.getInstance().setting.networkTitle);
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
@@ -147,10 +161,27 @@ public class SettingController extends BasePopupController {
             enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
         }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
+//        updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
         userNumLabel.setText(prop.getProperty("peer_num"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
+    }
+
+    private void addNetworkItem(String contentsId) {
+        if(contentsId.equals("Network ID")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_radio.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                networkVBox.getChildren().add(item);
+
+                this.networkIdController = (SettingItemRadioController)loader.getController();
+                this.networkIdController.setContents(StringManager.getInstance().setting.networkIdLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void addRpcItem(String inputFlag, String contentsId) {
@@ -276,6 +307,65 @@ public class SettingController extends BasePopupController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if(contentsId.equals("updateNotice")) {
+            try {
+                URL url = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(url);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+//                this.updateNoticeController = loader.getController();
+//                this.updateNoticeController.setContents(StringManager.getInstance().setting.updateNoticeLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(contentsId.equals("versionUpdate")) {
+            try {
+                URL url = getClass().getClassLoader().getResource("scene/popup/setting_item_update.fxml");
+                FXMLLoader loader = new FXMLLoader(url);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+//                this.updateController = (SettingItemUpdateController)loader.getController();
+
+                String jsonUrl = "https://gist.githubusercontent.com/Oxchild/c73c783b8054d9b85f7fdcdfbbc821b1/raw/android.json";
+                InputStream is = new URL(jsonUrl).openStream();
+                try {
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                    StringBuilder sb = new StringBuilder();
+                    int cp;
+                    while((cp = rd.read()) != -1) {
+                        sb.append((char)cp);
+                    }
+                    String jsonText = sb.toString();
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject jo = (JSONObject) parser.parse(jsonText);
+                    String newestVer = jo.get("versionNewest").toString();
+                    if(SystemProperties.getDefault().projectVersion().equals(newestVer)) {
+//                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
+                    } else {
+//                        this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_NOT_UPDATED);
+                    }
+
+//                    this.updateController.setLatestVer(newestVer);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    is.close();
+                }
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+
+//            this.updateController.setContents(StringManager.getInstance().setting.versionUpdateLabel.get());
+//            if(this.updateController.isVersionStatus()) {
+//                this.updateController.setVersionChk(StringManager.getInstance().setting.versionUpToDate.get());
+//            } else {
+//                this.updateController.setVersionChk(StringManager.getInstance().setting.versionNotUpToDate.get());
+//            }
         }
     }
 
@@ -317,9 +407,16 @@ public class SettingController extends BasePopupController {
 
     @FXML
     private void onMouseClicked(InputEvent event) {
-        String fxid = ((Node)event.getSource()).getId();
+        String fxid = ((Node) event.getSource()).getId();
 
-        if(fxid.equals("rpcHeader")) {
+        if(fxid.equals("networkHeader")) {
+            if(networkVBox.isVisible()) {
+                closeNetwork();
+            } else {
+                openNetwork();
+            }
+
+        } else if(fxid.equals("rpcHeader")) {
             if(rpcVBox.isVisible()) {
                 closeRpc();
             } else {
@@ -464,6 +561,8 @@ public class SettingController extends BasePopupController {
             Map<String, Object> cliOptions = new HashMap<>();
             cliOptions.put("peer.maxActivePeers", userNumLabel.getText());
             SystemProperties.getDefault().overrideParams(cliOptions);
+            // Update notice
+//            prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
 
             AppManager.saveGeneralProperties();
 
@@ -521,6 +620,17 @@ public class SettingController extends BasePopupController {
     }
 
 
+    public void openNetwork() {
+        networkBtnIcon.setImage(upGrayIcon);
+        networkVBox.setVisible(true);
+        networkVBox.prefHeightProperty().setValue(-1);
+    }
+
+    public void closeNetwork() {
+        networkBtnIcon.setImage(downGrayIcon);
+        networkVBox.setVisible(false);
+        networkVBox.prefHeightProperty().setValue(0);
+    }
 
     public void openRpc() {
         rpcBtnIcon.setImage(upGrayIcon);
