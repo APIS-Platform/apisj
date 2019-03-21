@@ -17,6 +17,7 @@
  */
 package org.apis.net.eth.handler;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -131,6 +132,7 @@ public class Eth62 extends EthHandler {
      * MinedBlockList를 전달받았을 때, 나와 연결되지 않는 블록을 연속적으로 전달한 횟수
      */
     private long countUnlinkedBlockReceived = 0;
+    private long lastSentCountUnlinkedBlockReceived = 0;
 
 
 
@@ -256,24 +258,61 @@ public class Eth62 extends EthHandler {
         List<Block> blocks = new ArrayList<>(minedBlocks);
         long latestBlockNumber = blocks.get(blocks.size() - 1).getNumber();
 
-
         // 이미 상대방이 보유하고 있는(상대방에게서 전달받았던) 블록은 전송하지 않는다
-        blocks.removeIf(block -> receivedBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
-
-        // 같은 블록 번호에서, 이미 전송한 블록은 다시 전송하지 않는다
-        blocks.removeIf(block -> sendBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
-
-        // 전송한 블록의 정보를 저장한다
-        for(Block block : blocks) {
-            sendBlocks.put(new ByteArrayWrapper(block.getHash()), latestBlockNumber);
-        }
-        synchronized (sendBlocks) {
-            if (!sendBlocks.entrySet().isEmpty()) {
-                sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
+        List<Block> reverseBlocks = Lists.reverse(blocks);
+        for(Block block : reverseBlocks) {
+            Long foundResult = this.receivedBlocks.get(new ByteArrayWrapper(block.getHash()));
+            if(foundResult != null) {
+                blocks.removeIf(b -> b.getNumber() < foundResult);
+                break;
             }
         }
 
+        // 같은 블록 번호에서, 이미 전송한 블록은 다시 전송하지 않는다
+        reverseBlocks = Lists.reverse(blocks);
+        if(lastSentCountUnlinkedBlockReceived == 0 || lastSentCountUnlinkedBlockReceived < countUnlinkedBlockReceived) {
+            for (Block block : reverseBlocks) {
+                Long foundResult = this.sendBlocks.get(new ByteArrayWrapper(block.getHash()));
+                if (foundResult != null) {
+                    blocks.removeIf(b -> b.getNumber() < foundResult);
+                    break;
+                }
+            }
+        }
+
+        // 블록 번호가 연속되지 않을 경우 그 이전 블록들은 제거한다
+        if(blocks.size() > 1) {
+            Block next = blocks.get(blocks.size() - 1);
+            for(int i = 2; i < blocks.size() ; i++) {
+                Block prev = blocks.get(blocks.size() - i);
+
+                if(next.getNumber() - prev.getNumber() > 1) {
+                    Block finalNext = next;
+                    blocks.removeIf(block -> block.getNumber() < finalNext.getNumber());
+                    break;
+                }
+                next = prev;
+            }
+        }
+
+        // 전송한 블록의 정보를 저장한다
+        for(Block block : blocks) {
+            this.sendBlocks.put(new ByteArrayWrapper(block.getHash()), latestBlockNumber);
+        }
+        synchronized (this.sendBlocks) {
+            if (!this.sendBlocks.entrySet().isEmpty()) {
+                this.sendBlocks.entrySet().removeIf(entries -> entries.getValue() < latestBlockNumber);
+            }
+        }
+
+        if(blocks.size() > 1) {
+            ConsoleUtil.printlnGreen("Number of blocks sent : " + blocks.size() + " " + getSimpleStats());
+        }
+
+
         MinedBlockMessage msg = new MinedBlockMessage(blocks);
+
+        lastSentCountUnlinkedBlockReceived = countUnlinkedBlockReceived;
 
         //ctx.writeAndFlush(msg);
         sendMessage(msg, true);
@@ -399,12 +438,12 @@ public class Eth62 extends EthHandler {
                 return;
             }
 
-            if(channel.getNodeStatistics().getClientId().contains("v0.8.7")) {
-                ethState = EthState.STATUS_FAILED;
-                disconnect(ReasonCode.USELESS_PEER);
-                ctx.pipeline().remove(this);
-                return;
-            }
+//            if(channel.getNodeStatistics().getClientId().contains("v0.8.7")) {
+//                ethState = EthState.STATUS_FAILED;
+//                disconnect(ReasonCode.USELESS_PEER);
+//                ctx.pipeline().remove(this);
+//                return;
+//            }
 
             // basic checks passed, update statistics
             channel.getNodeStatistics().ethHandshake(msg);
@@ -485,12 +524,16 @@ public class Eth62 extends EthHandler {
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         List<Block> minedBlocks = msg.getBlocks();
 
-        // 전달받은 블록에 추가한다.
+        // 전달받은 블록이 비어있다면 빠져나간다.
         if(minedBlocks.isEmpty()) {
             return;
         }
 
-        // 예전에 이 노드에게서 전달받은 블록의 기록 중에서, 오래된 블록들을 제거한다
+        /* -------------------------------------------------------------------------------------------------
+         * this.receivedBlocks 에는 이 노드로부터 전달받은 모든 블록들의 해쉬가 블록 번호로 묶여서 저장된다.
+         * this.receivedBlocks 는 상대방에게 블록을 중복 전송하지 않기 위해 sendMinedBlocks()에서 사용한다.
+         * 오랜 시간이 지나면 객체가 너무 커지기 때문에 오래된 기록은 제거할 필요가 있다.
+         */
         final long oldBlockNumber = minedBlocks.get(0).getNumber() - 10;
         synchronized (this.receivedBlocks) {
             if (!this.receivedBlocks.entrySet().isEmpty()) {
@@ -501,16 +544,23 @@ public class Eth62 extends EthHandler {
         for(Block block : minedBlocks) {
             this.receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
         }
+        /* ------------------------------------------------------------------------------------------------- */
 
-        if(!processTransactions) {
-            // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
-            // 싱크가 완료된 이후부터, 전달받은 블록들을 연결하도록 한다.
-            return;
-        }
 
         /*
+         * 싱크가 완료되지 않았다면 아무것도 진행할 필요가 없다.
+         */
+        if(processTransactions == false) { return; }
+
+
+
+        /* ==========================================================================================================
          * 전달받은 블록의 첫번째 블럭은 내가 보유한 체인에 존재해야 비교 검증이 가능하다.
-         * 만약 첫번째 블록의 부모 블록이 내 체인에 존재하지 않는다면, 전달된 블록이 올바른 체인인지 검증이 필요하다.
+         * 만약 전달받은 첫번째 블록의 부모 블록이 내 체인에 존재하지 않는다면,
+         * 상대방과 내 체인은 서로 연결되지 않았다는 뜻이다.
+         * 만약 내가 갖고있는 체인의 누적RP 값이 더 크다면
+         * 상대방에게 내 체인을 추가로 전송해서 일치하는 부모가 존재하는지 확인하게 하고
+         * 내 체인으로 변경할 수 있게 해준다.
          */
         if(blockstore.isBlockExist(minedBlocks.get(0).getParentHash()) == false) {
             Block myBlock = blockstore.getChainBlockByNumber(minedBlocks.get(0).getNumber());
@@ -524,7 +574,9 @@ public class Eth62 extends EthHandler {
             BigInteger otherCRP = minedBlocks.get(0).getCumulativeRewardPoint();
             if(otherCRP.compareTo(myCRP) > 0) {
                 /* 상대방에게 전달받은 블록이 나와 연결되어 있지 않은데
-                 * CRP 값이 내가 갖고있는 것보다 크다면, 일단 내 최신 블록을 전달해준다.
+                 * CRP 값이 내가 갖고있는 것보다 크다면, 상대방의 블록을 전달받아 비교해볼 필요가 있다.
+                 *
+                 * 만약 상대방에게 내 최신 블록을 전달하게 되면
                  * 상대방은 내가 보낸 블록의 CRP를 비교해보고, 아래 else 구문을 실행하여
                  * 상대방이 갖고있는 부모 블록들을 나에게 전달해 줄 것이다.
                  */
@@ -542,22 +594,27 @@ public class Eth62 extends EthHandler {
                 }
                 Block parentBlock = blockstore.getBestBlock();
                 for(int i = 0; i < countBlockLoading; i++) {
-                    myBlocks.add(parentBlock);
+                    myBlocks.add(0, parentBlock);
                     parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
                 }
-                logger.warn(ConsoleUtil.colorBRed("%d : My ancestral blocks(count: %d) are sent because the this peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSyncStats()));
+                logger.warn(ConsoleUtil.colorBRed("\n%d : My ancestral blocks(count: %d) are sent because the this peer is not connected to my chain. \n%s", countUnlinkedBlockReceived, myBlocks.size(), getSimpleStats()));
             }
 
             sendMinedBlocks(myBlocks);
             countUnlinkedBlockReceived += 1;
 
-            // 1000개 블록까지 전송했는데도 연결이 안되면 연결을 끊는다
-            if(countUnlinkedBlockReceived > 100) {
+            // 300개 블록까지 전송했는데도 연결이 안되면 연결을 끊는다
+            if(countUnlinkedBlockReceived > 30) {
+                disconnect(ReasonCode.INCOMPATIBLE_PROTOCOL);
                 ctx.pipeline().remove(this);
             }
             return;
+        } else {
+            countUnlinkedBlockReceived = 0;
         }
-        countUnlinkedBlockReceived = 0;
+        /* ========================================================================================================== */
+
+
 
         // 전달받은 블럭들을 검증한다.
         BlockHeaderValidator validator = new CommonConfig().headerValidator();
@@ -627,7 +684,7 @@ public class Eth62 extends EthHandler {
                 receivedLastHash = HashUtil.EMPTY_TRIE_HASH;
             }
 
-            List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks();
+            List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks(8);
             if(!bestCachedBlocks.isEmpty()) {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedLastHash, cachedBestHash)) {
@@ -1153,6 +1210,14 @@ public class Eth62 extends EthHandler {
                 longToTimePeriod(lifeTime - processingTime),
                 longToTimePeriod(lifeTime),
                 channel.getNodeStatistics().getClientId());
+    }
+
+    public String getSimpleStats() {
+        return String.format("[%s : %s : %s] %s",
+                channel.getPeerIdShort(),
+                AddressUtil.getIPAddress(channel.getInetSocketAddress().getHostString()),
+                AddressUtil.getShortAddress(coinbase),
+                channel.getNodeStatistics().getClientId().split("\\s+")[0]);
     }
 
     protected enum EthState {

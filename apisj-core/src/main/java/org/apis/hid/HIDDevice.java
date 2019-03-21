@@ -33,7 +33,12 @@ public class HIDDevice {
         UsbConfiguration configuration = device.getActiveUsbConfiguration();
         //UsbInterface dongleInterface = device.getInterface(0);
         UsbInterface dongleInterface = configuration.getUsbInterface((byte)0);
-        dongleInterface.claim();
+        dongleInterface.claim(new UsbInterfacePolicy() {
+            @Override
+            public boolean forceClaim(UsbInterface usbInterface) {
+                return true;
+            }
+        });
         UsbEndpoint in = null;
         UsbEndpoint out = null;
         List<UsbEndpoint> usbEndpointList = (List<UsbEndpoint>)dongleInterface.getUsbEndpoints();

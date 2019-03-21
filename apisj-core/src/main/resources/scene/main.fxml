@@ -194,7 +194,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" />
          </rowConstraints>
          <children>
-            <ImageView fx:id="logo" fitHeight="28.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+            <ImageView fx:id="logo" fitHeight="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
                   <Image url="@../image/logo_header.png" />
                </image>

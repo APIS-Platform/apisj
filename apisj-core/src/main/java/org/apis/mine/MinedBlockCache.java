@@ -1,11 +1,9 @@
 package org.apis.mine;
 
+import com.google.common.collect.Lists;
 import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.util.AddressUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.TimeUtils;
+import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +46,24 @@ public class MinedBlockCache {
     private MinedBlockCache() {}
 
 
-    public List<Block> getBestMinedBlocks() {
-        return new ArrayList<>(bestMinedBlocks);
+    public List<Block> getBestMinedBlocks(int count) {
+        List<Block> bestBlocks = new ArrayList<>(bestMinedBlocks);
+
+        for(int i = 0; i < 500 && i < count && bestBlocks.size() < count; i++) {
+            Block firstBlock = bestBlocks.get(0);
+            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
+            if(blocks == null || blocks.isEmpty()) {
+                break;
+            }
+            Block parentBlock = blocks.get(new ByteArrayWrapper(firstBlock.getParentHash()));
+            if(parentBlock == null) {
+                break;
+            } else {
+                bestBlocks.add(0, parentBlock);
+            }
+        }
+
+        return bestBlocks;
     }
 
     /**
@@ -73,6 +87,23 @@ public class MinedBlockCache {
             /*if(invalidMiners.indexOf(new ByteArrayWrapper(receivedBlock.getCoinbase())) >= 0) {
                 return false;
             }*/
+
+
+            // 블록 번호가 연속되지 않으면, 단절된 이후의 블록은 제거한다
+            List<Block> reverseBlocks = Lists.reverse(receivedBlocks);
+            if(reverseBlocks.size() > 1) {
+                Block child = reverseBlocks.get(0);
+                for (int k = 1; k < reverseBlocks.size(); k++) {
+                    Block parent = reverseBlocks.get(k);
+
+                    if(child.getNumber() - parent.getNumber() > 1) {
+                        Block finalChild = child;
+                        receivedBlocks.removeIf(b -> b.getNumber() < finalChild.getNumber());
+                        break;
+                    }
+                    child = parent;
+                }
+            }
 
             // 블록 번호가 연속되지 않았으면 빠져나간다.
             if(i > 0 && receivedBlock.getNumber() - receivedBlocks.get(i - 1).getNumber() != 1) {
@@ -140,49 +171,12 @@ public class MinedBlockCache {
             }
         }
 
-        int offset;
-        try {
-            offset = (int) (receivedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
-        } catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-
-        for (int i = 0; i < receivedBlocks.size() && i < bestMinedBlocks.size(); i++) {
-            Block receivedBlock;
-            Block cachedBlock;
-
-            if(offset >= 0) {
-                if(i >= receivedBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
-                    break;
-                }
-                receivedBlock    = receivedBlocks.get(i);
-                cachedBlock   = bestMinedBlocks.get(i + offset);
-            } else {
-                if((i - offset) >= receivedBlocks.size() || i >= bestMinedBlocks.size()) {
-                    break;
-                }
-                receivedBlock    = receivedBlocks.get(i - offset);
-                cachedBlock   = bestMinedBlocks.get(i);
-            }
-
-            if (cachedBlock.getNumber() != receivedBlock.getNumber()) {
-                return false;
-            }
-
-
-            if (i == 0) {
-                // 최소한 하나의 조상은 일치해야만 한다.
-                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), receivedBlock.getParentHash())) {
-                    return false;
-                }
-                break;
-            }
-        }
 
         // 비교 결과, 전달받은 블록들로 체인을 연결해도 되는것으로 판단된다
-
         bestMinedBlocks.clear();
-        bestMinedBlocks.addAll(receivedBlocks);
+        if(receivedBlocks.size() > 0) {
+            bestMinedBlocks.add(receivedBlocks.get(receivedBlocks.size() - 1));
+        }
         while(bestMinedBlocks.size() < 8 && bestMinedBlocks.size() > 0) {
             Block firstBlock = bestMinedBlocks.get(0);
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
@@ -232,7 +226,7 @@ public class MinedBlockCache {
             Block firstBlock = receivedBlocks.get(0);
 
             if (!allKnownBlocks.isEmpty() && firstBlock != null) {
-                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 20);
+                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 333);
             }
         }
 

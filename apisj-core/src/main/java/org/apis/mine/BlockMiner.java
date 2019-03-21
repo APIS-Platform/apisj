@@ -108,9 +108,30 @@ public class BlockMiner {
         this.minGasPrice = minGasPrice;
     }
 
+    // 최근 베스트 블록에서 부모를 찾지 못했을 때 카운트를 늘린다
+    private int countNotFoundParent = 0;
+
     private void updateMinedBlocks() {
         MinedBlockCache cache = MinedBlockCache.getInstance();
-        List<Block> receivedBlocks = cache.getBestMinedBlocks();
+
+        int blockLoad = 10;
+        if(countNotFoundParent > 0) {
+            blockLoad = (countNotFoundParent + 1) * 10;
+        }
+        List<Block> receivedBlocks = cache.getBestMinedBlocks(blockLoad);
+
+        if(receivedBlocks.isEmpty()) {
+            return;
+        }
+
+        Block firstBlock = receivedBlocks.get(0);
+        if(blockStore.getBlockByHash(firstBlock.getParentHash()) == null) {
+            countNotFoundParent += 1;
+            updateMinedBlocks();
+            return;
+        } else {
+            countNotFoundParent = 0;
+        }
 
         for (Block block : receivedBlocks) {
             if(block != null) {

@@ -1143,6 +1143,12 @@ public class StringManager {
         public SimpleStringProperty settingWarning = new SimpleStringProperty();
         public SimpleStringProperty userNumTitle = new SimpleStringProperty();
         public SimpleStringProperty userNumDesc = new SimpleStringProperty();
+        public SimpleStringProperty networkTitle = new SimpleStringProperty();
+        public SimpleStringProperty networkIdLabel = new SimpleStringProperty();
+        public SimpleStringProperty networkIdLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty mainnetLabel = new SimpleStringProperty();
+        public SimpleStringProperty testnetLabel = new SimpleStringProperty();
+        public SimpleStringProperty customLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcTitle = new SimpleStringProperty();
         public SimpleStringProperty rpcPortLabel = new SimpleStringProperty();
         public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
@@ -1156,6 +1162,12 @@ public class StringManager {
         public SimpleStringProperty windowTitle = new SimpleStringProperty();
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
         public SimpleStringProperty rewardSoundLabel = new SimpleStringProperty();
+        public SimpleStringProperty versionUpdateLabel = new SimpleStringProperty();
+        public SimpleStringProperty latestVerLabel = new SimpleStringProperty();
+        public SimpleStringProperty versionUpToDate = new SimpleStringProperty();
+        public SimpleStringProperty versionNotUpToDate = new SimpleStringProperty();
+        public SimpleStringProperty updateLabel = new SimpleStringProperty();
+        public SimpleStringProperty updateNoticeLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1164,6 +1176,12 @@ public class StringManager {
             settingWarning.set(StringManager.this.getString("setting_warning", "Must restart program to apply"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
+            networkTitle.set(StringManager.this.getString("setting_network_title", "Network"));
+            networkIdLabel.set(StringManager.this.getString("setting_network_id_label", "Network ID"));
+            networkIdLabel1.set(StringManager.this.getString("setting_network_id_label1", "Network ID : "));
+            mainnetLabel.set(StringManager.this.getString("setting_mainnet_label", "Mainnet"));
+            testnetLabel.set(StringManager.this.getString("setting_testnet_label", "Osiris - Testnet"));
+            customLabel.set(StringManager.this.getString("setting_custom_label", "Custom"));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
             rpcPortLabel.set(StringManager.this.getString("setting_rpc_port_label", "Port"));
             rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));
@@ -1177,6 +1195,12 @@ public class StringManager {
             windowTitle.set(StringManager.this.getString("setting_window_title", "Window"));
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
             rewardSoundLabel.set(StringManager.this.getString("setting_reward_sound_on_off", "Reward Sound On/Off"));
+            versionUpdateLabel.set(StringManager.this.getString("setting_version_update_label", "Version update"));
+            latestVerLabel.set(StringManager.this.getString("setting_latest_ver_label", "Latest version"));
+            versionUpToDate.set(StringManager.this.getString("setting_version_up_to_date", "Software is up-to-date."));
+            versionNotUpToDate.set(StringManager.this.getString("setting_version_not_up_to_date", "Software is not up-to-date."));
+            updateLabel.set(StringManager.this.getString("setting_update_label", "UPDATE"));
+            updateNoticeLabel.set(StringManager.this.getString("setting_update_notice_label", "Update notice"));
         }
     }
 

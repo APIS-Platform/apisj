@@ -34,12 +34,12 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="89.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                </rowConstraints>
                <children>
-                  <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                  <ImageView fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                      <image>
                         <Image url="@../image/logo_white@2x.png" />
                      </image>
