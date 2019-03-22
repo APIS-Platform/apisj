@@ -197,7 +197,8 @@ public class SystemProperties {
             logger.debug("Config (" + (userConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from resource 'user.conf'");
             File userDirFile = new File(System.getProperty("user.dir"), "/config/ethereumj.conf");
 
-            Config userDirConfig = ConfigFactory.parseFile(userDirFile);
+            File networkCfg = new File("apisData/config/network.conf");
+            Config userDirConfig = ConfigFactory.parseFile(networkCfg);
             logger.debug("Config (" + (userDirConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from file '" + userDirFile + "'");
 
             Config testConfig = ConfigFactory.parseResources("test-ethereumj.conf");
