@@ -801,7 +801,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
-        if(block.getNumber() > 33) {
+        // Mainnet 에서만 3블록 연속 체굴을 제약한다. 테스트넷에는 해당 없음
+        if(config.getBlockchainConfig().getConfigForBlock(0).getChainId() == 1 && block.getNumber() > 33) {
             long preventDuplicateMiner = constants.getCONTINUOUS_MINING_LIMIT();
             Block parent = blockStore.getBlockByHash(block.getParentHash());
             for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {

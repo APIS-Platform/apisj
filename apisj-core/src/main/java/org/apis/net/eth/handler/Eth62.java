@@ -627,7 +627,8 @@ public class Eth62 extends EthHandler {
 
 
         // 3블록 이내에 같은 채굴자가 존재하는지 확인한다.
-        if(minedBlocks.get(0).getNumber() > 33) {
+        // Mainnet 에서만 3블록 연속 체굴을 제약한다. 테스트넷에는 해당 없음
+        if(config.getBlockchainConfig().getConfigForBlock(0).getChainId() == 1 &&  minedBlocks.get(0).getNumber() > 33) {
             int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(minedBlocks.get(0).getNumber()).getConstants().getCONTINUOUS_MINING_LIMIT();
             ArrayList<byte[]> coinbaseList = new ArrayList<>();
             Block parentBlock = blockstore.getBlockByHash(minedBlocks.get(0).getParentHash());
