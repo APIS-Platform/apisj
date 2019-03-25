@@ -460,14 +460,14 @@ contract EarlyBirdManager is Owners {
     /**
      * @dev 하루 동안 생성되는 블록의 수
      */
-    uint256 constant private BLOCKS_PER_DAY = 10800;
+    uint256 constant private BLOCKS_PER_DAY = 500;
 
 
     /**
      * @dev 마스터노드가 시작되고 종료될 때까지 유지되는 블록 수
      */
     //uint256 constant private PERIOD_MASTERNODE = BLOCKS_PER_DAY*90;
-    uint256 constant private PERIOD_MASTERNODE = 972000;
+    uint256 constant private PERIOD_MASTERNODE = 1000;
 
 
 
