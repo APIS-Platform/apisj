@@ -44,7 +44,7 @@ public class OsirisTestConfig extends AbstractConfig {
 
         @Override
         public long getINIT_MINERAL_APPLY_BLOCK() {
-            return 3_000L;
+            return 0;
         }
 
         @Override
