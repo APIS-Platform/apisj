@@ -24,6 +24,7 @@ import com.typesafe.config.ConfigRenderOptions;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.net.JsonNetConfig;
 import org.apis.config.net.MainNetConfig;
+import org.apis.config.net.PreBalanceConfig;
 import org.apis.config.net.TestNetConfig;
 import org.apis.core.Genesis;
 import org.apis.core.genesis.GenesisConfig;
@@ -189,15 +190,17 @@ public class SystemProperties {
             Config referenceConfig = ConfigFactory.parseResources("apis_mainnet.conf");
             logger.debug("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'apis_mainnet.conf'");
 
-            String res = System.getProperty("ethereumj.conf.res");
+            String res = System.getProperty("apis.conf.res");
             Config cmdLineConfigRes = res != null ? ConfigFactory.parseResources(res) : ConfigFactory.empty();
-            logger.debug("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.res resource '" + res + "'");
+            logger.debug("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dapis.conf.res resource '" + res + "'");
 
             Config userConfig = ConfigFactory.parseResources("user.conf");
             logger.debug("Config (" + (userConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from resource 'user.conf'");
             File userDirFile = new File(System.getProperty("user.dir"), "/config/ethereumj.conf");
 
-            Config userDirConfig = ConfigFactory.parseFile(userDirFile);
+            // 파일을 탐색한다
+            File networkCfg = new File("apisData/config/network.conf");
+            Config userDirConfig = ConfigFactory.parseFile(networkCfg);
             logger.debug("Config (" + (userDirConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from file '" + userDirFile + "'");
 
             Config testConfig = ConfigFactory.parseResources("test-ethereumj.conf");
@@ -355,6 +358,9 @@ public class SystemProperties {
                             break;*/
                         case "test":
                             blockchainConfig = new TestNetConfig();
+                            break;
+                        case "prebalance":
+                            blockchainConfig = new PreBalanceConfig();
                             break;
                         default:
                             throw new RuntimeException("Unknown value for 'blockchain.config.name': '" + config.getString("blockchain.config.name") + "'");
