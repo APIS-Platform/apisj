@@ -181,8 +181,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public synchronized BigInteger getBalance(byte[] addr) {
+        BigInteger defaultBalance = config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE();
+
         AccountState accountState = getAccountState(addr);
-        return accountState == null ? BigInteger.ZERO : accountState.getBalance();
+        return accountState == null ? defaultBalance : accountState.getBalance();
     }
 
     @Override
