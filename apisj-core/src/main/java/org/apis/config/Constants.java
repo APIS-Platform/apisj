@@ -82,6 +82,8 @@ public class Constants {
      */
     private static final long INIT_MINERAL_APPLY_BLOCK = 999_999_999L;
 
+    private static final BigInteger INIT_BALANCE = BigInteger.ZERO;
+
 
 
     private static final byte[] FOUNDATION_STORAGE = ByteUtil.hexStringToBytes("3affc7a364d5c725ce33be33aff9673a7dfeab64");
@@ -184,6 +186,13 @@ public class Constants {
     public long getINIT_MINERAL_APPLY_BLOCK() {
         return INIT_MINERAL_APPLY_BLOCK;
     }
+
+    /**
+     * 계정이 생성될 때 기본으로 보유하는 잔고
+     * 테스트 서버를 위해 생성된 상수
+     * @return Default : Zero
+     */
+    public BigInteger getINIT_BALANCE() { return INIT_BALANCE; }
 
     /**
      * @return 전체 블록 보상 중에서 채굴자가 가져가는 수익 비율을 반환한다.
