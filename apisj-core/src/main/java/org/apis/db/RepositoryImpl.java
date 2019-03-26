@@ -76,7 +76,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public synchronized AccountState createAccount(byte[] addr, long blockNumber) {
-        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, BigInteger.valueOf(blockNumber));
+        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE(), BigInteger.valueOf(blockNumber));
         accountStateCache.put(addr, state);
         return state;
     }
@@ -181,10 +181,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public synchronized BigInteger getBalance(byte[] addr) {
-        BigInteger defaultBalance = config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE();
-
         AccountState accountState = getAccountState(addr);
-        return accountState == null ? defaultBalance : accountState.getBalance();
+        return accountState == null ? config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE() : accountState.getBalance();
     }
 
     @Override
@@ -208,6 +206,12 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     @Override
     public synchronized BigInteger addBalance(byte[] addr, BigInteger value) {
         AccountState accountState = getOrCreateAccountState(addr);
+        if(accountState.getNonce().compareTo(BigInteger.ONE) == 0
+                && accountState.getBalance().compareTo(BigInteger.ZERO) == 0
+                && value.compareTo(BigInteger.ZERO) < 0) {
+            value = value.add(config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE());
+        }
+
         accountStateCache.put(addr, accountState.withBalanceIncrement(value));
         return accountState.getBalance();
     }
