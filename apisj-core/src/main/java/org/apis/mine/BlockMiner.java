@@ -372,8 +372,7 @@ public class BlockMiner {
          * 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
          * 30 블록 이내에는 초기 세팅 중이므로 충분한 수의 노드가 존재하지 않을 수 있으므로 예외로 한다.
          */
-        //List<ByteArrayWrapper> recentMiners = new ArrayList<>();
-        if(bestBlock.getNumber() > 30) {
+        if(config.getBlockchainConfig().getConfigForBlock(0).getChainId() == 1 && bestBlock.getNumber() > 30) {
             long continuousMiningLimit = constants.getCONTINUOUS_MINING_LIMIT();
             Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
             for (int i = 0; i < continuousMiningLimit; i++) {
