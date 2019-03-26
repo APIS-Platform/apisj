@@ -530,7 +530,14 @@ public class TransactionExecutor {
         } else {
             cacheTrack.createAccount(newContractAddress);
         }
-        cacheTrack.addBalance(newContractAddress, oldBalance);
+
+        /*
+         * 초기 잔고가 0인 경우에만 더하도록 한다 (예를 들면 메인넷의 경우)
+         * 이렇게 분기른 나누지 않을 경우, prebalance 네트워크에서 컨트랙트 생성 시 초기 잔고가 2배로 증가한다.
+         */
+        if(config.getBlockchainConfig().getCommonConstants().getINIT_BALANCE().compareTo(BigInteger.ZERO) == 0) {
+            cacheTrack.addBalance(newContractAddress, oldBalance);
+        }
         if (blockchainConfig.eip161()) {
             cacheTrack.increaseNonce(newContractAddress);
         }
