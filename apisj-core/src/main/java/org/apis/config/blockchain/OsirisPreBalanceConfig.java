@@ -51,6 +51,16 @@ public class OsirisPreBalanceConfig extends AbstractConfig {
             return 8;
         }
 
+        @Override
+        public long getBLOCK_TIME() {
+            return 1;
+        }
+
+        @Override
+        public long getBLOCK_TIME_MS() {
+            return this.getBLOCK_TIME()*1000;
+        }
+
         // 1000 APIS
         @Override
         public BigInteger getINIT_BALANCE() {
