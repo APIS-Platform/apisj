@@ -814,9 +814,11 @@ public class DBManager {
     public boolean updateConnectAddressGroup( byte[] address, String groupName ){
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE connect_address_group SET `group_name` = ? WHERE `address` = ?");
-            update.setString(1, groupName);
-            update.setString(2, ByteUtil.toHexString(address));
+            PreparedStatement update = this.connection.prepareStatement("UPDATE connect_address_group SET `address` = ?, `group_name` = ? WHERE `address` = ? AND group_name = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, groupName);
+            update.setString(3, ByteUtil.toHexString(address));
+            update.setString(4, groupName);
             int updateResult = update.executeUpdate();
             update.close();
             if(updateResult == 0) {
