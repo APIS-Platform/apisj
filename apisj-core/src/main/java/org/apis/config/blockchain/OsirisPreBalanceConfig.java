@@ -58,6 +58,15 @@ public class OsirisPreBalanceConfig extends AbstractConfig {
         }
 
         /**
+         * 트랜잭션이 존재할 때에만 블록을 생성하도록 한다
+         * @return false
+         */
+        @Override
+        public boolean isBlockGenerateWithoutTx() {
+            return false;
+        }
+
+        /**
          * 테스트넷에서 발행량은 0
          */
         @Override
