@@ -10,10 +10,7 @@ import org.apis.facade.Apis;
 import org.apis.facade.ApisImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.TimeUtils;
+import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -325,6 +322,18 @@ public class BlockMiner {
             return false;
         }
 
+        /*
+         * @! 도메인을 갖는 어드레스 마스킹을 갖고있는 주소가 아닐 경우 채굴을 시작하지 않도록 한다.
+         * 채굴을 할 경우, 다른 피어들에 의해 연결이 끊어지게 된다.
+         */
+        if(config.getBlockchainConfig().getCommonConstants().isMiningAvailableOnlyHasQDomainAm() == true) {
+            String minerMask = apis.getRepository().getMaskByAddress(config.getCoinbaseKey().getAddress());
+
+            if(AddressUtil.hasQDomain(minerMask) == false) {
+                return false;
+            }
+        }
+
         final long now = TimeUtils.getRealTimestamp();
 
         Block bestBlock = blockchain.getBestBlock();
@@ -386,6 +395,17 @@ public class BlockMiner {
             }
         }
 
+
+        /*
+         * 트랜잭션이 없으면 블록을 생성하지 않도록 설정이 되어있는 경우
+         * 초기 설정을 위해 10블록은 무조건 생성하도록 한다.
+         * 이후에는 설정에 따라서 블록을 생성한다.
+         */
+        if(bestBlock.getNumber() > 10 && config.getBlockchainConfig().getCommonConstants().isBlockGenerateWithoutTx() == false) {
+            if(getAllPendingTransactions().isEmpty()) {
+                return false;
+            }
+        }
 
         /*
          * 만약 블록 채굴이 오랫동안 실행되지 않는다면 다시 블록 생성을 시도하도록 한다.
