@@ -117,29 +117,37 @@ public class Start {
             synced = true;
             logger.debug(ConsoleUtil.colorBRed("\nSYNC DONE =============================================="));
 
+
             /*
-             * 싱크가 완료된 이후, 현재의 싱크 상태를 확인해서 프로그램 재시작 여부를 판단한다.
+             *트랜잭션이 없어도 블록을 생성하는 경우(블록타임마다 블록이 생성됨)에만
+             * 블록을 받아들이지 못하면 싱크가 되지 않는 것으로 받아들이게 한다.
              */
-            if(!processRestartThreadCreated) {
-                processRestartThreadCreated = true;
-                Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                    long now = TimeUtils.getRealTimestamp();
+            if(SystemProperties.getDefault() != null
+                    && SystemProperties.getDefault().getBlockchainConfig().getCommonConstants().isBlockGenerateWithoutTx()) {
+                /*
+                 * 싱크가 완료된 이후, 현재의 싱크 상태를 확인해서 프로그램 재시작 여부를 판단한다.
+                 */
+                if (!processRestartThreadCreated) {
+                    processRestartThreadCreated = true;
+                    Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                        long now = TimeUtils.getRealTimestamp();
 
-                    // 싱크가 지연된 경우 프로그램을 종료한다.
-                    if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                        timeLastProgramClosed = now;
-                        isClosed = true;
-                        mApis.close();
-                    }
+                        // 싱크가 지연된 경우 프로그램을 종료한다.
+                        if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                            timeLastProgramClosed = now;
+                            isClosed = true;
+                            mApis.close();
+                        }
 
-                    // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                    if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                        startAPIS();
-                        timeLastBlockReceived = now;
-                        isClosed = false;
-                    }
+                        // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                        if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                            startAPIS();
+                            timeLastBlockReceived = now;
+                            isClosed = false;
+                        }
 
-                }, 60, 1, TimeUnit.SECONDS);
+                    }, 60, 1, TimeUnit.SECONDS);
+                }
             }
         }
 
