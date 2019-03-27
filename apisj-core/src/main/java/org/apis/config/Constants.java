@@ -84,6 +84,11 @@ public class Constants {
 
     private static final BigInteger INIT_BALANCE = BigInteger.ZERO;
 
+    /**
+     * 트랜잭션이 존재하지 않더라도 블록을 생성할지 여부를 지정한다.
+     */
+    private static final boolean BLOCK_GENERATE_WITHOUT_TX = true;
+
 
 
     private static final byte[] FOUNDATION_STORAGE = ByteUtil.hexStringToBytes("3affc7a364d5c725ce33be33aff9673a7dfeab64");
@@ -193,6 +198,14 @@ public class Constants {
      * @return Default : Zero
      */
     public BigInteger getINIT_BALANCE() { return INIT_BALANCE; }
+
+    /**
+     * 블록을 생성할 때 트랜잭션이 존재하지 않더라도 블록을 생성할지 여부를 지정한다.
+     * @return
+     * true : 블록타임마다 블록을 생성한다.<br/>
+     * false : 트랜잭션이 없으면 블록을 생성하지 않는다. 최소 블록 생성 간격은 블록타임이 된다.
+     */
+    public boolean isBlockGenerateWithoutTx() { return BLOCK_GENERATE_WITHOUT_TX; }
 
     /**
      * @return 전체 블록 보상 중에서 채굴자가 가져가는 수익 비율을 반환한다.
