@@ -77,6 +77,15 @@ public class OsirisPreBalanceConfig extends AbstractConfig {
         }
 
         /**
+         * 어드레스 마스킹에 @! 를 갖는 주소에서만 채굴이 가능하도록 한다.
+         * @return true
+         */
+        @Override
+        public boolean isMiningAvailableOnlyHasQDomainAm() {
+            return true;
+        }
+
+        /**
          * 테스트넷에서 발행량은 0
          */
         @Override

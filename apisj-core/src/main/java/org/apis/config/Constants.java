@@ -89,6 +89,11 @@ public class Constants {
      */
     private static final boolean BLOCK_GENERATE_WITHOUT_TX = true;
 
+    /**
+     * TRUE 일 경우, @! 어드레스마스킹 주소를 갖는 지갑에서만 채굴이 가능하도록 한다.
+     */
+    private static final boolean MINING_AVAILABLE_ONLY_HAS_Q_DOMAIN_AM = false;
+
 
 
     private static final byte[] FOUNDATION_STORAGE = ByteUtil.hexStringToBytes("3affc7a364d5c725ce33be33aff9673a7dfeab64");
@@ -206,6 +211,14 @@ public class Constants {
      * false : 트랜잭션이 없으면 블록을 생성하지 않는다. 최소 블록 생성 간격은 블록타임이 된다.
      */
     public boolean isBlockGenerateWithoutTx() { return BLOCK_GENERATE_WITHOUT_TX; }
+
+    /**
+     * 특정 주소에서만 블록을 채굴할 수 있도록 제한할 것인지 확인한다.
+     * @return
+     * TRUE : @! 어드레스 마스킹 주소를 갖는 지갑에서만 채굴이 가능하도록 한다.
+     * FALSE : 채굴할 수 있는 지갑에 제한이 없다.
+     */
+    public boolean isMiningAvailableOnlyHasQDomainAm() { return MINING_AVAILABLE_ONLY_HAS_Q_DOMAIN_AM; }
 
     /**
      * @return 전체 블록 보상 중에서 채굴자가 가져가는 수익 비율을 반환한다.
