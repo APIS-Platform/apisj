@@ -553,6 +553,20 @@ public class Eth62 extends EthHandler {
         if(processTransactions == false) { return; }
 
 
+        /*
+         * 만약, @!를 보유한 주소만 채굴이 가능한 경우, 다른 주소에서 채굴한 블록이 포함되면 받아들이면 안된다.
+         */
+        if(config.getBlockchainConfig().getCommonConstants().isMiningAvailableOnlyHasQDomainAm() == true) {
+            for(Block block : minedBlocks) {
+                byte[] miner = block.getCoinbase();
+                String minerMask = pendingState.getRepository().getMaskByAddress(miner);
+
+                if(AddressUtil.hasQDomain(minerMask) == false) {
+                    return;
+                }
+            }
+        }
+
 
         /* ==========================================================================================================
          * 전달받은 블록의 첫번째 블럭은 내가 보유한 체인에 존재해야 비교 검증이 가능하다.
@@ -825,6 +839,16 @@ public class Eth62 extends EthHandler {
         if(newBlock.getNumber() < bestBlock.getNumber()) {
             return;
         }
+
+        if(config.getBlockchainConfig().getCommonConstants().isMiningAvailableOnlyHasQDomainAm() == true) {
+            byte[] miner = newBlock.getCoinbase();
+            String minerMask = pendingState.getRepository().getMaskByAddress(miner);
+
+            if(AddressUtil.hasQDomain(minerMask) == false) {
+                return;
+            }
+        }
+
 
         logger.info("New block received: block.index [{}]", newBlock.getNumber());
 
@@ -1110,6 +1134,22 @@ public class Eth62 extends EthHandler {
             }
 
             return true;
+        } else {
+            /*
+             * 만약, @!를 보유한 주소만 채굴이 가능한 경우, 다른 주소에서 채굴한 블록이 포함되면 받아들이면 안된다.
+             */
+            if(config.getBlockchainConfig().getCommonConstants().isMiningAvailableOnlyHasQDomainAm() == true) {
+                for(BlockHeader header : headers) {
+                    if(header.getNumber() > 10) {
+                        byte[] miner = header.getCoinbase();
+                        String minerMask = pendingState.getRepository().getMaskByAddress(miner);
+
+                        if (AddressUtil.hasQDomain(minerMask) == false) {
+                            return false;
+                        }
+                    }
+                }
+            }
         }
 
         // first header
