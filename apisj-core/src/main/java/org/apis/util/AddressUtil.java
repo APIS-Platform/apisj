@@ -66,4 +66,18 @@ public class AddressUtil {
             return false;
         }
     }
+
+    /**
+     * 입력된 마스크에 ! 도메인이 할당되어있는지 확인한다(ex. mining@!)
+     * @param mask 어드레스 마스킹 주소
+     * @return
+     * TRUE : @! 도메인을 보유하고 있음<br/>
+     * FALSE : 보유하고 있지 않음
+     */
+    public static boolean hasQDomain(String mask) {
+        if(mask == null || mask.substring(mask.lastIndexOf("@") + 1).equals("!") == false) {
+            return false;
+        }
+        return true;
+    }
 }
