@@ -17,6 +17,7 @@ public class ContractRecord {
     private String canvas_url;
     private long firstTxBlock;
     private long lastSyncedBlock;
+    private CallTransaction.Contract contract;
 
     public ContractRecord() {}
     public ContractRecord(ResultSet rs) throws SQLException {
