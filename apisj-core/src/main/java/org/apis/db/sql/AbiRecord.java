@@ -16,7 +16,8 @@ public class AbiRecord {
     private long createdAt;
     private long uid;
 
-    AbiRecord(ResultSet rs) throws SQLException {
+    public AbiRecord() {}
+    public AbiRecord(ResultSet rs) throws SQLException {
         this.creator = ByteUtil.hexStringToBytes(rs.getString("creator"));
         this.contractAddress = ByteUtil.hexStringToBytes(rs.getString("contract_address"));
         this.contractName = rs.getString("contract_name");

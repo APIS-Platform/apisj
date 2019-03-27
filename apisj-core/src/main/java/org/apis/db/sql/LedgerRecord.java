@@ -11,7 +11,8 @@ public class LedgerRecord {
     private String path;
     private String alias;
 
-    LedgerRecord(ResultSet rs) throws SQLException {
+    public LedgerRecord(){}
+    public LedgerRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.path = rs.getString("path");
         this.alias = rs.getString("alias");

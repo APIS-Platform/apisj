@@ -10,7 +10,8 @@ public class ConnectAddressGroupRecord {
     private byte[] address;
     private String groupName;
 
-    ConnectAddressGroupRecord(ResultSet rs) throws SQLException {
+    public ConnectAddressGroupRecord() {}
+    public ConnectAddressGroupRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.groupName = rs.getString("group_name");
     }

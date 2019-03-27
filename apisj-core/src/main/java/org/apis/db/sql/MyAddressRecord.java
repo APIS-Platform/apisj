@@ -10,7 +10,8 @@ public class MyAddressRecord {
     private String alias;
     private int exist;
 
-    MyAddressRecord(ResultSet rs) throws SQLException {
+    public MyAddressRecord(){}
+    public MyAddressRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.alias = rs.getString("alias");
         this.exist = rs.getInt("exist");

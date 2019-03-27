@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.*;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,7 +17,7 @@ public class SlideButtonController extends BaseViewController {
     private boolean buttonStatus = BUTTON_OFF;
 
     @FXML
-    private Pane backPane;
+    private Pane backPane, frontPane;
     @FXML
     private GridPane frontGrid;
 
@@ -44,12 +45,14 @@ public class SlideButtonController extends BaseViewController {
 
     private void buttonOff() {
         backPane.setStyle("-fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10; -fx-background-color: #999999;");
+        StyleManager.borderColorStyle(frontPane, StyleManager.AColor.C999999);
         frontGrid.setHalignment(frontGrid, HPos.LEFT);
         buttonStatus = BUTTON_OFF;
     }
 
     private void buttonOn() {
         backPane.setStyle("-fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10; -fx-background-color: #b01e1e;");
+        StyleManager.borderColorStyle(frontPane, StyleManager.AColor.Cb01e1e);
         frontGrid.setHalignment(frontGrid, HPos.RIGHT);
         buttonStatus = BUTTON_ON;
     }

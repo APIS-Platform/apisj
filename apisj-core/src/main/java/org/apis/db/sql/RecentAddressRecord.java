@@ -12,7 +12,8 @@ public class RecentAddressRecord {
     private String alias;
     private long createdAt;
 
-    RecentAddressRecord(ResultSet rs) throws SQLException {
+    public RecentAddressRecord() {}
+    public RecentAddressRecord(ResultSet rs) throws SQLException {
         this.txHash = ByteUtil.hexStringToBytes(rs.getString("tx_hash"));
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.alias = rs.getString("alias");

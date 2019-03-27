@@ -1,7 +1,6 @@
 package org.apis.gui.controller.popup;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -10,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,6 +22,7 @@ public class PopupSuccessController extends BasePopupController {
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex-1);
         PopupManager.getInstance().hideMainPopup(zIndex);
+        setTitleColor(StyleManager.AColor.C000000);
         parentRequestFocus();
     }
 
@@ -59,5 +60,9 @@ public class PopupSuccessController extends BasePopupController {
 
     public void requestFocusYesButton(){
         yesBtn.requestFocus();
+    }
+
+    public void setTitleColor(String color) {
+        StyleManager.fontColorStyle(title, color);
     }
 }

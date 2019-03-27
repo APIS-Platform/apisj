@@ -835,6 +835,27 @@ public class DBManager {
         return false;
     }
 
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroups(){
+        List<ConnectAddressGroupRecord> connectAddressGroupRecord = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` ORDER BY group_name ");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                connectAddressGroupRecord.add(new ConnectAddressGroupRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return connectAddressGroupRecord;
+    }
+
     public List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address) {
         return selectConnectAddressGroup(address, null);
     }

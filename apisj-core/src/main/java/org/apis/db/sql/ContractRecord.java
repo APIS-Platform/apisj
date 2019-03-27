@@ -18,7 +18,8 @@ public class ContractRecord {
     private long firstTxBlock;
     private long lastSyncedBlock;
 
-    ContractRecord(ResultSet rs) throws SQLException {
+    public ContractRecord() {}
+    public ContractRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
         this.mask = rs.getString("mask");
