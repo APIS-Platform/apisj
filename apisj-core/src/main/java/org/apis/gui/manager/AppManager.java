@@ -72,6 +72,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -471,11 +472,10 @@ public class AppManager {
      *  public static method
      * ============================================== */
     public static String fileRead(File selectFile) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(selectFile));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(selectFile), StandardCharsets.UTF_8));
 
-        StringBuffer allText = new StringBuffer();
         String sCurrentLine;
-        allText = new StringBuffer();
+        StringBuffer allText = new StringBuffer();
 
         while ((sCurrentLine = br.readLine()) != null) {
             sCurrentLine = sCurrentLine.replaceAll(" ", "");
