@@ -11,9 +11,9 @@ import org.apis.gui.manager.AppManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -122,10 +122,11 @@ public class KeyStoreManager {
         // 파일을 저장한다.
         PrintWriter writer;
         try {
-            writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
+            writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(config.keystoreDir() + "/"
+                    + KeyStoreUtil.getFileName(data)), StandardCharsets.UTF_8), true);
             writer.print(keystoreJsonData);
             writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return data;
         }
