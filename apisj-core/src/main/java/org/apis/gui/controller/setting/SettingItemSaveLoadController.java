@@ -68,7 +68,7 @@ public class SettingItemSaveLoadController implements Initializable {
                         // 파일을 저장한다.
                         Date now = new Date();
                         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
-                        mapper.writeValue(new File(path + "/" + "apis-core_db_" + date.format(now) + ".bak"), privateDBRecord);
+                        mapper.writeValue(new File(path + "/" + "apis-core_contact_" + date.format(now) + ".bak"), privateDBRecord);
 
                         PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(bgAnchor, "popup_success.fxml", 2);
                         controller.setSubTitle(StringManager.getInstance().popup.successSubTitleFile);
