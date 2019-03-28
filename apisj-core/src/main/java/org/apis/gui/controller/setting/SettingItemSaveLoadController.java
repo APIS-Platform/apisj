@@ -94,7 +94,7 @@ public class SettingItemSaveLoadController implements Initializable {
                     && selectedFile.length() <= 50*1024*1024) {
 
                     try {
-                        BufferedReader br = new BufferedReader(new FileReader(selectedFile));
+                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(selectedFile), "UTF8"));
                         StringBuffer stringBuffer = new StringBuffer();
                         String currentLine, allText;
 
@@ -103,7 +103,7 @@ public class SettingItemSaveLoadController implements Initializable {
                         }
                         br.close();
 
-                        allText = stringBuffer.toString();
+                        allText = new String(stringBuffer);
 
                         if(allText.length() > 0) {
                             ObjectMapper mapper = new ObjectMapper();
