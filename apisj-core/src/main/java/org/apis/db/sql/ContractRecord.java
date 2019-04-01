@@ -1,10 +1,8 @@
 package org.apis.db.sql;
 
 import org.apis.core.CallTransaction;
-import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;

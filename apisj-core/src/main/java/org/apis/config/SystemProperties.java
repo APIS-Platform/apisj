@@ -24,6 +24,7 @@ import com.typesafe.config.ConfigRenderOptions;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.net.JsonNetConfig;
 import org.apis.config.net.MainNetConfig;
+import org.apis.config.net.PreBalanceConfig;
 import org.apis.config.net.TestNetConfig;
 import org.apis.core.Genesis;
 import org.apis.core.genesis.GenesisConfig;

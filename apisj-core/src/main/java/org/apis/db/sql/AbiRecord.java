@@ -1,6 +1,5 @@
 package org.apis.db.sql;
 
-import org.apis.core.CallTransaction;
 import org.apis.util.ByteUtil;
 
 import java.sql.ResultSet;
