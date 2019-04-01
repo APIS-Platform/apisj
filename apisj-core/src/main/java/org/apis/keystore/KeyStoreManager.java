@@ -11,9 +11,9 @@ import org.apis.gui.manager.AppManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -67,7 +67,7 @@ public class KeyStoreManager {
     }
 
     private String readFile(File file) {
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -122,10 +122,11 @@ public class KeyStoreManager {
         // 파일을 저장한다.
         PrintWriter writer;
         try {
-            writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
+            writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(config.keystoreDir() + "/"
+                    + KeyStoreUtil.getFileName(data)), StandardCharsets.UTF_8), true);
             writer.print(keystoreJsonData);
             writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return data;
         }
@@ -147,10 +148,11 @@ public class KeyStoreManager {
         PrintWriter writer;
         try {
             System.out.println("path : "+path);
-            writer = new PrintWriter(path + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
+            writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(path + "/"
+                    + KeyStoreUtil.getFileName(data)), StandardCharsets.UTF_8), true);
             writer.print(keystoreJsonData);
             writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return data;
         }
@@ -169,10 +171,11 @@ public class KeyStoreManager {
         // 파일을 저장한다.
         PrintWriter writer;
         try {
-            writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
+            writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(config.keystoreDir() + "/"
+                    + KeyStoreUtil.getFileName(data)), StandardCharsets.UTF_8), true);
             writer.print(keystoreStr);
             writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }
@@ -334,10 +337,11 @@ public class KeyStoreManager {
             // 파일을 저장한다.
             PrintWriter writer;
             try {
-                writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(changeData), "UTF-8");
+                writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(config.keystoreDir() + "/"
+                        + KeyStoreUtil.getFileName(changeData)), StandardCharsets.UTF_8), true);
                 writer.print(keystoreJsonData);
                 writer.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }

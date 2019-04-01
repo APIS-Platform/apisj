@@ -27,7 +27,7 @@
                 <RowConstraints />
               </rowConstraints>
                <children>
-                  <Pane prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: #999999; -fx-background-color: ffffff;" styleClass="border_radius_24_24_24_24">
+                  <Pane fx:id="frontPane" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: #999999; -fx-background-color: ffffff;" styleClass="border_radius_24_24_24_24">
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>

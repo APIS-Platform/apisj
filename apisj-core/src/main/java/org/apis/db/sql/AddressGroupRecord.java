@@ -6,7 +6,8 @@ import java.sql.SQLException;
 public class AddressGroupRecord {
     private String groupName;
 
-    AddressGroupRecord(ResultSet rs) throws SQLException {
+    public AddressGroupRecord(){}
+    public AddressGroupRecord(ResultSet rs) throws SQLException {
         this.groupName = rs.getString("group_name");
     }
     public String getGroupName() {

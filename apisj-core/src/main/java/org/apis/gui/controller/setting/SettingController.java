@@ -43,6 +43,7 @@ public class SettingController extends BasePopupController {
 //                                           updateNoticeController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
     @FXML private SettingItemRadioController networkIdController;
+    @FXML private SettingItemSaveLoadController saveLoadController;
 //    @FXML private SettingItemUpdateController updateController;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane gridPane, bodyScrollPaneContentPane;
@@ -77,6 +78,7 @@ public class SettingController extends BasePopupController {
         addGeneralItem("startWalletWithLogIn");
         //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
+        addGeneralItem("saveLoadPrivateDb");
 //        addGeneralItem("updateNotice");
 //        addGeneralItem("versionUpdate");
         addWindowItem("minimizeToTray");
@@ -366,6 +368,18 @@ public class SettingController extends BasePopupController {
 //            } else {
 //                this.updateController.setVersionChk(StringManager.getInstance().setting.versionNotUpToDate.get());
 //            }
+        } else if(contentsId.equals("saveLoadPrivateDb")) {
+            try {
+                URL url = getClass().getClassLoader().getResource("scene/popup/setting_item_save_load.fxml");
+                FXMLLoader loader = new FXMLLoader(url);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+                this.saveLoadController = loader.getController();
+                this.saveLoadController.setContents(StringManager.getInstance().setting.saveLoadDbLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

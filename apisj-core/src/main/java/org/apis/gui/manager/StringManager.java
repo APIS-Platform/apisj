@@ -929,9 +929,12 @@ public class StringManager {
 
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty successSubTitleFile = new SimpleStringProperty();
+        public SimpleStringProperty successSubTitleLoad = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
         public SimpleStringProperty failTitle = new SimpleStringProperty();
         public SimpleStringProperty failSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty failSubTitleLoad = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
@@ -1060,9 +1063,12 @@ public class StringManager {
 
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
+            successSubTitleFile.set(StringManager.this.getString("popup_success_sub_title_file", "The file has been saved successfully."));
+            successSubTitleLoad.set(StringManager.this.getString("popup_success_sub_title_load", "The file has been loaded successfully."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
-            failTitle.set(StringManager.this.getString("popup_fail_title", "[EN]실패!!!"));
+            failTitle.set(StringManager.this.getString("popup_fail_title", "Failed!!"));
             failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
+            failSubTitleLoad.set(StringManager.this.getString("popup_fail_sub_title_load", "Failed to import file. Please make sure that it is a valid backup file."));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
             maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
@@ -1168,6 +1174,9 @@ public class StringManager {
         public SimpleStringProperty versionNotUpToDate = new SimpleStringProperty();
         public SimpleStringProperty updateLabel = new SimpleStringProperty();
         public SimpleStringProperty updateNoticeLabel = new SimpleStringProperty();
+        public SimpleStringProperty saveLoadDbLabel = new SimpleStringProperty();
+        public SimpleStringProperty saveBtn = new SimpleStringProperty();
+        public SimpleStringProperty loadBtn = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1201,6 +1210,9 @@ public class StringManager {
             versionNotUpToDate.set(StringManager.this.getString("setting_version_not_up_to_date", "Software is not up-to-date."));
             updateLabel.set(StringManager.this.getString("setting_update_label", "UPDATE"));
             updateNoticeLabel.set(StringManager.this.getString("setting_update_notice_label", "Update notice"));
+            saveLoadDbLabel.set(StringManager.this.getString("setting_save_load_db_label", "Save/Load private DB info"));
+            saveBtn.set(StringManager.this.getString("setting_save_btn", "SAVE"));
+            loadBtn.set(StringManager.this.getString("setting_load_btn", "LOAD"));
         }
     }
 

@@ -44,17 +44,17 @@ public class OsirisTestConfig extends AbstractConfig {
 
         @Override
         public long getINIT_MINERAL_APPLY_BLOCK() {
-            return 0;
+            return 0L;
         }
 
         @Override
         public long getMASTERNODE_EARLYBIRD_PERIOD() {
-            return 100;
+            return 500;
         }
 
         @Override
         public long getMASTERNODE_PERIOD() {
-            return 500L;
+            return 1000L;
         }
 
         @Override

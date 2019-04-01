@@ -15,7 +15,8 @@ public class TokenRecord {
     private long decimal;
     private BigInteger totalSupply;
 
-    TokenRecord(ResultSet rs) throws SQLException {
+    public TokenRecord() {}
+    public TokenRecord(ResultSet rs) throws SQLException {
         this.tokenAddress = ByteUtil.hexStringToBytes(rs.getString("token_address"));
         this.tokenName = rs.getString("token_name");
         this.tokenSymbol = rs.getString("token_symbol");

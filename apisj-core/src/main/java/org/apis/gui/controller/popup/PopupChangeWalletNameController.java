@@ -38,7 +38,8 @@ public class PopupChangeWalletNameController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-                new_text = new_text.replaceAll("[^\\x{00}-\\x{7F}]","");
+                // Remove regular expression by handling encoding issues
+                // new_text = new_text.replaceAll("[^\\x{00}-\\x{7F}]","");
                 String text = new_text;
 
                 if (text == null || text.equals("")) {

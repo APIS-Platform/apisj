@@ -817,6 +817,8 @@ public class DBManager {
             PreparedStatement update = this.connection.prepareStatement("UPDATE connect_address_group SET `address` = ?, `group_name` = ? WHERE `address` = ? AND group_name = ?");
             update.setString(1, ByteUtil.toHexString(address));
             update.setString(2, groupName);
+            update.setString(3, ByteUtil.toHexString(address));
+            update.setString(4, groupName);
             int updateResult = update.executeUpdate();
             update.close();
             if(updateResult == 0) {
@@ -833,6 +835,27 @@ public class DBManager {
         }
 
         return false;
+    }
+
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroups(){
+        List<ConnectAddressGroupRecord> connectAddressGroupRecord = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` ORDER BY group_name ");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                connectAddressGroupRecord.add(new ConnectAddressGroupRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return connectAddressGroupRecord;
     }
 
     public List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address) {
