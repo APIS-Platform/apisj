@@ -255,7 +255,9 @@ public class MainController extends BaseViewController {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
+            if(AppManager.getGeneralPropertiesData("network_id").equals("1")) {
+                syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
+            }
         }
     }
 

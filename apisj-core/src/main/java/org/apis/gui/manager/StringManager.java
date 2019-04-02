@@ -1191,7 +1191,7 @@ public class StringManager {
             networkIdLabel.set(StringManager.this.getString("setting_network_id_label", "Network ID"));
             networkIdLabel1.set(StringManager.this.getString("setting_network_id_label1", "Network ID : "));
             mainnetLabel.set(StringManager.this.getString("setting_mainnet_label", "Mainnet"));
-            testnetLabel.set(StringManager.this.getString("setting_testnet_label", "Osiris - Testnet"));
+            testnetLabel.set(StringManager.this.getString("setting_testnet_label", "Testnet"));
             customLabel.set(StringManager.this.getString("setting_custom_label", "Custom"));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
             rpcPortLabel.set(StringManager.this.getString("setting_rpc_port_label", "Port"));

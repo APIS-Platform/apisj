@@ -23,8 +23,9 @@ public class SettingItemRadioController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Mainnet", "1");
-        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Osiris - Testnet", "40000");
-        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_TEXTFIELD, "Custom", null);
+        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Testnet", "40000");
+//        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_TEXTFIELD, "Custom", null);
+
 
         radioGroup();
     }
@@ -45,7 +46,7 @@ public class SettingItemRadioController implements Initializable {
                 e.printStackTrace();
             }
 
-        } else if(name.equals("Osiris - Testnet")) {
+        } else if(name.equals("Testnet")) {
             try {
                 URL url = getClass().getClassLoader().getResource("scene/popup/setting_item_radio_item.fxml");
                 FXMLLoader loader = new FXMLLoader(url);
@@ -56,6 +57,7 @@ public class SettingItemRadioController implements Initializable {
                 this.testnetItemController.setType(itemType);
                 this.testnetItemController.setName(StringManager.getInstance().setting.testnetLabel.get());
                 this.testnetItemController.setNetworkId(networkId);
+                this.testnetItemController.setBgGridMargin(0, 20, 16, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,6 +72,7 @@ public class SettingItemRadioController implements Initializable {
                 this.customItemController = (SettingItemRadioItemController)loader.getController();
                 this.customItemController.setType(itemType);
                 this.customItemController.setName(StringManager.getInstance().setting.customLabel.get());
+                this.testnetItemController.setBgGridMargin(0, 0, 0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,7 +82,7 @@ public class SettingItemRadioController implements Initializable {
     private void radioGroup() {
         itemControllers.add(mainnetItemController);
         itemControllers.add(testnetItemController);
-        itemControllers.add(customItemController);
+//        itemControllers.add(customItemController);
 
         for(int i=0; i<itemControllers.size(); i++) {
             SettingItemRadioItemController controller = itemControllers.get(i);
@@ -91,11 +94,11 @@ public class SettingItemRadioController implements Initializable {
                         if(itemControllers.get(j) != controller) {
                             itemControllers.get(j).uncheck();
                             if(controller != customItemController) {
-                                customItemController.setText("");
+//                                customItemController.setText("");
                             }
                         } else {
                             if(controller == customItemController) {
-                                customItemController.requestFocus();
+//                                customItemController.requestFocus();
                             }
                         }
                     }
@@ -113,20 +116,25 @@ public class SettingItemRadioController implements Initializable {
                 testnetItemController.getHandler().clicked();
                 break;
             default:
-                customItemController.getHandler().clicked();
-                customItemController.setText(networkId);
+                if(customItemController != null) {
+                    customItemController.getHandler().clicked();
+                    customItemController.setText(networkId);
+                }
                 break;
         }
     }
 
     public String getChecked() {
+        String result = "";
+
         if(mainnetItemController.isChecked()) {
-            return "" + 1;
+            result = "" + 1;
         } else if(testnetItemController.isChecked()) {
-            return "" + 40000;
-        } else {
-            return customItemController.getText();
+            result = "" + 40000;
+//        } else {
+//            result = customItemController.getText();
         }
+        return result;
     }
 
     public String getContents() {

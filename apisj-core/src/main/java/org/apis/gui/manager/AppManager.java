@@ -46,7 +46,6 @@ import org.apis.hid.HIDDevice;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.server.Channel;
 import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
@@ -116,6 +115,7 @@ public class AppManager {
     private long timeLastProgramClosed = 0;
     private boolean isClosed = false;
     static private boolean processRestartThreadCreated = false;
+    final private String networkId = getGeneralPropertiesData("network_id");
     private PopupResetController resetController;
 
     /* ==============================================
@@ -166,34 +166,36 @@ public class AppManager {
             });
             isSyncDone = true;
 
-            if(!processRestartThreadCreated) {
-                processRestartThreadCreated = true;
+            if(networkId.equals("1")) {
+                if (!processRestartThreadCreated) {
+                    processRestartThreadCreated = true;
 
-                Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                    long now = TimeUtils.getRealTimestamp();
+                    Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                        long now = TimeUtils.getRealTimestamp();
 
-                    // 싱크가 지연된 경우 프로그램을 종료한다.
-                    if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                        timeLastProgramClosed = now;
-                        isClosed = true;
-                        isSyncDone = false;
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                resetController = (PopupResetController)PopupManager.getInstance().showMainPopup(null,"popup_reset.fxml", 0);
-                            }
-                        });
-                        mApis.close();
-                    }
+                        // 싱크가 지연된 경우 프로그램을 종료한다.
+                        if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                            timeLastProgramClosed = now;
+                            isClosed = true;
+                            isSyncDone = false;
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    resetController = (PopupResetController) PopupManager.getInstance().showMainPopup(null, "popup_reset.fxml", 0);
+                                }
+                            });
+                            mApis.close();
+                        }
 
-                    // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                    if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                        timeLastBlockReceived = now;
-                        isClosed = false;
-                        startAPIS();
-                    }
+                        // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                        if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                            timeLastBlockReceived = now;
+                            isClosed = false;
+                            startAPIS();
+                        }
 
-                }, 60*10, 1, TimeUnit.SECONDS);
+                    }, 60 * 10, 1, TimeUnit.SECONDS);
+                }
             }
 
             // start rpc server
@@ -1729,6 +1731,7 @@ public class AppManager {
 
     public void setMiningWalletAddress(String miningWalletAddress){this.miningWalletAddress = miningWalletAddress;}
     public String getMiningWalletAddress(){return this.miningWalletAddress;}
+    public String getNetworkId(){return this.networkId;}
 
 
     /* ==============================================

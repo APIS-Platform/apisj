@@ -112,6 +112,21 @@ public class SettingItemUpdateController implements Initializable {
                 }//if(!versionStatus)
             }
         });
+
+        updateBtn.setOnMouseEntered(event -> {
+            if(!isVersionStatus()) {
+                StyleManager.backgroundColorStyle(updateBtn, StyleManager.AColor.C910000);
+            }
+        });
+
+        updateBtn.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(!isVersionStatus()) {
+                    StyleManager.backgroundColorStyle(updateBtn, StyleManager.AColor.Cb01e1e);
+                }
+            }
+        });
     }
 
     private void languageSetting() {
