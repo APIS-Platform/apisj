@@ -116,6 +116,10 @@ public class SettingItemRadioItemController implements Initializable {
         checkImg.setImage(ImageManager.checkGrey);
     }
 
+    public boolean isChecked() {
+        return this.checked;
+    }
+
     public String getName() {
         return this.name.getText();
     }
@@ -133,6 +137,9 @@ public class SettingItemRadioItemController implements Initializable {
     }
 
     public String getText() {
+        if(this.textField.getText().equals("")) {
+            return "1";
+        }
         return this.textField.getText();
     }
 
@@ -146,6 +153,10 @@ public class SettingItemRadioItemController implements Initializable {
 
     public void setHandler(SettingItemRadioItemImpl handler) {
         this.handler = handler;
+    }
+
+    public SettingItemRadioItemImpl getHandler() {
+        return this.handler;
     }
 
     public interface SettingItemRadioItemImpl {

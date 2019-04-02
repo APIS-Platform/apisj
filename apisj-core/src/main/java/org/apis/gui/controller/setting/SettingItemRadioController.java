@@ -23,7 +23,7 @@ public class SettingItemRadioController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Mainnet", "1");
-        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Osiris - Testnet", "10004");
+        addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_LABEL, "Osiris - Testnet", "40000");
         addRadioItem(SettingItemRadioItemController.SETTING_ITEM_RADIO_TEXTFIELD, "Custom", null);
 
         radioGroup();
@@ -101,6 +101,31 @@ public class SettingItemRadioController implements Initializable {
                     }
                 }
             });
+        }
+    }
+
+    public void initCheck(String networkId) {
+        switch(networkId) {
+            case "1":
+                mainnetItemController.getHandler().clicked();
+                break;
+            case "40000":
+                testnetItemController.getHandler().clicked();
+                break;
+            default:
+                customItemController.getHandler().clicked();
+                customItemController.setText(networkId);
+                break;
+        }
+    }
+
+    public String getChecked() {
+        if(mainnetItemController.isChecked()) {
+            return "" + 1;
+        } else if(testnetItemController.isChecked()) {
+            return "" + 40000;
+        } else {
+            return customItemController.getText();
         }
     }
 

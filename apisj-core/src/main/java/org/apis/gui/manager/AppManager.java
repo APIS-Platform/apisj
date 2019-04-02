@@ -1894,6 +1894,7 @@ public class AppManager {
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
             if (prop.getProperty("peer_num") == null) { prop.setProperty("peer_num", "30"); }
             if (prop.getProperty("update_notice") == null) { prop.setProperty("update_notice", "true"); }
+            if (prop.getProperty("network_id") == null) { prop.setProperty("network_id", "1"); }
             input.close();
 
         } catch (IOException e) {
@@ -1908,6 +1909,7 @@ public class AppManager {
             prop.setProperty("reward_sound","false");
             prop.setProperty("peer_num", "30");
             prop.setProperty("update_notice", "true");
+            prop.setProperty("network_id", "1");
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);

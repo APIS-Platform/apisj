@@ -20,6 +20,7 @@ import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
+import org.apis.util.ChainConfigUtil;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -165,6 +166,7 @@ public class SettingController extends BasePopupController {
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 //        updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
         userNumLabel.setText(prop.getProperty("peer_num"));
+        networkIdController.initCheck(prop.getProperty("network_id"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
@@ -577,6 +579,17 @@ public class SettingController extends BasePopupController {
             SystemProperties.getDefault().overrideParams(cliOptions);
             // Update notice
 //            prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
+            // Network ID
+            String networkId = networkIdController.getChecked();
+            prop.setProperty("network_id", networkId);
+            // Delete or make network.conf file
+            if(networkId.equals("1")) {
+                ChainConfigUtil.changeChain(1);
+            } else if(networkId.equals("40000")) {
+                ChainConfigUtil.changeChain(7);
+            } else {
+                ChainConfigUtil.changeChain(Integer.parseInt(networkId));
+            }
 
             AppManager.saveGeneralProperties();
 
@@ -602,6 +615,7 @@ public class SettingController extends BasePopupController {
             }
             //exit();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
+            controller.setSubTitle(StringManager.getInstance().popup.successSubtitleRestart);
         }
     }
 

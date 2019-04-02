@@ -931,6 +931,7 @@ public class StringManager {
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitleFile = new SimpleStringProperty();
         public SimpleStringProperty successSubTitleLoad = new SimpleStringProperty();
+        public SimpleStringProperty successSubtitleRestart = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
         public SimpleStringProperty failTitle = new SimpleStringProperty();
         public SimpleStringProperty failSubTitle = new SimpleStringProperty();
@@ -1065,6 +1066,7 @@ public class StringManager {
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
             successSubTitleFile.set(StringManager.this.getString("popup_success_sub_title_file", "The file has been saved successfully."));
             successSubTitleLoad.set(StringManager.this.getString("popup_success_sub_title_load", "The file has been loaded successfully."));
+            successSubtitleRestart.set(StringManager.this.getString("popup_success_sub_title_restart", "Your request has been received successfully. *Some settings need to restart program to apply."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
             failTitle.set(StringManager.this.getString("popup_fail_title", "Failed!!"));
             failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
