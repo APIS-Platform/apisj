@@ -3,7 +3,6 @@ package org.apis.gui.controller.setting;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -332,8 +331,9 @@ public class SettingController extends BasePopupController {
 
                 this.updateController = (SettingItemUpdateController)loader.getController();
 
-                String jsonUrl = "https://gist.githubusercontent.com/Oxchild/c73c783b8054d9b85f7fdcdfbbc821b1/raw/android.json";
+                String jsonUrl = "https://storage.googleapis.com/apis-mn-images/pcwallet/pcwallet.json";
                 InputStream is = new URL(jsonUrl).openStream();
+
                 try {
                     BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
                     StringBuilder sb = new StringBuilder();
@@ -618,7 +618,7 @@ public class SettingController extends BasePopupController {
             }
             //exit();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
-            controller.setSubTitle(StringManager.getInstance().popup.successSubtitleRestart);
+            controller.setSubTitle(StringManager.getInstance().popup.successSubTitleRestart);
         }
     }
 

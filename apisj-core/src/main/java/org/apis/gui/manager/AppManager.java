@@ -557,6 +557,32 @@ public class AppManager {
         return true;
     }
 
+    public static void deleteFile(String path) {
+        File deleteFolder = new File(path);
+
+        while(deleteFolder.exists()) {
+            if(deleteFolder.isFile()) {
+                deleteFolder.delete();
+                System.out.println("File deleted : " + deleteFolder.getName());
+                return;
+            }
+            File[] deleteFolderList = deleteFolder.listFiles();
+
+            for(int i=0; i<deleteFolderList.length; i++) {
+                if(deleteFolderList[i].isFile()) {
+                    deleteFolderList[i].delete();
+                    System.out.println("File deleted : " + deleteFolderList[i].getName());
+                } else {
+                    deleteFile(deleteFolderList[i].getPath());
+                }
+            }
+
+            if(deleteFolderList.length == 0 && deleteFolder.isDirectory()) {
+                deleteFolder.delete();
+                System.out.println("Folder deleted : " + deleteFolder.getName());
+            }
+        }
+    }
 
 
     /* ==============================================

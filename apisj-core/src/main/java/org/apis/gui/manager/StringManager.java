@@ -931,7 +931,8 @@ public class StringManager {
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitleFile = new SimpleStringProperty();
         public SimpleStringProperty successSubTitleLoad = new SimpleStringProperty();
-        public SimpleStringProperty successSubtitleRestart = new SimpleStringProperty();
+        public SimpleStringProperty successSubTitleRestart = new SimpleStringProperty();
+        public SimpleStringProperty successSubTitleUpdate = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
         public SimpleStringProperty failTitle = new SimpleStringProperty();
         public SimpleStringProperty failSubTitle = new SimpleStringProperty();
@@ -996,6 +997,8 @@ public class StringManager {
         public SimpleStringProperty copyMaskSubTitle = new SimpleStringProperty();
 
         public SimpleStringProperty cautionTitle = new SimpleStringProperty();
+        public SimpleStringProperty cautionUpdateFirst = new SimpleStringProperty();
+        public SimpleStringProperty cautionUpdateSecond = new SimpleStringProperty();
         public SimpleStringProperty cancelWaiting = new SimpleStringProperty();
         public SimpleStringProperty completeCancel = new SimpleStringProperty();
         public SimpleStringProperty yesBtn = new SimpleStringProperty();
@@ -1007,6 +1010,7 @@ public class StringManager {
         public SimpleStringProperty changePwNotice = new SimpleStringProperty();
         public SimpleStringProperty resetFirstLabel = new SimpleStringProperty();
         public SimpleStringProperty resetSecondLabel = new SimpleStringProperty();
+        public SimpleStringProperty updateFirstLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1066,7 +1070,8 @@ public class StringManager {
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
             successSubTitleFile.set(StringManager.this.getString("popup_success_sub_title_file", "The file has been saved successfully."));
             successSubTitleLoad.set(StringManager.this.getString("popup_success_sub_title_load", "The file has been loaded successfully."));
-            successSubtitleRestart.set(StringManager.this.getString("popup_success_sub_title_restart", "Your request has been received successfully. *Some settings need to restart program to apply."));
+            successSubTitleRestart.set(StringManager.this.getString("popup_success_sub_title_restart", "Your request has been received successfully. *Some settings need to restart program to apply."));
+            successSubTitleUpdate.set(StringManager.this.getString("popup_success_sub_title_update", "The update completed successfully. The program will restart."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
             failTitle.set(StringManager.this.getString("popup_fail_title", "Failed!!"));
             failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
@@ -1131,6 +1136,8 @@ public class StringManager {
             copyMaskSubTitle.set(StringManager.this.getString("popup_copy_mask_sub_title", "You can paste that ADDRESS MASK"));
 
             cautionTitle.set(StringManager.this.getString("popup_caution_title", "Caution!"));
+            cautionUpdateFirst.set(StringManager.this.getString("popup_caution_update_first", "If you quit the program during the update, it may not run normally. It will restart after update is complete."));
+            cautionUpdateSecond.set(StringManager.this.getString("popup_caution_update_second", "Would you like to proceed update?"));
             cancelWaiting.set(StringManager.this.getString("popup_cancel_waiting", "Once the masternode is started, you can't cancel waiting. Would you like to proceed?"));
             completeCancel.set(StringManager.this.getString("popup_complete_cancel", "Cancellation can take up to 24 hours from request. Would you like to proceed?"));
             yesBtn.set(StringManager.this.getString("popup_yes_btn", "Yes"));
@@ -1142,6 +1149,7 @@ public class StringManager {
             changePwNotice.set(StringManager.this.getString("popup_change_pw_notice", "You can’t change its password once a Keystore file is backed up. Please make sure to back up a Keystore file once you change the password."));
             resetFirstLabel.set(StringManager.this.getString("popup_reset_first_label", "Connection is being reset."));
             resetSecondLabel.set(StringManager.this.getString("popup_reset_second_label", "Please wait a moment."));
+            updateFirstLabel.set(StringManager.this.getString("popup_update_first_label", "Update in progress."));
         }
     }
 
