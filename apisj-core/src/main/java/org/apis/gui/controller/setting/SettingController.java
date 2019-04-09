@@ -75,12 +75,18 @@ public class SettingController extends BasePopupController {
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "RPC Start");
 
-        addGeneralItem("startWalletWithLogIn");
+
+        if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
+            addGeneralItem("startWalletWithLogIn");
+        }
         //addGeneralItem("enableLogEvent");
         addGeneralItem("rewardSave");
+
         addGeneralItem("saveLoadPrivateDb");
-        addGeneralItem("updateNotice");
-        addGeneralItem("versionUpdate");
+        if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
+            addGeneralItem("updateNotice");
+            addGeneralItem("versionUpdate");
+        }
         addWindowItem("minimizeToTray");
 
         setItemsUnderLine();
@@ -163,7 +169,9 @@ public class SettingController extends BasePopupController {
             enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
         }
         rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
-        updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
+        if(updateNoticeController != null) {
+            updateNoticeController.setSelected(prop.getProperty("update_notice").equals("true"));
+        }
         userNumLabel.setText(prop.getProperty("peer_num"));
         networkIdController.initCheck(prop.getProperty("network_id"));
 
@@ -578,7 +586,9 @@ public class SettingController extends BasePopupController {
             cliOptions.put("peer.maxActivePeers", userNumLabel.getText());
             SystemProperties.getDefault().overrideParams(cliOptions);
             // Update notice
-            prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
+            if(updateNoticeController != null) {
+                prop.setProperty("update_notice", "" + updateNoticeController.isSelected());
+            }
             // Network ID
             String networkId = networkIdController.getChecked();
             if(networkId.equals("")) {

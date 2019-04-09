@@ -393,6 +393,10 @@ public class AppManager {
             // block number
             AppManager.this.myBestBlock = AppManager.this.mApis.getBlockchain().getBestBlock().getNumber();
             AppManager.this.worldBestBlock = mApis.getSyncStatus().getBlockBestKnown();
+            // Remove reset popup when sync is restored
+            if((worldBestBlock - myBestBlock) < 8) {
+                exitResetPopup();
+            }
 
 
             //sync
