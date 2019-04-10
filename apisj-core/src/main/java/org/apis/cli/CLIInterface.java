@@ -67,7 +67,6 @@ public class CLIInterface {
                     continue;
                 if (processDbReset(arg, args[i + 1], cliOptions))
                     continue;
-
             }
 
             if (cliOptions.size() > 0) {
@@ -76,8 +75,11 @@ public class CLIInterface {
 
             SystemProperties.getDefault().overrideParams(cliOptions);
 
+            processDashBoard();
+
         } catch (Throwable e) {
             logger.error("Error parsing command line: [{}]", e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }
@@ -140,6 +142,11 @@ public class CLIInterface {
         cliStart.startRpcServerCheck();
 
         System.exit(1);
+    }
+
+    private static void processDashBoard() throws IOException {
+        CLIStart cliStart = new CLIStart();
+        cliStart.startDashBoard();
     }
 
     // override the connect host:port directory
