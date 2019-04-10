@@ -934,6 +934,8 @@ public class StringManager {
         public SimpleStringProperty successSubTitleRestart = new SimpleStringProperty();
         public SimpleStringProperty successSubTitleUpdate = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
+        public SimpleStringProperty noticeUpdateTitle = new SimpleStringProperty();
+        public SimpleStringProperty noticeUpdateSubTitle = new SimpleStringProperty();
         public SimpleStringProperty failTitle = new SimpleStringProperty();
         public SimpleStringProperty failSubTitle = new SimpleStringProperty();
         public SimpleStringProperty failSubTitleLoad = new SimpleStringProperty();
@@ -1073,6 +1075,8 @@ public class StringManager {
             successSubTitleRestart.set(StringManager.this.getString("popup_success_sub_title_restart", "Your request has been received successfully. *Some settings need to restart program to apply."));
             successSubTitleUpdate.set(StringManager.this.getString("popup_success_sub_title_update", "The update completed successfully. The program will restart."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
+            noticeUpdateTitle.set(StringManager.this.getString("popup_notice_update_title", "Notice"));
+            noticeUpdateSubTitle.set(StringManager.this.getString("popup_notice_update_sub_title", "Apis-core is not the latest version. Please check your settings and update."));
             failTitle.set(StringManager.this.getString("popup_fail_title", "Failed!!"));
             failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
             failSubTitleLoad.set(StringManager.this.getString("popup_fail_sub_title_load", "Failed to import file. Please make sure that it is a valid backup file."));

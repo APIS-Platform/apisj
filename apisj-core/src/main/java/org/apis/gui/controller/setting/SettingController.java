@@ -339,21 +339,8 @@ public class SettingController extends BasePopupController {
 
                 this.updateController = (SettingItemUpdateController)loader.getController();
 
-                String jsonUrl = "https://storage.googleapis.com/apis-mn-images/pcwallet/pcwallet.json";
-                InputStream is = new URL(jsonUrl).openStream();
-
                 try {
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-                    StringBuilder sb = new StringBuilder();
-                    int cp;
-                    while((cp = rd.read()) != -1) {
-                        sb.append((char)cp);
-                    }
-                    String jsonText = sb.toString();
-
-                    JSONParser parser = new JSONParser();
-                    JSONObject jo = (JSONObject) parser.parse(jsonText);
-                    String newestVer = jo.get("versionNewest").toString();
+                    String newestVer = AppManager.getVersionNewest();
                     if(SystemProperties.getDefault().projectVersion().equals(newestVer)) {
                         this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
                     } else {
@@ -361,12 +348,8 @@ public class SettingController extends BasePopupController {
                     }
 
                     this.updateController.setLatestVer(newestVer);
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                } finally {
-                    is.close();
                 }
             } catch(IOException e) {
                 e.printStackTrace();

@@ -18,7 +18,7 @@ public class PopupManager {
     private PopupManager() { }
 
     // field
-    private GridPane mainPopup0, mainPopup1, mainPopup2, mainPopup3;
+    private GridPane mainPopup0, mainPopup1, mainPopup2, mainPopup3, mainPopup4;
 
     // method
     public Object showMainPopup(Node parent, String fxmlName, int zIndex){
@@ -51,6 +51,10 @@ public class PopupManager {
                 this.mainPopup3.getChildren().clear();
                 this.mainPopup3.add(popup , 0 ,0 );
                 this.mainPopup3.setVisible(true);
+            }else if(zIndex == 3){
+                this.mainPopup4.getChildren().clear();
+                this.mainPopup4.add(popup , 0 , 0 );
+                this.mainPopup4.setVisible(true);
             }
             popup.requestFocus();
 
@@ -75,6 +79,9 @@ public class PopupManager {
         }else if(zIndex == 2){
             this.mainPopup3.getChildren().clear();
             this.mainPopup3.setVisible(false);
+        }else if(zIndex == 3){
+            this.mainPopup4.getChildren().clear();
+            this.mainPopup4.setVisible(false);
         }
     }
 
@@ -82,4 +89,5 @@ public class PopupManager {
     public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
     public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
     public void setMainPopup3(GridPane popup){ this.mainPopup3 = popup; }
+    public void setMainPopup4(GridPane popup){ this.mainPopup4 = popup; }
 }

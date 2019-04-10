@@ -110,7 +110,13 @@ public class PopupSuccessController extends BasePopupController {
         });
     }
 
+    private boolean isRestartApp = false;
     public void restartApp(String zipFileName) {
+        if(isRestartApp) {
+            return;
+        }
+        isRestartApp = true;
+
         final File currentExe;
         try {
             currentExe = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
@@ -155,26 +161,34 @@ public class PopupSuccessController extends BasePopupController {
             proc = builder.start();
             proc.waitFor();
 
-            // Remove temp
+            while(true) {
+                File tempDir = new File(tempPath);
+                if (tempDir.exists()) {
+                    // Remove temp
+                    command.clear();
+                    command.add("powershell.exe");
+                    command.add("Start-Process");
+                    command.add("-WindowStyle");
+                    command.add("hidden");
+                    command.add("-FilePath");
+                    command.add("powershell.exe");
+                    command.add("-verb runAs");
+                    command.add("\\\"Remove-Item -Path '" + tempPath + "' -Recurse\\\"");
+
+                    builder = new ProcessBuilder(command);
+                    proc = builder.start();
+                    proc.waitFor();
+                    Thread.sleep(1000);
+                } else {
+                    break;
+                }
+            }
+
             command.clear();
             command.add("powershell.exe");
-            command.add("Start-Process");
             command.add("-WindowStyle");
             command.add("hidden");
-            command.add("-FilePath");
-            command.add("powershell.exe");
-            command.add("-verb runAs");
-            command.add("\\\"Remove-Item -Path '" + tempPath + "' -Recurse\\\"");
-
-            builder = new ProcessBuilder(command);
-            proc = builder.start();
-            proc.waitFor();
-
-            command.clear();
-            command.add("powershell.exe");
-            command.add("-WindowStyle");
-            command.add("hidden");
-            command.add("& \\\"" + exePath + "\\apis-core.exe\\\"");
+            command.add("Start-Sleep -s 5 | & \\\"" + exePath + "\\apis-core.exe\\\"");
 
             builder = new ProcessBuilder(command);
             builder.start();

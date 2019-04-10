@@ -33,10 +33,12 @@ import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
 import org.apis.facade.ApisImpl;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.popup.PopupResetController;
+import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.controller.smartcontract.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
@@ -58,6 +60,8 @@ import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.imageio.ImageIO;
@@ -71,6 +75,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -117,6 +122,7 @@ public class AppManager {
     static private boolean processRestartThreadCreated = false;
     final private String networkId = getGeneralPropertiesData("network_id");
     private PopupResetController resetController;
+    private PopupSuccessController updateNoticeController;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -197,6 +203,24 @@ public class AppManager {
                     }, 60 * 10, 1, TimeUnit.SECONDS);
                 }
             }
+
+            // Update notice popup
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                        && getGeneralPropertiesData("update_notice").equals("true")
+                        && OSInfo.getOs() == OSInfo.OS.WINDOWS){
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Hide before show
+                            PopupManager.getInstance().hideMainPopup(3);
+                            updateNoticeController = (PopupSuccessController) PopupManager.getInstance().showMainPopup(null, "popup_success.fxml", 3);
+                            updateNoticeController.setTitle(StringManager.getInstance().popup.noticeUpdateTitle);
+                            updateNoticeController.setSubTitle(StringManager.getInstance().popup.noticeUpdateSubTitle);
+                        }
+                    });
+                }
+            }, 10 * 1, 60 * 60 * 6, TimeUnit.SECONDS);
 
             // start rpc server
             AppManager.getInstance().startRPC();
@@ -586,6 +610,37 @@ public class AppManager {
                 System.out.println("Folder deleted : " + deleteFolder.getName());
             }
         }
+    }
+
+    public static String getVersionNewest() {
+        String newestVer = null;
+        String jsonUrl = "https://storage.googleapis.com/apis-mn-images/pcwallet/pcwallet.json";
+        InputStream is = null;
+        try {
+            is = new URL(jsonUrl).openStream();
+            try {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                StringBuilder sb = new StringBuilder();
+                int cp;
+                while((cp = rd.read()) != -1) {
+                    sb.append((char)cp);
+                }
+                String jsonText = sb.toString();
+
+                JSONParser parser = new JSONParser();
+                org.json.simple.JSONObject jo = (org.json.simple.JSONObject) parser.parse(jsonText);
+                newestVer = jo.get("versionNewest").toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } finally {
+                is.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newestVer;
     }
 
 

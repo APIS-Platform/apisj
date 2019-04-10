@@ -19,7 +19,6 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
-import org.apis.gui.controller.popup.PopupResetController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.*;
@@ -37,7 +36,7 @@ public class MainController extends BaseViewController {
 
     @FXML private TabPane tabPane;
     @FXML private AnchorPane tabWalletPane, tabTransferPane, tabSmartContractPane, tabAddressMaskingPane, tabTransactionPane;
-    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3, popupLayout4;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
     @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting, logo;
@@ -442,6 +441,7 @@ public class MainController extends BaseViewController {
         PopupManager.getInstance().setMainPopup1(popupLayout1);
         PopupManager.getInstance().setMainPopup2(popupLayout2);
         PopupManager.getInstance().setMainPopup3(popupLayout3);
+        PopupManager.getInstance().setMainPopup4(popupLayout4);
 
         init();
         hideLayerPopup();
