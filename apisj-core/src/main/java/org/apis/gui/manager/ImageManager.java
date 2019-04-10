@@ -16,8 +16,10 @@ public class ImageManager {
 
     public static final Image btnAddressInfo = new Image("image/btn_addressinfo@2x.png");
     public static final Image btnAddressInfoHover = new Image("image/btn_addressinfo_hover@2x.png");
-    public static final Image btnSetting = new Image("image/btn_setting@2x.png");;
+    public static final Image btnSetting = new Image("image/btn_setting@2x.png");
     public static final Image btnSettingHover = new Image("image/btn_setting_hover@2x.png");
+    public static final Image btnSettingUpdate = new Image("image/btn_setting_update@2x.png");
+    public static final Image btnSettingUpdateHover = new Image("image/btn_setting_update_hover@2x.png");
     public static final Image icCircleHalfShow = new Image("image/ic_circle_half_show@2x.png");
     public static final Image icCircleHalfHover = new Image("image/ic_circle_half_hover@2x.png");
 

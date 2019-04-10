@@ -540,6 +540,22 @@ public class MainController extends BaseViewController {
         return this.selectedIndex;
     }
 
+    public void setSettingImageUpdate(boolean isUpdate) {
+        if(isUpdate) {
+            imageSetting = ImageManager.btnSettingUpdate;
+            imageSettingHover = ImageManager.btnSettingUpdateHover;
+        } else {
+            imageSetting = ImageManager.btnSetting;
+            imageSettingHover = ImageManager.btnSettingHover;
+        }
+
+        if(icSetting.isVisible()) {
+            btnSetting.setImage(imageSettingHover);
+        } else {
+            btnSetting.setImage(imageSetting);
+        }
+    }
+
 
     class FooterTotalModel {
         public String tokenAddress;

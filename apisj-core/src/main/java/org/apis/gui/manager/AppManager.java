@@ -222,6 +222,21 @@ public class AppManager {
                 }
             }, 10 * 1, 60 * 60 * 6, TimeUnit.SECONDS);
 
+            // Change setting button image when update exists
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->{
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                                && OSInfo.getOs() == OSInfo.OS.WINDOWS){
+                            guiFx.getMain().setSettingImageUpdate(true);
+                        } else {
+                            guiFx.getMain().setSettingImageUpdate(false);
+                        }
+                    }
+                });
+            }, 5 * 1, 60 * 60 * 1, TimeUnit.SECONDS);
+
             // start rpc server
             AppManager.getInstance().startRPC();
 
