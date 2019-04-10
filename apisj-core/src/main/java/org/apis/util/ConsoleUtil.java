@@ -72,6 +72,9 @@ public class ConsoleUtil {
     public static void printlnRed(String format, Object... args) {
         System.out.println(ANSI_RED+ String.format(format, args) + ANSI_RESET);
     }
+    public static void printlnBRed(String format, Object... args) {
+        System.out.println(ANSI_BRED+ String.format(format, args) + ANSI_RESET);
+    }
     public static void printlnGreen(String format, Object... args) {
         System.out.println(ANSI_GREEN + String.format(format, args) + ANSI_RESET);
     }
