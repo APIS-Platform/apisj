@@ -1022,7 +1022,12 @@ public class WalletController extends BaseViewController {
                 }
             }
 
-            showToolGroup(isPossibleMining, isPossibleMasternode);
+            // Hide mining and masternode button when it's testnet
+            if(!AppManager.getInstance().getNetworkId().equals("1")) {
+                showToolGroup(false, false);
+            } else {
+                showToolGroup(isPossibleMining, isPossibleMasternode);
+            }
             if(AppManager.getInstance().isLedger(model.getAddress())) {
                 showLedgerToolGroup();
             }

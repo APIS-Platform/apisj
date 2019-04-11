@@ -58,6 +58,7 @@ public class MainController extends BaseViewController {
 
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
+    private PopupRestartController restartController;
 
     // 이전 마이닝/마스터노드 참여(혹은 시도) 하던 지갑주소
     String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
@@ -517,8 +518,10 @@ public class MainController extends BaseViewController {
                 }
             }
 
-            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup(null,"popup_restart.fxml", 0);
-            controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
+            if(AppManager.getInstance().getNetworkId().equals("1")) {
+                restartController = (PopupRestartController) PopupManager.getInstance().showMainPopup(null, "popup_restart.fxml", 0);
+                restartController.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
+            }
 
         }
     }

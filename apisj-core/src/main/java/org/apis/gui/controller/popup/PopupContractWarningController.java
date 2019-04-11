@@ -27,7 +27,6 @@ import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.omg.IOP.Encoding;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.usb.UsbException;
@@ -36,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupContractWarningController extends BasePopupController {
+public class PopupContractWarningController extends BasePopupController implements PopupLedgerNoticeController.PopupLedgerNoticeCallback {
 
     @FXML private AnchorPane rootPane, walletPasswordPane, messagePane, knowledgeKeyPane;
     @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn, knowledgeKeyLabel;
@@ -44,9 +43,11 @@ public class PopupContractWarningController extends BasePopupController {
     @FXML private TextArea rawTxArea, signedTxArea;
     @FXML private MessageLineController ledgerConnectionMessageController;
 
-    private String address, value, gasPrice, gasLimit;
+    private String address, value, gasPrice, gasLimit, path;
     private byte[] data, toAddress, toMask;
+    private char[] knowledgeKey;
     private Transaction tx;
+    private HIDDevice ledger;
 
     private PopupContractWarningImpl handler;
 
@@ -165,7 +166,7 @@ public class PopupContractWarningController extends BasePopupController {
         // Ledger address
         if(AppManager.getInstance().isLedger(address)) {
             HIDModule module = HIDModule.getInstance();
-            HIDDevice ledger = AppManager.getInstance().getLedger();
+            ledger = AppManager.getInstance().getLedger();
             module.loadDeviceList();
 
             List<DeviceData> devices = module.getDeviceList();
@@ -177,7 +178,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             if(devices.size() == 1) {
                 // Check knowledge key
-                char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();;
+                knowledgeKey = knowledgeKeyController.getText().toCharArray();;
 
                 if (AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
                     byte[] proofKey = AppManager.getInstance().getProofKey(ByteUtil.hexStringToBytes(address));
@@ -200,7 +201,7 @@ public class PopupContractWarningController extends BasePopupController {
                     }
                 }
 
-                String path = AppManager.getInstance().getDerivationPath(address);
+                path = AppManager.getInstance().getDerivationPath(address);
                 if(path.length() != 0) {
                     byte[] tempAddress = null;
                     tempAddress = ledger.getAddress(path, false, false);
@@ -219,48 +220,15 @@ public class PopupContractWarningController extends BasePopupController {
                         ledgerConnectionMessageController.setSuccessed(StringManager.getInstance().intro.checkConnectionSuccess);
                         ledgerConnectionMessageController.setVisible(true);
                         ledgerNoticeController = (PopupLedgerNoticeController)PopupManager.getInstance().showMainPopup(rootPane, "popup_ledger_notice.fxml",this.zIndex + 1);
+                        ledgerNoticeController.callback = this;
 
-                        if (this.toAddress == null || this.toAddress.length <= 0) {
-                            tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], new byte[0], this.data);
-                        } else {
-                            tx = AppManager.getInstance().generateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.toMask, this.data);
-                        }
-                        rawTxArea.setText(tx.toString());
-
-                        HIDDevice finalLedger = ledger;
-                        Platform.runLater(new Runnable() {
+                        Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    // Generate ledger signed tx
-                                    Transaction signedTx = null;
-                                    ConsoleUtil.printlnPurple(tx.toString());
-
-                                    signedTx = new Transaction(finalLedger.signTransaction(path, tx, ByteUtil.hexStringToBytes(address)));
-                                    tx = signedTx;
-                                    Transaction newTx = new Transaction(signedTx.getEncoded());
-                                    if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
-                                        tx = AppManager.getInstance().apisGenerateTransactionWithLedgerTx(signedTx, knowledgeKey);
-                                    }
-                                    signedTxArea.setText(String.format("%s\n------\n%s\n------\n%s", ByteUtil.toHexString(signedTx.getEncoded()), signedTx.toString().replaceAll(" ", "\n"), newTx.toString().replaceAll(" ", "\n")));
-
-                                    yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
-                                    yesBtn.requestFocus();
-                                // Confirm ledger error
-                                } catch (Exception e) {
-                                    ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedCancel);
-                                    ledgerConnectionMessageController.setVisible(true);
-                                    AppManager.getInstance().closeLedger();
-                                    AppManager.getInstance().setLedger(null);
-                                    signedTxArea.setText(e.getMessage());
-                                    tx = null;
-
-                                    yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
-                                } finally {
-                                    ledgerNoticeController.exit();
-                                }
+                                ledgerNoticeController.getLedgerTx(address, value, gasPrice, gasLimit, toAddress, toMask, data, path);
                             }
                         });
+                        thread.start();
                     }
                 }
 
@@ -320,6 +288,47 @@ public class PopupContractWarningController extends BasePopupController {
                 }
             }
         }
+    }
+
+    @Override
+    public void exitLedgerNoticeCallback(Transaction ledgerTx, Transaction signedTx) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                rawTxArea.setText(ledgerTx.toString());
+                ConsoleUtil.printlnPurple(ledgerTx.toString());
+
+                tx = signedTx;
+                Transaction newTx = new Transaction(signedTx.getEncoded());
+                if(AppManager.getInstance().isUsedProofKey(ByteUtil.hexStringToBytes(address))) {
+                    tx = AppManager.getInstance().apisGenerateTransactionWithLedgerTx(signedTx, knowledgeKey);
+                }
+                signedTxArea.setText(String.format("%s\n------\n%s\n------\n%s", ByteUtil.toHexString(signedTx.getEncoded()), signedTx.toString().replaceAll(" ", "\n"), newTx.toString().replaceAll(" ", "\n")));
+
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
+                yesBtn.requestFocus();
+
+                ledgerNoticeController.exit();
+            }
+        });
+    }
+
+    @Override
+    public void errorLedgerCallback(Exception e) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ledgerConnectionMessageController.setFailed(StringManager.getInstance().intro.checkConnectionFailedCancel);
+                ledgerConnectionMessageController.setVisible(true);
+                AppManager.getInstance().closeLedger();
+                AppManager.getInstance().setLedger(null);
+                signedTxArea.setText(e.getMessage());
+                tx = null;
+
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
+                ledgerNoticeController.exit();
+            }
+        });
     }
 
     private void sendTx(){
