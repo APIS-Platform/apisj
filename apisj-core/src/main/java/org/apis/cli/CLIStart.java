@@ -151,6 +151,11 @@ public class CLIStart {
 
 
     /**
+     * 처음 켜지자마자 대시보드가 나타난 것인지 여부..
+     * 10초 뒤 자동 시작시키기 위한 용도로 사용된다.
+     */
+    private boolean isFirstStart = true;
+    /**
      * Dashboard를 표시해서 설정을 변경할 수 있도록 한다.
      * @throws IOException dsfds
      */
@@ -162,7 +167,15 @@ public class CLIStart {
 
             printDashboard();
 
-            String input = ConsoleUtil.readLine(">> ");
+            String input;
+            if(isFirstStart) {
+                ConsoleUtil.printlnCyan("Or if no key is entered, APIS Core will start automatically after 10 seconds.");
+                input = ConsoleUtil.readLineTimeOut(">> ", 10_000L);
+                isFirstStart = false;
+            } else {
+                ConsoleUtil.printlnBlack("");
+                input = ConsoleUtil.readLine(">> ");
+            }
 
             switch(input) {
                 // Network
@@ -330,7 +343,6 @@ public class CLIStart {
             ConsoleUtil.printlnBlack("");
         }
         ConsoleUtil.printlnCyan("Input other key to start APIS Core");
-        ConsoleUtil.printlnBlack("");
     }
 
     /**
@@ -400,7 +412,7 @@ public class CLIStart {
     }
 
     private static void printSettingRow(String number, String name, String value) {
-        if(value.isEmpty() == false) {
+        if(value == null || value.isEmpty() == false) {
             value = ": " + value;
         }
 
