@@ -1122,10 +1122,15 @@ public class AppManager {
             if (mApis != null) {
                 Block bestBlock = mApis.getBlockchain().getBestBlock();
                 Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+                Repository repo;
 
-                if (bestBlock.getNumber() >= 10) {
+                if (networkId.equals("1") ? bestBlock.getNumber() >= 10 : true) {
 
-                    Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                    if(networkId.equals("1")) {
+                        repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                    } else {
+                        repo = ((Repository) mApis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+                    }
 
                     KeyStoreDataExp keyExp = null;
                     for (int i = 0; i < keyStoreDataExpList.size(); i++) {
