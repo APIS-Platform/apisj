@@ -25,6 +25,21 @@ public class ConsoleUtil {
     private static final String ANSI_BPURPLE = "\u001B[95m";
     private static final String ANSI_BCYAN = "\u001B[96m";
 
+    public static String readLineTimeOut(String format, long timeout, Object... args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.print(String.format(format, args));
+
+        long startTime = TimeUtils.getRealTimestamp();
+        while((TimeUtils.getRealTimestamp() - startTime) < timeout && !reader.ready()) {}
+
+        if(reader.ready()) {
+            return reader.readLine();
+        } else {
+            return "\n";
+        }
+    }
+
     public static String readLine(String format, Object... args) throws IOException {
         if (System.console() != null) {
             return System.console().readLine(format, args);
