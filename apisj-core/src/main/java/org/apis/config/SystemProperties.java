@@ -587,6 +587,10 @@ public class SystemProperties {
         return getCommonDir() + config.getString("config.dir");
     }
 
+    public String tempDir() {
+        return getCommonDir() + config.getString("temp.dir");
+    }
+
     @ValidateMe
     public String dumpStyle() {
         return config.getString("dump.style");

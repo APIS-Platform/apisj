@@ -33,10 +33,12 @@ import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
 import org.apis.facade.ApisImpl;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.popup.PopupResetController;
+import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.controller.smartcontract.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
@@ -46,7 +48,6 @@ import org.apis.hid.HIDDevice;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.server.Channel;
 import org.apis.rpc.RPCServerManager;
 import org.apis.solidity.compiler.CompilationResult;
@@ -59,6 +60,8 @@ import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.imageio.ImageIO;
@@ -72,6 +75,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -116,7 +120,9 @@ public class AppManager {
     private long timeLastProgramClosed = 0;
     private boolean isClosed = false;
     static private boolean processRestartThreadCreated = false;
+    final private String networkId = getGeneralPropertiesData("network_id");
     private PopupResetController resetController;
+    private PopupSuccessController updateNoticeController;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -166,35 +172,70 @@ public class AppManager {
             });
             isSyncDone = true;
 
-            if(!processRestartThreadCreated) {
-                processRestartThreadCreated = true;
+            if(networkId.equals("1")) {
+                if (!processRestartThreadCreated) {
+                    processRestartThreadCreated = true;
 
-                Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                    long now = TimeUtils.getRealTimestamp();
+                    Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                        long now = TimeUtils.getRealTimestamp();
 
-                    // 싱크가 지연된 경우 프로그램을 종료한다.
-                    if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                        timeLastProgramClosed = now;
-                        isClosed = true;
-                        isSyncDone = false;
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                resetController = (PopupResetController)PopupManager.getInstance().showMainPopup(null,"popup_reset.fxml", 0);
-                            }
-                        });
-                        mApis.close();
-                    }
+                        // 싱크가 지연된 경우 프로그램을 종료한다.
+                        if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                            timeLastProgramClosed = now;
+                            isClosed = true;
+                            isSyncDone = false;
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    resetController = (PopupResetController) PopupManager.getInstance().showMainPopup(null, "popup_reset.fxml", 0);
+                                }
+                            });
+                            mApis.close();
+                        }
 
-                    // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                    if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                        timeLastBlockReceived = now;
-                        isClosed = false;
-                        startAPIS();
-                    }
+                        // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                        if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                            timeLastBlockReceived = now;
+                            isClosed = false;
+                            startAPIS();
+                        }
 
-                }, 60*10, 1, TimeUnit.SECONDS);
+                    }, 60 * 10, 1, TimeUnit.SECONDS);
+                }
             }
+
+            // Update notice popup
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                        && getGeneralPropertiesData("update_notice").equals("true")
+                        && OSInfo.getOs() == OSInfo.OS.WINDOWS){
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Hide before show
+                            PopupManager.getInstance().hideMainPopup(3);
+                            updateNoticeController = (PopupSuccessController) PopupManager.getInstance().showMainPopup(null, "popup_success.fxml", 3);
+                            updateNoticeController.setTitle(StringManager.getInstance().popup.noticeUpdateTitle);
+                            updateNoticeController.setSubTitle(StringManager.getInstance().popup.noticeUpdateSubTitle);
+                        }
+                    });
+                }
+            }, 10 * 1, 60 * 60 * 6, TimeUnit.SECONDS);
+
+            // Change setting button image when update exists
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->{
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                                && OSInfo.getOs() == OSInfo.OS.WINDOWS){
+                            guiFx.getMain().setSettingImageUpdate(true);
+                        } else {
+                            guiFx.getMain().setSettingImageUpdate(false);
+                        }
+                    }
+                });
+            }, 5 * 1, 60 * 60 * 1, TimeUnit.SECONDS);
 
             // start rpc server
             AppManager.getInstance().startRPC();
@@ -391,6 +432,10 @@ public class AppManager {
             // block number
             AppManager.this.myBestBlock = AppManager.this.mApis.getBlockchain().getBestBlock().getNumber();
             AppManager.this.worldBestBlock = mApis.getSyncStatus().getBlockBestKnown();
+            // Remove reset popup when sync is restored
+            if((worldBestBlock - myBestBlock) < 8) {
+                exitResetPopup();
+            }
 
 
             //sync
@@ -555,6 +600,63 @@ public class AppManager {
         return true;
     }
 
+    public static void deleteFile(String path) {
+        File deleteFolder = new File(path);
+
+        while(deleteFolder.exists()) {
+            if(deleteFolder.isFile()) {
+                deleteFolder.delete();
+                System.out.println("File deleted : " + deleteFolder.getName());
+                return;
+            }
+            File[] deleteFolderList = deleteFolder.listFiles();
+
+            for(int i=0; i<deleteFolderList.length; i++) {
+                if(deleteFolderList[i].isFile()) {
+                    deleteFolderList[i].delete();
+                    System.out.println("File deleted : " + deleteFolderList[i].getName());
+                } else {
+                    deleteFile(deleteFolderList[i].getPath());
+                }
+            }
+
+            if(deleteFolderList.length == 0 && deleteFolder.isDirectory()) {
+                deleteFolder.delete();
+                System.out.println("Folder deleted : " + deleteFolder.getName());
+            }
+        }
+    }
+
+    public static String getVersionNewest() {
+        String newestVer = null;
+        String jsonUrl = "https://storage.googleapis.com/apis-mn-images/pcwallet/pcwallet.json";
+        InputStream is = null;
+        try {
+            is = new URL(jsonUrl).openStream();
+            try {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                StringBuilder sb = new StringBuilder();
+                int cp;
+                while((cp = rd.read()) != -1) {
+                    sb.append((char)cp);
+                }
+                String jsonText = sb.toString();
+
+                JSONParser parser = new JSONParser();
+                org.json.simple.JSONObject jo = (org.json.simple.JSONObject) parser.parse(jsonText);
+                newestVer = jo.get("versionNewest").toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } finally {
+                is.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newestVer;
+    }
 
 
     /* ==============================================
@@ -1020,10 +1122,15 @@ public class AppManager {
             if (mApis != null) {
                 Block bestBlock = mApis.getBlockchain().getBestBlock();
                 Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
+                Repository repo;
 
-                if (bestBlock.getNumber() >= 10) {
+                if (networkId.equals("1") ? bestBlock.getNumber() >= 10 : true) {
 
-                    Repository repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                    if(networkId.equals("1")) {
+                        repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                    } else {
+                        repo = ((Repository) mApis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+                    }
 
                     KeyStoreDataExp keyExp = null;
                     for (int i = 0; i < keyStoreDataExpList.size(); i++) {
@@ -1729,6 +1836,7 @@ public class AppManager {
 
     public void setMiningWalletAddress(String miningWalletAddress){this.miningWalletAddress = miningWalletAddress;}
     public String getMiningWalletAddress(){return this.miningWalletAddress;}
+    public String getNetworkId(){return this.networkId;}
 
 
     /* ==============================================
@@ -1894,6 +2002,7 @@ public class AppManager {
             if (prop.getProperty("reward_sound") == null) { prop.setProperty("reward_sound", "false"); }
             if (prop.getProperty("peer_num") == null) { prop.setProperty("peer_num", "30"); }
             if (prop.getProperty("update_notice") == null) { prop.setProperty("update_notice", "true"); }
+            if (prop.getProperty("network_id") == null) { prop.setProperty("network_id", "1"); }
             input.close();
 
         } catch (IOException e) {
@@ -1908,6 +2017,7 @@ public class AppManager {
             prop.setProperty("reward_sound","false");
             prop.setProperty("peer_num", "30");
             prop.setProperty("update_notice", "true");
+            prop.setProperty("network_id", "1");
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/general.properties");
                 prop.store(output, null);

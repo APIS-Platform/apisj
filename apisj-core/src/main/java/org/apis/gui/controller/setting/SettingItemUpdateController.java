@@ -5,19 +5,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import org.apis.gui.controller.popup.PopupCautionUpdateController;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
-import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class SettingItemUpdateController implements Initializable {
     @FXML private Label contents, latestVerLabel, latestVer, versionChk, updateBtn;
@@ -25,6 +19,7 @@ public class SettingItemUpdateController implements Initializable {
     public static final boolean VERSION_UPDATED = true;
     public static final boolean VERSION_NOT_UPDATED = false;
     private boolean versionStatus = VERSION_NOT_UPDATED;
+    private PopupCautionUpdateController cautionUpdateController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,82 +29,24 @@ public class SettingItemUpdateController implements Initializable {
             @Override
             public void handle(MouseEvent e) {
                 if(!versionStatus) {
-////                    String jsonUrl = "https://gist.githubusercontent.com/Oxchild/c73c783b8054d9b85f7fdcdfbbc821b1/raw/android.json";
-////                    String jsonUrl = "https://gist.githubusercontent.com/Oxchild/c73c783b8054d9b85f7fdcdfbbc821b1/raw";
-//                    String url = "http://wagi.xyz:8000/lib.zip";
-//                    BufferedInputStream in = null;
-//                    FileOutputStream fout = null;
-//                    try {
-////                        in = new BufferedInputStream(new URL(jsonUrl).openStream());
-//                        in = new BufferedInputStream(new URL(url).openStream());
-//                        fout = new FileOutputStream("test_json.zip");
-//
-//                        final byte data[] = new byte[1024];
-//                        int count;
-//                        while((count = in.read(data, 0, 1024)) != -1) {
-//                            fout.write(data, 0, count);
-//                        }
-//
-//                    } catch (IOException e1) {
-//                        e1.printStackTrace();
-//                    } finally {
-//                        try {
-//                            if (in != null) {
-//                                in.close();
-//                            }
-//                            if (fout != null) {
-//                                fout.close();
-//                            }
-//                        } catch(IOException e2) {
-//                            e2.printStackTrace();
-//                        }
-//                    }
-                    // Unzip zip file
-                    FileInputStream inputStream = null;
-                    FileOutputStream outputStream = null;
-                    BufferedOutputStream bufferedOutputStream = null;
-                    ZipInputStream zipInputStream = null;
+                    cautionUpdateController = (PopupCautionUpdateController) PopupManager.getInstance().showMainPopup(null, "popup_caution_update.fxml", 0);
+                    cautionUpdateController.setLatestVer(latestVer.getText());
+                }
+            }
+        });
 
-                    try {
-                        inputStream = new FileInputStream("test_json.zip");
-                        zipInputStream = new ZipInputStream(inputStream);
-                        ZipEntry zipEntry = null;
+        updateBtn.setOnMouseEntered(event -> {
+            if(!isVersionStatus()) {
+                StyleManager.backgroundColorStyle(updateBtn, StyleManager.AColor.C910000);
+            }
+        });
 
-                        while((zipEntry = zipInputStream.getNextEntry()) != null) {
-                            String fileName = zipEntry.getName();
-                            File file = new File("test_json", fileName);
-                            File folder = file.getParentFile();
-
-                            if(!folder.exists()) {
-                                folder.mkdirs();
-                            }
-
-                            outputStream = new FileOutputStream(file);
-                            bufferedOutputStream = new BufferedOutputStream(outputStream);
-
-                            int length = 0;
-                            while((length = zipInputStream.read()) != -1) {
-                                bufferedOutputStream.write(length);
-                            }
-
-                            zipInputStream.closeEntry();
-                            outputStream.flush();
-                            outputStream.close();
-                        }
-                        zipInputStream.close();
-                    } catch(IOException e2) {
-
-                    } finally {
-                        try {
-                            zipInputStream.closeEntry();
-                            outputStream.flush();
-                            outputStream.close();
-                            zipInputStream.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }//if(!versionStatus)
+        updateBtn.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(!isVersionStatus()) {
+                    StyleManager.backgroundColorStyle(updateBtn, StyleManager.AColor.Cb01e1e);
+                }
             }
         });
     }

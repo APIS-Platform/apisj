@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
@@ -22,7 +23,7 @@ public class SettingItemRadioItemController implements Initializable {
     @FXML private Label name, networkIdLabel, networkId;
     @FXML private ImageView checkImg;
     @FXML private TextField textField;
-    @FXML private GridPane itemGrid, contentsGrid, networkIdGrid;
+    @FXML private GridPane itemGrid, contentsGrid, networkIdGrid, bgGrid;
 
     public final static String SETTING_ITEM_RADIO_LABEL = "label";
     public final static String SETTING_ITEM_RADIO_TEXTFIELD = "textfield";
@@ -116,6 +117,10 @@ public class SettingItemRadioItemController implements Initializable {
         checkImg.setImage(ImageManager.checkGrey);
     }
 
+    public boolean isChecked() {
+        return this.checked;
+    }
+
     public String getName() {
         return this.name.getText();
     }
@@ -133,6 +138,9 @@ public class SettingItemRadioItemController implements Initializable {
     }
 
     public String getText() {
+        if(this.textField.getText().equals("")) {
+            return "1";
+        }
         return this.textField.getText();
     }
 
@@ -144,8 +152,19 @@ public class SettingItemRadioItemController implements Initializable {
         this.textField.requestFocus();
     }
 
+    public void setBgGridMargin(double top, double right, double bottom, double left) {
+        AnchorPane.setTopAnchor(bgGrid, top);
+        AnchorPane.setRightAnchor(bgGrid, right);
+        AnchorPane.setBottomAnchor(bgGrid, bottom);
+        AnchorPane.setLeftAnchor(bgGrid, left);
+    }
+
     public void setHandler(SettingItemRadioItemImpl handler) {
         this.handler = handler;
+    }
+
+    public SettingItemRadioItemImpl getHandler() {
+        return this.handler;
     }
 
     public interface SettingItemRadioItemImpl {

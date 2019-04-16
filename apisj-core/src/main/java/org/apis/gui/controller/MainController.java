@@ -19,7 +19,6 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
-import org.apis.gui.controller.popup.PopupResetController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.*;
@@ -37,7 +36,7 @@ public class MainController extends BaseViewController {
 
     @FXML private TabPane tabPane;
     @FXML private AnchorPane tabWalletPane, tabTransferPane, tabSmartContractPane, tabAddressMaskingPane, tabTransactionPane;
-    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3, popupLayout4;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
     @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting, logo;
@@ -59,6 +58,7 @@ public class MainController extends BaseViewController {
 
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
+    private PopupRestartController restartController;
 
     // 이전 마이닝/마스터노드 참여(혹은 시도) 하던 지갑주소
     String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
@@ -255,7 +255,9 @@ public class MainController extends BaseViewController {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
+            if(AppManager.getGeneralPropertiesData("network_id").equals("1")) {
+                syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
+            }
         }
     }
 
@@ -440,6 +442,7 @@ public class MainController extends BaseViewController {
         PopupManager.getInstance().setMainPopup1(popupLayout1);
         PopupManager.getInstance().setMainPopup2(popupLayout2);
         PopupManager.getInstance().setMainPopup3(popupLayout3);
+        PopupManager.getInstance().setMainPopup4(popupLayout4);
 
         init();
         hideLayerPopup();
@@ -515,8 +518,10 @@ public class MainController extends BaseViewController {
                 }
             }
 
-            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup(null,"popup_restart.fxml", 0);
-            controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
+            if(AppManager.getInstance().getNetworkId().equals("1")) {
+                restartController = (PopupRestartController) PopupManager.getInstance().showMainPopup(null, "popup_restart.fxml", 0);
+                restartController.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
+            }
 
         }
     }
@@ -536,6 +541,22 @@ public class MainController extends BaseViewController {
 
     public MainTab getSelectedIndex(){
         return this.selectedIndex;
+    }
+
+    public void setSettingImageUpdate(boolean isUpdate) {
+        if(isUpdate) {
+            imageSetting = ImageManager.btnSettingUpdate;
+            imageSettingHover = ImageManager.btnSettingUpdateHover;
+        } else {
+            imageSetting = ImageManager.btnSetting;
+            imageSettingHover = ImageManager.btnSettingHover;
+        }
+
+        if(icSetting.isVisible()) {
+            btnSetting.setImage(imageSettingHover);
+        } else {
+            btnSetting.setImage(imageSetting);
+        }
     }
 
 

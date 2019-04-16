@@ -187,6 +187,7 @@ dependencies {
     compile "com.google.code.gson:gson:2.8.2"
     //compile group: 'org.usb4java', name: 'usb4java', version: '1.3.0' // https://mvnrepository.com/artifact/org.usb4java/usb4java
     compile group: 'org.usb4java', name: 'usb4java-javax', version: '1.3.0'// https://mvnrepository.com/artifact/org.usb4java/usb4java-javax
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.5'// https://mvnrepository.com/artifact/org.apache.commons/commons-compress
 
     // https://mvnrepository.com/artifact/com.mohamnag/javafx-webview-debugger
     //compile group: 'com.mohamnag', name: 'javafx-webview-debugger', version: '0.0.1'

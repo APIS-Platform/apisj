@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="bgAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupCautionUpdateController">
+   <children>
+      <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="390.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" />
+            <RowConstraints valignment="BOTTOM" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="cautionTitle" styleClass="font_semibold_18" text="Caution!" textFill="#2b2b2b" />
+            <Label fx:id="cautionUpdateFirst" styleClass="font_regular_14" text="If you quit the program during the update, it may not run normally. It will restart after update is complete." textFill="#2b2b2b" wrapText="true" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets top="8.0" />
+               </GridPane.margin>
+            </Label>
+            <GridPane GridPane.rowIndex="4">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="219.0" />
+                  <ColumnConstraints prefWidth="8.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="164.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints valignment="BOTTOM" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0">
+                     <children>
+                        <Label fx:id="yesBtn" alignment="CENTER" style="-fx-background-color: #b01e1e;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <styleClass>
+                              <String fx:value="border_radius_24_24_24_24" />
+                              <String fx:value="font_semibold_14" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" GridPane.columnIndex="2">
+                     <children>
+                        <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: #999999;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <styleClass>
+                              <String fx:value="border_radius_24_24_24_24" />
+                              <String fx:value="font_semibold_14" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </GridPane>
+            <Label fx:id="cautionUpdateSecond" styleClass="font_regular_14" text="Would you like to proceed update?" textFill="#2b2b2b" wrapText="true" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
