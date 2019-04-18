@@ -125,7 +125,11 @@ public class MainFX extends Application  {
                             int width = 1280, height = 760;
 
                             Parent root = FXMLLoader.load(fileUrl);
-                            primaryStage.setTitle("APIS Core Wallet v" + SystemProperties.getDefault().projectVersion());
+                            if(AppManager.getGeneralPropertiesData("network_id").equals("1")) {
+                                primaryStage.setTitle("APIS Core Wallet v" + SystemProperties.getDefault().projectVersion());
+                            } else {
+                                primaryStage.setTitle("APIS Core Wallet v" + SystemProperties.getDefault().projectVersion() + " (TESTNET)");
+                            }
                             primaryStage.setScene(new Scene(root));
                             primaryStage.setResizable(false);
                             primaryStage.setMaxWidth(width);

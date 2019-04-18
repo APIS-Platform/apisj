@@ -10,18 +10,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.apis.cli.CLIStart;
 import org.apis.config.SystemProperties;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
-import org.apis.gui.run.MainFX;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -118,87 +113,91 @@ public class PopupSuccessController extends BasePopupController {
         isRestartApp = true;
 
         final File currentExe;
+        BufferedWriter bw = null;
         try {
             currentExe = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
             String exePath = URLDecoder.decode(currentExe.getAbsoluteFile().getParentFile().getParent(), "UTF-8");
             String destPath = URLDecoder.decode(currentExe.getAbsoluteFile().getParent(), StandardCharsets.UTF_8.name());
             String tempPath = SystemProperties.getDefault().tempDir();
+            String batFileName = "update.bat";
 
-            /* Build command:
-             * powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs "Remove-Item -Path 'tempPath + \ + zipFileName' -Recurse"
-             * powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs "Copy-Item 'tempPath + \*' -Destination 'destPath' -Recurse -Force"
-             * powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs "Remove-Item -Path 'tempPath' -Recurse"
-             * powershell.exe -WindowStyle hidden & "exePath + \apis-core.exe"
-             * */
+            /**
+             * batch file command
+             **/
+            String batchFileStr = ":: Remove zip\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + tempPath + "\\" + zipFileName + "' -Recurse\\\"\n" +
+                "\n" +
+                ":: Check the process and kill\n" +
+                ":Kill\n" +
+                "taskkill /f /im apis-core.exe\n" +
+                "timeout 1 > NUL\n" +
+                "for /f %%a in ('tasklist ^| find /i /c \"apis-core\"') do (set apis=%%a)\n" +
+                "if not \\\"%apis%\\\"==\\\"0\\\" goto Kill\n" +
+                "\n" +
+                ":: Remove temp\n" +
+                ":del1\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + destPath + "\\lib' -Recurse\\\"\n" +
+                "timeout 1 > NUL\n" +
+                "if exist \"" + destPath + "\\lib\\\" goto del1\n" +
+                ":del2\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + destPath + "\\apis-core.cfg' -Recurse\\\"\n" +
+                "timeout 1 > NUL\n" +
+                "if exist \"" + destPath + "\\apis-core.cfg\" goto del2\n" +
+                ":del3\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + destPath + "\\project-jfx.jar' -Recurse\\\"\n" +
+                "timeout 1 > NUL\n" +
+                "if exist \"" + destPath + "\\project-jfx.jar\" goto del3\n" +
+                "\n" +
+                ":: Copy temp to destination\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Copy-Item '" + tempPath + "\\*' -Destination '" + destPath + "' -Recurse -Force\\\"\n" +
+                "\n" +
+                ":: Remove temp\n" +
+                ":Loop\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + tempPath + "' -Recurse\\\"\n" +
+                "timeout 1 > NUL\n" +
+                "if exist \"" + tempPath + "\\\" goto Loop\n" +
+                "\n" +
+                ":: Start program\n" +
+                "powershell.exe Start-Process -FilePath powershell.exe -WindowStyle hidden -verb runAs \\\"Start-Sleep -s 1 | & '" + exePath + "\\apis-core.exe'\\\"\n" +
+                "\n" +
+                ":: Remove batch file\n" +
+                ":Loop2\n" +
+                "powershell.exe Start-Process -WindowStyle hidden -FilePath powershell.exe -verb runAs \\\"Remove-Item -Path '" + destPath + "\\" + batFileName + "' -Recurse\\\"\n" +
+                "timeout 1 > NUL\n" +
+                "if exist \"" + destPath + "\\" + batFileName + "\" goto Loop2";
+            String line = System.getProperty("line.separator");
+            batchFileStr.replace("\n", line);
+
+            bw = new BufferedWriter(new FileWriter(destPath + "\\" + batFileName));
+            bw.write(batchFileStr);
+            bw.flush();
+
+            // Start batch file
             final ArrayList<String> command = new ArrayList<String>();
-
-            // Remove zip
             command.add("powershell.exe");
             command.add("Start-Process");
-            command.add("-WindowStyle");
-            command.add("hidden");
             command.add("-FilePath");
             command.add("powershell.exe");
+            command.add("-WindowStyle");
+            command.add("hidden");
             command.add("-verb runAs");
-            command.add("\\\"Remove-Item -Path '" + tempPath + "\\" + zipFileName + "' -Recurse\\\"");
+            command.add("\\\"& '" + destPath + "\\" + batFileName + "'\\\"");
 
             ProcessBuilder builder = new ProcessBuilder(command);
-            Process proc = builder.start();
-            proc.waitFor();
-
-            // Copy temp to destination
-            command.clear();
-            command.add("powershell.exe");
-            command.add("Start-Process");
-            command.add("-WindowStyle");
-            command.add("hidden");
-            command.add("-FilePath");
-            command.add("powershell.exe");
-            command.add("-verb runAs");
-            command.add("\\\"Copy-Item '" + tempPath + "\\*' -Destination '" + destPath + "' -Recurse -Force\\\"");
-
-            builder = new ProcessBuilder(command);
-            proc = builder.start();
-            proc.waitFor();
-
-            while(true) {
-                File tempDir = new File(tempPath);
-                if (tempDir.exists()) {
-                    // Remove temp
-                    command.clear();
-                    command.add("powershell.exe");
-                    command.add("Start-Process");
-                    command.add("-WindowStyle");
-                    command.add("hidden");
-                    command.add("-FilePath");
-                    command.add("powershell.exe");
-                    command.add("-verb runAs");
-                    command.add("\\\"Remove-Item -Path '" + tempPath + "' -Recurse\\\"");
-
-                    builder = new ProcessBuilder(command);
-                    proc = builder.start();
-                    proc.waitFor();
-                    Thread.sleep(1000);
-                } else {
-                    break;
-                }
-            }
-
-            command.clear();
-            command.add("powershell.exe");
-            command.add("-WindowStyle");
-            command.add("hidden");
-            command.add("Start-Sleep -s 5 | & \\\"" + exePath + "\\apis-core.exe\\\"");
-
-            builder = new ProcessBuilder(command);
             builder.start();
             Platform.exit();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } finally {
+            if(bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
