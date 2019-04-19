@@ -1123,13 +1123,16 @@ public class AppManager {
                 Block bestBlock = mApis.getBlockchain().getBestBlock();
                 Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
                 Repository repo;
+                long confirmBlockNum;
 
                 if (networkId.equals("1") ? bestBlock.getNumber() >= 10 : true) {
 
                     if(networkId.equals("1")) {
                         repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                        confirmBlockNum = bestBlock.getNumber() - 6;
                     } else {
                         repo = ((Repository) mApis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+                        confirmBlockNum = bestBlock.getNumber();
                     }
 
                     KeyStoreDataExp keyExp = null;
@@ -1141,7 +1144,6 @@ public class AppManager {
                         keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
                     }
 
-                    long confirmBlockNum = bestBlock.getNumber() - 6;
                     Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
                     Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
 
