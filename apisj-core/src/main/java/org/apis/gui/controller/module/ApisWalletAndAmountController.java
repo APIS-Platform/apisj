@@ -8,6 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
@@ -134,6 +136,13 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
                 amountTextField.setText(afterValue);
                 settingLayoutData();
+            }
+        });
+        amountTextField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                event.consume();
+            } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                event.consume();
             }
         });
 

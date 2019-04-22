@@ -102,6 +102,7 @@ public class TransactionNativeController extends BaseViewController {
                 refreshPage(currentPage);
             }
         });
+        AppManager.keyPressedHandler(searchTextField);
 
         // init items max size : 50
         for(int i=0; i<50; i++){

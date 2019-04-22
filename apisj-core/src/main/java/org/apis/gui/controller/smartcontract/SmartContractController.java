@@ -109,7 +109,7 @@ public class SmartContractController extends BaseViewController {
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+//        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
     }
 
     public void initializeCanvas() {

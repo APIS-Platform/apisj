@@ -78,7 +78,9 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             if(event.getCode() == KeyCode.LEFT
                     || event.getCode() == KeyCode.RIGHT
                     || event.getCode() == KeyCode.UP
-                    || event.getCode() == KeyCode.DOWN) {
+                    || event.getCode() == KeyCode.DOWN
+                    || (event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown())
+                    || (event.getCode() == KeyCode.PAGE_UP && event.isControlDown())) {
                 if(tabPane.isFocused()){
                     event.consume();
                 }else{

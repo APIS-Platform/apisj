@@ -51,6 +51,8 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         AppManager.settingTextFieldStyle(gasPriceTextField);
         AppManager.settingTextFieldStyle(gasLimitTextField);
+        AppManager.keyPressedHandler(gasPriceTextField);
+        AppManager.keyPressedHandler(gasLimitTextField);
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
         gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);

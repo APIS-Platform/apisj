@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.manager.AppManager;
@@ -27,9 +29,12 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
 
     private ArrayList<TextField> textFields = new ArrayList<TextField>();
     private DerivationPathItemImpl handler;
+    private EventHandler<KeyEvent> keyPressedHandler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        keyPressedHandler();
+
         textFields.add(derivationTextField1);
         textFields.add(derivationTextField2);
         textFields.add(derivationTextField3);
@@ -77,6 +82,24 @@ public class DerivationPathTextItemController extends DerivationPathItemControll
         derivationTextField2.setText("");
         derivationTextField3.setText("");
         derivationTextField4.setText("");
+    }
+
+    private void keyPressedHandler() {
+        keyPressedHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                }else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
+                }
+            }
+        };
+
+        derivationTextField1.setOnKeyPressed(keyPressedHandler);
+        derivationTextField2.setOnKeyPressed(keyPressedHandler);
+        derivationTextField3.setOnKeyPressed(keyPressedHandler);
+        derivationTextField4.setOnKeyPressed(keyPressedHandler);
     }
 
     private ChangeListener<Boolean> focusListener = new ChangeListener<Boolean>() {

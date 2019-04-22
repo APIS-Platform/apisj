@@ -81,7 +81,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         selectContractController.setFrozenImgVisible(false);
 
         AppManager.getInstance().settingTextFieldStyle(nonceTextField);
-
+        AppManager.getInstance().keyPressedHandler(nonceTextField);
 
         // Contract Constructor Address Listener
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);

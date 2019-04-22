@@ -62,6 +62,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
         languageSetting();
 
         AppManager.settingTextFieldStyle(addrMaskingIDTextField);
+        AppManager.keyPressedHandler(addrMaskingIDTextField);
         payerMessageController.setVisible(false);
         payerMessageController.setFailed(StringManager.getInstance().common.notEnoughBalance);
 

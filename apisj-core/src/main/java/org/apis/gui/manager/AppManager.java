@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.shape.Rectangle;
@@ -656,6 +658,21 @@ public class AppManager {
             e.printStackTrace();
         }
         return newestVer;
+    }
+
+    public static void keyPressedHandler(Node node) {
+        EventHandler<KeyEvent> keyPressedHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
+                }
+            }
+        };
+
+        node.setOnKeyPressed(keyPressedHandler);
     }
 
 

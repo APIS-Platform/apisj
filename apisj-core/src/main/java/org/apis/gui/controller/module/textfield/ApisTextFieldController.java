@@ -189,6 +189,10 @@ public class ApisTextFieldController extends BaseViewController {
                         handler.onAction();
                     }
                     event.consume();
+                }else if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                }else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
                 }
             }
         };
