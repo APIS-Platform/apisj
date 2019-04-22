@@ -636,6 +636,7 @@ public class StringManager {
         public SimpleStringProperty walletMaskTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty balanceTitleLabel = new SimpleStringProperty();
         public SimpleStringProperty canvasNotExist = new SimpleStringProperty();
+        public SimpleStringProperty signLabel = new SimpleStringProperty();
         public SimpleStringProperty canvasBlankLabel = new SimpleStringProperty();
 
 
@@ -672,6 +673,7 @@ public class StringManager {
             walletMaskTitleLabel.set(StringManager.this.getString("smart_contract_wallet_mask_title_label", "Address Mask"));
             balanceTitleLabel.set(StringManager.this.getString("smart_contract_balance_title_label", "Balance"));
             canvasNotExist.set(StringManager.this.getString("smart_contract_canvas_not_exist", "Canvas URL does not exist."));
+            signLabel.set(StringManager.this.getString("smart_contract_sign_label", "SIGN"));
             canvasBlankLabel.set(StringManager.this.getString("smart_contract_canvas_blank_label", "Browse for an Smart Contract"));
         }
     }
@@ -1014,6 +1016,12 @@ public class StringManager {
         public SimpleStringProperty resetSecondLabel = new SimpleStringProperty();
         public SimpleStringProperty updateFirstLabel = new SimpleStringProperty();
 
+        public SimpleStringProperty signTx = new SimpleStringProperty();
+        public SimpleStringProperty selectWallet = new SimpleStringProperty();
+        public SimpleStringProperty totalAssetLabel = new SimpleStringProperty();
+        public SimpleStringProperty cancel = new SimpleStringProperty();
+        public SimpleStringProperty confirm = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1154,6 +1162,12 @@ public class StringManager {
             resetFirstLabel.set(StringManager.this.getString("popup_reset_first_label", "Connection is being reset."));
             resetSecondLabel.set(StringManager.this.getString("popup_reset_second_label", "Please wait a moment."));
             updateFirstLabel.set(StringManager.this.getString("popup_update_first_label", "Update in progress."));
+
+            signTx.set(StringManager.this.getString("popup_sign_tx", "Sign Transaction"));
+            selectWallet.set(StringManager.this.getString("popup_select_wallet", "Select Wallet"));
+            totalAssetLabel.set(StringManager.this.getString("popup_total_asset_label", "* Total assets : "));
+            cancel.set(StringManager.this.getString("popup_cancel", "Cancel"));
+            confirm.set(StringManager.this.getString("popup_confirm", "Confirm"));
         }
     }
 

@@ -23,7 +23,8 @@ public class PopupContractCanvasSignController extends BasePopupController {
     private int walletAddressType = WALLET_ADDRESS_TYPE_SELECT;
 
     @FXML private AnchorPane selectWalletPane, inputWalletPane;
-    @FXML private Label totalBalance, confirmBtn, directInputLabel, errorLabel;
+    @FXML private Label totalBalance, confirmBtn, directInputLabel, errorLabel, titleLabel, subTitleLabel, dataLabel,
+                        selectWalletLabel, totalLabel, cancelBtn;
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private ApisAddressFieldController inputWalletController;
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
@@ -118,6 +119,14 @@ public class PopupContractCanvasSignController extends BasePopupController {
     }
 
     public void languageSetting() {
+        titleLabel.textProperty().bind(StringManager.getInstance().popup.signTx);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().popup.signTx);
+        dataLabel.textProperty().bind(StringManager.getInstance().transaction.detailsDataLabel);
+        selectWalletLabel.textProperty().bind(StringManager.getInstance().popup.selectWallet);
+        directInputLabel.textProperty().bind(StringManager.getInstance().common.directInputButton);
+        totalLabel.textProperty().bind(StringManager.getInstance().popup.totalAssetLabel);
+        cancelBtn.textProperty().bind(StringManager.getInstance().popup.cancel);
+        confirmBtn.textProperty().bind(StringManager.getInstance().popup.confirm);
         errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
     }
 

@@ -104,11 +104,12 @@ public class SmartContractController extends BaseViewController {
         walletMaskTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.walletMaskTitleLabel);
         balanceTitleLabel.textProperty().bind(StringManager.getInstance().smartContract.balanceTitleLabel);
         cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.canvasNotExist);
+        signLabel.textProperty().bind(StringManager.getInstance().smartContract.signLabel);
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
-//        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
     }
 
     public void initializeCanvas() {
