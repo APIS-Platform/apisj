@@ -209,6 +209,7 @@ public class AppManager {
             // Update notice popup
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                 if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                        && !getVersionNewest().equals("")
                         && getGeneralPropertiesData("update_notice").equals("true")
                         && OSInfo.getOs() == OSInfo.OS.WINDOWS){
                     Platform.runLater(new Runnable() {
@@ -221,6 +222,14 @@ public class AppManager {
                             updateNoticeController.setSubTitle(StringManager.getInstance().popup.noticeUpdateSubTitle);
                         }
                     });
+                } else {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Hide when it's up-to-date
+                            PopupManager.getInstance().hideMainPopup(3);
+                        }
+                    });
                 }
             }, 10 * 1, 60 * 60 * 6, TimeUnit.SECONDS);
 
@@ -230,6 +239,7 @@ public class AppManager {
                     @Override
                     public void run() {
                         if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                                && !getVersionNewest().equals("")
                                 && OSInfo.getOs() == OSInfo.OS.WINDOWS){
                             guiFx.getMain().setSettingImageUpdate(true);
                         } else {

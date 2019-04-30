@@ -341,7 +341,8 @@ public class SettingController extends BasePopupController {
 
                 try {
                     String newestVer = AppManager.getVersionNewest();
-                    if(SystemProperties.getDefault().projectVersion().equals(newestVer)) {
+                    if(SystemProperties.getDefault().projectVersion().equals(newestVer)
+                            || newestVer.equals("")) {
                         this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
                     } else {
                         this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_NOT_UPDATED);
