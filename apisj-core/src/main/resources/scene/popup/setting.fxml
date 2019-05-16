@@ -136,7 +136,9 @@
                                                     <ColumnConstraints />
                                                     <ColumnConstraints hgrow="SOMETIMES" />
                                                       <ColumnConstraints />
-                                                      <ColumnConstraints prefWidth="48.0" />
+                                                      <ColumnConstraints prefWidth="20.0" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="42.0" />
                                                       <ColumnConstraints />
                                                       <ColumnConstraints prefWidth="20.0" />
                                                   </columnConstraints>
@@ -173,7 +175,7 @@
                                                             <Label fx:id="userNumDesc" styleClass="font_regular_12" text="You can set up to 30 people." textFill="#999999" GridPane.rowIndex="1" />
                                                          </children>
                                                       </GridPane>
-                                                      <ImageView fx:id="userNumMinus" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                      <ImageView fx:id="userNumMinus" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                                                          <image>
                                                             <Image url="@../../image/btn_gas_minus@2x.png" />
                                                          </image>
@@ -181,8 +183,8 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </ImageView>
-                                                      <Label fx:id="userNumLabel" styleClass="font_semibold_14" text="30" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
-                                                      <ImageView fx:id="userNumPlus" fitWidth="20.0" layoutX="522.0" layoutY="35.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+                                                      <Label fx:id="userNumLabel" styleClass="font_semibold_14" text="30" textFill="#2b2b2b" GridPane.columnIndex="5" GridPane.halignment="CENTER" />
+                                                      <ImageView fx:id="userNumPlus" fitWidth="20.0" layoutX="522.0" layoutY="35.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6">
                                                          <image>
                                                             <Image url="@../../image/btn_gas_plus@2x.png" />
                                                          </image>
@@ -190,6 +192,22 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </ImageView>
+                                                      <AnchorPane GridPane.columnIndex="2">
+                                                         <children>
+                                                            <Label fx:id="peersBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #999999;" text="Peers" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <styleClass>
+                                                                  <String fx:value="font_semibold_11" />
+                                                                  <String fx:value="border_radius_4444" />
+                                                               </styleClass>
+                                                               <padding>
+                                                                  <Insets bottom="8.0" left="24.0" right="24.0" top="8.0" />
+                                                               </padding>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
                                                    </children>
                                                 </GridPane>
                                                 <GridPane fx:id="networkHeader" layoutX="10.0" layoutY="141.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
