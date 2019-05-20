@@ -32,7 +32,7 @@ public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning, peersBtn;
-    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
+    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel, userNumPlus, userNumMinus;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController,
@@ -627,8 +627,15 @@ public class SettingController extends BasePopupController {
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             icCancel.setImage(ImageManager.icBackRed);
+
         }else if(fxid.equals("peersBtn")) {
             StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C2b2b2b);
+
+        }else if(fxid.equals("userNumMinus")) {
+            userNumMinus.setImage(ImageManager.btnGasMinusGray);
+
+        } else if(fxid.equals("userNumPlus")) {
+            userNumPlus.setImage(ImageManager.btnGasPlusGray);
         }
 
     }
@@ -639,12 +646,20 @@ public class SettingController extends BasePopupController {
         if(fxid.equals("saveBtn")){
             StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cffffff);
+
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             icCancel.setImage(ImageManager.icBackWhite);
+
         }else if(fxid.equals("peersBtn")) {
             StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C999999);
+
+        }else if(fxid.equals("userNumMinus")) {
+            userNumMinus.setImage(ImageManager.btnGasMinusGray);
+
+        } else if(fxid.equals("userNumPlus")) {
+            userNumPlus.setImage(ImageManager.btnGasPlusGray);
         }
     }
 
