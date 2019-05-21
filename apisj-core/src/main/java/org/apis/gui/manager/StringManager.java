@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.apis.net.p2p.PeersMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -1022,6 +1023,15 @@ public class StringManager {
         public SimpleStringProperty cancel = new SimpleStringProperty();
         public SimpleStringProperty confirm = new SimpleStringProperty();
 
+        public SimpleStringProperty peersTitle = new SimpleStringProperty();
+        public SimpleStringProperty peersSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty nodeIdCol = new SimpleStringProperty();
+        public SimpleStringProperty nodeServiceCol = new SimpleStringProperty();
+        public SimpleStringProperty userAgentCol = new SimpleStringProperty();
+        public SimpleStringProperty pingCol = new SimpleStringProperty();
+        public SimpleStringProperty peersTablePlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty peersGuideLabel = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1168,6 +1178,15 @@ public class StringManager {
             totalAssetLabel.set(StringManager.this.getString("popup_total_asset_label", "* Total assets : "));
             cancel.set(StringManager.this.getString("popup_cancel", "Cancel"));
             confirm.set(StringManager.this.getString("popup_confirm", "Confirm"));
+
+            peersTitle.set(StringManager.this.getString("popup_peers_title", "Peers"));
+            peersSubTitle.set(StringManager.this.getString("popup_peers_sub_title", "Peers detail"));
+            nodeIdCol.set(StringManager.this.getString("popup_peers_node_id_col", "NodeId"));
+            nodeServiceCol.set(StringManager.this.getString("popup_peers_node_service_col", "Node/Service"));
+            userAgentCol.set(StringManager.this.getString("popup_peers_user_agent_col", "User Agent"));
+            pingCol.set(StringManager.this.getString("popup_peers_ping_col", "Ping"));
+            peersTablePlaceholder.set(StringManager.this.getString("popup_peers_table_placeholder", "no contents in table"));
+            peersGuideLabel.set(StringManager.this.getString("popup_peers_guild_label", "Please select a peer for more information."));
         }
     }
 

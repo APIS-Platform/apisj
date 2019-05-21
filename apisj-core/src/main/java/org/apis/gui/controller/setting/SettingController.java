@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import org.apis.config.SystemProperties;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.popup.PopupPeersController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
 import org.apis.util.ChainConfigUtil;
@@ -452,8 +453,7 @@ public class SettingController extends BasePopupController {
             userNumLabel.setText(Integer.toString(num));
 
         } else if (fxid.equals("peersBtn")) {
-            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
-            controller.setSubTitle(StringManager.getInstance().popup.successSubTitleRestart);
+            PopupPeersController controller = (PopupPeersController)PopupManager.getInstance().showMainPopup(null, "popup_peers.fxml", zIndex+1);
 
         } else if(fxid.equals("cancelBtn")) {
             exit();
