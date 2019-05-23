@@ -115,3 +115,11 @@
 .tooltip_dark { -fx-background-color : #2b2b2b; -fx-text-fill: white; -fx-alignment: CENTER; -fx-padding : 6 10 6 10; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; }
 .tooltip_gray { -fx-background-color : #f8f8fb; -fx-text-fill: #2b2b2b; -fx-alignment: CENTER; -fx-padding : 6 10 6 10; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; }
 .tooltip_white { -fx-background-color : #ffffff; -fx-text-fill: #2b2b2b; -fx-alignment: CENTER; -fx-padding : 6 10 6 10; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; }
+
+/* TableView */
+.table-view .column-header { -fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-width: 0 1 0 0; }
+.table-view .column-header-background { -fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0; -fx-border-insets: 0 0 1 0; }
+.table-view .column-header-background .filler { -fx-background-color: transparent; -fx-border-width: 0; }
+.table-row-cell { -fx-border-color: transparent; -fx-table-cell-border-color: transparent; }
+.cell-padding-right-8.table-cell { -fx-alignment: center-right; -fx-padding: 0 8 0 0; }
+.cell-padding-left-8.table-cell { -fx-alignment: center-left; -fx-padding: 0 0 0 8; }

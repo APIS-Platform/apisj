@@ -41,12 +41,6 @@
 	-fx-background-radius: 2em;
 }
 
-
-/*
-
-
-
-*/
 /* The main scrollbar **track** CSS class  */
 .listviewWhite .scroll-bar:horizontal .track,
 .listviewWhite .scroll-bar:vertical .track{
