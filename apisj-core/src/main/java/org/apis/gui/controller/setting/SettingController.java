@@ -632,10 +632,10 @@ public class SettingController extends BasePopupController {
             StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C2b2b2b);
 
         }else if(fxid.equals("userNumMinus")) {
-            userNumMinus.setImage(ImageManager.btnGasMinusGray);
+            userNumMinus.setImage(ImageManager.btnGasMinusBlack);
 
         } else if(fxid.equals("userNumPlus")) {
-            userNumPlus.setImage(ImageManager.btnGasPlusGray);
+            userNumPlus.setImage(ImageManager.btnGasPlusBlack);
         }
 
     }

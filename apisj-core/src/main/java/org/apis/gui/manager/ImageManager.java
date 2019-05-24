@@ -110,6 +110,8 @@ public class ImageManager {
 
     public static final Image btnGasPlusGray = new Image("image/btn_gas_plus@2x.png");
     public static final Image btnGasMinusGray = new Image("image/btn_gas_minus@2x.png");
+    public static final Image btnGasPlusBlack = new Image("image/btn_gas_plus_hover@2x.png");
+    public static final Image btnGasMinusBlack = new Image("image/btn_gas_minus_hover@2x.png");
 
     public static ImageView imageViewRectangle30(ImageView imageView){
         Rectangle clip = new Rectangle(imageView.getFitWidth() - 0.5, imageView.getFitHeight() - 0.5);
