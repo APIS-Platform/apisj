@@ -1224,6 +1224,7 @@ public class StringManager {
         public SimpleStringProperty saveLoadDbLabel = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
         public SimpleStringProperty loadBtn = new SimpleStringProperty();
+        public SimpleStringProperty peersBtn = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1260,6 +1261,7 @@ public class StringManager {
             saveLoadDbLabel.set(StringManager.this.getString("setting_save_load_db_label", "Save/Load private DB info"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "SAVE"));
             loadBtn.set(StringManager.this.getString("setting_load_btn", "LOAD"));
+            peersBtn.set(StringManager.this.getString("setting_peers_btn", "Peers"));
         }
     }
 

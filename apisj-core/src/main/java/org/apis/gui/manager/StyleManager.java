@@ -46,6 +46,7 @@ public class StyleManager {
         public static String Cefefef = "#efefef";
         public static String Cc1c1c1 = "#c1c1c1";
         public static String C910000 = "#910000";
+        public static String Ccfcfcf = "#cfcfcf";
 
     }
 

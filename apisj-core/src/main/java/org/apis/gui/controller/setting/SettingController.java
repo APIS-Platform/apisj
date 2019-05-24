@@ -146,6 +146,7 @@ public class SettingController extends BasePopupController {
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
         this.saveBtn.textProperty().bind(StringManager.getInstance().common.saveButton);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().common.backButton);
+        this.peersBtn.textProperty().bind(StringManager.getInstance().setting.peersBtn);
     }
 
     private void loadSettingData() {
@@ -653,7 +654,7 @@ public class SettingController extends BasePopupController {
             icCancel.setImage(ImageManager.icBackWhite);
 
         }else if(fxid.equals("peersBtn")) {
-            StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C999999);
+            StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.Ccfcfcf);
 
         }else if(fxid.equals("userNumMinus")) {
             userNumMinus.setImage(ImageManager.btnGasMinusGray);
