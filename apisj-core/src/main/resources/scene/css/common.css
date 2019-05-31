@@ -2,28 +2,28 @@
 /* font */
 *.{  -fx-font-family: 'Open Sans'; }
 .font_bold { -fx-font-family: 'Open Sans Bold'; }
-.font_semibold { -fx-font-family: 'Noto Sans KR Medium';  }
-.font_semibold_10 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; }
-.font_semibold_11 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:11px; }
-.font_semibold_12 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; }
-.font_semibold_14 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px; }
-.font_semibold_16 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:16px; }
-.font_semibold_18 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:18px; }
-.font_semibold_24 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:24px; }
-.font_semibold_32 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:32px; }
+.font_semibold { -fx-font-family: 'Noto Sans CJK JP Medium';  }
+.font_semibold_10 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:10px; }
+.font_semibold_11 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:11px; }
+.font_semibold_12 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; }
+.font_semibold_14 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:14px; }
+.font_semibold_16 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:16px; }
+.font_semibold_18 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:18px; }
+.font_semibold_24 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:24px; }
+.font_semibold_32 { -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:32px; }
 
-.font_regular { -fx-font-family: 'Noto Sans KR Regular';  }
-.font_regular_9 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:9px; }
-.font_regular_10 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:10px; }
-.font_regular_11 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:11px; }
-.font_regular_12 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px; }
-.font_regular_13 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:13px; }
-.font_regular_14 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:14px; }
-.font_regular_16 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:16px; }
-.font_regular_18 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:18px; }
-.font_regular_26 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:26px; }
-.font_regular_32 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:32px; }
-.font_regular_35 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:35px; }
+.font_regular { -fx-font-family: 'Noto Sans CJK JP Regular';  }
+.font_regular_9 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:9px; }
+.font_regular_10 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:10px; }
+.font_regular_11 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:11px; }
+.font_regular_12 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:12px; }
+.font_regular_13 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:13px; }
+.font_regular_14 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:14px; }
+.font_regular_16 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:16px; }
+.font_regular_18 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:18px; }
+.font_regular_26 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:26px; }
+.font_regular_32 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:32px; }
+.font_regular_35 { -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:35px; }
 
 .barlow_font_regular{ -fx-font-family: 'Barlow';  }
 .barlow_font_regular_10 { -fx-font-family: 'Barlow'; -fx-font-size:10px; }
@@ -101,7 +101,7 @@
 .combo-box .list-view .list-cell:filled:selected { -fx-background-color: #ffffff; -fx-text-fill: -fx-text-inner-color;}
 
 .combo-box-header { -fx-padding: 0 0 0 6; }
-.combo-box-header .list-view { -fx-pref-width: 60; }
+.combo-box-header .list-view { -fx-pref-width: 110; }
 .combo-box-header .list-cell { -fx-text-fill: #707070; }
 .combo-box-header .arrow-button { -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0; -fx-padding: 0 1.0em 0 -0.2em; -fx-background-color: transparent; -fx-alignment:center-left;}
 

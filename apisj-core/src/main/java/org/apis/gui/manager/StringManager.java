@@ -45,6 +45,9 @@ public class StringManager {
     public void changeBundleChn(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","CN")));
     }
+    public void changeBundleTwn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("tw","TW")));
+    }
     public void changeBundleKor(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
     }
@@ -526,6 +529,7 @@ public class StringManager {
         public SimpleStringProperty rewardKor3 = new SimpleStringProperty();
         public SimpleStringProperty rewardKor4 = new SimpleStringProperty();
         public SimpleStringProperty rewardKor5 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor6 = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -566,6 +570,7 @@ public class StringManager {
             rewardKor3.set(StringManager.this.getString("wallet_tooltip_reward_kor3", ""));
             rewardKor4.set(StringManager.this.getString("wallet_tooltip_reward_kor4", ""));
             rewardKor5.set(StringManager.this.getString("wallet_tooltip_reward_kor5", ""));
+            rewardKor6.set(StringManager.this.getString("wallet_tooltip_reward_kor6", ""));
         }
     }
 

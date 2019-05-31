@@ -23,7 +23,7 @@
          <children>
             <Label fx:id="title" styleClass="font_semibold_14" text="Register Domain" textFill="#999999">
                <font>
-                  <Font name="Noto Sans KR Regular" size="11.0" />
+                  <Font name="Noto Sans CJK JP Regular" size="11.0" />
                </font>
                <GridPane.margin>
                   <Insets />

@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 
 public class ApisTextFieldPkController extends BaseViewController {
     private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-            "-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;";
+            "-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size: 12px;";
 
     private String address;
 

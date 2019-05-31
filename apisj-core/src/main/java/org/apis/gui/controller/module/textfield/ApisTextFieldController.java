@@ -158,9 +158,9 @@ public class ApisTextFieldController extends BaseViewController {
         };
 
         textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size: 12px;");
+                "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
         passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                "-fx-font-family: 'Noto Sans KR Regular'; -fx-font-size: 12px;");
+                "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
         textField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         passwordField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         textField.setVisible(false);

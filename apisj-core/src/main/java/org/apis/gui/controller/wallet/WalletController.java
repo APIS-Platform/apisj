@@ -92,7 +92,7 @@ public class WalletController extends BaseViewController {
 
     @FXML private Label totalAssetLabel, myRewardsLabel, rewardedLabel, rewardedLabel1, nowStakingLabel, howApisLabel1, headerTokenTransfer;
     @FXML private Label myRewardsLabel1, nowStakingLabel1;
-    @FXML private Label rewardEng11, rewardEng21, rewardEng31, rewardEng41, rewardKor11, rewardKor21, rewardKor31, rewardKor41, rewardKor51;
+    @FXML private Label rewardEng11, rewardEng21, rewardEng31, rewardEng41, rewardKor11, rewardKor21, rewardKor31, rewardKor41, rewardKor51, rewardKor61;
     @FXML private AnchorPane rewardTooltip1;
 
     @FXML private AnchorPane createWalletPane;
@@ -161,6 +161,7 @@ public class WalletController extends BaseViewController {
         this.rewardKor31.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
         this.rewardKor41.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
         this.rewardKor51.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
+        this.rewardKor61.textProperty().bind(StringManager.getInstance().wallet.rewardKor6);
 
         StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold12);
 
@@ -197,6 +198,7 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(rewardKor31, StyleManager.Standard.SemiBold14);
         StyleManager.fontStyle(rewardKor41, StyleManager.Standard.Regular12);
         StyleManager.fontStyle(rewardKor51, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardKor61, StyleManager.Standard.Regular12);
 
         StyleManager.fontColorStyle(rewardEng11, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardEng21, StyleManager.AColor.Cf8f8fb);
@@ -207,6 +209,7 @@ public class WalletController extends BaseViewController {
         StyleManager.fontColorStyle(rewardKor31, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardKor41, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardKor51, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor61, StyleManager.AColor.Cf8f8fb);
 
     }
 

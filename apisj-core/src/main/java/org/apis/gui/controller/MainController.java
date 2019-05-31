@@ -72,27 +72,27 @@ public class MainController extends BaseViewController {
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
 
-        ObservableList<String> langOptions = FXCollections.observableArrayList( "ENG", "KOR"/*, "CHN", "JPN"*/);
+        ObservableList<String> langOptions = FXCollections.observableArrayList( "English", "한국어", "简体中文", "繁體中文", "日本語");
         selectLanguage.setItems(langOptions);
         selectLanguage.valueProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if(newValue.equals("ENG")){
-                    AppManager.saveGeneralProperties("language", "ENG");
+                if(newValue.equals("English")){
+                    AppManager.saveGeneralProperties("language", "English");
                     StringManager.getInstance().changeBundleEng();
-                }else if(newValue.equals("KOR")){
-                    AppManager.saveGeneralProperties("language", "KOR");
+                }else if(newValue.equals("한국어")){
+                    AppManager.saveGeneralProperties("language", "한국어");
                     StringManager.getInstance().changeBundleKor();
-                }
-                /*
-                else if(newValue.equals("CHN")){
-                    AppManager.saveGeneralProperties("language", "CHN");
+                }else if(newValue.equals("简体中文")){
+                    AppManager.saveGeneralProperties("language", "简体中文");
                     StringManager.getInstance().changeBundleChn();
-                }else if(newValue.equals("JPN")){
-                    AppManager.saveGeneralProperties("language", "JPN");
+                }else if(newValue.equals("繁體中文")) {
+                    AppManager.saveGeneralProperties("language", "繁體中文");
+                    StringManager.getInstance().changeBundleTwn();
+                }else if(newValue.equals("日本語")){
+                    AppManager.saveGeneralProperties("language", "日本語");
                     StringManager.getInstance().changeBundleJpn();
                 }
-                */
             }
         });
         selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
