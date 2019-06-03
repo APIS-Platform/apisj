@@ -43,7 +43,7 @@ public class MainController extends BaseViewController {
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
     @FXML private TabMenuController tabMenuController;
-    @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane, layerPopupAnchor2;
+    @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane, layerPopupAnchor2, rootPane;
     @FXML private AddressInfoController addressInfoController;
     @FXML private GridPane addressInfoPane;
 
@@ -64,6 +64,9 @@ public class MainController extends BaseViewController {
     String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
     String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
 
+    private final String commonCssURL = "scene/css/common.css";
+    private final String commonZhCssURL = "scene/css/common_zh.css";
+
     public MainController(){ }
 
     public void initLayoutFooter(){
@@ -77,6 +80,10 @@ public class MainController extends BaseViewController {
         selectLanguage.valueProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if(!rootPane.getStylesheets().contains(commonCssURL)) {
+                    rootPane.getStylesheets().remove(commonZhCssURL);
+                    rootPane.getStylesheets().add(commonCssURL);
+                }
                 if(newValue.equals("English")){
                     AppManager.saveGeneralProperties("language", "English");
                     StringManager.getInstance().changeBundleEng();
@@ -84,9 +91,13 @@ public class MainController extends BaseViewController {
                     AppManager.saveGeneralProperties("language", "한국어");
                     StringManager.getInstance().changeBundleKor();
                 }else if(newValue.equals("简体中文")){
+                    rootPane.getStylesheets().remove(commonCssURL);
+                    rootPane.getStylesheets().add(commonZhCssURL);
                     AppManager.saveGeneralProperties("language", "简体中文");
                     StringManager.getInstance().changeBundleChn();
                 }else if(newValue.equals("繁體中文")) {
+                    rootPane.getStylesheets().remove(commonCssURL);
+                    rootPane.getStylesheets().add(commonZhCssURL);
                     AppManager.saveGeneralProperties("language", "繁體中文");
                     StringManager.getInstance().changeBundleTwn();
                 }else if(newValue.equals("日本語")){

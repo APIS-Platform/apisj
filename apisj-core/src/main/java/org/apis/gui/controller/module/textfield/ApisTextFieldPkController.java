@@ -33,8 +33,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisTextFieldPkController extends BaseViewController {
-    private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-            "-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size: 12px;";
+    private String style = "";
 
     private String address;
 
@@ -49,6 +48,14 @@ public class ApisTextFieldPkController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(StringManager.getInstance().langCode.equals("CN")
+                || StringManager.getInstance().langCode.equals("TW")) {
+            style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;";
+        } else {
+            style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size: 12px;";
+        }
 
         passwordPublic = new Image("image/ic_public@2x.png");
         passwordPrivate = new Image("image/ic_private@2x.png");

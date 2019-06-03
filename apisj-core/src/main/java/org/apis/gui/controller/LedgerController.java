@@ -15,6 +15,7 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
+import org.apis.gui.manager.StringManager;
 import org.apis.hid.HIDDevice;
 import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
@@ -50,12 +51,25 @@ public class LedgerController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("btnSign")) {
-            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
-                    "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            if(StringManager.getInstance().langCode.equals("CN")
+                    || StringManager.getInstance().langCode.equals("TW")) {
+                btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:14px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            } else {
+                btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            }
 
         } else if(fxid.equals("btnSend")) {
-            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
-                    "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            if(StringManager.getInstance().langCode.equals("CN")
+                    || StringManager.getInstance().langCode.equals("TW")) {
+                btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:14px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            } else {
+                btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            }
+
         } else if(fxid.equals("btnCheck")) {
 
         }
@@ -143,12 +157,24 @@ public class LedgerController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("btnSign")) {
-            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
-                    "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            if(StringManager.getInstance().langCode.equals("CN")
+                    || StringManager.getInstance().langCode.equals("TW")) {
+                btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:14px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            } else {
+                btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            }
 
         } else if(fxid.equals("btnSend")) {
-            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
-                    "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            if(StringManager.getInstance().langCode.equals("CN")
+                    || StringManager.getInstance().langCode.equals("TW")) {
+                btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:14px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            } else {
+                btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; " +
+                        "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            }
         }
     }
 

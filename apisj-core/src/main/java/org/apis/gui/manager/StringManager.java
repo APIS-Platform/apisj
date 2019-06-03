@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 public class StringManager {
     private ResourceBundle bundle;
 
+    public String langCode = "";
     public Common common = new Common();
     public Module module = new Module();
     public Receipt receipt = new Receipt();
@@ -41,18 +42,23 @@ public class StringManager {
     }
     public void changeBundleJpn(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ja","JP")));
+        langCode = "JP";
     }
     public void changeBundleChn(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","CN")));
+        langCode = "CN";
     }
     public void changeBundleTwn(){
-        setBundle(ResourceBundle.getBundle("lang/string", new Locale("tw","TW")));
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","TW")));
+        langCode = "TW";
     }
     public void changeBundleKor(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
+        langCode = "KR";
     }
     public void changeBundleEng(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("en","US")));
+        langCode = "US";
     }
     private void setBundle(ResourceBundle bundle){
         this.bundle = bundle;

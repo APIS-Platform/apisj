@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.OnScreenKeyboardController;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 
@@ -157,10 +158,18 @@ public class ApisTextFieldController extends BaseViewController {
             }
         };
 
-        textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
-        passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
+        if(StringManager.getInstance().langCode.equals("CN")
+                || StringManager.getInstance().langCode.equals("TW")) {
+            textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;");
+            passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;");
+        } else {
+            textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
+            passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
+        }
         textField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         passwordField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         textField.setVisible(false);
