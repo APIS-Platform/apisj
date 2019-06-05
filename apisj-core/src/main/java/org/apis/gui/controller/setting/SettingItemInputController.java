@@ -12,6 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +43,9 @@ public class SettingItemInputController implements Initializable {
         // Add listener
         textField.focusedProperty().addListener(inputListener);
         passwordField.focusedProperty().addListener(inputListener);
+
+        StyleManager.fontStyle(textField, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(passwordField, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
 
     public void setInput(String field) {
@@ -63,19 +69,19 @@ public class SettingItemInputController implements Initializable {
 
     private void inputFocused() {
         if(textField.isFocused()) {
-            textField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#999999").toString());
         } else {
-            textField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
         }
 
         if(passwordField.isFocused()) {
-            passwordField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+            passwordField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            passwordField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#999999").toString());
         } else {
-            passwordField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+            passwordField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
+            passwordField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
         }
     }
 

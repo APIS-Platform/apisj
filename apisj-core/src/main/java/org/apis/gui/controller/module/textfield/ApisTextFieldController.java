@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.OnScreenKeyboardController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
@@ -116,6 +117,13 @@ public class ApisTextFieldController extends BaseViewController {
         });
     }
 
+    @Override
+    public void fontUpdate() {
+        StyleManager.fontStyle(textField, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(passwordField, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(messageLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+    }
+
     public void textFieldSetting() {
         textField = new TextField() {
             @Override
@@ -158,18 +166,11 @@ public class ApisTextFieldController extends BaseViewController {
             }
         };
 
-        if(StringManager.getInstance().langCode.equals("CN")
-                || StringManager.getInstance().langCode.equals("TW")) {
-            textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;");
-            passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;");
-        } else {
-            textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
-            passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 12px;");
-        }
+        textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                "-fx-border-width: 0 0 1 0;");
+        passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;");
+        StyleManager.fontStyle(textField, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(passwordField, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         textField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         passwordField.setOpaqueInsets(new Insets(0, 0, 1, 2));
         textField.setVisible(false);
@@ -239,7 +240,7 @@ public class ApisTextFieldController extends BaseViewController {
     }
 
     public void languageSetting() {
-        StyleManager.fontStyle(messageLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(messageLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {

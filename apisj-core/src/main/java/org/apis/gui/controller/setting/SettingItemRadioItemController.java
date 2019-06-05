@@ -13,8 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,15 +36,16 @@ public class SettingItemRadioItemController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
+        StyleManager.fontStyle(textField, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(newValue) {
-                    textField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                            " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#999999").toString());
                 } else {
-                    textField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                            " -fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
                     if(textField.getText().length() != 0 && Integer.parseInt(textField.getText()) == 0) {
                         textField.setText("1");
                     }

@@ -3,7 +3,6 @@ package org.apis.gui.controller.transaction;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
@@ -12,8 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
@@ -24,7 +23,7 @@ import org.apis.util.AddressUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TransactionNativeDetailsHBoxController implements Initializable {
+public class TransactionNativeDetailsHBoxController extends BaseViewController {
     @FXML private HBox contentsBodyHBox;
 
     private Image frozen = new Image("image/ic_freeze@2x.png");
@@ -33,6 +32,12 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.contentsBodyHBox.getChildren().clear();
+        StyleManager.fontStyle(contentsBodyHBox, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+    }
+
+    @Override
+    public void fontUpdate() {
+        StyleManager.fontStyle(contentsBodyHBox, StyleManager.Hex.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
 
     public void addList(String group, String from, String to, String value) {
@@ -86,10 +91,11 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
             label.setCursor(Cursor.HAND);
             if(!copyText.equals("")) {
                 isFrozen = AppManager.getInstance().isFrozen(copyText);
+                StyleManager.fontStyle(label, StyleManager.Hex.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
                 if(isFrozen) {
-                    label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #4871ff;");
+                    label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-text-fill", "#4871ff").toString());
                 } else {
-                    label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #b01e1e;");
+                    label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-text-fill", "#b01e1e").toString());
                 }
             }
 

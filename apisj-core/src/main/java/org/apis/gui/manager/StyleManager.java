@@ -11,6 +11,38 @@ public class StyleManager {
     public static void fontStyle(Node node, JavaFXStyle style){
         node.setStyle(new JavaFXStyle(node.getStyle()).add(style).toString());
     }
+    public static void fontStyle(Node node, JavaFXStyle type, JavaFXStyle size, String lang){
+        fontStyleType(node, type, lang);
+        fontStyleSize(node, size, lang);
+    }
+    public static void fontStyleType(Node node, JavaFXStyle type, String lang) {
+        JavaFXStyle _style = new JavaFXStyle(node.getStyle()).add(type);
+
+        if(lang.equals("CN") || lang.equals("TW")){
+            if(type.compareFamily(Standard.Regular) || type.compareFamily(Standard.SemiBold)) {
+                _style.add(Standard.Regular);
+            } else if(type.compareFamily(Hex.Regular) || type.compareFamily(Hex.Medium)) {
+                _style.add(Hex.Regular);
+            } else if(type.compareFamily(Barlow.Regular) || type.compareFamily(Barlow.SemiBold)) {
+                _style.add(Barlow.Regular);
+            }
+        }
+
+        node.setStyle(_style.toString());
+    }
+    public static void fontStyleSize(Node node, JavaFXStyle size, String lang) {
+        JavaFXStyle _style = new JavaFXStyle(node.getStyle()).add(size);
+
+        if(lang.equals("CN") || lang.equals("TW")){
+            if(size == AFontSize.Size8
+                    || size == AFontSize.Size10
+                    || size == AFontSize.Size12 ){
+                _style.add(AFontSize.Size14);
+            }
+        }
+
+        node.setStyle(_style.toString());
+    }
     public static void backgroundColorStyle(Node node, String color){
         node.setStyle(new JavaFXStyle(node.getStyle()).add(new JavaFXStyle().add("-fx-background-color", color)).toString());
     }

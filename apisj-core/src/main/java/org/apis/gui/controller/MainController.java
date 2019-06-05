@@ -84,6 +84,7 @@ public class MainController extends BaseViewController {
                     rootPane.getStylesheets().remove(commonZhCssURL);
                     rootPane.getStylesheets().add(commonCssURL);
                 }
+
                 if(newValue.equals("English")){
                     AppManager.saveGeneralProperties("language", "English");
                     StringManager.getInstance().changeBundleEng();
@@ -91,18 +92,55 @@ public class MainController extends BaseViewController {
                     AppManager.saveGeneralProperties("language", "한국어");
                     StringManager.getInstance().changeBundleKor();
                 }else if(newValue.equals("简体中文")){
-                    rootPane.getStylesheets().remove(commonCssURL);
-                    rootPane.getStylesheets().add(commonZhCssURL);
+                    if(!rootPane.getStylesheets().contains(commonZhCssURL)) {
+                        rootPane.getStylesheets().remove(commonCssURL);
+                        rootPane.getStylesheets().add(commonZhCssURL);
+                    }
                     AppManager.saveGeneralProperties("language", "简体中文");
                     StringManager.getInstance().changeBundleChn();
                 }else if(newValue.equals("繁體中文")) {
-                    rootPane.getStylesheets().remove(commonCssURL);
-                    rootPane.getStylesheets().add(commonZhCssURL);
+                    if(!rootPane.getStylesheets().contains(commonZhCssURL)) {
+                        rootPane.getStylesheets().remove(commonCssURL);
+                        rootPane.getStylesheets().add(commonZhCssURL);
+                    }
                     AppManager.saveGeneralProperties("language", "繁體中文");
                     StringManager.getInstance().changeBundleTwn();
                 }else if(newValue.equals("日本語")){
                     AppManager.saveGeneralProperties("language", "日本語");
                     StringManager.getInstance().changeBundleJpn();
+                }
+
+                // Update font css
+                if (AppManager.getInstance().guiFx.getMain() != null) {
+                    MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
+                    AppManager.getInstance().guiFx.getMain().fontUpdate();
+
+                    switch (selectedIndex) {
+                        case WALLET:
+                            if (AppManager.getInstance().guiFx.getWallet() != null) {
+                                AppManager.getInstance().guiFx.getWallet().fontUpdate();
+                            }
+                            break;
+                        case TRANSFER:
+                            if (AppManager.getInstance().guiFx.getTransfer() != null) {
+                                AppManager.getInstance().guiFx.getTransfer().fontUpdate();
+                            }
+                            break;
+                        case SMART_CONTRECT:
+                            if (AppManager.getInstance().guiFx.getSmartContract() != null)
+                                AppManager.getInstance().guiFx.getSmartContract().fontUpdate();
+                            break;
+                        case ADDRESS_MASKING:
+                            if (AppManager.getInstance().guiFx.getAddressMasking() != null) {
+                                AppManager.getInstance().guiFx.getAddressMasking().fontUpdate();
+                            }
+                            break;
+                        case TRANSACTION:
+                            if (AppManager.getInstance().guiFx.getTransactionNative() != null) {
+                                AppManager.getInstance().guiFx.getTransactionNative().fontUpdate();
+                            }
+                            break;
+                    }
                 }
             }
         });
@@ -472,16 +510,15 @@ public class MainController extends BaseViewController {
         mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
         mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
 
-        StyleManager.fontStyle(mainFooterTotal, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(footerSelectTotalUnit, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(totalNatural, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(totalUnit, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(peer, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(block, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold14);
-
+        StyleManager.fontStyle(mainFooterTotal, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(footerSelectTotalUnit, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalNatural, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalUnit, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(peer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(block, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
     }
 
     @Override
@@ -492,6 +529,21 @@ public class MainController extends BaseViewController {
             FooterTotalModel model = (FooterTotalModel)footerSelectTotalUnit.getValue();
             setFooterTotalData(model);
         }
+    }
+
+    @Override
+    public void fontUpdate() {
+        StyleManager.fontStyle(mainFooterTotal, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(footerSelectTotalUnit, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalNatural, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalUnit, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(peer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(block, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+
+        tabMenuController.fontUpdate();
     }
 
     public void succesSync(){

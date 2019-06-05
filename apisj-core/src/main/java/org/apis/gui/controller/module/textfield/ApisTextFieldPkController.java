@@ -19,11 +19,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupPrintPrivatekeyController;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.ByteUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -33,7 +34,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisTextFieldPkController extends BaseViewController {
-    private String style = "";
+    private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #2b2b2b;";
 
     private String address;
 
@@ -48,14 +49,8 @@ public class ApisTextFieldPkController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(StringManager.getInstance().langCode.equals("CN")
-                || StringManager.getInstance().langCode.equals("TW")) {
-            style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size: 14px;";
-        } else {
-            style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-                    "-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size: 12px;";
-        }
+        textField.setStyle(style);
+        StyleManager.fontStyle(textField, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
         passwordPublic = new Image("image/ic_public@2x.png");
         passwordPrivate = new Image("image/ic_private@2x.png");
@@ -115,8 +110,9 @@ public class ApisTextFieldPkController extends BaseViewController {
                 this.createWalletPkCover.setImage(passwordPrivate);
             } else {
                 this.createWalletPkCover.setImage(passwordPublic);
-                this.textField.setStyle(style + " -fx-text-fill: #2b2b2b;");
-                this.borderLine.setStyle("-fx-background-color: #2b2b2b;");
+                this.textField.setStyle(new JavaFXStyle(this.textField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
+                this.textField.setStyle(new JavaFXStyle(this.textField.getStyle()).add("-fx-prompt-text-fill", "#999999").toString());
+                this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString());
             }
         }else{
 

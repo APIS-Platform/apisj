@@ -116,7 +116,7 @@ public class PopupMaskingController extends BasePopupController {
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
         emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
 
-        StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
     }
 
@@ -242,18 +242,18 @@ public class PopupMaskingController extends BasePopupController {
 
         tab1Line.setVisible(false);
         tab1Icon.setImage(tab1Off);
-        tab1Label.setStyle("-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:12px; ");
+        StyleManager.fontStyle(tab1Label, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         tab1Label.setTextFill(Color.web("#999999"));
 
         tab2Line.setVisible(false);
         tab2Icon.setImage(tab2Off);
-        tab2Label.setStyle("-fx-font-family: 'Noto Sans CJK JP Regular'; -fx-font-size:12px; ");
+        StyleManager.fontStyle(tab2Label, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         tab2Label.setTextFill(Color.web("#999999"));
 
         if(index == 0){
             tab1Icon.setImage(tab1On);
             tab1Line.setVisible(true);
-            tab1Label.setStyle("-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; ");
+            StyleManager.fontStyle(tab1Label, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
             tab1Label.setTextFill(Color.web("#b01e1e"));
 
             introNaviOne.setVisible(true);
@@ -264,7 +264,7 @@ public class PopupMaskingController extends BasePopupController {
         }else if(index == 1){
             tab2Icon.setImage(tab2On);
             tab2Line.setVisible(true);
-            tab2Label.setStyle("-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; ");
+            StyleManager.fontStyle(tab2Label, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
             tab2Label.setTextFill(Color.web("#b01e1e"));
 
             introNaviOne.setVisible(false);

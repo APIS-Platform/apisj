@@ -4,7 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,7 +21,12 @@ public class TransactionNativePageNumController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        StyleManager.fontStyle(pageNum, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+    }
 
+    @Override
+    public void fontUpdate() {
+        StyleManager.fontStyle(pageNum, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
 
     @FXML
@@ -32,11 +40,11 @@ public class TransactionNativePageNumController extends BaseViewController {
 
     public void isSelected(boolean pageSelected) {
         if(pageSelected) {
-            pageNum.setStyle("-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-background-color: #b01e1e; " +
-                    "-fx-border-color: #d8d8d8; -fx-border-width: 1 0 1 1; -fx-text-fill: #ffffff;");
+            pageNum.setStyle(new JavaFXStyle(pageNum.getStyle()).add("-fx-background-color", "#b01e1e").toString());
+            pageNum.setStyle(new JavaFXStyle(pageNum.getStyle()).add("-fx-text-fill", "#ffffff").toString());
         } else {
-            pageNum.setStyle("-fx-font-family: 'Noto Sans CJK JP Medium'; -fx-font-size:12px; -fx-background-color: #ffffff; " +
-                    "-fx-border-color: #d8d8d8; -fx-border-width: 1 0 1 1; -fx-text-fill: #353535;");
+            pageNum.setStyle(new JavaFXStyle(pageNum.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            pageNum.setStyle(new JavaFXStyle(pageNum.getStyle()).add("-fx-text-fill", "#353535").toString());
         }
     }
 
