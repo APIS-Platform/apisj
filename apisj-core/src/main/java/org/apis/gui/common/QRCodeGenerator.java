@@ -20,6 +20,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import javafx.scene.image.Image;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.imageio.ImageIO;
@@ -27,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.Base64;
+import java.util.regex.Pattern;
 
 public class QRCodeGenerator {
 
@@ -40,6 +42,26 @@ public class QRCodeGenerator {
         String base64String = imgToBase64String(image, "PNG");
 
         return base64String;
+    }
+
+    public static Image generateQRCodeImage(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        String pattern = "^[0-9a-fA-F]*$";
+
+        if(Pattern.matches(pattern, text)) {
+            return generateQRCodeImage(ByteUtil.hexStringToBytes(text), width, height);
+
+        } else {
+            BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write((RenderedImage) bufferedImage, "png", out);
+            out.flush();
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+
+            return new javafx.scene.image.Image(in);
+        }
     }
 
     public static Image generateQRCodeImage(byte[] text, int width, int height) throws WriterException, IOException {

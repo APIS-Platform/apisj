@@ -10,7 +10,6 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.gui.common.QRCodeGenerator;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -75,7 +74,7 @@ public class PopupCopyController extends BasePopupController implements Clipboar
         this.copyTextLabel.textProperty().setValue(text);
 
         try {
-            QRCode.setImage(QRCodeGenerator.generateQRCodeImage(ByteUtil.hexStringToBytes(text), 100, 100));
+            QRCode.setImage(QRCodeGenerator.generateQRCodeImage(text, 100, 100));
         } catch (WriterException e) {
             e.printStackTrace();
         } catch (IOException e) {
