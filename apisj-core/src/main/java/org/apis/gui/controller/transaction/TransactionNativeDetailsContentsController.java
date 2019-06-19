@@ -149,8 +149,8 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         try {
             URL hboxURL = getClass().getClassLoader().getResource("scene/transaction/transaction_native_details_hbox.fxml");
             FXMLLoader loader = new FXMLLoader(hboxURL);
-            TransactionNativeDetailsHBoxController controller = (TransactionNativeDetailsHBoxController) loader.getController();
             HBox hBox = loader.load();
+            TransactionNativeDetailsHBoxController controller = (TransactionNativeDetailsHBoxController) loader.getController();
 
             this.contentsBodyVBox.getChildren().add(hBox);
             this.hBoxControllers.add(controller);
