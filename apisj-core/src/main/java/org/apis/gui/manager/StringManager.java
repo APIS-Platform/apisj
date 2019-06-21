@@ -606,7 +606,7 @@ public class StringManager {
             ReceivingAddress.set(StringManager.this.getString("transfer_receiving_address", "Receiving Address"));
             myAddress.set(StringManager.this.getString("transfer_my_address_button", "My Address"));
             recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
-            ReceivingAddressPlaceHolder.set(StringManager.this.getString("transfer_receiving_address_placeholder", "Write Reving Address"));
+            ReceivingAddressPlaceHolder.set(StringManager.this.getString("transfer_receiving_address_placeholder", "Write Receiving Address"));
             detailTransferAmount.set(StringManager.this.getString("transfer_detail_transfer_amount", "Transfer Amount"));
             detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+)Fee"));
             detailTotalWithdrawal.set(StringManager.this.getString("transfer_detail_total_withdrawal", "Total Withdrawal"));
