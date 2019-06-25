@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -599,6 +600,9 @@ public class BlockMiner {
     private synchronized void blockMined(Block newBlock) {
         broadcastBlockMined(newBlock);
         logger.info("Wow, block mined !!!: {}", newBlock.getShortDescr());
+        try {
+            CurrentStateUtil.storeLatestMinedBlock(newBlock.getNumber());
+        } catch (IOException ignored) {}
 
         miningBlock = null;
         long now = TimeUtils.getRealTimestamp()/1_000L;

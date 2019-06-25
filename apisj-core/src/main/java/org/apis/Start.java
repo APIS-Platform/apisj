@@ -12,6 +12,7 @@ import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCServerManager;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.CurrentStateUtil;
 import org.apis.util.TimeUtils;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
@@ -62,8 +63,13 @@ public class Start {
 
 
     public static void main(String args[]) throws IOException {
+        CurrentStateUtil.deleteCurrentInfo();
+
         new CLIStart();
         CLIInterface.call(args);
+
+        // Write the current program's PID to a file
+        CurrentStateUtil.storePid();
 
         final SystemProperties config = SystemProperties.getDefault();
         if(config == null) {
@@ -102,7 +108,14 @@ public class Start {
             rpcServerManager.startServer();
             isRunRpc = true;
         }
+
+
+        // onShutdown, delete the PID file
+        // Does not work at abnormal termination
+        Runtime.getRuntime().addShutdownHook(new Thread(CurrentStateUtil::deleteCurrentInfo));
     }
+
+
 
     private static void startAPIS() {
         mApis = ApisFactory.createEthereum();
@@ -165,8 +178,16 @@ public class Start {
                 DBSyncManager.getInstance(mApis).setApis(mApis);
                 DBSyncManager.getInstance(mApis).syncThreadStart();
             }
+
+            try {
+                if(synced) {
+                    CurrentStateUtil.storeLatestBlock(blockNumber);
+                }
+            } catch (IOException ignored) {}
         }
     };
+
+
 
 
 }
