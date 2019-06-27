@@ -187,6 +187,17 @@ public class TransactionData {
         return new Transaction(nonce, gasPrice, gas, to, toMask, value, data, chainId);
     }
 
+    /**
+     * 트랜잭션 실행 결과를 예측하기 위해서, sender를 임의로 설정한다
+     * @param chainId Network chain ID
+     * @return Transaction
+     */
+    public Transaction getTransactionForEstimate(Integer chainId) {
+        Transaction tx = getTransaction(chainId);
+        tx.setTempSender(ByteUtil.hexStringToBytes(this.from));
+        return tx;
+    }
+
 
     @Override
     public String toString() {
