@@ -11,6 +11,7 @@ import org.apis.facade.ApisFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCServerManager;
+import org.apis.rpc_rest.HttpRpcServer;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.CurrentStateUtil;
 import org.apis.util.TimeUtils;
@@ -61,6 +62,8 @@ public class Start {
 
     static private boolean processRestartThreadCreated = false;
 
+    private static HttpRpcServer httpRpcServer = null;
+
 
     public static void main(String args[]) throws IOException {
         CurrentStateUtil.deleteCurrentInfo();
@@ -96,18 +99,22 @@ public class Start {
         // Start APIS
         startAPIS();
 
-        // Set Max Peers
-        rpcServerManager.setApis(mApis);
 
         if (actionBlocksLoader) {
             mApis.getBlockLoader().loadBlocks();
         }
+
+
+        // Set Max Peers
+        rpcServerManager.setApis(mApis);
 
         // start server
         if(rpcServerManager.isAvailable()) {
             rpcServerManager.startServer();
             isRunRpc = true;
         }
+
+        httpRpcServer = new HttpRpcServer(mApis);
 
 
         // onShutdown, delete the PID file
@@ -171,6 +178,11 @@ public class Start {
             blockNumber = block.getNumber();
             logger.debug(ConsoleUtil.colorBBlue("\nOnBlock : %s (%.2f kB)", block.getShortDescr(), block.getEncoded().length/1000f));
             timeLastBlockReceived = TimeUtils.getRealTimestamp();
+
+            // HTTP 서버를 실행시킨다
+            if(httpRpcServer != null) {
+                httpRpcServer.start();
+            }
 
             // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.
             if(synced && isRunRpc) {
