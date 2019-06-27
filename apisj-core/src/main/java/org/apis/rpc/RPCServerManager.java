@@ -34,6 +34,10 @@ public class RPCServerManager {
     public static final String KEY_MAX_CONNECTION = "max_connections";
     public static final String KEY_MAX_PEERS = "max_peers";
 
+    public static final String KEY_HTTP_AVAILABLE_RPC = "http_use_rpc";
+    public static final String KEY_HTTP_PORT = "http_port";
+    public static final String KEY_HTTP_THREAD = "http_thread";
+
     private RPCWebSocketServer rpcServer = null;
     private boolean isRun = false;
 
@@ -204,6 +208,20 @@ public class RPCServerManager {
         }
         isRun = false;
     }
+
+
+    public boolean isHttpServerEnabled() {
+        return Boolean.parseBoolean(prop.getProperty(KEY_HTTP_AVAILABLE_RPC));
+    }
+
+    public int getHttpPort() {
+        return Integer.parseInt(prop.getProperty(KEY_HTTP_PORT));
+    }
+
+    public int getHttpThreadPoolSize() {
+        return Integer.parseInt(prop.getProperty(KEY_HTTP_THREAD));
+    }
+
 
     @Override
     public String toString() {
