@@ -104,10 +104,14 @@ public class KeyStoreManager {
         }
     }
 
-    public KeyStoreData savePrivateKeyStore(byte[] privateKey, String alias, char[] password) {
-        String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, alias, String.valueOf(password));
+    public KeyStoreData savePrivateKeyStore(byte[] privateKey, String alias, String password) {
+        String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, alias, password);
 
         return savePrivateKeyStore(keystoreStr);
+    }
+
+    public KeyStoreData savePrivateKeyStore(byte[] privateKey, String alias, char[] password) {
+        return savePrivateKeyStore(privateKey, alias, String.valueOf(password));
     }
 
     public KeyStoreData savePrivateKeyStore(String keystoreJsonData){
@@ -190,7 +194,7 @@ public class KeyStoreManager {
 
     public byte[] createPrivateKey(String password) {
         byte[] privateKey = SecureRandom.getSeed(32);
-        savePrivateKeyStore(privateKey, "", password.toCharArray());
+        savePrivateKeyStore(privateKey, "", password);
 
         return privateKey;
     }
