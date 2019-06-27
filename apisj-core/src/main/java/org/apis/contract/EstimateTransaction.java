@@ -51,8 +51,7 @@ public class EstimateTransaction {
     }
 
 
-
-    private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx) {
+    private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx, boolean isLocalCall) {
         Repository track = repo.startTracking();
 
         if(tx.getSender() == null) {
@@ -60,7 +59,7 @@ public class EstimateTransaction {
         }
 
         TransactionExecutor executor = new TransactionExecutor(tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
-                .setLocalCall(true);
+                .setLocalCall(isLocalCall);
 
         executor.init();
         executor.execute();
@@ -70,6 +69,10 @@ public class EstimateTransaction {
         track.rollback();
 
         return executor;
+    }
+
+    private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx) {
+        return getExecutor(repo, blockStore, callBlock, tx, true);
     }
 
 
@@ -95,13 +98,25 @@ public class EstimateTransaction {
         Transaction tx = makeTransaction(from, to, gasLimit, value, data);
         return getExecutor(repo, blockStore, callBlock, tx);
     }
+    private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, long gasLimit, byte[] data, boolean isLocalCall) {
+        Transaction tx = makeTransaction(from, to, gasLimit, value, data);
+        return getExecutor(repo, blockStore, callBlock, tx, isLocalCall);
+    }
 
 
     public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx) {
-        return estimate(repo, blockStore, callBlock, tx, DEFAULT_MAX_REPEAT, DEFAULT_MIN_OFFSET);
+        return estimate(repo, blockStore, callBlock, tx, true);
+    }
+
+    public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx, boolean isLocalCall) {
+        return estimate(repo, blockStore, callBlock, tx, DEFAULT_MAX_REPEAT, DEFAULT_MIN_OFFSET, isLocalCall);
     }
 
     public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx, int maxRepeat, long minOffset) {
+        return estimate(repo, blockStore, callBlock, tx, maxRepeat, minOffset, true);
+    }
+
+    public EstimateTransactionResult estimate(Repository repo, BlockStore blockStore, Block callBlock, Transaction tx, int maxRepeat, long minOffset, boolean isLocalCall) {
         if(maxRepeat < 0) {
             maxRepeat = DEFAULT_MAX_REPEAT;
         }
@@ -109,7 +124,7 @@ public class EstimateTransaction {
             minOffset = DEFAULT_MIN_OFFSET;
         }
 
-        TransactionExecutor executor = getExecutor(repo, blockStore, callBlock, tx);
+        TransactionExecutor executor = getExecutor(repo, blockStore, callBlock, tx, isLocalCall);
         TransactionReceipt receipt = executor.getReceipt();
 
         long newGasLimit = BIUtil.toBI(receipt.getGasUsed()).longValue();
@@ -123,7 +138,7 @@ public class EstimateTransaction {
 
         for(int i = 0; i < maxRepeat && isSuccess; i++) {
 
-            executor = getExecutor(repo, blockStore, callBlock, tx.getSender(), tx.getReceiveAddress(), ByteUtil.bytesToBigInteger(tx.getValue()), newGasLimit, tx.getData());
+            executor = getExecutor(repo, blockStore, callBlock, tx.getSender(), tx.getReceiveAddress(), ByteUtil.bytesToBigInteger(tx.getValue()), newGasLimit, tx.getData(), isLocalCall);
             receipt = executor.getReceipt();
 
             if(receipt.isSuccessful()) {
@@ -182,12 +197,20 @@ public class EstimateTransaction {
         return estimate(tx, -1, -1);
     }
 
+    public EstimateTransactionResult estimate(Transaction tx, boolean isLocalCall) {
+        return estimate(tx, -1, -1, isLocalCall);
+    }
+
     public EstimateTransactionResult estimate(Transaction tx, int maxRepeat, long maxOffset) {
+        return estimate(tx, maxRepeat, maxOffset, true);
+    }
+
+    public EstimateTransactionResult estimate(Transaction tx, int maxRepeat, long maxOffset, boolean isLocalCall) {
         Block callBlock = apis.getBlockchain().getBestBlock();
         Repository repo = ((Repository)apis.getRepository()).getSnapshotTo(callBlock.getStateRoot());
         BlockStore blockStore = apis.getBlockchain().getBlockStore();
 
-        return estimate(repo, blockStore, callBlock, tx, maxRepeat, maxOffset);
+        return estimate(repo, blockStore, callBlock, tx, maxRepeat, maxOffset, isLocalCall);
     }
 
 
