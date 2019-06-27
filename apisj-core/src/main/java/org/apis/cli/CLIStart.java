@@ -129,12 +129,23 @@ public class CLIStart {
             rpcProp.load(input);
         } catch (IOException e) {
             rpcProp.setProperty(RPCServerManager.KEY_AVAILABLE_RPC, String.valueOf(false));
-            rpcProp.setProperty(RPCServerManager.KEY_PORT, String.valueOf(new Random().nextInt(10000) + 40000));
+
+            int wsPort = new Random().nextInt(10000) + 40000;
+            int httpPort = wsPort + 1;
+            if(wsPort >= 65535) {
+                httpPort = wsPort - 1;
+            }
+
+            rpcProp.setProperty(RPCServerManager.KEY_PORT, String.valueOf(wsPort));
             rpcProp.setProperty(RPCServerManager.KEY_ID, ByteUtil.toHexString(SecureRandom.getSeed(16)));
             rpcProp.setProperty(RPCServerManager.KEY_PASSWORD, ByteUtil.toHexString(SecureRandom.getSeed(16)));
             rpcProp.setProperty(RPCServerManager.KEY_MAX_CONNECTION, String.valueOf(1));
             rpcProp.setProperty(RPCServerManager.KEY_ALLOW_IP, "127.0.0.1");
             rpcProp.setProperty(RPCServerManager.KEY_MAX_PEERS, DEFAULT_MAX_PEERS);
+
+            rpcProp.setProperty(RPCServerManager.KEY_HTTP_AVAILABLE_RPC, String.valueOf(false));
+            rpcProp.setProperty(RPCServerManager.KEY_HTTP_PORT, String.valueOf(httpPort));
+            rpcProp.setProperty(RPCServerManager.KEY_HTTP_THREAD, String.valueOf(8));
 
             File configDir = new File(config.configDir());
             if(!configDir.exists()) {
@@ -220,30 +231,48 @@ public class CLIStart {
                     changePort();
                     continue;
                 }
-                // RPC ID
+                // RPC Websocket Max Connections
                 case "7": {
+                    changeMaxConnection();
+                    continue;
+                }
+                // HTTP RPC Enable
+                case "8": {
+                    toggleHttpRpcEnabled();
+                    continue;
+                }
+                // Http RPC Port
+                case "9": {
+                    changeHttpPort();
+                    continue;
+                }
+                // Http Server thread
+                case "a":
+                case "A": {
+                    changeHttpThread();
+                    continue;
+                }
+                // RPC ID
+                case "b":
+                case "B": {
                     changeId();
                     continue;
                 }
                 // RPC Password
-                case "8": {
+                case "c":
+                case "C": {
                     changePassword();
                     continue;
                 }
-                // RPC Max Connections
-                case "9": {
-                    changeMaxConnection();
-                    continue;
-                }
                 // RPC Allowed IP
-                case "a":
-                case "A": {
+                case "d":
+                case "D": {
                     changeAllowIp();
                     continue;
                 }
                 // Update check
-                case "b":
-                case "B": {
+                case "e":
+                case "E": {
                     updateCore();
                     continue;
                 }
@@ -318,6 +347,24 @@ public class CLIStart {
             return;
         }
 
+        // HTTP RPC Settings
+        if(rpcProp.getProperty(RPCServerManager.KEY_HTTP_AVAILABLE_RPC) == null) {
+            changeHttpRpcEnabled(false);
+        }
+
+        if(rpcProp.getProperty(RPCServerManager.KEY_HTTP_PORT) == null) {
+            int wsPort = Integer.parseInt(rpcProp.getProperty(RPCServerManager.KEY_PORT));
+            int httpPort = wsPort + 1;
+            if(wsPort >= 65535) {
+                httpPort = wsPort - 1;
+            }
+            rpcProp.setProperty(RPCServerManager.KEY_HTTP_PORT, String.valueOf(httpPort));
+        }
+
+        if(rpcProp.getProperty(RPCServerManager.KEY_HTTP_THREAD) == null) {
+            rpcProp.setProperty(RPCServerManager.KEY_HTTP_THREAD, "8");
+        }
+
 
 
         ConsoleUtil.printlnBRed("APIS Core Settings ==========");
@@ -331,15 +378,18 @@ public class CLIStart {
         printSettingRow("3", KEY_MASTERNODE, masternodeStr);
         printSettingRow("4", "Reward Recipient", recipientStr);
         ConsoleUtil.printlnBlack("");
-        printSettingRow("5", "RPC Enabled", rpcProp.getProperty(RPCServerManager.KEY_AVAILABLE_RPC));
-        printSettingRow("6", "RPC Port", rpcProp.getProperty(RPCServerManager.KEY_PORT));
-        printSettingRow("7", "RPC ID", rpcProp.getProperty(RPCServerManager.KEY_ID));
-        printSettingRow("8", "RPC Password", rpcProp.getProperty(RPCServerManager.KEY_PASSWORD));
-        printSettingRow("9", "RPC Max Connections", rpcProp.getProperty(RPCServerManager.KEY_MAX_CONNECTION));
-        printSettingRow("A", "RPC Allowed IP", rpcProp.getProperty(RPCServerManager.KEY_ALLOW_IP).replaceAll(",", ", "));
+        printSettingRow("5", "RPC(WS) Enabled", rpcProp.getProperty(RPCServerManager.KEY_AVAILABLE_RPC));
+        printSettingRow("6", "RPC(WS) Port", rpcProp.getProperty(RPCServerManager.KEY_PORT));
+        printSettingRow("7", "RPC(WS) Max Connections", rpcProp.getProperty(RPCServerManager.KEY_MAX_CONNECTION));
+        printSettingRow("8", "RPC(HTTP) Enabled", rpcProp.getProperty(RPCServerManager.KEY_HTTP_AVAILABLE_RPC));
+        printSettingRow("9", "RPC(HTTP) Port", rpcProp.getProperty(RPCServerManager.KEY_HTTP_PORT));
+        printSettingRow("A", "RPC(HTTP) nThreads", rpcProp.getProperty(RPCServerManager.KEY_HTTP_THREAD));
+        printSettingRow("B", "RPC ID", rpcProp.getProperty(RPCServerManager.KEY_ID));
+        printSettingRow("C", "RPC Password", rpcProp.getProperty(RPCServerManager.KEY_PASSWORD));
+        printSettingRow("D", "RPC Allowed IP", rpcProp.getProperty(RPCServerManager.KEY_ALLOW_IP).replaceAll(",", ", "));
         ConsoleUtil.printlnBlack("");
         if(isNeedUpdate()) {
-            printSettingRow("B", "Update APIS Core", String.format("%s => %s", versionCurrent, versionLatest));
+            printSettingRow("E", "Update APIS Core", String.format("%s => %s", versionCurrent, versionLatest));
             ConsoleUtil.printlnBlack("");
         }
         ConsoleUtil.printlnCyan("Input other key to start APIS Core");
@@ -1211,11 +1261,12 @@ public class CLIStart {
         ConsoleUtil.printlnPurple(Strings.padEnd(key, 20, ' ') + ": " + value);
     }
 
-    private void changeRpcEnabled(boolean isEnable) {
+    private void changeRpcEnabled(boolean isEnable) throws IOException {
         rpcProp.setProperty(RPCServerManager.KEY_AVAILABLE_RPC, String.valueOf(isEnable));
+        storeRpcConfig();
     }
 
-    private void toggleRpcEnabled() {
+    private void toggleRpcEnabled() throws IOException {
         boolean oldSetting = Boolean.parseBoolean(rpcProp.getProperty(RPCServerManager.KEY_AVAILABLE_RPC));
         changeRpcEnabled(!oldSetting);
     }
@@ -1241,10 +1292,18 @@ public class CLIStart {
 
             String input = ConsoleUtil.readLine(">> ");
             String newPort;
+
+            int httpPort = Integer.parseInt(rpcProp.getProperty(RPCServerManager.KEY_HTTP_PORT));
+            int wsPort = 0;
+
             switch (input) {
                 case "A":
                 case "a":
-                    newPort = String.valueOf(new Random().nextInt(10000) + 50000);
+                    while(httpPort == wsPort || wsPort == 0) {
+                        wsPort = new Random().nextInt(30000) + 30000;
+                    }
+
+                    newPort = String.valueOf(wsPort);
                     break;
 
                 case "B":
@@ -1253,14 +1312,21 @@ public class CLIStart {
 
                 default: {
                     try {
-                        int port = Integer.parseInt(input);
 
-                        if(port < 0 || port > 65535) {
-                            ConsoleUtil.printlnRed("Please enter the correct port number.");
+                        wsPort = Integer.parseInt(input);
+
+                        if(wsPort < 0 || wsPort > 65535) {
+                            ConsoleUtil.printlnRed("Please enter the correct port number");
                             continue;
                         }
 
-                        newPort = String.valueOf(port);
+
+                        if(wsPort == httpPort) {
+                            ConsoleUtil.printlnRed("Please enter a number that is not equal to the HTTP-RPC port");
+                            continue;
+                        }
+
+                        newPort = String.valueOf(wsPort);
                     } catch (NumberFormatException e) {
                         errorMsg = "Please enter the correct port number.";
                         continue;
@@ -1560,6 +1626,137 @@ public class CLIStart {
             storeRpcConfig();
         }
     }
+
+    private void toggleHttpRpcEnabled() throws IOException {
+        boolean oldSetting = Boolean.parseBoolean(rpcProp.getProperty(RPCServerManager.KEY_HTTP_AVAILABLE_RPC));
+        changeHttpRpcEnabled(!oldSetting);
+    }
+
+    private void changeHttpRpcEnabled(boolean isEnable) throws IOException {
+        rpcProp.setProperty(RPCServerManager.KEY_HTTP_AVAILABLE_RPC, String.valueOf(isEnable));
+        storeRpcConfig();
+    }
+
+
+    private void changeHttpPort() throws IOException {
+        String errorMsg = "";
+        while(true) {
+            clearConsole();
+
+            if(errorMsg.isEmpty() == false) {
+                ConsoleUtil.printlnRed(errorMsg);
+                ConsoleUtil.printlnRed("");
+            }
+
+            System.out.println(String.format(StringUtils.rightPad("HTTP RPC Port [%s] ", 30, "="), ConsoleUtil.colorPurple(rpcProp.getProperty(RPCServerManager.KEY_HTTP_PORT))));
+            ConsoleUtil.printlnGreen("");
+            ConsoleUtil.printlnGreen("Which port would you like to open?");
+            ConsoleUtil.printlnGreen("Do not enter a number that is aleady in use.");
+            ConsoleUtil.printlnGreen("");
+            printSettingRow("A", "Pick random number", "");
+            printSettingRow("B", "Done", "");
+            printSettingRow("10000 ~ 65535", "", "");
+
+            String input = ConsoleUtil.readLine(">> ");
+            String newPort;
+
+            int httpPort = 0;
+            int wsPort = Integer.parseInt(rpcProp.getProperty(RPCServerManager.KEY_PORT));
+
+            switch (input) {
+                case "A":
+                case "a":
+                    while(httpPort == wsPort || httpPort == 0) {
+                        httpPort = new Random().nextInt(30000) + 30000;
+                    }
+                    newPort = String.valueOf(httpPort);
+                    break;
+
+                case "B":
+                case "b":
+                    return;
+
+                default: {
+                    try {
+                        int port = Integer.parseInt(input);
+
+                        if(port < 0 || port > 65535) {
+                            ConsoleUtil.printlnRed("Please enter the correct port number");
+                            continue;
+                        }
+
+
+                        if(port == wsPort) {
+                            ConsoleUtil.printlnRed("Please enter a number that is not equal to the WS-RPC port");
+                            continue;
+                        }
+
+                        newPort = String.valueOf(port);
+                    } catch (NumberFormatException e) {
+                        errorMsg = "Please enter the correct port number.";
+                        continue;
+                    }
+                }
+            }
+
+            rpcProp.put(RPCServerManager.KEY_HTTP_PORT, newPort);
+            storeRpcConfig();
+        }
+    }
+
+
+    private void changeHttpThread() throws IOException {
+        String errorMsg = "";
+        while(true) {
+            clearConsole();
+
+            if(errorMsg.isEmpty() == false) {
+                ConsoleUtil.printlnRed(errorMsg);
+                ConsoleUtil.printlnRed("");
+                errorMsg = "";
+            }
+
+            System.out.println(String.format(StringUtils.rightPad("HTTP Server thread pool [%s] ", 30, "="), ConsoleUtil.colorPurple(rpcProp.getProperty(RPCServerManager.KEY_HTTP_THREAD))));
+            ConsoleUtil.printlnGreen("");
+            ConsoleUtil.printlnGreen("Please enter the number of threads in the pool of HTTP server");
+            ConsoleUtil.printlnGreen("");
+            printSettingRow("A", "Set default", "8");
+            printSettingRow("B", "Done", "");
+
+            String input = ConsoleUtil.readLine(">> ");
+            String threadPool;
+            switch (input) {
+                case "A":
+                case "a":
+                    threadPool = "8";
+                    break;
+
+                case "B":
+                case "b":
+                    return;
+
+                default: {
+                    try {
+                        int pool = Integer.parseInt(input);
+
+                        if(pool < 1 || pool > 1000) {
+                            ConsoleUtil.printlnRed("Please enter the correct number.");
+                            continue;
+                        }
+
+                        threadPool = String.valueOf(pool);
+                    } catch (NumberFormatException e) {
+                        errorMsg = "Please enter the correct number.";
+                        continue;
+                    }
+                }
+            }
+
+            rpcProp.put(RPCServerManager.KEY_HTTP_THREAD, threadPool);
+            storeRpcConfig();
+        }
+    }
+
 
     private void storeRpcConfig() throws IOException {
         OutputStream daemonOutput = new FileOutputStream(dirRpc);
