@@ -10,11 +10,12 @@ public class EstimateTransactionResult {
     private TransactionExecutor executor;
     private String error;
 
-    EstimateTransactionResult(TransactionExecutor executor) {
+    private EstimateTransactionResult(TransactionExecutor executor) {
         TransactionReceipt receipt = executor.getReceipt();
         this.isSuccess = receipt.isSuccessful();
         this.gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed()).longValue();
         this.executor = executor;
+        this.error = receipt.getError();
     }
 
     EstimateTransactionResult(TransactionExecutor executor, long gasUsed) {
