@@ -396,6 +396,7 @@ public class PopupMaskingController extends BasePopupController {
         languageSetting();
 
         AppManager.settingTextFieldStyle(registerMaskingIdTextField);
+        AppManager.keyPressedHandler(registerMaskingIdTextField);
 
         tab1On = new Image("image/ic_registeralias_red@2x.png");
         tab1Off = new Image("image/ic_registeralias_grey@2x.png");
@@ -470,7 +471,9 @@ public class PopupMaskingController extends BasePopupController {
             if(event.getCode() == KeyCode.LEFT
                     || event.getCode() == KeyCode.RIGHT
                     || event.getCode() == KeyCode.UP
-                    || event.getCode() == KeyCode.DOWN) {
+                    || event.getCode() == KeyCode.DOWN
+                    || (event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown())
+                    || (event.getCode() == KeyCode.PAGE_UP && event.isControlDown())) {
                 if(tabPane.isFocused()){
                     event.consume();
                 }else{
@@ -481,6 +484,7 @@ public class PopupMaskingController extends BasePopupController {
 
 
         AppManager.settingTextFieldStyle(commercialDomainTextField);
+        AppManager.keyPressedHandler(commercialDomainTextField);
         commercialDomainTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -509,6 +513,7 @@ public class PopupMaskingController extends BasePopupController {
                 }
             }
         });
+        AppManager.keyPressedHandler(commercialDomainMessage);
         emailTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -523,7 +528,7 @@ public class PopupMaskingController extends BasePopupController {
                 }
             }
         });
-
+        AppManager.keyPressedHandler(emailTextField);
 
         selectWalletAddressController.setHandler(new AddressLabelController.AddressLabelImpl() {
             @Override

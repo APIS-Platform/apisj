@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BaseViewController;
@@ -33,6 +35,13 @@ public class ApisAddressFieldController extends BaseViewController {
         AppManager.settingIdenticonStyle(icon);
 
         addressField.textProperty().addListener(addressFieldListener());
+        addressField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                event.consume();
+            } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                event.consume();
+            }
+        });
     }
 
     private void languageSetting() {

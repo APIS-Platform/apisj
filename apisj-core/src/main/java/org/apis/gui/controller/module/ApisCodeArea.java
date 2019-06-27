@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -55,6 +57,13 @@ public class ApisCodeArea extends StackPane{
 
     public ApisCodeArea() {
         codeArea = new CodeArea();
+        codeArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                event.consume();
+            } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                event.consume();
+            }
+        });
 
         // add line numbers to the left of area
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));

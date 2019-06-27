@@ -1,5 +1,7 @@
 package org.apis.gui.controller;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -170,7 +172,9 @@ public class IntroController extends BaseViewController {
             if(event.getCode() == KeyCode.LEFT
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
-                || event.getCode() == KeyCode.DOWN) {
+                || event.getCode() == KeyCode.DOWN
+                || (event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown())
+                || (event.getCode() == KeyCode.PAGE_UP && event.isControlDown())) {
                     if(introPhaseTab.isFocused()){
                         event.consume();
                     }else{

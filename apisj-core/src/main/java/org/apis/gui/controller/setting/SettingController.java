@@ -21,26 +21,22 @@ import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.*;
 import org.apis.util.ChainConfigUtil;
 import org.json.JSONException;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
-    @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning;
-    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
+    @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning, peersBtn;
+    @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel, userNumPlus, userNumMinus;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController,
-                                           minimizeToTrayBtnController, rewardSaveBtnController, updateNoticeController;
+            minimizeToTrayBtnController, rewardSaveBtnController, updateNoticeController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
     @FXML private SettingItemRadioController networkIdController;
     @FXML private SettingItemSaveLoadController saveLoadController;
@@ -341,7 +337,8 @@ public class SettingController extends BasePopupController {
 
                 try {
                     String newestVer = AppManager.getVersionNewest();
-                    if(SystemProperties.getDefault().projectVersion().equals(newestVer)) {
+                    if(SystemProperties.getDefault().projectVersion().equals(newestVer)
+                            || newestVer.equals("")) {
                         this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_UPDATED);
                     } else {
                         this.updateController.setVersionStatus(SettingItemUpdateController.VERSION_NOT_UPDATED);
@@ -453,6 +450,10 @@ public class SettingController extends BasePopupController {
             int num = Integer.parseInt(userNumLabel.getText());
             if(num < maxPeerNumber) num++;
             userNumLabel.setText(Integer.toString(num));
+
+        } else if (fxid.equals("peersBtn")) {
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
+            controller.setSubTitle(StringManager.getInstance().popup.successSubTitleRestart);
 
         } else if(fxid.equals("cancelBtn")) {
             exit();
@@ -626,6 +627,15 @@ public class SettingController extends BasePopupController {
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             icCancel.setImage(ImageManager.icBackRed);
+
+        }else if(fxid.equals("peersBtn")) {
+            StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C2b2b2b);
+
+        }else if(fxid.equals("userNumMinus")) {
+            userNumMinus.setImage(ImageManager.btnGasMinusBlack);
+
+        } else if(fxid.equals("userNumPlus")) {
+            userNumPlus.setImage(ImageManager.btnGasPlusBlack);
         }
 
     }
@@ -636,10 +646,20 @@ public class SettingController extends BasePopupController {
         if(fxid.equals("saveBtn")){
             StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cffffff);
+
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             icCancel.setImage(ImageManager.icBackWhite);
+
+        }else if(fxid.equals("peersBtn")) {
+            StyleManager.backgroundColorStyle(peersBtn, StyleManager.AColor.C999999);
+
+        }else if(fxid.equals("userNumMinus")) {
+            userNumMinus.setImage(ImageManager.btnGasMinusGray);
+
+        } else if(fxid.equals("userNumPlus")) {
+            userNumPlus.setImage(ImageManager.btnGasPlusGray);
         }
     }
 

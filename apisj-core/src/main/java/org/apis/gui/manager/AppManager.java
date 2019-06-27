@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.shape.Rectangle;
@@ -207,6 +209,7 @@ public class AppManager {
             // Update notice popup
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                 if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                        && !getVersionNewest().equals("")
                         && getGeneralPropertiesData("update_notice").equals("true")
                         && OSInfo.getOs() == OSInfo.OS.WINDOWS){
                     Platform.runLater(new Runnable() {
@@ -219,6 +222,14 @@ public class AppManager {
                             updateNoticeController.setSubTitle(StringManager.getInstance().popup.noticeUpdateSubTitle);
                         }
                     });
+                } else {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Hide when it's up-to-date
+                            PopupManager.getInstance().hideMainPopup(3);
+                        }
+                    });
                 }
             }, 10 * 1, 60 * 60 * 6, TimeUnit.SECONDS);
 
@@ -228,6 +239,7 @@ public class AppManager {
                     @Override
                     public void run() {
                         if(!SystemProperties.getDefault().projectVersion().equals(getVersionNewest())
+                                && !getVersionNewest().equals("")
                                 && OSInfo.getOs() == OSInfo.OS.WINDOWS){
                             guiFx.getMain().setSettingImageUpdate(true);
                         } else {
@@ -656,6 +668,21 @@ public class AppManager {
             e.printStackTrace();
         }
         return newestVer;
+    }
+
+    public static void keyPressedHandler(Node node) {
+        EventHandler<KeyEvent> keyPressedHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
+                }
+            }
+        };
+
+        node.setOnKeyPressed(keyPressedHandler);
     }
 
 
@@ -1123,13 +1150,16 @@ public class AppManager {
                 Block bestBlock = mApis.getBlockchain().getBestBlock();
                 Block parentBlock = mApis.getBlockchain().getBlockByHash(bestBlock.getParentHash());
                 Repository repo;
+                long confirmBlockNum;
 
                 if (networkId.equals("1") ? bestBlock.getNumber() >= 10 : true) {
 
                     if(networkId.equals("1")) {
                         repo = ((Repository) mApis.getRepository()).getSnapshotTo(parentBlock.getStateRoot());
+                        confirmBlockNum = bestBlock.getNumber() - 6;
                     } else {
                         repo = ((Repository) mApis.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+                        confirmBlockNum = bestBlock.getNumber();
                     }
 
                     KeyStoreDataExp keyExp = null;
@@ -1141,7 +1171,6 @@ public class AppManager {
                         keyExp.isUsedProofkey = isUsedProofKey(ByteUtil.hexStringToBytes(keyExp.address));
                     }
 
-                    long confirmBlockNum = bestBlock.getNumber() - 6;
                     Block confirmBlock = mApis.getBlockchain().getBlockByNumber(confirmBlockNum);
                     Repository rewardRepo = ((Repository) mApis.getRepository()).getSnapshotTo(confirmBlock.getStateRoot());
 

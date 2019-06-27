@@ -413,7 +413,9 @@ public class MainController extends BaseViewController {
                 if (event.getCode() == KeyCode.UP
                         || event.getCode() == KeyCode.DOWN
                         || event.getCode() == KeyCode.LEFT
-                        || event.getCode() == KeyCode.RIGHT) {
+                        || event.getCode() == KeyCode.RIGHT
+                        || (event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown())
+                        || (event.getCode() == KeyCode.PAGE_UP && event.isControlDown())) {
 
                     if(MainController.this.tabPane.isFocused()){
                         event.consume();

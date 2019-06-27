@@ -50,6 +50,9 @@ public class TransactionNativeBannerDetailController extends BaseViewController 
 
     public void update(){
         if(this.address != null){
+            if(this.address.indexOf("\\@") < 0) {
+                this.address = this.address.startsWith("0x") ? this.address.substring(2) : this.address;
+            }
             if(this.tokenAddress.equals("-1")){
                 if(this.address.length() == 40){
                     this.balance.setText(ApisUtil.readableApis(AppManager.getInstance().getBalance(this.address), ',', true));

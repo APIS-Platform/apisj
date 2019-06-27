@@ -199,7 +199,7 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="totalLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="*Total assets : " textFill="#999999" />
+                                    <Label fx:id="totalLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="* Total assets : " textFill="#999999" />
                                     <Label fx:id="totalBalance" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="20201230.1231231" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                     <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
                                        <GridPane.margin>

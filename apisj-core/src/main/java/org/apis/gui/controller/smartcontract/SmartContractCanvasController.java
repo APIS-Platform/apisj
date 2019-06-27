@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 
@@ -37,6 +38,8 @@ public class SmartContractCanvasController extends BaseViewController {
         blankIcon.setFitWidth(180);
         webViewAnchor.setVisible(false);
         blankGrid.setVisible(true);
+
+        AppManager.keyPressedHandler(webView);
     }
 
     private void languageSetting() {

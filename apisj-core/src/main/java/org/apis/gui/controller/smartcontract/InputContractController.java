@@ -29,6 +29,7 @@ public class InputContractController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().settingTextFieldStyle(textField);
+        AppManager.getInstance().keyPressedHandler(textField);
         ImageManager.imageViewRectangle30(icon);
 
         languageSetting();

@@ -68,6 +68,7 @@ public class SmartContractCallSendController extends BaseViewController {
         languageSetting();
 
         searchText.textProperty().addListener(searchTextImpl);
+        AppManager.getInstance().keyPressedHandler(searchText);
         walletAndAmountController.setHandler(walletAndAmountImpl);
         gasCalculatorController.setHandler(gasCalculatorImpl);
 
@@ -103,6 +104,7 @@ public class SmartContractCallSendController extends BaseViewController {
         parameterListPane.prefHeightProperty().setValue(0);
 
         cSelectHead.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+        AppManager.getInstance().keyPressedHandler(cSelectHead);
         cSelectHeadImg.setImage(downGray);
         hideContractMethodList();
     }
@@ -173,14 +175,18 @@ public class SmartContractCallSendController extends BaseViewController {
 
                 for(int i=0; i<function.inputs.length; i++){
                     itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
-                    parameterList.getChildren().add(createMethodParam(itemType, function.inputs[i], function, contractAddress, medataAbi));
+                    Node node = createMethodParam(itemType, function.inputs[i], function, contractAddress, medataAbi);
+                    AppManager.getInstance().keyPressedHandler(node);
+                    parameterList.getChildren().add(node);
                 }
 
                 // read 인 경우에만 리턴값 표기
                 if(isRead) {
                     for(int i=0; i<function.outputs.length; i++){
                         itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
-                        parameterList.getChildren().add( createMethodParam(itemType, function.outputs[i], function, null, null) );
+                        Node node = createMethodParam(itemType, function.outputs[i], function, null, null);
+                        AppManager.getInstance().keyPressedHandler(node);
+                        parameterList.getChildren().add(node);
                     }
 
                     // 인자가 없는 경우 데이터 불러오기
@@ -248,6 +254,7 @@ public class SmartContractCallSendController extends BaseViewController {
 
                 searchText.setText("");
                 searchText.setDisable(false);
+                AppManager.getInstance().keyPressedHandler(searchText);
 
                 selectContractController.setAlias(model.getName());
                 selectContractController.setAddress(model.getAddress());

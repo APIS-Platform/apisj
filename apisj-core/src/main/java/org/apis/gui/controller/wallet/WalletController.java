@@ -12,6 +12,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -274,7 +276,16 @@ public class WalletController extends BaseViewController {
 
 
     public void initLayoutWalletListTab(){
-
+        this.searchApisAndTokens.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
+                }
+            }
+        });
         this.iconMiningWallet.visibleProperty().bind(this.btnMiningWallet.visibleProperty());
         this.iconMasternode.visibleProperty().bind(this.btnMasternode.visibleProperty());
     }

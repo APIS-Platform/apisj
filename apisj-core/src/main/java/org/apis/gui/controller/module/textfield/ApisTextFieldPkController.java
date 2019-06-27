@@ -68,6 +68,10 @@ public class ApisTextFieldPkController extends BaseViewController {
                     if(handler != null){
                         handler.onAction();
                     }
+                }else if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                }else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
                 }
             }
         });
@@ -83,6 +87,10 @@ public class ApisTextFieldPkController extends BaseViewController {
                     if(handler != null){
                         handler.onAction();
                     }
+                }else if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                }else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
                 }
             }
         });

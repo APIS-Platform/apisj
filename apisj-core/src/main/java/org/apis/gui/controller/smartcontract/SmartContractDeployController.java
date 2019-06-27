@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -63,11 +64,15 @@ public class SmartContractDeployController extends BaseViewController {
     private ApisCodeArea solidityTextArea = new ApisCodeArea();
 
     private boolean isCompiled = false;
+    private EventHandler<KeyEvent> keyPressedHandler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // language
         languageSetting();
+
+        // consume tab event
+        keyPressedHandler();
 
         // setting handler and listener
         tabMenuController.setHandler(tabMenuImpl);
@@ -109,6 +114,23 @@ public class SmartContractDeployController extends BaseViewController {
         tabMenuController.addItem(StringManager.getInstance().smartContract.sideTabLabel2, TAB_CONTRACT_BYTE_CODE);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
         btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
+    }
+
+    private void keyPressedHandler() {
+        keyPressedHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.PAGE_UP && event.isControlDown()) {
+                    event.consume();
+                } else if(event.getCode() == KeyCode.PAGE_DOWN && event.isControlDown()) {
+                    event.consume();
+                }
+            }
+        };
+
+        contractCombo.setOnKeyPressed(keyPressedHandler);
+        byteCodeTextArea.setOnKeyPressed(keyPressedHandler);
+        solidityTextFlow.setOnKeyPressed(keyPressedHandler);
     }
 
     public void update(){
@@ -423,6 +445,8 @@ public class SmartContractDeployController extends BaseViewController {
                 }
 
                 if(node != null){
+                    // Consume key event in tab pane
+                    AppManager.getInstance().keyPressedHandler(node);
                     //필드에 추가
                     contractMethodList.getChildren().add(node);
                 }
