@@ -9,6 +9,7 @@ import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import org.apis.facade.Apis;
@@ -24,10 +25,7 @@ import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
-import org.apis.util.BIUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
+import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.spongycastle.util.encoders.DecoderException;
@@ -82,10 +80,15 @@ public class RPCCommand {
     private static final String COMMAND_APIS_GETMNLIST = "apis_getMnList";
     private static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
 
+    private static final String COMMAND_PERSONAL_LIST_ACCOUNTS = "personal_listAccounts";
     private static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
+    private static final String COMMAND_PERSONAL_UNLOCK_ACCOUNT = "personal_unlockAccount";
+    private static final String COMMAND_PERSONAL_LOCK_ACCOUNT = "personal_lockAccount";
+    private static final String COMMAND_PERSONAL_IMPORT_RAW_KEY = "personal_importRawKey";
+    private static final String COMMAND_PERSONAL_SEND_TRANSACTION = "personal_sendTransaction";
+    private static final String COMMAND_PERSONAL_SIGN_TRANSACTION = "personal_signTransaction";
     private static final String COMMAND_PERSONAL_SIGN = "personal_sign";
     private static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
-    private static final String COMMAND_PERSONAL_SIGN_TRANSACTION = "personal_signTransaction";
 
     private static final String COMMAND_APIS_SUBSCRIBE = "apis_subscribe";
     private static final String COMMAND_APIS_UNSUBSCRIBE = "apis_unsubscribe";
@@ -101,8 +104,8 @@ public class RPCCommand {
     static final String TAG_AUTHKEY = "authKey"; // header
     static final String TAG_TOKEN = "token";
     static final String TAG_HASH = "hash";
-    static final String TAG_CODE = "code";
-    static final String TAG_ERROR = "error";
+    public static final String TAG_CODE = "code";
+    public static final String TAG_ERROR = "error";
     static final String TAG_PAYLOAD = "payload";
 
     //private static final String TAG_FROM = "from";
@@ -128,7 +131,7 @@ public class RPCCommand {
     static final int ERROR_CODE_WRONG_TOKENKEY = 105;
     static final int ERROR_CODE_WRONG_ID = 106;
     static final int ERROR_CODE_WITHOUT_PERMISSION_CLIENT = 113;
-    static final int ERROR_CODE_WITHOUT_PERMISSION_IP = 114;
+    public static final int ERROR_CODE_WITHOUT_PERMISSION_IP = 114;
     static final int ERROR_CODE_NULL_ID = 120;
     //static final int ERROR_CODE_DUPLICATE_IP = 102;
     //static final int ERROR_CODE_WITHOUT_PERMISSION_TYPE = 115;
@@ -146,6 +149,7 @@ public class RPCCommand {
     private static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
     private static final String ERROR_MESSAGE_NULL_PARAMETER = "there is no value."; // 조회할 값이 없다
     private static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "The password for the KeyStore file is missing.";
+    private static final String ERROR_MESSAGE_IMPORT_RAW_KEY = "Failed to import private key.";
 
 
     private static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
@@ -161,7 +165,7 @@ public class RPCCommand {
     static final String ERROR_DEPORT_WRONG_TOKENKEY = "Unauthorized token key.";
     static final String ERROR_DEPORT_WRONG_ID = "Wrong ID.";
     static final String ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT = "Unallowed client.";
-    static final String ERROR_DEPORT_WITHOUT_PERMISSION_IP = "Unallowed IP address.";
+    public static final String ERROR_DEPORT_WITHOUT_PERMISSION_IP = "Unallowed IP address.";
     static final String ERROR_DEPORT_NULL_ID = "Cannot find ID.";
     //static final String ERROR_DEPORT_DUPLICATE_IP = "IP address duplicated.";
     //static final String ERROR_DEPORT_WITHOUT_PERMISSION_TYPE = "Unallowed command.";
@@ -176,6 +180,7 @@ public class RPCCommand {
     private static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
     private static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
     private static final String ERROR_NULL_SENDER = "Sender address does not exist.";
+    private static final String ERROR_SENDER_LOCKED = "Sender account is locked";
     private static final String ERROR_BLOCKCHAIN_CONFIG_NOT_LOADED = "Failed to load blockchain config.";
     private static final String ERROR_RECOVER_SIGN_NULL = "Unable to generate recovery signatures.";
     /*private static final String ERROR_NULL_TRANSACTION = "There is no transaction.";
@@ -184,6 +189,7 @@ public class RPCCommand {
 
 
     private static final HashMap<BigInteger, EthereumListener> mListeners = new HashMap<>();
+    private static final HashMap<ByteArrayWrapper, UnlockedAccount> unlockedAccounts = new HashMap<>();
 
 
 
@@ -218,6 +224,26 @@ public class RPCCommand {
             return command;
         } else {
             return subscribe(apis, id, method, params, canvasAdapter);
+        }
+    }
+
+    public static String conduct(Apis apis, String payload) {
+        MessageApp3 message = parseMessage(payload);
+        long id = message.getId();
+        String method = message.getMethod();
+        Object[] params = message.getParams().toArray();
+
+        if(!isPendingTxListenerRegistered) {
+            isPendingTxListenerRegistered = true;
+            apis.addListener(pendingTxListener);
+        }
+
+        String command = getCommand(apis, id, method, params);
+
+        if(command != null) {
+            return command;
+        } else {
+            return null;
         }
     }
 
@@ -304,7 +330,8 @@ public class RPCCommand {
 
             // parameter
             // 0: (optional) address (hex string) or mask
-            case COMMAND_APIS_ACCOUNTS: {
+            case COMMAND_APIS_ACCOUNTS:
+            case COMMAND_PERSONAL_LIST_ACCOUNTS:{
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                 List<WalletInfo> walletInfos = new ArrayList<>();
                 byte[] targetAddress = null;
@@ -520,6 +547,41 @@ public class RPCCommand {
             case COMMAND_APIS_SIGN: {
 
 
+                break;
+            }
+
+            case COMMAND_APIS_SENDTRANSACTION: {
+
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_APIS_SENDTRANSACTION, 1));
+                }
+
+                String txJson = new GsonBuilder().create().toJson(params[0]);
+                TransactionData txData = new GsonBuilder().create().fromJson(txJson, TransactionData.class);
+
+                if(txData.getFrom() == null || txData.getFrom().isEmpty()) {
+                    command = createJson(id, method, null, ERROR_NULL_SENDER);
+                } else {
+                    // 지갑 잠금이 해제되어 있는지 확인한다
+                    byte[] fromBytes = ByteUtil.hexStringToBytes(txData.getFrom());
+                    ByteArrayWrapper fromWrapper = new ByteArrayWrapper(fromBytes);
+
+                    UnlockedAccount unlockedAccount = unlockedAccounts.get(fromWrapper);
+
+                    if(unlockedAccount == null) {
+                        return createJson(id, method, null, ERROR_SENDER_LOCKED);
+                    }
+                    if(unlockedAccount.getUnlockUntil() < TimeUtils.getRealTimestamp()/1000) {
+                        return createJson(id, method, null, ERROR_SENDER_LOCKED);
+                    }
+
+                    ECKey key = unlockedAccount.getKey();
+                    if(key == null) {
+                        command = createJson(id, method, null, "The address entered was not found in the stored address list.");
+                    } else {
+                        command = sendTransactionByKey(txData, id, method, apis, latestRepo, key);
+                    }
+                }
                 break;
             }
 
@@ -1055,6 +1117,29 @@ public class RPCCommand {
                 break;
             }
 
+            case COMMAND_PERSONAL_IMPORT_RAW_KEY: {
+                if (params.length < 2) {
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_IMPORT_RAW_KEY, 2));
+                }
+
+                String privateKeyStr = (String)params[0];
+                String password = (String)params[1];
+
+                try {
+                    byte[] privateKey = ByteUtil.hexStringToBytes(privateKeyStr);
+                    KeyStoreData keyData = KeyStoreManager.getInstance().savePrivateKeyStore(privateKey, "", password);
+
+                    if (keyData == null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_IMPORT_RAW_KEY);
+                    } else {
+                        command = createJson(id, method, keyData.address);
+                    }
+                } catch (Exception e) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_IMPORT_RAW_KEY);
+                }
+                break;
+            }
+
             case COMMAND_PERSONAL_SIGN: {
                 if (params.length < 3) { // error : (비밀번호를 받지 못했음)
                     return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_SIGN, 3));
@@ -1082,6 +1167,8 @@ public class RPCCommand {
                     command = createJson(id, method, null, "Not supported KDF");
                 } catch (NotSupportCipherException e) {
                     command = createJson(id, method, null, "Not supported Cipher");
+                } catch (Exception e) {
+                    command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
                 }
                 break;
             }
@@ -1120,36 +1207,18 @@ public class RPCCommand {
                     KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
                     try {
                         ECKey key = keyStoreManager.findKeyStoreFile(ByteUtil.hexStringToBytes(txData.getFrom()), password);
+
                         if(key == null) {
                             command = createJson(id, method, null, "The address entered was not found in the stored address list.");
                         } else {
-                            if(txData.getNonce() < 0) {
-                                txData.setNonce(apis.getPendingState().getNonce(key.getAddress()).longValue());
+                            Transaction tx = getSignedTransactionByKey(txData, apis, latestRepo, key);
+
+                            if(tx == null) {
+                                command = createJson(id, method, null, "The transaction could not be signed.");
+                            } else {
+                                TransactionData finalData = new TransactionData(tx, null);
+                                command = createJson(id, method, new SignTransactionData(tx.getEncoded(), finalData));
                             }
-
-                            if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
-                                txData.setTo(latestRepo.getAddressByMask(txData.getToMask()));
-                            }
-
-                            if(txData.isGasPriceEmpty()) {
-                                txData.setGasPrice(ByteUtil.longToBytes(apis.getGasPrice()));
-                            }
-
-                            if(txData.isEmptyGas()) {
-                                EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
-
-                                txData.setGas(BigInteger.valueOf(50_000_000L));
-                                Transaction tempTx = txData.getTransaction(apis.getChainIdForNextBlock());
-
-                                EstimateTransactionResult estimateResult = estimator.estimate(tempTx);
-                                txData.setGas(BigInteger.valueOf(estimateResult.getGasUsed()));
-                            }
-
-                            Transaction tx = txData.getTransaction(apis.getChainIdForNextBlock());
-                            tx.sign(key);
-
-                            TransactionData finalData = new TransactionData(tx, null);
-                            command = createJson(id, method, new SignTransactionData(tx.getEncoded(), finalData));
                         }
                     } catch (InvalidPasswordException e) {
                         command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
@@ -1159,10 +1228,121 @@ public class RPCCommand {
                         command = createJson(id, method, null, "Not supported KDF");
                     } catch (NotSupportCipherException e) {
                         command = createJson(id, method, null, "Not supported Cipher");
+                    } catch (Exception e) {
+                        command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
                     }
                 }
                 break;
             }
+
+            case COMMAND_PERSONAL_SEND_TRANSACTION: {
+                if (params.length < 2) { // error : (비밀번호를 받지 못했음)
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_SEND_TRANSACTION, 2));
+                }
+
+                String txJson = new GsonBuilder().create().toJson(params[0]);
+                String password = (String)params[1];
+
+
+                TransactionData txData = new GsonBuilder().create().fromJson(txJson, TransactionData.class);
+
+                if(txData.getFrom() == null || txData.getFrom().isEmpty()) {
+                    command = createJson(id, method, null, ERROR_NULL_SENDER);
+                } else {
+                    KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+                    try {
+                        ECKey key = keyStoreManager.findKeyStoreFile(ByteUtil.hexStringToBytes(txData.getFrom()), password);
+                        if(key == null) {
+                            command = createJson(id, method, null, "The address entered was not found in the stored address list.");
+                        } else {
+                            command = sendTransactionByKey(txData, id, method, apis, latestRepo, key);
+                        }
+                    } catch (InvalidPasswordException e) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
+                    } catch (KeystoreVersionException e) {
+                        command = createJson(id, method, null, "Support on V3 of Keystore");
+                    } catch (NotSupportKdfException e) {
+                        command = createJson(id, method, null, "Not supported KDF");
+                    } catch (NotSupportCipherException e) {
+                        command = createJson(id, method, null, "Not supported Cipher");
+                    } catch (Exception e) {
+                        command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
+                    }
+                }
+                break;
+            }
+
+            case COMMAND_PERSONAL_UNLOCK_ACCOUNT: {
+                if (params.length < 3) {
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_UNLOCK_ACCOUNT, 3));
+                }
+
+                if(params[0] instanceof String == false) {
+                    return createJson(id, method, null, "The address type you entered to unlock is invalid");
+                }
+                if(params[1] instanceof String == false) {
+                    return createJson(id, method, null, "The password type you entered to unlock is incorrect");
+                }
+                if(params[2] instanceof Double == false) {
+                    return createJson(id, method, null, "The duration type you entered to unlock is invalid.");
+                }
+
+                KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+
+                String address = (String)params[0];
+                String password = (String)params[1];
+
+
+
+                try {
+                    long duration = new Double((double)params[2]).longValue();
+
+                    byte[] addressBytes = ByteUtil.hexStringToBytes(address);
+                    ByteArrayWrapper addressByteWrapper = new ByteArrayWrapper(addressBytes);
+
+                    ECKey key = keyStoreManager.findKeyStoreFile(addressBytes, password);
+                    long unlockUntil = TimeUtils.getRealTimestamp()/1000 + duration;
+
+                    unlockedAccounts.put(addressByteWrapper, new UnlockedAccount(key, unlockUntil));
+
+                    command = createJson(id, method, true);
+                }catch (InvalidPasswordException e) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
+                } catch (KeystoreVersionException e) {
+                    command = createJson(id, method, null, "Support on V3 of Keystore");
+                } catch (NotSupportKdfException e) {
+                    command = createJson(id, method, null, "Not supported KDF");
+                } catch (NotSupportCipherException e) {
+                    command = createJson(id, method, null, "Not supported Cipher");
+                } catch (NumberFormatException e) {
+                    command = createJson(id, method, null, "Unable to convert duration value");
+                } catch (Exception e) {
+                    command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
+                }
+
+
+                break;
+            }
+
+            case COMMAND_PERSONAL_LOCK_ACCOUNT: {
+                if (params.length < 1) {
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_LOCK_ACCOUNT, 1));
+                }
+
+                String address = (String)params[0];
+                try {
+                    byte[] addressBytes = ByteUtil.hexStringToBytes(address);
+                    ByteArrayWrapper addressByteWrapper = new ByteArrayWrapper(addressBytes);
+
+                    unlockedAccounts.keySet().removeIf(key -> key.equals(addressByteWrapper));
+
+                    command = createJson(id, method, true);
+                } catch (Exception e) {
+                    command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
+                }
+                break;
+            }
+
 
             // parameter
             // 0: block number (hex string) or default block parameter (string)
@@ -1267,6 +1447,69 @@ public class RPCCommand {
 
         return command;
     }
+
+    private static Transaction getSignedTransactionByKey(TransactionData txData, Apis apis, Repository latestRepo, ECKey senderKey) {
+        try {
+            if(txData.getNonce() < 0) {
+                txData.setNonce(apis.getPendingState().getNonce(senderKey.getAddress()).longValue());
+            }
+
+            if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
+                txData.setTo(latestRepo.getAddressByMask(txData.getToMask()));
+            }
+
+            if(txData.isGasPriceEmpty()) {
+                txData.setGasPrice(ByteUtil.longToBytes(apis.getGasPrice()));
+            }
+
+            EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
+
+            if(txData.isEmptyGas()) {
+                txData.setGas(BigInteger.valueOf(50_000_000L));
+                Transaction tempTx = txData.getTransactionForEstimate(apis.getChainIdForNextBlock());
+                EstimateTransactionResult estimateResult = estimator.estimate(tempTx);
+
+                txData.setGas(BigInteger.valueOf(estimateResult.getGasUsed()));
+            }
+
+            Transaction tx = txData.getTransaction(apis.getChainIdForNextBlock());
+            tx.sign(senderKey);
+
+            return tx;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String sendTransactionByKey(TransactionData txData, long id, String method, Apis apis, Repository latestRepo, ECKey senderKey) {
+        String command;
+        try {
+            if(senderKey == null) {
+                return createJson(id, method, null, "Unexpected error");
+            } else {
+
+                Transaction signedTx = getSignedTransactionByKey(txData, apis, latestRepo, senderKey);
+                if(signedTx == null) {
+                    return createJson(id, method, null, "The transaction could not be signed");
+                } else {
+                    EstimateTransaction estimator = EstimateTransaction.getInstance((ApisImpl) apis);
+
+                    EstimateTransactionResult estimateResult = estimator.estimate(signedTx, false);
+                    if (estimateResult.isSuccess() || (estimateResult.getError() != null && !estimateResult.getError().isEmpty())) {
+                        return createJson(id, method, null, estimateResult.getError());
+                    }
+
+                    apis.submitTransaction(signedTx);
+                    command = createJson(id, method, ByteUtil.toHexString0x(signedTx.getHash()));
+                }
+            }
+        } catch (Exception e) {
+            command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
+        }
+
+        return command;
+    }
+
 
     /*
      * app3js 라이브러리의 WebsocketProvider를 통해서 구독한 경우를 처리한다.
