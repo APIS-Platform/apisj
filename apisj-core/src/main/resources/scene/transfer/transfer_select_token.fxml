@@ -33,7 +33,7 @@
                            <children>
                               <Label fx:id="header" styleClass="font_regular_12" text="APIS" textFill="#b01e1e">
                                  <font>
-                                    <Font name="Noto Sans KR Regular" size="11.0" />
+                                    <Font name="Noto Sans CJK JP Regular" size="11.0" />
                                  </font>
                                  <padding>
                                     <Insets left="10.0" right="10.0" />

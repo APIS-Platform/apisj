@@ -191,6 +191,13 @@ public class TransactionNativeController extends BaseViewController {
         //refreshPage(currentPage);
     }
 
+    @Override
+    public void fontUpdate() {
+        for(int i=0; i<pageSize; i++){
+            ((TransactionNativePageNumController) pages.get(i).getController()).fontUpdate();
+        }
+    }
+
     public void addPageList(int startPage, int endPage) {
         pageList.getChildren().clear();
         for(int i = startPage; i < endPage+1; i++) {

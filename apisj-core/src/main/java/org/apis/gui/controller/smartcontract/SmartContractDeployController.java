@@ -116,6 +116,11 @@ public class SmartContractDeployController extends BaseViewController {
         btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
     }
 
+    @Override
+    public void fontUpdate() {
+        tabMenuController.fontUpdate();
+    }
+
     private void keyPressedHandler() {
         keyPressedHandler = new EventHandler<KeyEvent>() {
             @Override

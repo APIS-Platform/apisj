@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
@@ -49,6 +50,21 @@ public class TabMenuItemController extends BaseViewController {
         setFontSize12();
     }
 
+    @Override
+    public void fontUpdate() {
+        if(isActive) {
+            StyleManager.fontStyleType(title, StyleManager.Standard.SemiBold, StringManager.getInstance().langCode);
+        } else {
+            StyleManager.fontStyleType(title, StyleManager.Standard.Regular, StringManager.getInstance().langCode);
+        }
+
+        if(new JavaFXStyle(title.getStyle()).compareSize(StyleManager.AFontSize.Size12)) {
+            StyleManager.fontStyleSize(title, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        } else {
+            StyleManager.fontStyleSize(title, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        }
+
+    }
 
     @FXML
     private void onMouseClicked(InputEvent event){
@@ -61,7 +77,7 @@ public class TabMenuItemController extends BaseViewController {
         rootPane.setOpacity(1.0);
 
         StyleManager.fontColorStyle(title, StyleManager.AColor.Cb01e1e);
-        StyleManager.fontStyle(title, StyleManager.Standard.SemiBold);
+        StyleManager.fontStyleType(title, StyleManager.Standard.SemiBold, StringManager.getInstance().langCode);
         this.line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         this.line.setVisible(true);
         isActive = true;
@@ -70,7 +86,7 @@ public class TabMenuItemController extends BaseViewController {
     public void stateDefault(){
         rootPane.setOpacity(1.0);
         StyleManager.fontColorStyle(title, StyleManager.AColor.C999999);
-        StyleManager.fontStyle(title, StyleManager.Standard.Regular);
+        StyleManager.fontStyleType(title, StyleManager.Standard.Regular, StringManager.getInstance().langCode);
         this.line.setVisible(false);
         isActive = false;
     }
@@ -93,10 +109,10 @@ public class TabMenuItemController extends BaseViewController {
     }
 
     public void setFontSize12() {
-        StyleManager.fontStyle(title, StyleManager.AFontSize.Size12);
+        StyleManager.fontStyleSize(title, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
     public void setFontSize14() {
-        StyleManager.fontStyle(title, StyleManager.AFontSize.Size14);
+        StyleManager.fontStyleSize(title, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
     }
 
     public interface TabMenuItemImpl {

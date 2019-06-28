@@ -12,9 +12,12 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.selectbox.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -84,6 +87,8 @@ public class SmartContractFreezerController extends BaseViewController {
 
         ctrtAddrTextField.focusedProperty().addListener(ctrtFocusListener);
         ctrtAddrTextField.textProperty().addListener(ctrtKeyListener);
+        StyleManager.fontStyle(ctrtInputBtn, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size10, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(ctrtAddrTextField, StyleManager.Hex.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
     }
 
 
@@ -94,15 +99,17 @@ public class SmartContractFreezerController extends BaseViewController {
 
         if(fxid.equals("ctrtInputBtn")) {
             if(isMyAddressSelected) {
-                ctrtInputBtn.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-background-color", "#000000").toString());
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-border-color", "#000000").toString());
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-text-fill", "#ffffff").toString());
                 ctrtAddrTextField.setText("");
                 ctrtAddrImg.setImage(greyCircleAddrImg);
                 ctrtAddrSelect.setVisible(false);
                 ctrtAddrText.setVisible(true);
             } else {
-                ctrtInputBtn.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f8f8fb;");
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-border-color", "#999999").toString());
+                ctrtInputBtn.setStyle(new JavaFXStyle(ctrtInputBtn.getStyle()).add("-fx-text-fill", "#999999").toString());
                 ctrtAddrSelect.setVisible(true);
                 ctrtAddrText.setVisible(false);
             }
@@ -115,11 +122,11 @@ public class SmartContractFreezerController extends BaseViewController {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if(newValue) {
-                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-background-color: #ffffff;");
+                ctrtAddrTextField.setStyle(new JavaFXStyle(ctrtAddrTextField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                ctrtAddrTextField.setStyle(new JavaFXStyle(ctrtAddrTextField.getStyle()).add("-fx-border-color", "#999999").toString());
             } else {
-                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f8f8fb;");
+                ctrtAddrTextField.setStyle(new JavaFXStyle(ctrtAddrTextField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
+                ctrtAddrTextField.setStyle(new JavaFXStyle(ctrtAddrTextField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
             }
         }
     };

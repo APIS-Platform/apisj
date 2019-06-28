@@ -11,6 +11,38 @@ public class StyleManager {
     public static void fontStyle(Node node, JavaFXStyle style){
         node.setStyle(new JavaFXStyle(node.getStyle()).add(style).toString());
     }
+    public static void fontStyle(Node node, JavaFXStyle type, JavaFXStyle size, String lang){
+        fontStyleType(node, type, lang);
+        fontStyleSize(node, size, lang);
+    }
+    public static void fontStyleType(Node node, JavaFXStyle type, String lang) {
+        JavaFXStyle _style = new JavaFXStyle(node.getStyle()).add(type);
+
+        if(lang.equals("CN") || lang.equals("TW")){
+            if(type.compareFamily(Standard.Regular) || type.compareFamily(Standard.SemiBold)) {
+                _style.add(Standard.Regular);
+            } else if(type.compareFamily(Hex.Regular) || type.compareFamily(Hex.Medium)) {
+                _style.add(Hex.Regular);
+            } else if(type.compareFamily(Barlow.Regular) || type.compareFamily(Barlow.SemiBold)) {
+                _style.add(Barlow.Regular);
+            }
+        }
+
+        node.setStyle(_style.toString());
+    }
+    public static void fontStyleSize(Node node, JavaFXStyle size, String lang) {
+        JavaFXStyle _style = new JavaFXStyle(node.getStyle()).add(size);
+
+        if(lang.equals("CN") || lang.equals("TW")){
+            if(size == AFontSize.Size8
+                    || size == AFontSize.Size10
+                    || size == AFontSize.Size12 ){
+                _style.add(AFontSize.Size14);
+            }
+        }
+
+        node.setStyle(_style.toString());
+    }
     public static void backgroundColorStyle(Node node, String color){
         node.setStyle(new JavaFXStyle(node.getStyle()).add(new JavaFXStyle().add("-fx-background-color", color)).toString());
     }
@@ -46,6 +78,7 @@ public class StyleManager {
         public static String Cefefef = "#efefef";
         public static String Cc1c1c1 = "#c1c1c1";
         public static String C910000 = "#910000";
+        public static String Ccfcfcf = "#cfcfcf";
 
     }
 
@@ -61,13 +94,13 @@ public class StyleManager {
     }
 
     public static class Standard {
-        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Regular'");
+        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Noto Sans CJK JP Regular'");
         public static JavaFXStyle Regular8 = new JavaFXStyle(Regular).add(AFontSize.Size8);
         public static JavaFXStyle Regular10 = new JavaFXStyle(Regular).add(AFontSize.Size10);
         public static JavaFXStyle Regular12 = new JavaFXStyle(Regular).add(AFontSize.Size12);
         public static JavaFXStyle Regular14 = new JavaFXStyle(Regular).add(AFontSize.Size14);
 
-        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Medium'");
+        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "'Noto Sans CJK JP Medium'");
         public static JavaFXStyle SemiBold10 = new JavaFXStyle(SemiBold).add(AFontSize.Size10);
         public static JavaFXStyle SemiBold12 = new JavaFXStyle(SemiBold).add(AFontSize.Size12);
         public static JavaFXStyle SemiBold14 = new JavaFXStyle(SemiBold).add(AFontSize.Size14);

@@ -112,6 +112,12 @@ public class SmartContractController extends BaseViewController {
 //        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
     }
 
+    @Override
+    public void fontUpdate() {
+        tabMenuController.fontUpdate();
+        smartContractDeployController.fontUpdate();
+    }
+
     public void initializeCanvas() {
         contractMaskLabel.setText("");
         canvasURLLabel.setText("");

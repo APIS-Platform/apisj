@@ -17,6 +17,12 @@ public class TabMenuController extends BaseViewController {
 
     private List<TabMenuItemController> items = new ArrayList<>();
 
+    @Override
+    public void fontUpdate() {
+        for(int i=0; i<items.size(); i++) {
+            items.get(i).fontUpdate();
+        }
+    }
 
     public void addItem(SimpleStringProperty text, int index){
         try {

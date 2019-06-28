@@ -18,6 +18,10 @@ public class BaseViewController implements Initializable {
 
     }
 
+    public void fontUpdate(){
+
+    }
+
     public void setModel(BaseModel model){
     }
 
