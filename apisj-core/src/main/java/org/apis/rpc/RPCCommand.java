@@ -545,8 +545,38 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_SIGN: {
+                if (params.length < 2) {
+                    return createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_APIS_SIGN, 2));
+                }
 
+                byte[] address = ByteUtil.hexStringToBytes((String)params[0]);
+                byte[] dataToSign = ByteUtil.hexStringToBytes((String)params[1]);
 
+                KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+                if(!keyStoreManager.findKeyStoreFile(address)) {
+                    return createJson(id, method, null, "The signer's address can not be found in the keystore.");
+                }
+
+                // 지갑 잠금이 해제되어 있는지 확인한다
+                ByteArrayWrapper fromWrapper = new ByteArrayWrapper(address);
+
+                UnlockedAccount unlockedAccount = unlockedAccounts.get(fromWrapper);
+
+                if(unlockedAccount == null) {
+                    return createJson(id, method, null, "Signer's account is locked.");
+                }
+                if(unlockedAccount.getUnlockUntil() < TimeUtils.getRealTimestamp()/1000) {
+                    return createJson(id, method, null, "Signer's account is locked.");
+                }
+
+                ECKey key = unlockedAccount.getKey();
+
+                try {
+                    byte[] signedMessage = key.sign(HashUtil.sha3(dataToSign)).toByteArray();
+                    command = createJson(id, method, ByteUtil.toHexString0x(signedMessage));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, "Unexpected error : " + e.getMessage());
+                }
                 break;
             }
 
@@ -565,6 +595,11 @@ public class RPCCommand {
                     // 지갑 잠금이 해제되어 있는지 확인한다
                     byte[] fromBytes = ByteUtil.hexStringToBytes(txData.getFrom());
                     ByteArrayWrapper fromWrapper = new ByteArrayWrapper(fromBytes);
+
+                    KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+                    if(!keyStoreManager.findKeyStoreFile(fromBytes)) {
+                        return createJson(id, method, null, "The sender's address can not be found in the keystore.");
+                    }
 
                     UnlockedAccount unlockedAccount = unlockedAccounts.get(fromWrapper);
 

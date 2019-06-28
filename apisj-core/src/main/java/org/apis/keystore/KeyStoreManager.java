@@ -11,6 +11,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -203,7 +204,9 @@ public class KeyStoreManager {
         List<KeyStoreData> keyDataList = loadKeyStoreFiles();
         KeyStoreData foundKey = null;
         for(KeyStoreData key : keyDataList) {
-            if(key.address.contains(ByteUtil.toHexString(address))) {
+            byte[] keyBytes = ByteUtil.hexStringToBytes(key.address);
+
+            if(FastByteComparisons.equal(keyBytes, address)) {
                 foundKey = key;
             }
         }
@@ -215,6 +218,30 @@ public class KeyStoreManager {
         byte[] privateKey = KeyStoreUtil.decryptPrivateKey(foundKey.toString(), password);
         return ECKey.fromPrivate(privateKey);
     }
+
+    /**
+     * Look for a parameter address in the keystore file list.
+     *
+     * @param address The address to looking for in the keystore list
+     * @return TRUE if address exists
+     */
+    public boolean findKeyStoreFile(byte[] address) {
+        List<KeyStoreData> keyDataList = loadKeyStoreFiles();
+        for(KeyStoreData key : keyDataList) {
+            byte[] keyBytes = ByteUtil.hexStringToBytes(key.address);
+
+            if(FastByteComparisons.equal(keyBytes, address)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean findKeyStoreFile(String address) {
+        return findKeyStoreFile(ByteUtil.hexStringToBytes(address));
+    }
+
 
     public static KeyStoreData checkKeystoreFile(File file){
         if(file == null) return null;
