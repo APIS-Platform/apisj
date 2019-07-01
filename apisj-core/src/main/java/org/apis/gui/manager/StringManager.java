@@ -1298,6 +1298,8 @@ public class StringManager {
         public SimpleStringProperty knowledgeKeyLabel = new SimpleStringProperty();
         public SimpleStringProperty emptyContractLabel1 = new SimpleStringProperty();
         public SimpleStringProperty emptyContractLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty cautionTitle = new SimpleStringProperty();
+        public SimpleStringProperty cautionContents = new SimpleStringProperty();
 
 
         @Override
@@ -1323,6 +1325,8 @@ public class StringManager {
             knowledgeKeyLabel.set(StringManager.this.getString("contract_popup_knowledge_key_label", "Knowledge Key"));
             emptyContractLabel1.set(StringManager.this.getString("contract_popup_empty_label_1", "You have no contract here."));
             emptyContractLabel2.set(StringManager.this.getString("contract_popup_empty_label_2", "click \"+\" button on top to add contract."));
+            cautionTitle.set(StringManager.this.getString("contract_popup_caution_title", "CAUTION"));
+            cautionContents.set(StringManager.this.getString("contract_popup_caution_contents", "When transferring to exchange or ERC Wallets, you should swap to APIS ERC-20 token on the platform and then transfer, using the Two-way swap. We don’t take responsibility for losses caused by an individual’s mistake."));
 
         }
     }

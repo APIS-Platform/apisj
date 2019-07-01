@@ -75,7 +75,7 @@ public class MainController extends BaseViewController {
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
 
-        ObservableList<String> langOptions = FXCollections.observableArrayList( "English", "한국어", "简体中文", "繁體中文", "日本語");
+        ObservableList<String> langOptions = FXCollections.observableArrayList( "English", "한국어", "日本語", "简体中文", "繁體中文");
         selectLanguage.setItems(langOptions);
         selectLanguage.valueProperty().addListener(new ChangeListener() {
             @Override
