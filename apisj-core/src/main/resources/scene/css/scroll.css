@@ -41,12 +41,6 @@
 	-fx-background-radius: 2em;
 }
 
-
-/*
-
-
-
-*/
 /* The main scrollbar **track** CSS class  */
 .listviewWhite .scroll-bar:horizontal .track,
 .listviewWhite .scroll-bar:vertical .track{
@@ -89,4 +83,21 @@
 	-fx-background-insets: 1, 0, 0;
 	-fx-background-radius: 2em;
 
+}
+
+.hideTableHScroll .table-view *.scroll-bar:horizontal *.increment-button,
+.hideTableHScroll .table-view *.scroll-bar:horizontal *.decrement-button {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.hideTableHScroll .table-view *.scroll-bar:horizontal *.increment-arrow,
+.hideTableHScroll .table-view *.scroll-bar:horizontal *.decrement-arrow {
+  -fx-background-color: null;
+  -fx-background-radius: 0;
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+  -fx-shape: null;
 }

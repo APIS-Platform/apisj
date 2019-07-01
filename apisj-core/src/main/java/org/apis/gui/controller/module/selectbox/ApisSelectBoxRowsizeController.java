@@ -4,19 +4,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
-import org.apis.util.blockchain.ApisUtil;
 
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -75,7 +72,7 @@ public class ApisSelectBoxRowsizeController extends BaseViewController {
         item.setOnMouseExited(mouseExitedHandler);
         item.setOnMouseEntered(mouseEnteredHandler);
         item.setOnMouseClicked(mouseClickedHandler);
-        StyleManager.getInstance().fontStyle(item, StyleManager.AFontSize.Size12);
+        StyleManager.getInstance().fontStyleSize(item, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         selectList.getChildren().add(item);
     }
 

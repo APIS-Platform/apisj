@@ -794,7 +794,7 @@
                                                                   <Label fx:id="payMsg1" styleClass="font_regular_12" text="It may take one or more minutes" textFill="#999999" />
                                                                   <Label fx:id="payMsg2" styleClass="font_regular_12" text="for the alias to be registered." textFill="#999999" GridPane.columnIndex="1">
                                                                      <GridPane.margin>
-                                                                        <Insets left="4.0" />
+                                                                        <Insets />
                                                                      </GridPane.margin></Label>
                                                                </children>
                                                             </GridPane>

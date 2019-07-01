@@ -128,6 +128,7 @@ public class TransferController extends BaseViewController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
+                controller.setTransferCautionVisible(true);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), ByteUtil.hexStringToBytes(toAddress), toMask, null);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -202,6 +203,7 @@ public class TransferController extends BaseViewController {
 
                 // 완료 팝업 띄우기
                 PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
+                controller.setTransferCautionVisible(true);
                 controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), ByteUtil.hexStringToBytes(tokenAddress), new byte[0], functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override

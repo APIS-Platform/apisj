@@ -19,10 +19,12 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsContentsController extends BaseViewController {
@@ -32,6 +34,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
     @FXML private HBox contentsBodyList;
     @FXML private GridPane gridPane;
     @FXML private TextArea textArea;
+    private ArrayList<TransactionNativeDetailsHBoxController> hBoxControllers = new ArrayList<>();
 
     private boolean isCopyable = false;
     private String copyText = null;
@@ -65,6 +68,29 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         });
         textArea.setVisible(false);
         textArea.setPrefHeight(0);
+        StyleManager.fontStyle(contentsBodyList, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(contentsBody, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+    }
+
+    @Override
+    public void fontUpdate() {
+        String bodyStyle = contentsBody.getStyle();
+
+        StyleManager.fontStyle(contentsBodyList, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        if(new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Standard.Regular) ||
+                new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Standard.SemiBold)) {
+            StyleManager.fontStyle(contentsBody, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        } else if(new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Hex.Regular) ||
+                new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Hex.Medium)) {
+            StyleManager.fontStyle(contentsBody, StyleManager.Hex.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        } else if(new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Barlow.Regular) ||
+                new JavaFXStyle(bodyStyle).compareFamily(StyleManager.Barlow.SemiBold)) {
+            StyleManager.fontStyle(contentsBody, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        }
+
+        for(int i=0; i<hBoxControllers.size(); i++) {
+            hBoxControllers.get(i).fontUpdate();
+        }
     }
 
     public void bindContentsHeader(SimpleStringProperty contentsHeader) {
@@ -100,7 +126,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
     }
 
     public void setTxtColor(String txtColor) {
-        this.contentsBody.setStyle("-fx-text-fill: "+txtColor+"; -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px;");
+        this.contentsBody.setStyle(new JavaFXStyle(this.contentsBody.getStyle()).add("-fx-text-fill", txtColor).toString());
     }
 
     public void setHeight(int height){
@@ -116,6 +142,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
 
     public void contentsBodyVBoxClear() {
         this.contentsBodyVBox.getChildren().clear();
+        this.hBoxControllers.clear();
     }
 
     public void contentsBodyVBoxAdd(String group, String from, String to, String value) {
@@ -123,9 +150,10 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
             URL hboxURL = getClass().getClassLoader().getResource("scene/transaction/transaction_native_details_hbox.fxml");
             FXMLLoader loader = new FXMLLoader(hboxURL);
             HBox hBox = loader.load();
-            this.contentsBodyVBox.getChildren().add(hBox);
-
             TransactionNativeDetailsHBoxController controller = (TransactionNativeDetailsHBoxController) loader.getController();
+
+            this.contentsBodyVBox.getChildren().add(hBox);
+            this.hBoxControllers.add(controller);
             controller.addList(group, from, to, value);
 
         } catch (IOException e) {

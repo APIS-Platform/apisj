@@ -101,8 +101,8 @@ public class MainFX extends Application  {
                         AppManager.getInstance().createTrayIcon(primaryStage);
                     }
 
-                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Medium.otf").toString(), 14);
-                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Regular.otf").toString(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResourceAsStream("font/NotoSansCJK-Medium.ttc"), 14);
+                    Font.loadFont(getClass().getClassLoader().getResourceAsStream("font/NotoSansCJK-Regular.ttc"), 14);
 
                     Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14);
                     Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14);

@@ -15,6 +15,8 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.facade.Apis;
 import org.apis.facade.ApisFactory;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.hid.HIDDevice;
 import org.apis.hid.HIDModule;
 import org.apis.hid.template.DeviceData;
@@ -50,12 +52,15 @@ public class LedgerController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("btnSign")) {
-            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; " +
+            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                     "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            StyleManager.fontStyle(btnSign, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
         } else if(fxid.equals("btnSend")) {
-            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; " +
+            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                     "-fx-border-color: #b01e1e; -fx-background-color: #ffffff; -fx-text-fill: #b01e1e;");
+            StyleManager.fontStyle(btnSend, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
         } else if(fxid.equals("btnCheck")) {
 
         }
@@ -143,12 +148,14 @@ public class LedgerController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("btnSign")) {
-            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; " +
+            btnSign.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                     "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            StyleManager.fontStyle(btnSign, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
         } else if(fxid.equals("btnSend")) {
-            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; " +
+            btnSend.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                     "-fx-border-color: #b01e1e; -fx-background-color: #b01e1e; -fx-text-fill: #ffffff;");
+            StyleManager.fontStyle(btnSend, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
         }
     }
 

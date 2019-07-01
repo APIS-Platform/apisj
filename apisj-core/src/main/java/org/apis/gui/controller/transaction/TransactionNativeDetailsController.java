@@ -135,6 +135,13 @@ public class TransactionNativeDetailsController extends BaseViewController {
         backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
+    @Override
+    public void fontUpdate() {
+        for(int i=0; i<contentsControllers.size(); i++) {
+            contentsControllers.get(i).fontUpdate();
+        }
+    }
+
     public void setDetailsList() {
         detailsList.getChildren().clear();
         contentsControllers.clear();

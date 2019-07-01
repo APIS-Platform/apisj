@@ -1,23 +1,28 @@
 package org.apis.gui.controller.popup;
 
-import javafx.event.EventHandler;
+import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.common.QRCodeGenerator;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.StringManager;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupCopyController extends BasePopupController {
+public class PopupCopyController extends BasePopupController implements ClipboardOwner {
     @FXML private AnchorPane copyPk;
     @FXML private Label titleLabel, subTitleLabel, copyTextLabel, confirmButton;
+    @FXML private ImageView QRCode;
+
+    private Clipboard clipboard;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -28,6 +33,18 @@ public class PopupCopyController extends BasePopupController {
                 exit();
             }
         });
+    }
+
+    @Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        // Wait for taking back clipboard's ownership
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // Regain ownership
+        this.clipboard.setContents(contents, this);
     }
 
     public void setTitle(String title){
@@ -42,9 +59,27 @@ public class PopupCopyController extends BasePopupController {
 
     public void setText(String text){
         StringSelection stringSelection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
+        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.addFlavorListener(new FlavorListener() {
+            @Override
+            public void flavorsChanged(FlavorEvent e) {
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        clipboard.setContents(stringSelection, stringSelection);
         this.copyTextLabel.textProperty().setValue(text);
+
+        try {
+            QRCode.setImage(QRCodeGenerator.generateQRCodeImage(text, 100, 100));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setCopyPk(String text){

@@ -18,32 +18,26 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
 import org.apis.config.SystemProperties;
 import org.apis.db.sql.DBManager;
-import org.apis.db.sql.TokenRecord;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.*;
-import org.apis.gui.controller.transaction.TransactionNativeBannerDetailController;
 import org.apis.gui.controller.wallet.tokenlist.TokenListController;
 import org.apis.gui.controller.wallet.walletlist.WalletListController;
-import org.apis.gui.controller.wallet.walletlist.WalletListGroupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
@@ -92,7 +86,7 @@ public class WalletController extends BaseViewController {
 
     @FXML private Label totalAssetLabel, myRewardsLabel, rewardedLabel, rewardedLabel1, nowStakingLabel, howApisLabel1, headerTokenTransfer;
     @FXML private Label myRewardsLabel1, nowStakingLabel1;
-    @FXML private Label rewardEng11, rewardEng21, rewardEng31, rewardEng41, rewardKor11, rewardKor21, rewardKor31, rewardKor41, rewardKor51;
+    @FXML private Label rewardEng11, rewardEng21, rewardEng31, rewardEng41, rewardKor11, rewardKor21, rewardKor31, rewardKor41, rewardKor51, rewardKor61;
     @FXML private AnchorPane rewardTooltip1;
 
     @FXML private AnchorPane createWalletPane;
@@ -161,42 +155,43 @@ public class WalletController extends BaseViewController {
         this.rewardKor31.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
         this.rewardKor41.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
         this.rewardKor51.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
+        this.rewardKor61.textProperty().bind(StringManager.getInstance().wallet.rewardKor6);
 
-        StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
-        StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
-        StyleManager.fontStyle(totalMainNatureLabel, StyleManager.Barlow.Regular32);
-        StyleManager.fontStyle(totalMainUnitLabel, StyleManager.Barlow.SemiBold12);
-        StyleManager.fontStyle(totalSubNatureLabel, StyleManager.Barlow.Regular12);
-        StyleManager.fontStyle(totalSubUnitLabel, StyleManager.Barlow.Regular12);
-        StyleManager.fontStyle(totalSubTitle, StyleManager.Barlow.Regular12);
-        StyleManager.fontStyle(rewardedLabel, StyleManager.Barlow.SemiBold12);
-        StyleManager.fontStyle(rewardedLabel1, StyleManager.Barlow.SemiBold12);
+        StyleManager.fontStyle(totalMainNatureLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size32, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalMainUnitLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubNatureLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubUnitLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubTitle, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardedLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardedLabel1, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
-        StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
-        StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(totalAssetLabel, StyleManager.Barlow.SemiBold14);
-        StyleManager.fontStyle(myRewardsLabel, StyleManager.Barlow.Regular14);
-        StyleManager.fontStyle(totalTitle, StyleManager.Barlow.Regular14);
-        StyleManager.fontStyle(rewarded, StyleManager.Barlow.Regular32);
+        StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalAssetLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalTitle, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewarded, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size32, StringManager.getInstance().langCode);
 
-
-        StyleManager.fontStyle(rewardEng11, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardEng21, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardEng31, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardEng41, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor11, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor21, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardKor31, StyleManager.Standard.SemiBold14);
-        StyleManager.fontStyle(rewardKor41, StyleManager.Standard.Regular12);
-        StyleManager.fontStyle(rewardKor51, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng11, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng21, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng31, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng41, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor11, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor21, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor31, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor41, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor51, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor61, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
 
         StyleManager.fontColorStyle(rewardEng11, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardEng21, StyleManager.AColor.Cf8f8fb);
@@ -207,8 +202,52 @@ public class WalletController extends BaseViewController {
         StyleManager.fontColorStyle(rewardKor31, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardKor41, StyleManager.AColor.Cf8f8fb);
         StyleManager.fontColorStyle(rewardKor51, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor61, StyleManager.AColor.Cf8f8fb);
 
     }
+
+    @Override
+    public void fontUpdate() {
+        StyleManager.fontStyle(buyMineralLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
+        StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
+        StyleManager.fontStyle(totalMainNatureLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size32, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalMainUnitLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubNatureLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubUnitLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalSubTitle, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardedLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardedLabel1, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
+        StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
+        StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalAssetLabel, StyleManager.Barlow.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(totalTitle, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewarded, StyleManager.Barlow.Regular, StyleManager.AFontSize.Size32, StringManager.getInstance().langCode);
+
+        StyleManager.fontStyle(rewardEng11, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng21, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng31, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardEng41, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor11, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor21, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor31, StyleManager.Standard.SemiBold, StyleManager.AFontSize.Size14, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor41, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor51, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+        StyleManager.fontStyle(rewardKor61, StyleManager.Standard.Regular, StyleManager.AFontSize.Size12, StringManager.getInstance().langCode);
+
+        tabMenuController.fontUpdate();
+        walletListTabMenuController.fontUpdate();
+    }
+
 
     public void initImageLoad(){
 

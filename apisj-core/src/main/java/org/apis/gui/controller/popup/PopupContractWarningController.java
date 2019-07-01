@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
@@ -38,7 +39,9 @@ import java.util.ResourceBundle;
 public class PopupContractWarningController extends BasePopupController implements PopupLedgerNoticeController.PopupLedgerNoticeCallback {
 
     @FXML private AnchorPane rootPane, walletPasswordPane, messagePane, knowledgeKeyPane;
-    @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn, knowledgeKeyLabel;
+    @FXML private GridPane cautionGrid;
+    @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn,
+            yesBtn, knowledgeKeyLabel, cautionTitle, cautionContents;
     @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private TextArea rawTxArea, signedTxArea;
     @FXML private MessageLineController ledgerConnectionMessageController;
@@ -61,6 +64,9 @@ public class PopupContractWarningController extends BasePopupController implemen
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
+
+        // Hide transfer caution
+        setTransferCautionVisible(false);
 
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
         knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
@@ -364,6 +370,18 @@ public class PopupContractWarningController extends BasePopupController implemen
         yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
         walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
         knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().contractPopup.knowledgeKeyLabel);
+        cautionTitle.textProperty().bind(StringManager.getInstance().contractPopup.cautionTitle);
+        cautionContents.textProperty().bind(StringManager.getInstance().contractPopup.cautionContents);
+    }
+
+    public void setTransferCautionVisible(boolean visible) {
+        if(visible) {
+            cautionGrid.setVisible(true);
+            cautionGrid.prefHeightProperty().setValue(-1);
+        } else {
+            cautionGrid.setVisible(false);
+            cautionGrid.prefHeightProperty().setValue(0);
+        }
     }
 
     public void setData(String address, String value, String gasPrice, String gasLimit, byte[] toAddress, byte[] toMask, byte[] data){

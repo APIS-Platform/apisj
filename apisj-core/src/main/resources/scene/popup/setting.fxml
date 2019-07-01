@@ -194,13 +194,13 @@
                                                       </ImageView>
                                                       <AnchorPane GridPane.columnIndex="2">
                                                          <children>
-                                                            <Label fx:id="peersBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #999999;" text="Peers" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <Label fx:id="peersBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #cfcfcf;" text="Peers" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
                                                                   <String fx:value="font_semibold_11" />
                                                                   <String fx:value="border_radius_4444" />
                                                                </styleClass>
                                                                <padding>
-                                                                  <Insets bottom="8.0" left="24.0" right="24.0" top="8.0" />
+                                                                  <Insets bottom="5.0" left="16.0" right="16.0" top="5.0" />
                                                                </padding>
                                                                <cursor>
                                                                   <Cursor fx:constant="HAND" />

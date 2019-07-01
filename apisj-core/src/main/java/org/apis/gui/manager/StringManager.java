@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.apis.net.p2p.PeersMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -9,6 +10,7 @@ import java.util.ResourceBundle;
 public class StringManager {
     private ResourceBundle bundle;
 
+    public String langCode = "";
     public Common common = new Common();
     public Module module = new Module();
     public Receipt receipt = new Receipt();
@@ -40,15 +42,23 @@ public class StringManager {
     }
     public void changeBundleJpn(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ja","JP")));
+        langCode = "JP";
     }
     public void changeBundleChn(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","CN")));
+        langCode = "CN";
+    }
+    public void changeBundleTwn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","TW")));
+        langCode = "TW";
     }
     public void changeBundleKor(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
+        langCode = "KR";
     }
     public void changeBundleEng(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("en","US")));
+        langCode = "US";
     }
     private void setBundle(ResourceBundle bundle){
         this.bundle = bundle;
@@ -525,6 +535,7 @@ public class StringManager {
         public SimpleStringProperty rewardKor3 = new SimpleStringProperty();
         public SimpleStringProperty rewardKor4 = new SimpleStringProperty();
         public SimpleStringProperty rewardKor5 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor6 = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -565,6 +576,7 @@ public class StringManager {
             rewardKor3.set(StringManager.this.getString("wallet_tooltip_reward_kor3", ""));
             rewardKor4.set(StringManager.this.getString("wallet_tooltip_reward_kor4", ""));
             rewardKor5.set(StringManager.this.getString("wallet_tooltip_reward_kor5", ""));
+            rewardKor6.set(StringManager.this.getString("wallet_tooltip_reward_kor6", ""));
         }
     }
 
@@ -594,7 +606,7 @@ public class StringManager {
             ReceivingAddress.set(StringManager.this.getString("transfer_receiving_address", "Receiving Address"));
             myAddress.set(StringManager.this.getString("transfer_my_address_button", "My Address"));
             recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
-            ReceivingAddressPlaceHolder.set(StringManager.this.getString("transfer_receiving_address_placeholder", "Write Reving Address"));
+            ReceivingAddressPlaceHolder.set(StringManager.this.getString("transfer_receiving_address_placeholder", "Write Receiving Address"));
             detailTransferAmount.set(StringManager.this.getString("transfer_detail_transfer_amount", "Transfer Amount"));
             detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+)Fee"));
             detailTotalWithdrawal.set(StringManager.this.getString("transfer_detail_total_withdrawal", "Total Withdrawal"));
@@ -1022,6 +1034,15 @@ public class StringManager {
         public SimpleStringProperty cancel = new SimpleStringProperty();
         public SimpleStringProperty confirm = new SimpleStringProperty();
 
+        public SimpleStringProperty peersTitle = new SimpleStringProperty();
+        public SimpleStringProperty peersSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty nodeIdCol = new SimpleStringProperty();
+        public SimpleStringProperty nodeServiceCol = new SimpleStringProperty();
+        public SimpleStringProperty userAgentCol = new SimpleStringProperty();
+        public SimpleStringProperty pingCol = new SimpleStringProperty();
+        public SimpleStringProperty peersTablePlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty peersGuideLabel = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -1168,6 +1189,15 @@ public class StringManager {
             totalAssetLabel.set(StringManager.this.getString("popup_total_asset_label", "* Total assets : "));
             cancel.set(StringManager.this.getString("popup_cancel", "Cancel"));
             confirm.set(StringManager.this.getString("popup_confirm", "Confirm"));
+
+            peersTitle.set(StringManager.this.getString("popup_peers_title", "Peers"));
+            peersSubTitle.set(StringManager.this.getString("popup_peers_sub_title", "Peers detail"));
+            nodeIdCol.set(StringManager.this.getString("popup_peers_node_id_col", "NodeId"));
+            nodeServiceCol.set(StringManager.this.getString("popup_peers_node_service_col", "Node/Service"));
+            userAgentCol.set(StringManager.this.getString("popup_peers_user_agent_col", "User Agent"));
+            pingCol.set(StringManager.this.getString("popup_peers_ping_col", "Ping"));
+            peersTablePlaceholder.set(StringManager.this.getString("popup_peers_table_placeholder", "no contents in table"));
+            peersGuideLabel.set(StringManager.this.getString("popup_peers_guild_label", "Please select a peer for more information."));
         }
     }
 
@@ -1205,6 +1235,7 @@ public class StringManager {
         public SimpleStringProperty saveLoadDbLabel = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
         public SimpleStringProperty loadBtn = new SimpleStringProperty();
+        public SimpleStringProperty peersBtn = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1241,6 +1272,7 @@ public class StringManager {
             saveLoadDbLabel.set(StringManager.this.getString("setting_save_load_db_label", "Save/Load private DB info"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "SAVE"));
             loadBtn.set(StringManager.this.getString("setting_load_btn", "LOAD"));
+            peersBtn.set(StringManager.this.getString("setting_peers_btn", "Peers"));
         }
     }
 
@@ -1266,6 +1298,8 @@ public class StringManager {
         public SimpleStringProperty knowledgeKeyLabel = new SimpleStringProperty();
         public SimpleStringProperty emptyContractLabel1 = new SimpleStringProperty();
         public SimpleStringProperty emptyContractLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty cautionTitle = new SimpleStringProperty();
+        public SimpleStringProperty cautionContents = new SimpleStringProperty();
 
 
         @Override
@@ -1291,6 +1325,8 @@ public class StringManager {
             knowledgeKeyLabel.set(StringManager.this.getString("contract_popup_knowledge_key_label", "Knowledge Key"));
             emptyContractLabel1.set(StringManager.this.getString("contract_popup_empty_label_1", "You have no contract here."));
             emptyContractLabel2.set(StringManager.this.getString("contract_popup_empty_label_2", "click \"+\" button on top to add contract."));
+            cautionTitle.set(StringManager.this.getString("contract_popup_caution_title", "CAUTION"));
+            cautionContents.set(StringManager.this.getString("contract_popup_caution_contents", "When transferring to exchange or ERC Wallets, you should swap to APIS ERC-20 token on the platform and then transfer, using the Two-way swap. We don’t take responsibility for losses caused by an individual’s mistake."));
 
         }
     }
