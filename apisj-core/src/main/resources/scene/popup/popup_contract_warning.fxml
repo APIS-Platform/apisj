@@ -308,8 +308,8 @@
             </GridPane>
          </children>
          <stylesheets>
-            <URL value="@../../../../../out/production/classes/scene/css/common.css" />
-            <URL value="@../../../../../out/production/classes/scene/css/scroll.css" />
+            <URL value="@../css/common.css" />
+            <URL value="@../css/scroll.css" />
          </stylesheets>
       </GridPane>
    </children>
