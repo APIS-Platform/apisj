@@ -23,7 +23,8 @@ public class EstimateTransactionResult {
         this.gasUsed = gasUsed;
     }
 
-    EstimateTransactionResult(String error) {
+    public EstimateTransactionResult(String error) {
+        this.isSuccess = false;
         this.error = error;
     }
 
