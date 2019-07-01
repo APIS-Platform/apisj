@@ -19,11 +19,9 @@ import org.apis.keystore.*;
 import org.apis.listener.BlockReplay;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.rlpx.EncryptionHandshake;
 import org.apis.rpc.adapter.CanvasAdapter;
-import org.apis.rpc.listener.LastLogListener;
-import org.apis.rpc.listener.LogListener;
-import org.apis.rpc.listener.NewBlockListener;
-import org.apis.rpc.listener.PendingTransactionListener;
+import org.apis.rpc.listener.*;
 import org.apis.rpc.template.*;
 import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
@@ -365,7 +363,9 @@ public class RPCCommand {
                         walletInfos.add(walletInfo);
                     }
 
-                    if (walletInfos.size() > 0) { command = createJson(id, method, walletInfos); }
+                    if (walletInfos.size() > 0) {
+                        command = createJson(id, method, walletInfos);
+                    }
                     else { command = createJson(id, method, null, ERROR_NULL_WALLET_ADDRESS); }
 
                 } catch (Exception e) {
@@ -649,7 +649,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_CALL: {
                 try {
-                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis);
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis, true);
                     byte[] result = estimateResult.getReceipt().getExecutionResult();
                     command = createJson(id, method, ByteUtil.toHexString0x(result));
                 } catch (Exception e) {
@@ -661,11 +661,47 @@ public class RPCCommand {
 
             case COMMAND_APIS_ESTIMATE_GAS: {
                 try {
-                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis);
-                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimateResult.getGasUsed())));
+                    EstimateTransactionResult estimateResult = estimateTransaction(params, (ApisImpl) apis, false);
+
+                    if(estimateResult.isSuccess()) {
+                        command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimateResult.getGasUsed())));
+                    } else {
+                        command = createJson(id, method, null, estimateResult.getError());
+                    }
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
+                break;
+            }
+
+            case COMMAND_APIS_GET_LOGS: {
+                if(params.length < 1) {
+                    return createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                }
+
+                LinkedTreeMap paramsMap = (LinkedTreeMap) params[0];
+
+                List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+                String fromBlock = (String) paramsMap.get("fromBlock");
+                String toBlock = (String) paramsMap.get("toBlock");
+                long fromBlockNumber = 0;
+                long toBlockNumber = Long.MAX_VALUE;
+                if(fromBlock != null) {
+                    try {
+                        fromBlockNumber = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes(fromBlock));
+                    } catch (NumberFormatException ignored) {}
+                }
+                if(toBlock != null) {
+                    toBlockNumber = getBlockNumber(apis, toBlock);
+                }
+
+
+                LastLogHttpListener listener = new LastLogHttpListener(method, id, addresses, topics, apis);
+                BlockReplay blockReplay = new BlockReplay(apis.getBlockchain().getBlockStore(), apis.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
+                blockReplay.replaySync();
+
+                command = listener.getCommand();
                 break;
             }
 
@@ -1191,7 +1227,8 @@ public class RPCCommand {
                     if(key == null) {
                         command = createJson(id, method, null, "Input address not found.");
                     } else {
-                        byte[] signedMessage = key.sign(HashUtil.sha3(dataToSign)).toByteArray();
+                        ECKey.ECDSASignature signature = key.sign(HashUtil.sha3(dataToSign));
+                        byte[] signedMessage = signature.toByteArray();
                         command = createJson(id, method, ByteUtil.toHexString0x(signedMessage));
                     }
                 } catch (InvalidPasswordException e) {
@@ -1217,7 +1254,8 @@ public class RPCCommand {
                 byte[] signatureBytes = ByteUtil.hexStringToBytes((String)params[1]);
 
                 ECKey.ECDSASignature signature = KeyStoreUtil.decodeSignature(signatureBytes);
-                ECKey recoveredKey = ECKey.recoverFromSignature(0, signature, HashUtil.sha3(dataSigned));
+                int recId = EncryptionHandshake.recIdFromSignatureV(signature.v);
+                ECKey recoveredKey = ECKey.recoverFromSignature(recId, signature, HashUtil.sha3(dataSigned));
                 if(recoveredKey == null) {
                     return createJson(id, method, null, ERROR_RECOVER_SIGN_NULL);
                 }
@@ -1659,8 +1697,6 @@ public class RPCCommand {
                 break;
             }
 
-
-
             case COMMAND_APIS_GET_LOGS: {
                 if(params.length < 1) {
                     return createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
@@ -1750,7 +1786,7 @@ public class RPCCommand {
         return createJson(id, method, new TransactionData(tx, block));
     }
 
-    private static EstimateTransactionResult estimateTransaction(Object[] params, ApisImpl ethereum) throws Exception {
+    private static EstimateTransactionResult estimateTransaction(Object[] params, ApisImpl ethereum, boolean isCall) throws Exception {
         if (params.length == 0) {
             throw new Exception(ERROR_MESSAGE_UNKNOWN);
         }
@@ -1762,7 +1798,51 @@ public class RPCCommand {
 
         EstimateTransaction estimateTransaction = EstimateTransaction.getInstance(ethereum);
 
-        return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData());
+        // 컨트렉트 콜 인 경우, from 주소가 실재로 존재하지 않아도 확인할 필요가 있다.
+        if(isCall) {
+            return estimateTransaction.estimate(inputTx.getFrom(), inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData());
+        }
+
+
+        // from의 주소가 keystore 내에 존재하는지 확인한다. 만약 없으면 트랜잭션을 가상으로 실행할 수 없다.
+        KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+        if(!keyStoreManager.findKeyStoreFile(inputTx.getFrom())) {
+            return new EstimateTransactionResult("Sender did not exist in the keystore.");
+        }
+
+        ByteArrayWrapper fromWrapper = new ByteArrayWrapper(inputTx.getFrom());
+        UnlockedAccount unlockedAccount = unlockedAccounts.get(fromWrapper);
+
+        // 잠금이 해제되어 있지 않은 경우, 비밀번호가 전달되지 않았으면 트랜잭션을 실행할 수 없다
+        if(unlockedAccount == null || unlockedAccount.getUnlockUntil() < TimeUtils.getRealTimestamp()/1000) {
+            if(inputTx.getKeystorePassword() == null || inputTx.getKeystorePassword().isEmpty()) {
+                return new EstimateTransactionResult("The Sender account is locked.");
+            }
+            // 입력된 비밀번호로 Sender 계정을 해제한다
+            else {
+                try {
+                    byte[] addressBytes = inputTx.getFrom();
+                    ECKey key = keyStoreManager.findKeyStoreFile(addressBytes, inputTx.getKeystorePassword());
+                    return estimateTransaction.estimate(key, inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData(), false);
+                }catch (InvalidPasswordException e) {
+                    return new EstimateTransactionResult(ERROR_MESSAGE_INVALID_PASSWORD);
+                } catch (KeystoreVersionException e) {
+                    return new EstimateTransactionResult("Support on V3 of Keystore");
+                } catch (NotSupportKdfException e) {
+                    return new EstimateTransactionResult("Not supported KDF");
+                } catch (NotSupportCipherException e) {
+                    return new EstimateTransactionResult("Not supported Cipher");
+                } catch (NumberFormatException e) {
+                    return new EstimateTransactionResult("Unable to convert duration value");
+                } catch (Exception e) {
+                    return new EstimateTransactionResult("Unexpected error : " + e.getMessage());
+                }
+            }
+        }
+        // 지갑이 풀려있으면, 풀린 지갑으로 트랜잭션을 실행한다
+        else {
+            return estimateTransaction.estimate(unlockedAccount.getKey(), inputTx.getTo(), inputTx.getNonce(), inputTx.getValue(), inputTx.getGas(), inputTx.getData(), false);
+        }
     }
 
 
