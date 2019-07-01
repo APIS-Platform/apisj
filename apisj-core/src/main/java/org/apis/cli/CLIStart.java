@@ -359,10 +359,12 @@ public class CLIStart {
                 httpPort = wsPort - 1;
             }
             rpcProp.setProperty(RPCServerManager.KEY_HTTP_PORT, String.valueOf(httpPort));
+            storeRpcConfig();
         }
 
         if(rpcProp.getProperty(RPCServerManager.KEY_HTTP_THREAD) == null) {
             rpcProp.setProperty(RPCServerManager.KEY_HTTP_THREAD, "8");
+            storeRpcConfig();
         }
 
 
