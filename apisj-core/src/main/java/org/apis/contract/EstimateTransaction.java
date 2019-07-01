@@ -188,9 +188,18 @@ public class EstimateTransaction {
         return estimate(tx);
     }
 
-    public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, long gasLimit, byte[] data) {
+    public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, long gasLimit, byte[] data, boolean isLocalCall) {
         Transaction tx = makeTransaction(from, to, nonce, gasLimit, value, data);
-        return estimate(tx);
+        return estimate(tx, isLocalCall);
+    }
+
+    public EstimateTransactionResult estimate(byte[] from, byte[] to, long nonce, BigInteger value, long gasLimit, byte[] data) {
+        return estimate(from, to, nonce, value, gasLimit, data, true);
+    }
+
+    public EstimateTransactionResult estimate(ECKey from, byte[] to, long nonce, BigInteger value, long gasLimit, byte[] data, boolean isLocalCall) {
+        Transaction tx = makeTransaction(from, to, nonce, gasLimit, value, data);
+        return estimate(tx, isLocalCall);
     }
 
     public EstimateTransactionResult estimate(Transaction tx) {
@@ -266,6 +275,30 @@ public class EstimateTransaction {
 
     private Transaction makeTransaction(byte[] from, byte[] to, BigInteger value, byte[] data) {
         return makeTransaction(from, to, DEFAULT_GAS_LIMIT, value, data);
+    }
+
+    private Transaction makeTransaction(ECKey from, byte[] to, long nonce, long gasLimit, BigInteger value, byte[] data) {
+        if(from == null) {
+            from = ECKey.DUMMY;
+        }
+
+        long gasPrice = 0L;
+
+        if(gasLimit == 0) {
+            gasLimit = DEFAULT_GAS_LIMIT;
+        }
+
+        Transaction tx = CallTransaction.createRawTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                ByteUtil.toHexString(to),
+                value,
+                data);
+
+        tx.sign(from);
+
+        return tx;
     }
 
     private Transaction makeTransaction(byte[] from, byte[] to, long nonce, long gasLimit, BigInteger value, byte[] data) {
