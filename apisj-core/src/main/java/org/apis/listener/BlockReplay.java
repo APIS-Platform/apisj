@@ -29,7 +29,6 @@ import org.apis.net.server.Channel;
 import org.apis.samples.EventListenerSample;
 import org.apis.sync.BlockDownloader;
 import org.apis.util.FastByteComparisons;
-import org.apis.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +77,10 @@ public class BlockReplay extends EthereumListenerAdapter {
      */
     public void replayAsync() {
         new Thread(this::replay).start();
+    }
+
+    public void replaySync() {
+        replay();
     }
 
     /**
