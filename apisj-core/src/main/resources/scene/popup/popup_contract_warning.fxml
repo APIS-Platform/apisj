@@ -80,7 +80,7 @@
             </GridPane>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToWidth="true" stylesheets="@../../../../../out/production/classes/scene/css/scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                      <content>
                         <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: #ffffff;">
                            <children>
@@ -91,6 +91,7 @@
                                  <rowConstraints>
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" />
                                     <RowConstraints />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" />
@@ -99,7 +100,7 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <AnchorPane prefHeight="40.0" GridPane.rowIndex="2">
+                                    <AnchorPane prefHeight="40.0" GridPane.rowIndex="3">
                                        <children>
                                           <Label fx:id="generateTxBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
@@ -112,12 +113,49 @@
                                           </Label>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="messagePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="3">
+                                    <GridPane fx:id="cautionGrid" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="2">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints vgrow="ALWAYS" />
+                                      </rowConstraints>
+                                       <children>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="4.0" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label fx:id="cautionTitle" styleClass="font_regular_12" text="CAUTION" textFill="#999999" GridPane.columnIndex="1" />
+                                                <ImageView fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../image/ic_info_darkgrey@2x.png" />
+                                                   </image>
+                                                   <GridPane.margin>
+                                                      <Insets right="4.0" />
+                                                   </GridPane.margin>
+                                                </ImageView>
+                                             </children>
+                                          </GridPane>
+                                          <Label fx:id="cautionContents" styleClass="font_regular_11" text="APIS stored in Wallet is a mainnet coin and can NOT be transferred to erc-20 address for exchanges. Please check once more before you deposit and we are not responsible for any loss caused by individual's inattention." textFill="#999999" wrapText="true" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets bottom="16.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                       </children>
+                                    </GridPane>
+                                    <AnchorPane fx:id="messagePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="4">
                                        <children>
                                           <fx:include fx:id="ledgerConnectionMessage" source="../module/message_line.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0" />
                                        </children>
                                     </AnchorPane>
-                                    <GridPane GridPane.rowIndex="5">
+                                    <GridPane GridPane.rowIndex="6">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                        </columnConstraints>
@@ -188,7 +226,7 @@
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
                                             </rowConstraints>
                                              <children>
                                                 <Label fx:id="knowledgeKeyLabel" styleClass="font_regular_12" text="Knowledge Key" textFill="#2b2b2b" />
@@ -250,7 +288,7 @@
                <children>
                   <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                      <image>
-                        <Image url="@../../image/btn_close@2x.png" />
+                        <Image url="@../../../../../out/production/classes/image/btn_close@2x.png" />
                      </image>
                      <GridPane.margin>
                         <Insets right="22.0" />
