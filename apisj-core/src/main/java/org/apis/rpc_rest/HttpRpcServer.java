@@ -55,8 +55,31 @@ public class HttpRpcServer {
         // https://www.rgagnon.com/javadetails/java-do-basic-authentication-using-jdk-http-server.html
         rpcContext.setAuthenticator(new BasicAuthenticator("get") {
             @Override
+            public Result authenticate(HttpExchange httpExchange) {
+                ConsoleUtil.printlnRed(httpExchange.getRequestHeaders().getFirst("origin"));
+
+                httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", httpExchange.getRequestHeaders().getFirst("origin"));
+
+                if(httpExchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                    httpExchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin,Content-Type,Authorization");
+
+                    try {
+                        httpExchange.sendResponseHeaders(204, -1);
+                    } catch (IOException e) {
+                        logger.warn("Error occurs in authenticate", e);
+                        e.printStackTrace();
+                    }
+                }
+
+                return super.authenticate(httpExchange);
+            }
+
+            @Override
             public boolean checkCredentials(String user, String password) {
-                return user.equals(rpcId) && password.equals(rpcPw);
+                boolean isLoggin = user.equals(rpcId) && password.equals(rpcPw);
+                ConsoleUtil.printlnRed("LOGGIN : " + isLoggin);
+                return isLoggin;
             }
         });
     }
