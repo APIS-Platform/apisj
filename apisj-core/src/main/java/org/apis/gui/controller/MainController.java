@@ -65,7 +65,9 @@ public class MainController extends BaseViewController {
     String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
 
     private final String commonCssURL = "scene/css/common.css";
-    private final String commonZhCssURL = "scene/css/common_zh.css";
+    private final String commonKrCssURL = "scene/css/common_kr.css";
+    private final String commonScCssURL = "scene/css/common_sc.css";
+    private final String commonTcCssURL = "scene/css/common_tc.css";
 
     public MainController(){ }
 
@@ -81,30 +83,40 @@ public class MainController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(!rootPane.getStylesheets().contains(commonCssURL)) {
-                    rootPane.getStylesheets().remove(commonZhCssURL);
+                    rootPane.getStylesheets().remove(commonKrCssURL);
+                    rootPane.getStylesheets().remove(commonScCssURL);
+                    rootPane.getStylesheets().remove(commonTcCssURL);
                     rootPane.getStylesheets().add(commonCssURL);
                 }
 
                 if(newValue.equals("English")){
                     AppManager.saveGeneralProperties("language", "English");
                     StringManager.getInstance().changeBundleEng();
+
                 }else if(newValue.equals("한국어")){
+                    if(!rootPane.getStylesheets().contains(commonKrCssURL)) {
+                        rootPane.getStylesheets().remove(commonCssURL);
+                        rootPane.getStylesheets().add(commonKrCssURL);
+                    }
                     AppManager.saveGeneralProperties("language", "한국어");
                     StringManager.getInstance().changeBundleKor();
+
                 }else if(newValue.equals("简体中文")){
-                    if(!rootPane.getStylesheets().contains(commonZhCssURL)) {
+                    if(!rootPane.getStylesheets().contains(commonScCssURL)) {
                         rootPane.getStylesheets().remove(commonCssURL);
-                        rootPane.getStylesheets().add(commonZhCssURL);
+                        rootPane.getStylesheets().add(commonScCssURL);
                     }
                     AppManager.saveGeneralProperties("language", "简体中文");
                     StringManager.getInstance().changeBundleChn();
+
                 }else if(newValue.equals("繁體中文")) {
-                    if(!rootPane.getStylesheets().contains(commonZhCssURL)) {
+                    if(!rootPane.getStylesheets().contains(commonTcCssURL)) {
                         rootPane.getStylesheets().remove(commonCssURL);
-                        rootPane.getStylesheets().add(commonZhCssURL);
+                        rootPane.getStylesheets().add(commonTcCssURL);
                     }
                     AppManager.saveGeneralProperties("language", "繁體中文");
                     StringManager.getInstance().changeBundleTwn();
+
                 }else if(newValue.equals("日本語")){
                     AppManager.saveGeneralProperties("language", "日本語");
                     StringManager.getInstance().changeBundleJpn();

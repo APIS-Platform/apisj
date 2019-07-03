@@ -101,8 +101,14 @@ public class MainFX extends Application  {
                         AppManager.getInstance().createTrayIcon(primaryStage);
                     }
 
-                    Font.loadFont(getClass().getClassLoader().getResourceAsStream("font/NotoSansCJK-Medium.ttc"), 14);
-                    Font.loadFont(getClass().getClassLoader().getResourceAsStream("font/NotoSansCJK-Regular.ttc"), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKjp-Medium.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKjp-Regular.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKkr-Medium.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKkr-Regular.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKsc-Medium.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKsc-Regular.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKtc-Medium.otf").toExternalForm(), 14);
+                    Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansCJKtc-Regular.otf").toExternalForm(), 14);
 
                     Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14);
                     Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14);
