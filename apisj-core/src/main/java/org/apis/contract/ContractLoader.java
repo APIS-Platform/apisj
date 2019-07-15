@@ -45,10 +45,23 @@ public class ContractLoader {
     private static final SystemProperties config = SystemProperties.getDefault();
 
     public static void makeABI() {
+        assert config != null;
+
         try {
             for (int i = 0; i < 8; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
+                    continue;
+                }
+
+                /* 파일이 존재한다면 생성을 생략한다.
+
+                 * Windows 프로그램의 경우 솔리디티 컴파일이 정상적으로 동작하지 않을 때가 있는데
+                 * 이 때문에 Windows 프로그램에서는 컴파일 된 ABI 파일을 함께 배포하므로 컴파일 과정이 필요없다.
+                 */
+                String filePath = (config.abiDir() + "/" + getContractName(i) + ".json");
+                File abiFile = new File(filePath);
+                if(abiFile.exists()) {
                     continue;
                 }
 
@@ -69,7 +82,7 @@ public class ContractLoader {
                     continue;
                 }
 
-                assert config != null;
+
                 fileName = (config.abiDir() + "/" + getContractName(i) + ".json");
 
                 saveABI(fileName, metadata.abi);
