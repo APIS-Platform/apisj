@@ -246,7 +246,7 @@ public class RPCCommand {
     }
 
     public static MessageApp3 parseMessage(String payload) {
-        ConsoleUtil.printlnCyan("Payload:" + payload);
+        ConsoleUtil.printlnYellow("Payload:" + payload);
         return new GsonBuilder().create().fromJson(payload, MessageApp3.class);
     }
 
