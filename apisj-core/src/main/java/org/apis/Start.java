@@ -181,7 +181,7 @@ public class Start {
 
             // HTTP 서버를 실행시킨다
             if(httpRpcServer != null) {
-                httpRpcServer.start();
+                isRunRpc = httpRpcServer.start();
             }
 
             // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.

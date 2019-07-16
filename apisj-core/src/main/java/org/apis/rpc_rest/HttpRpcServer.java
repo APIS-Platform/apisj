@@ -90,7 +90,7 @@ public class HttpRpcServer {
      * If the server is already running or the feature is disabled in the configuration, do not start it.
      *
      */
-    public void start() {
+    public boolean start() {
         if(!isRunning && isEnabled) {
             mServer.setExecutor(Executors.newFixedThreadPool(this.nThreads));
             mServer.start();
@@ -99,6 +99,8 @@ public class HttpRpcServer {
 
             ConsoleUtil.printlnCyan("HTTP RPC Server is running (%d)", port);
         }
+
+        return isRunning;
     }
 
     class RpcHandler implements HttpHandler {
