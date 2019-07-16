@@ -56,19 +56,19 @@ public class HttpRpcServer {
         rpcContext.setAuthenticator(new BasicAuthenticator("get") {
             @Override
             public Result authenticate(HttpExchange httpExchange) {
-                ConsoleUtil.printlnRed(httpExchange.getRequestHeaders().getFirst("origin"));
+                if(httpExchange.getRequestHeaders().getFirst("origin") != null) {
+                    httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", httpExchange.getRequestHeaders().getFirst("origin"));
 
-                httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", httpExchange.getRequestHeaders().getFirst("origin"));
+                    if(httpExchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                        httpExchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POSPayload:T, OPTIONS");
+                        httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin,Content-Type,Authorization");
 
-                if(httpExchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
-                    httpExchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-                    httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin,Content-Type,Authorization");
-
-                    try {
-                        httpExchange.sendResponseHeaders(204, -1);
-                    } catch (IOException e) {
-                        logger.warn("Error occurs in authenticate", e);
-                        e.printStackTrace();
+                        try {
+                            httpExchange.sendResponseHeaders(204, -1);
+                        } catch (IOException e) {
+                            logger.warn("Error occurs in authenticate", e);
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -77,9 +77,7 @@ public class HttpRpcServer {
 
             @Override
             public boolean checkCredentials(String user, String password) {
-                boolean isLoggin = user.equals(rpcId) && password.equals(rpcPw);
-                ConsoleUtil.printlnRed("LOGGIN : " + isLoggin);
-                return isLoggin;
+                return user.equals(rpcId) && password.equals(rpcPw);
             }
         });
     }
