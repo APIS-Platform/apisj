@@ -64,7 +64,7 @@ sourceCompatibility = 1.8
 
 mainClassName = 'org.apis.Start'
 //mainClassName = 'org.apis.samples.PrivateMinerSample'
-applicationDefaultJvmArgs = ["-server", "-Xss4m", "-Xmx2G", "-XX:-OmitStackTraceInFastThrow"]
+applicationDefaultJvmArgs = ["-server", "-Xss4m", "-Xms4G", "-Xmx4G", "-XX:-OmitStackTraceInFastThrow", "-XX:+HeapDumpOnOutOfMemoryError"]
 
 if ( project.hasProperty('jvmArgs') ) {
     applicationDefaultJvmArgs = applicationDefaultJvmArgs + project.jvmArgs.split('\\s+').toList()
@@ -111,12 +111,12 @@ task tckRun(type:JavaExec){
 
     if (project.hasProperty("filePath")) {
         args = ["filerun", "$filePath"]
-        jvmArgs = ["-Xss4M"]
+        jvmArgs = ["-Xss4m", "-Xms4G", "-Xmx4G", "-XX:-OmitStackTraceInFastThrow", "-XX:+HeapDumpOnOutOfMemoryError"]
     }
 
     if (project.hasProperty("content")) {
         args = ["content", "$content"]
-        jvmArgs = ["-Xss4M"]
+        jvmArgs = ["-Xss4m", "-Xms4G", "-Xmx4G", "-XX:-OmitStackTraceInFastThrow", "-XX:+HeapDumpOnOutOfMemoryError"]
     }
 
     main = "org.apis.tck.RunTck"
@@ -131,7 +131,7 @@ test {
         logger.lifecycle("Running test: ${descriptor}")
     }
 
-    jvmArgs '-Xss8m', '-Xmx3G'
+    jvmArgs '-Xss4m', '-Xms4G', '-Xmx4G', "-XX:+HeapDumpOnOutOfMemoryError"
 
     testLogging {
         events "failed"

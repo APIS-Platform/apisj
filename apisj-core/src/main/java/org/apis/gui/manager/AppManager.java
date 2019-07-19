@@ -85,6 +85,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AppManager {
     public static final String REGISTER_DOMAIN_URL = "https://goo.gl/forms/oytS76KKssTcosND3";
@@ -181,27 +182,29 @@ public class AppManager {
                     Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                         long now = TimeUtils.getRealTimestamp();
 
-                        // 싱크가 지연된 경우 프로그램을 종료한다.
-                        if (isSyncDone && !isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
-                            timeLastProgramClosed = now;
-                            isClosed = true;
-                            isSyncDone = false;
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    resetController = (PopupResetController) PopupManager.getInstance().showMainPopup(null, "popup_reset.fxml", 0);
+                        if(!isClosed) {
+                            // 싱크가 지연된 경우 프로그램을 종료한다.
+                            if(isSyncDone) {
+                                if(now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
+                                    isSyncDone = false;
+                                    closeAndReset(now);
                                 }
-                            });
-                            mApis.close();
-                        }
 
-                        // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
-                        if (isClosed && timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
-                            timeLastBlockReceived = now;
-                            isClosed = false;
-                            startAPIS();
+                            // 프로그램 시작 후 정상적으로 시동되지 않았다면 다시 재시작 시킨다.
+                            } else {
+                                if(now - timeLastBlockReceived >= TIME_RESTART_WAIT) {
+                                    closeAndReset(now);
+                                }
+                            }
+                        } else {
+                            // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.
+                            if(timeLastProgramClosed > 0 && now - timeLastProgramClosed >= TIME_RESTART_WAIT) {
+                                timeLastBlockReceived = now;
+                                isClosed = false;
+                                timeLastProgramClosed = 0;
+                                startAPIS();
+                            }
                         }
-
                     }, 60 * 10, 1, TimeUnit.SECONDS);
                 }
             }
@@ -287,6 +290,18 @@ public class AppManager {
                     }
                 }
             });
+        }
+
+        private void closeAndReset(long now) {
+            timeLastProgramClosed = now;
+            isClosed = true;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    resetController = (PopupResetController) PopupManager.getInstance().showMainPopup(null, "popup_reset.fxml", 0);
+                }
+            });
+            mApis.close();
         }
 
         @Override
@@ -446,7 +461,12 @@ public class AppManager {
             AppManager.this.worldBestBlock = mApis.getSyncStatus().getBlockBestKnown();
             // Remove reset popup when sync is restored
             if((worldBestBlock - myBestBlock) < 8) {
-                exitResetPopup();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        exitResetPopup();
+                    }
+                });
             }
 
 
@@ -1240,6 +1260,9 @@ public class AppManager {
         loadDBTokens();
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            AtomicLong timeStamp = new AtomicLong(mApis.getBlockchain().getBestBlock().getTimestamp() * 1000); //s -> ms
+            AtomicLong nowStamp = new AtomicLong(TimeUtils.getRealTimestamp()); //ms
+
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -1247,9 +1270,7 @@ public class AppManager {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
 
                         //main - time
-                        long timeStemp = mApis.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
-                        long nowStemp = TimeUtils.getRealTimestamp(); //ms
-                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStamp.get(), nowStamp.get());
 
                         //main - peer
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
@@ -1268,9 +1289,13 @@ public class AppManager {
     }//start
 
     private void startAPIS() {
-        mApis = ApisFactory.createEthereum();
-        mApis.addListener(mListener);
-        mApis.getBlockMiner().setMinGasPrice(ApisUtil.convert(50, ApisUtil.Unit.nAPIS));
+        try {
+            mApis = ApisFactory.createEthereum();
+            mApis.addListener(mListener);
+            mApis.getBlockMiner().setMinGasPrice(ApisUtil.convert(50, ApisUtil.Unit.nAPIS));
+        } catch(Exception e) {
+            mApis.close();
+        }
     }
 
     public BigInteger getBalance(String address){
