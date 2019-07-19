@@ -125,7 +125,7 @@ public class BlockMiner {
         Block firstBlock = receivedBlocks.get(0);
         if(blockStore.getBlockByHash(firstBlock.getParentHash()) == null) {
             countNotFoundParent += 1;
-            updateMinedBlocks();
+            //updateMinedBlocks();
             return;
         } else {
             countNotFoundParent = 0;
