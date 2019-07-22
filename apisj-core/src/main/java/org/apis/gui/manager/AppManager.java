@@ -116,6 +116,9 @@ public class AppManager {
     // Ledger device
     private HIDDevice ledger = null;
 
+    // Time stamp
+    private AtomicLong timeStamp, nowStamp;
+
     // Reboot function when sync stopped
     private static final long TIME_CLOSE_WAIT = 1*60*1_000L;
     private static final long TIME_RESTART_WAIT = 30*1_000L;
@@ -1260,8 +1263,8 @@ public class AppManager {
         loadDBTokens();
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            AtomicLong timeStamp = new AtomicLong(mApis.getBlockchain().getBestBlock().getTimestamp() * 1000); //s -> ms
-            AtomicLong nowStamp = new AtomicLong(TimeUtils.getRealTimestamp()); //ms
+            timeStamp = new AtomicLong(mApis.getBlockchain().getBestBlock().getTimestamp() * 1000); //s -> ms
+            nowStamp = new AtomicLong(TimeUtils.getRealTimestamp()); //ms
 
             Platform.runLater(new Runnable() {
                 @Override
