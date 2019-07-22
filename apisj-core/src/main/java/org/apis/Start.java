@@ -180,12 +180,13 @@ public class Start {
             timeLastBlockReceived = TimeUtils.getRealTimestamp();
 
             // HTTP 서버를 실행시킨다
+            boolean isRunHttpRpc = false;
             if(httpRpcServer != null) {
-                isRunRpc = httpRpcServer.start();
+                isRunHttpRpc = httpRpcServer.start();
             }
 
             // 체인 싱크가 완료되면 SQL 서버 싱크를 시작한다.
-            if(synced && isRunRpc) {
+            if(synced && (isRunRpc || isRunHttpRpc)) {
                 // DB Sync Start
                 DBSyncManager.getInstance(mApis).setApis(mApis);
                 DBSyncManager.getInstance(mApis).syncThreadStart();
