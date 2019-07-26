@@ -52,6 +52,7 @@ import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.rpc.RPCServerManager;
+import org.apis.rpc_rest.HttpRpcServer;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.*;
@@ -129,6 +130,9 @@ public class AppManager {
     final private String networkId = getGeneralPropertiesData("network_id");
     private PopupResetController resetController;
     private PopupSuccessController updateNoticeController;
+
+    // Http RPC
+    private static HttpRpcServer httpRpcServer = null;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -318,6 +322,13 @@ public class AppManager {
 
             // constants
             constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
+            // HTTP 서버를 실행시킨다
+            if(getRPCPropertiesData("http_use_rpc").equals("true")) {
+                if (httpRpcServer != null) {
+                    httpRpcServer.start();
+                }
+            }
 
             if(isSyncDone){
 
@@ -835,6 +846,14 @@ public class AppManager {
                 rpcServerManager.startServer();
                 System.out.println("START RPC SERVER ======== >>");
             }
+
+            // HTTP RPC
+            if(getRPCPropertiesData("http_thread") != null) {
+                saveRPCProperties();
+                if (getRPCProperties().getProperty("http_use_rpc").equals("true")) {
+                    httpRpcServer = new HttpRpcServer(mApis);
+                }
+            }
         } catch (IOException e) {
             return false;
         }
@@ -848,6 +867,14 @@ public class AppManager {
             RPCServerManager rpcServerManager = RPCServerManager.getInstance(mApis);
             rpcServerManager.stopServer();
             System.out.println("<< ======== STOP RPC SERVER");
+
+            // HTTP RPC
+            if(getRPCPropertiesData("http_thread") != null) {
+                saveRPCProperties();
+                if(getRPCProperties().getProperty("http_use_rpc").equals("false")) {
+                    httpRpcServer = null;
+                }
+            }
         } catch (IOException e) {
             return false;
         }
@@ -1258,6 +1285,9 @@ public class AppManager {
             mApis.getBlockLoader().loadBlocks();
         }else{
         }
+
+        // start rpc server
+        AppManager.getInstance().startRPC();
 
         // token 불러오기
         loadDBTokens();
@@ -2002,6 +2032,9 @@ public class AppManager {
             if(prop.getProperty("max_connections") == null) { prop.setProperty("max_connections", String.valueOf(5)); }
             if(prop.getProperty("allow_ip") == null) { prop.setProperty("allow_ip", "127.0.0.1"); }
             if(prop.getProperty("use_rpc") == null) { prop.setProperty("use_rpc", "false"); }
+            if(prop.getProperty("http_port") == null) { prop.setProperty("http_port", String.valueOf(Integer.parseInt(prop.getProperty("port")) + 1)); }
+            if(prop.getProperty("http_thread") == null) { prop.setProperty("http_thread", String.valueOf(8)); }
+            if(prop.getProperty("http_use_rpc") == null) { prop.setProperty("http_use_rpc", "false"); }
             input.close();
 
         } catch (IOException e) {
@@ -2011,6 +2044,9 @@ public class AppManager {
             prop.setProperty("max_connections", String.valueOf(5));
             prop.setProperty("allow_ip", "127.0.0.1");
             prop.setProperty("use_rpc", "false");
+            prop.setProperty("http_port", String.valueOf(Integer.parseInt(prop.getProperty("port")) + 1));
+            prop.setProperty("http_thread", String.valueOf(8));
+            prop.setProperty("http_use_rpc", "false");
 
             try {
                 OutputStream output = new FileOutputStream(SystemProperties.getDefault().configDir() + "/rpc.properties");
@@ -2019,6 +2055,8 @@ public class AppManager {
             }catch (IOException err){
                 err.printStackTrace();
             }
+        } catch (NumberFormatException e) {
+            saveRPCProperties();
         }
         return prop;
     }

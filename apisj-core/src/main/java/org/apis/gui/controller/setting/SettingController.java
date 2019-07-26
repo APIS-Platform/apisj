@@ -1,6 +1,7 @@
 package org.apis.gui.controller.setting;
 
 import javafx.application.Platform;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -32,13 +33,15 @@ import java.util.*;
 public class SettingController extends BasePopupController {
     private final int maxPeerNumber = 30;
 
+    @FXML private AnchorPane bgAnchor;
     @FXML private Label userNumLabel, cancelBtn, saveBtn, settingsWarning, peersBtn;
     @FXML private ImageView networkBtnIcon, rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel, userNumPlus, userNumMinus;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, networkTitle, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox networkVBox, rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController rpcStartInputController, startWalletWithLogInBtnController, enableLogEventBtnController,
-            minimizeToTrayBtnController, rewardSaveBtnController, updateNoticeController;
+            minimizeToTrayBtnController, rewardSaveBtnController, updateNoticeController, httpRpcStartInputController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, maxConnectionsInputController, idInputController, passwordInputController;
+    @FXML private SettingItemInputController httpPortInputController, httpNThreadsInputController;
     @FXML private SettingItemRadioController networkIdController;
     @FXML private SettingItemSaveLoadController saveLoadController;
     @FXML private SettingItemUpdateController updateController;
@@ -65,12 +68,15 @@ public class SettingController extends BasePopupController {
         // Initiate items
         addNetworkItem("Network ID");
 
-        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
-        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Max Connections");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
-        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "RPC Start");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "WS RPC Start");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "WS Port");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "WS Max Connections");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "HTTP RPC Start");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "HTTP Port");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "HTTP nThreads");
 
 
         if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
@@ -158,6 +164,9 @@ public class SettingController extends BasePopupController {
         idInputController.setTextField(prop.getProperty("id"));
         passwordInputController.setTextField(prop.getProperty("password"));
         rpcStartInputController.setSelected(prop.getProperty("use_rpc").equals("true"));
+        httpPortInputController.setTextField(prop.getProperty("http_port"));
+        httpNThreadsInputController.setTextField(prop.getProperty("http_thread"));
+        httpRpcStartInputController.setSelected(prop.getProperty("http_use_rpc").equals("true"));
 
         prop = AppManager.getGeneralProperties();
         if(startWalletWithLogInBtnController != null) {
@@ -194,7 +203,7 @@ public class SettingController extends BasePopupController {
     }
 
     private void addRpcItem(String inputFlag, String contentsId) {
-        if(contentsId.equals("Port")) {
+        if(contentsId.equals("WS Port")) {
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -203,7 +212,81 @@ public class SettingController extends BasePopupController {
 
                 this.portInputController = (SettingItemInputController)loader.getController();
                 this.portInputController.setInput(inputFlag);
+                this.portInputController.addTextLitsener(InputConditionManager.onlyIntegerListener());
+                this.portInputController.addTextLitsener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        StringProperty string = (StringProperty) observable;
+                        if(newValue != null && !newValue.equals("")) {
+                            try {
+                                if (Integer.parseInt(newValue) < 0) {
+                                    string.set("0");
+                                } else if (Integer.parseInt(newValue) > 65535) {
+                                    string.set("65535");
+                                }
+                            } catch(NumberFormatException e) {
+                                string.set("65535");
+                            }
+                        }
+                    }
+                });
+                this.portInputController.addTextFocusListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if(!newValue) {
+                            if(portInputController.getTextField().equals("")) {
+                                portInputController.setTextField(String.valueOf(new Random().nextInt(10000) + 40000));
+                            }
+                        }
+                    }
+                });
                 this.portInputController.setContents(StringManager.getInstance().setting.rpcPortLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("HTTP Port")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.httpPortInputController = (SettingItemInputController)loader.getController();
+                this.httpPortInputController.setInput(inputFlag);
+                this.httpPortInputController.addTextLitsener(InputConditionManager.onlyIntegerListener());
+                this.httpPortInputController.addTextLitsener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        StringProperty string = (StringProperty) observable;
+                        if(newValue != null && !newValue.equals("")) {
+                            try {
+                                if (Integer.parseInt(newValue) < 0) {
+                                    string.set("0");
+                                } else if (Integer.parseInt(newValue) > 65535) {
+                                    string.set("65535");
+                                }
+                            } catch(NumberFormatException e) {
+                                string.set("65535");
+                            }
+                        }
+                    }
+                });
+                this.httpPortInputController.addTextFocusListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if(!newValue) {
+                            if(httpPortInputController.getTextField().equals("")) {
+                                if(Integer.parseInt(portInputController.getTextField()) == 65535) {
+                                    httpPortInputController.setTextField(String.valueOf(new Random().nextInt(10000) + 40000));
+                                } else {
+                                    httpPortInputController.setTextField(Integer.toString(Integer.parseInt(portInputController.getTextField()) + 1));
+                                }
+                            }
+                        }
+                    }
+                });
+                this.httpPortInputController.setContents(StringManager.getInstance().setting.rpcPortHttpLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -222,7 +305,7 @@ public class SettingController extends BasePopupController {
                 e.printStackTrace();
             }
 
-        } else if(contentsId.equals("Max Connections")) {
+        } else if(contentsId.equals("WS Max Connections")) {
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -231,7 +314,42 @@ public class SettingController extends BasePopupController {
 
                 this.maxConnectionsInputController = (SettingItemInputController)loader.getController();
                 this.maxConnectionsInputController.setInput(inputFlag);
+                this.maxConnectionsInputController.addTextLitsener(InputConditionManager.onlyIntegerListener());
+                this.maxConnectionsInputController.addTextFocusListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if(!newValue) {
+                            if(maxConnectionsInputController.getTextField().equals("")) {
+                                maxConnectionsInputController.setTextField("5");
+                            }
+                        }
+                    }
+                });
                 this.maxConnectionsInputController.setContents(StringManager.getInstance().setting.rpcMaxConnectionsLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(contentsId.equals("HTTP nThreads")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.httpNThreadsInputController = (SettingItemInputController)loader.getController();
+                this.httpNThreadsInputController.setInput(inputFlag);
+                this.httpNThreadsInputController.addTextLitsener(InputConditionManager.onlyIntegerListener());
+                this.httpNThreadsInputController.addTextFocusListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if(!newValue) {
+                            if(httpNThreadsInputController.getTextField().equals("")) {
+                                httpNThreadsInputController.setTextField("8");
+                            }
+                        }
+                    }
+                });
+                this.httpNThreadsInputController.setContents(StringManager.getInstance().setting.rpcNThreadsLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -262,7 +380,7 @@ public class SettingController extends BasePopupController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if(contentsId.equals("RPC Start")){
+        } else if(contentsId.equals("WS RPC Start")){
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -271,6 +389,18 @@ public class SettingController extends BasePopupController {
 
                 this.rpcStartInputController = (SettingItemBtnController)loader.getController();
                 this.rpcStartInputController.setContents(StringManager.getInstance().setting.rpcStartLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(contentsId.equals("HTTP RPC Start")){
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.httpRpcStartInputController = (SettingItemBtnController)loader.getController();
+                this.httpRpcStartInputController.setContents(StringManager.getInstance().setting.rpcStartHttpLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -461,6 +591,7 @@ public class SettingController extends BasePopupController {
             //PopupManager.getInstance().hideMainPopup(-1);
 
         } else if(fxid.equals("saveBtn")) {
+            bgAnchor.requestFocus();
 
             Properties prop = AppManager.getRPCProperties();
             prop.setProperty("port", portInputController.getTextField().trim());
@@ -469,6 +600,9 @@ public class SettingController extends BasePopupController {
             prop.setProperty("max_connections", maxConnectionsInputController.getTextField().trim());
             prop.setProperty("allow_ip", whiteListInputController.getTextField().trim());
             prop.setProperty("use_rpc", "" + rpcStartInputController.isSelected());
+            prop.setProperty("http_port", httpPortInputController.getTextField().trim());
+            prop.setProperty("http_thread", httpNThreadsInputController.getTextField().trim());
+            prop.setProperty("http_use_rpc", "" + httpRpcStartInputController.isSelected());
             AppManager.saveRPCProperties();
 
             // RPC server start/stop

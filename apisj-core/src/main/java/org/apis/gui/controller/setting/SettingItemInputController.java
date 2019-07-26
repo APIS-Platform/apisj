@@ -85,6 +85,14 @@ public class SettingItemInputController implements Initializable {
         }
     }
 
+    public void addTextLitsener(ChangeListener<String> listener) {
+        this.textField.textProperty().addListener(listener);
+    }
+
+    public void addTextFocusListener(ChangeListener<Boolean> listener) {
+        this.textField.focusedProperty().addListener(listener);
+    }
+
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
