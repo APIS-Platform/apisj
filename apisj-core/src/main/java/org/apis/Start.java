@@ -150,7 +150,7 @@ public class Start {
                 if (!processRestartThreadCreated) {
                     processRestartThreadCreated = true;
                     Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                        long now = TimeUtils.getRealTimestamp();
+                        long now = System.currentTimeMillis();
 
                         // 싱크가 지연된 경우 프로그램을 종료한다.
                         if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
