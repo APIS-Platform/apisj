@@ -150,13 +150,17 @@ public class Start {
                 if (!processRestartThreadCreated) {
                     processRestartThreadCreated = true;
                     Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                        long now = TimeUtils.getRealTimestamp();
+                        long now = System.currentTimeMillis();
 
                         // 싱크가 지연된 경우 프로그램을 종료한다.
                         if (!isClosed && now - timeLastBlockReceived >= TIME_CLOSE_WAIT) {
                             timeLastProgramClosed = now;
                             isClosed = true;
                             mApis.close();
+
+                            // DOCKER 스크립트에서 바로 프로그램을 시작시키도록 되어있다
+                            logger.warn("Synchronization has been stopped for a long time. Therefore, restart the program.");
+                            System.exit(0);
                         }
 
                         // 프로그램 종료 후 일정 시간이 경과하면 프로그램을 시작시킨다.

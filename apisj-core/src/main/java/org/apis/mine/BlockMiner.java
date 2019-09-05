@@ -434,8 +434,8 @@ public class BlockMiner {
         }
 
         // If miner's balance is zero, mining will not proceed.
-        if(apis.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
-            printMiningMessage("Miner's balance is zero.", bestBlock.getNumber());
+        if(apis.getRepository().getBalance(config.getMinerCoinbase()).compareTo(new BigInteger("1000000000000000000")) < 0) {
+            printMiningMessage("Miner's balance is less than 1 APIS.", bestBlock.getNumber());
             return false;
         }
 
