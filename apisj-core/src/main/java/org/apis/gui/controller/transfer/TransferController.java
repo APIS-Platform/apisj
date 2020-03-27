@@ -102,8 +102,8 @@ public class TransferController extends BaseViewController {
                 //total amount
                 BigInteger totalAmount = value.add(fee);
 
-                String fromAddress = transferApisController.getAddress();
-                String toAddress = transferApisController.getReceiveText();
+                String fromAddress = transferApisController.getAddress().trim();
+                String toAddress = transferApisController.getReceiveText().trim();
                 byte[] toMask = new byte[0];
 
                 if(fromAddress == null || fromAddress.length() == 0

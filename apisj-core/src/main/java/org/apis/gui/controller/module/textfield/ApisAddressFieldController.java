@@ -71,7 +71,7 @@ public class ApisAddressFieldController extends BaseViewController {
                 address = AppManager.getInstance().getAddressWithMask(mask);
             }
 
-            icon.setImage(ImageManager.getIdenticons(address));
+            icon.setImage(ImageManager.getIdenticons(address.trim()));
 
             if(handler != null){
                 handler.change(address, mask);
