@@ -42,7 +42,7 @@ Recommended System Requirements
 * Running Ubuntu 16.04 LTS or later
 * Processor performance equivant to 1 vCPU (AWS)
 * At least 2 GB of RAM
-* At least 25 GB of storage to store the block chain files
+* At least 50 GB of storage to store the block chain files
 
 Recommended VPS Products
 ------------
@@ -50,7 +50,7 @@ Recommended VPS Products
 VPS Provider Name | Service Name | System Spec
 ---------|--------------|------------
 Amazon Web Services (AWS) | t2.small (EC2) | 1 CPU / 2GB RAM
-Microsoft Azure | D1 (Linux VM) | 1 Core / 3.5GB RAM / 50GB Storage
+Microsoft Azure | D1 (Linux VM) | 1 Core / 3.5GB RAM / 60GB Storage
 Google Cloud Platform | n1-standard-1 (Compute Engine) | 1 vCPU / 3.75GB RAM
 Vultr | VC2 | 1 vCPU / 2048MB RAM
 
